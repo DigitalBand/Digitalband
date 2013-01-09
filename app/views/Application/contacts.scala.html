@@ -1,0 +1,39 @@
+@(form: Form[models.Contact])
+@import views.html.common.bootstrap._
+
+@main("Digital Band - контакты", "contacts") {
+    <div class="page-header">
+        <h3>
+            Обратная связь
+        </h3>
+    </div>
+    <form class="form-horizontal" action="@routes.Application.sendFeedback()" method="POST">
+        <div class="well">
+            @helper.inputText(form("name"), '_label -> "Имя")
+            @helper.inputText(form("email"), '_label -> "Email")
+            @helper.inputText(form("productName"), '_label -> "Название товара")
+            @helper.textarea(form("message"), '_label -> "Сообщение")
+            <div class="control-group">
+                <label class="control-label">Код</label>
+                <div class="controls">
+                    <script type="text/javascript">var RecaptchaOptions = {lang : 'ru', theme : 'white'};</script>
+                    <script type="text/javascript" src="http://www.google.com/recaptcha/api/challenge?k=6LfMQdYSAAAAAJCe85Y6CRp9Ww7n-l3HOBf5bifB">
+                    </script>
+
+                    <noscript>
+                        <iframe src="http://www.google.com/recaptcha/api/noscript?k=6LfMQdYSAAAAAJCe85Y6CRp9Ww7n-l3HOBf5bifB"
+                        height="300" width="500" frameborder="0">
+                        </iframe> <br>
+                        <textarea name="recaptcha_challenge_field" rows="3" cols="40">
+                        </textarea>
+                        <input type="hidden" name="recaptcha_response_field"
+                            value="manual_challenge">
+                    </noscript>
+                </div>
+            </div>
+            <div class="form-actions">
+                <button class="btn btn-primary">Отправить</button>
+            </div>
+        </div>
+    </form>
+}

@@ -1,0 +1,13 @@
+@(elements: helper.FieldElements)
+<div class="control-group@if(elements.hasErrors){ error}"
+     id="@elements.args.get('_id).getOrElse(elements.id + "_controlgroup")">
+<label class="control-label" for="@elements.id">
+    @elements.label(elements.lang)
+</label>
+<div class="controls">
+    @elements.input
+    @elements.errors(elements.lang).map { error =>
+    <span class="help-inline">@error</span>
+    }
+</div>
+</div>

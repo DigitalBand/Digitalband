@@ -1,0 +1,80 @@
+@(products: List[models.Product])
+@main("Каталог", "catalogue") {
+    <div class="page-header">
+        <h3>Каталог</h3>
+    </div>
+    <ul class="breadcrumb">
+        <li><a href="#">Home</a> <span class="divider">/</span></li>
+        <li><a href="#">Library</a> <span class="divider">/</span></li>
+        <li class="active">Data</li>
+    </ul>
+    <div class="row">
+        <div class="span4">
+            <div class="accordion" id="accordion2">
+                <div class="accordion-group">
+                    <div class="accordion-heading">
+                        <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion2" href="#collapseOne">
+                            Collapsible Group Item #1
+                        </a>
+                    </div>
+                    <div id="collapseOne" class="accordion-body collapse in">
+                        <div class="accordion-inner">
+                            Anim pariatur cliche...
+                        </div>
+                    </div>
+                </div>
+                <div class="accordion-group">
+                    <div class="accordion-heading">
+                        <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion2" href="#collapseTwo">
+                            Collapsible Group Item #2
+                        </a>
+                    </div>
+                    <div id="collapseTwo" class="accordion-body collapse">
+                        <div class="accordion-inner">
+                            Anim pariatur cliche...
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="span8">
+            <ul>
+            @products.map{product =>
+                <li class="odd">
+                    <div class="pentry">
+                        <div class="pimage">
+                            <a href="/category/1/products/1?brandPage=1&amp;brandId=0&amp;productId=1" title="IBANEZ GRX40 BLACK NIGHT" class="image-link">
+                                <img class="lazy-image" src="/product/1/images/115x90/1.png" original="/product/1/images/115x90/1.png" alt="" style="display: inline-block;">
+                                <noscript>
+                                &lt;img src="/product/1/images/115x90/1.png" alt=""
+                                    class="product-image"/&gt;
+                                </noscript>
+                            </a>
+                        </div>
+                        <div class="price">
+                            <h4>@product.price руб.</h4>
+
+                            <form action="/shoppingcart/add/1" method="post" accept-charset="utf-8" enctype="application/x-www-form-urlencoded">
+                                <input type="hidden" name="authenticityToken" value="d983b56f06e59c24a63b9ab055a7404df25dcd3e">
+                                <input type="submit" class="addtocart btn" value="В корзину!">
+                            </form>
+                        </div>
+                        <header>
+                            <h4 class="entry-title">
+                                <a href="/category/1/products/1?brandPage=1&amp;brandId=0&amp;productId=1" title="IBANEZ GRX40 BLACK NIGHT">
+                                    IBANEZ GRX40 BLACK NIGHT
+                                </a>
+                            </h4>
+                        </header>
+
+                        <span class="list_description">
+                            электрогитара, цвет черный, корпус липа, гриф клен, звукосниматели S-S-H, бридж FAT6, фурнитура хром
+                        </span>
+                    </div>
+                </li>
+
+            }
+            </ul>
+        </div>
+    </div>
+}
