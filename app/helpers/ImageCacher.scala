@@ -3,21 +3,12 @@ package helpers
 import java.io.{FileInputStream, File}
 import models.Picture
 import java.awt.image.BufferedImage
-import java.nio._
-import file.Path
+import java.nio.file._
 
 class ImageCacher(val appPath: String) {
 
   def isCached(picture: Picture): Boolean = {
-    file.Files.exists(combine(appPath, List(picture.path)))
-  }
-
-  def combine(path1: String, path2: Seq[String]): Path = {
-    val file1 = new File(path1)
-    if (path2.tail.isEmpty)
-      new File(file1, path2.head).toPath()
-    else
-      combine(new File(file1, path2.head).getPath, path2.tail)
+    Files.exists(Paths.get(appPath, picture.path))
   }
 
   def getFromCache(picture: Picture): File = ???
