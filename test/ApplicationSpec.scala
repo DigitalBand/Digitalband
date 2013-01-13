@@ -4,7 +4,6 @@ import org.specs2.mutable._
 
 import play.api.test._
 import play.api.test.Helpers._
-import dao.ProductRepository
 
 /**
  * Add your spec here.
@@ -33,7 +32,7 @@ class ApplicationSpec extends Specification {
 
     "return list of products" in {
       running(FakeApplication()) {
-        val products: List[models.Product] = ProductRepository.getList()
+        //val products: List[models.ProductUnit] = ProductRepository.getList()
 
       }
     }

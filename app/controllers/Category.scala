@@ -1,12 +1,13 @@
 package controllers
 
 import play.api.mvc.{Action, Controller}
-import dao.ProductRepository
 import models._
+import com.google.inject.Inject
+import dao.common.ProductRepository
 
-object Category extends Controller {
+class Category @Inject()(val productRepository: ProductRepository) extends Controller {
   def list = Action {
-    val products: List[Product] = ProductRepository.getList()
+    val products: List[ProductUnit] = productRepository.getList()
     Ok(views.html.Category.list(products))
   }
 }

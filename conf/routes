@@ -8,7 +8,7 @@ GET     /about                      controllers.Application.about
 GET     /contacts                   controllers.Application.contacts
 
 # Catalogue
-GET     /category/list              controllers.Category.list
+GET     /category/list              @controllers.Category.list
 
 POST    /sendFeedback               controllers.Application.sendFeedback
 
