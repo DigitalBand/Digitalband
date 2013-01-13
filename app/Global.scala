@@ -1,5 +1,4 @@
 import com.google.inject.Guice
-import dao.common.ProductRepository
 import play.api.GlobalSettings
 import com.tzavellas.sse.guice.ScalaModule
 import dao.impl.fake._
@@ -15,6 +14,7 @@ object Global extends GlobalSettings {
 
 class InjectionModule extends ScalaModule {
   def configure() {
-    bind[ProductRepository].toInstance(ProductRepository)
+    bind[dao.common.ProductRepository].toInstance(new ProductRepository())
+    bind[dao.common.ImageRepository].toInstance(new ImageRepository())
   }
 }

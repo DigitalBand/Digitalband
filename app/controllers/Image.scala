@@ -1,17 +1,16 @@
 package controllers
 
 import play.api.mvc.{Action, Controller}
+import com.google.inject.Inject
+import dao.common.ImageRepository
+import models.Picture
+import helpers.ImageCacher
+import play.api.Play.current
+import play.api.Play
 
-/**
- * Created with IntelliJ IDEA.
- * User: Tim
- * Date: 13/01/2013
- * Time: 14:37
- * To change this template use File | Settings | File Templates.
- */
-object Image extends Controller {
-  def get(productId: Int, imageNumber: Int = 1) = Action {
-    //ImageRepository.get(productId, imageNumber)
-    Ok("")
+class Image @Inject()(val imageRepository: ImageRepository) extends Controller {
+  def get(productId: Int, imageNumber: String, imageSize: String) = Action {
+    val picture: Picture = imageRepository.get(productId, imageNumber, imageSize)
+    Ok.sendFile(new ImageCacher(Play.application.path.getPath).getImage(picture))
   }
 }

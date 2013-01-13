@@ -1,5 +1,7 @@
 package dao.common
 
+import models.ProductUnit
+
 /**
  * Created with IntelliJ IDEA.
  * User: Tim
@@ -8,6 +10,6 @@ package dao.common
  * To change this template use File | Settings | File Templates.
  */
 trait ProductRepository {
-  def getList(): List[models.ProductUnit]
+  def getList(): List[ProductUnit]
 
 }

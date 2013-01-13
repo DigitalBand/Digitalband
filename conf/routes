@@ -10,6 +10,9 @@ GET     /contacts                   controllers.Application.contacts
 # Catalogue
 GET     /category/list              @controllers.Category.list
 
+#Images
+GET     /product/:productId/images/:size/:imageNumber  @controllers.Image.get(productId: Int, imageNumber: String, size: String)
+
 POST    /sendFeedback               controllers.Application.sendFeedback
 
 # Map static resources from the /public folder to the /assets URL path

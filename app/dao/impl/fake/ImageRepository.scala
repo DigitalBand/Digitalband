@@ -1,12 +1,9 @@
 package dao.impl.fake
 
-/**
- * Created with IntelliJ IDEA.
- * User: Tim
- * Date: 13/01/2013
- * Time: 14:41
- * To change this template use File | Settings | File Templates.
- */
-object ImageRepository {
+import models.Picture
 
+class ImageRepository extends dao.common.ImageRepository{
+  def get(productId: Int, imageNumber: String, imageSize: String): Picture = {
+     new Picture(1, "/Users/Tim/Pictures/IMG_6376.JPG", "jpg")
+  }
 }

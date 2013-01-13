@@ -1,7 +1,9 @@
 package dao.impl.fake
 
-object ProductRepository extends dao.common.ProductRepository {
-   def getList(): List[models.ProductUnit] = {
+import models.ProductUnit
+
+class ProductRepository extends dao.common.ProductRepository {
+   def getList(): List[ProductUnit] = {
      List(
        new models.ProductUnit(
          "IBANEZ GRX40 BLACK NIGHT",
