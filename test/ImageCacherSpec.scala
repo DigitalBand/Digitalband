@@ -15,11 +15,6 @@ import helpers.ImageCacher
 class ImageCacherSpec extends Specification {
   "Image Cacher" should {
     "combine paths" in {
-      running(FakeApplication()) {
-        val imgCacher = new ImageCacher("")
-        val path = imgCacher.combine("/user/tim", List("product", "12", "2"))
-        path.toString must beEqualTo("/user/tim/product/12/2")
-      }
 
     }
   }
