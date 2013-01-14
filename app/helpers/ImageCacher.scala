@@ -4,27 +4,32 @@ import java.io.{FileInputStream, File}
 import models.Picture
 import java.awt.image.BufferedImage
 import java.nio.file._
+import javax.imageio.ImageIO
 
 class ImageCacher(val appPath: String) {
 
-  def isCached(picture: Picture): Boolean = {
-    Files.exists(Paths.get(appPath, picture.path))
+  def isCached(path: Path): Boolean = Files.exists(path)
+
+  def getFromCache(path: Path): File = new File(path.toString)
+
+  def cache(image: BufferedImage, cachePath: Path): File = {
+    val outputFile = new File(cachePath.toString)
+    //TODO: create category if does not exist. Now it fails with NullReferenceException
+    ImageIO.write(image, "png", outputFile)
+    outputFile
   }
 
-  def getFromCache(picture: Picture): File = ???
-
-  def cache(image: BufferedImage): File = ???
-
-  def getImage(picture: Picture): File = {
-    if (isCached(picture))  {
-      getFromCache(picture)
+  def getImage(picture: Picture, width: Int, height: Int): File = {
+    val cachePath = Paths.get(appPath, "data", "images", "cache", width + "x" + height, picture.path)
+    if (isCached(cachePath))  {
+      getFromCache(cachePath)
     } else {
-      val file = getOriginal(picture)
-      val image = ImageResizer.resize(new FileInputStream(file), 100, 100)
-      cache(image)
+      val file = getOriginal(Paths.get(appPath, "data", "images", "originals", picture.path))
+      val image = ImageResizer.resize(new FileInputStream(file), width, height)
+      cache(image, cachePath)
     }
   }
-  private def getOriginal(picture: Picture): File = {
-    new File("/Users/Tim/Pictures/IMG_6376.JPG")
+  private def getOriginal(path: Path): File = {
+    new File(path.toString)
   }
 }
