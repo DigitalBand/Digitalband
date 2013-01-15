@@ -1,18 +1,18 @@
 package helpers
 
-import java.awt.{Color, Image, Graphics2D, AlphaComposite}
+import java.awt._
 import java.awt.image.BufferedImage
 import javax.imageio.ImageIO
 import java.io.InputStream
 
-object ImageResizer {
+class ImageResizer {
   //copied from java code TODO: improve for scala
-  def getResizedImage(is: InputStream, outputWidth: Int, outputHeight: Int, preserveAlpha: Boolean = true, crop: Boolean = false) = {
-    val sourceImage:BufferedImage = ImageIO.read(is)
+  private def resize(is: InputStream, outputSize: Rectangle, preserveAlpha: Boolean, crop: Boolean) = {
+    val sourceImage: BufferedImage = ImageIO.read(is)
     val sourceWidth = sourceImage.getWidth(null)
     val sourceHeight = sourceImage.getHeight(null)
-    val widthScale = outputWidth.toDouble / sourceWidth.toDouble
-    val heightScale = outputHeight.toDouble / sourceHeight.toDouble
+    val widthScale = outputSize.width.toDouble / sourceWidth.toDouble
+    val heightScale = outputSize.height.toDouble / sourceHeight.toDouble
     var scale = 0.0
     if (crop)
       scale = Math.max(widthScale, heightScale)
@@ -21,30 +21,31 @@ object ImageResizer {
     var imageType = BufferedImage.TYPE_INT_ARGB
     if (preserveAlpha)
       imageType = BufferedImage.TYPE_INT_RGB
-      var canvas: Graphics2D = null
+    var canvas: Graphics2D = null
     try {
-      val outputImage = new BufferedImage(outputWidth, outputHeight, imageType);
-      canvas = outputImage.createGraphics();
+      val outputImage = new BufferedImage(outputSize.width, outputSize.height, imageType)
+      canvas = outputImage.createGraphics()
       if (preserveAlpha) {
-        canvas.setComposite(AlphaComposite.Src);
+        canvas.setComposite(AlphaComposite.Src)
       }
       //set background
-      canvas.setPaint(Color.white);
-      canvas.fillRect(0, 0, outputWidth, outputHeight)
+      canvas.setPaint(Color.white)
+      canvas.fillRect(0, 0, outputSize.width, outputSize.height)
       val scaledWidth = (sourceWidth * scale).toInt
       val scaledHeight = (sourceHeight * scale).toInt
-      val scaledImage = sourceImage.getScaledInstance(scaledWidth, scaledHeight, Image.SCALE_SMOOTH);
-      val positionLeft = (outputWidth - scaledWidth) / 2;
-      val positionTop = (outputHeight - scaledHeight) / 2;
+      val scaledImage = sourceImage.getScaledInstance(scaledWidth, scaledHeight, Image.SCALE_SMOOTH)
+      val positionLeft = (outputSize.width - scaledWidth) / 2
+      val positionTop = (outputSize.height - scaledHeight) / 2
 
-      canvas.drawImage(scaledImage, positionLeft, positionTop, scaledWidth, scaledHeight, null);
+      canvas.drawImage(scaledImage, positionLeft, positionTop, scaledWidth, scaledHeight, null)
       outputImage
     } finally {
       if (canvas != null) {
-        canvas.dispose();
+        canvas.dispose()
       }
     }
   }
 
-  def resize(is:java.io.InputStream, maxWidth:Int, maxHeight:Int):BufferedImage = getResizedImage(is, maxWidth, maxHeight)
+  def resize(is: java.io.InputStream, maxSize: Rectangle): BufferedImage =
+    resize(is, maxSize, preserveAlpha = true, crop = false)
 }
