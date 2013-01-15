@@ -16,5 +16,6 @@ class InjectionModule extends ScalaModule {
   def configure() {
     bind[dao.common.ProductRepository].toInstance(new ProductRepository())
     bind[dao.common.ImageRepository].toInstance(new ImageRepository())
+    bind[dao.common.CategoryRepository].toInstance(new CategoryRepository)
   }
 }

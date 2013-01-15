@@ -7,11 +7,11 @@ import models.Picture
 import helpers.ImageCacher
 import play.api.Play.current
 import play.api.Play
-import helpers.ImageHelper.getDimension
+import helpers.ImageHelper.{getDimension, getImageNumber}
 
 class Image @Inject()(val imageRepository: ImageRepository) extends Controller {
   def get(productId: Int, imageNumber: String, imageSize: String) = Action {
-    val picture: Picture = imageRepository.get(productId, imageNumber, imageSize)
+    val picture: Picture = imageRepository.get(productId, getImageNumber(imageNumber), imageSize)
     Ok.sendFile(new ImageCacher(Play.application.path.getPath).getImage(picture, getDimension(imageSize)))
   }
 }

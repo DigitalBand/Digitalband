@@ -6,8 +6,10 @@ import data.Form
 import data.Forms._
 import play.api.mvc._
 import helpers.{ReCaptchaHelper, EmailHelper}
+import com.google.inject.Inject
+import dao.common.CategoryRepository
 
-object Application extends Controller {
+class Application @Inject()(val categoryRepository: CategoryRepository) extends Controller {
 
   def contactsForm(implicit request: Request[Any]) = {
     Form(
@@ -30,7 +32,8 @@ object Application extends Controller {
 
   def index = Action {
     implicit request =>
-      Ok(views.html.index())
+      val categories: List[CategoryEntity] = categoryRepository.getListWithPictures()
+      Ok(views.html.index(categories))
   }
 
   def about = Action {
