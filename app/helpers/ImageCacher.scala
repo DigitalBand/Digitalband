@@ -5,35 +5,27 @@ import models.Picture
 import java.awt.image.BufferedImage
 import java.nio.file._
 import javax.imageio.ImageIO
-import java.awt.Rectangle
+import java.awt.{Dimension, Rectangle}
 
 class ImageCacher(val appPath: String) {
 
-  def isCached(path: Path): Boolean = Files.exists(path)
-
-  def getFromCache(path: Path): File = new File(path.toString)
-
-  def cache(image: BufferedImage, cachePath: Path): File = {
-    val outputFile = new File(cachePath.toString)
-    if (!outputFile.getParentFile.exists)
-      outputFile.getParentFile.mkdirs
-    ImageIO.write(image, "png", outputFile)
-    outputFile
-  }
-
-  def getImage(picture: Picture, rect: Rectangle): File = {
-    val cachePath = Paths.get(appPath, "data", "images", "cache", rect.width + "x" + rect.height, picture.path)
-    if (isCached(cachePath)) {
-      getFromCache(cachePath)
+  def getImage(picture: Picture, outputDimension: Dimension): File = {
+    val cachePath = Paths.get(appPath, "data", "images", "cache", outputDimension.width + "x" + outputDimension.height, picture.path)
+    if (Files.exists(cachePath)) {
+      new File(cachePath.toString)
     } else {
-      val file = getOriginal(Paths.get(appPath, "data", "images", "originals", picture.path))
-      val imageResizer = new ImageResizer()
-      val image = imageResizer.resize(new FileInputStream(file), rect)
-      cache(image, cachePath)
+      val originalFile = new File(Paths.get(appPath, "data", "images", "originals", picture.path).toString)
+      val resizedImage: BufferedImage = ImageResizer.resize(originalFile, outputDimension)
+      cache(resizedImage, cachePath)
     }
   }
 
-  private def getOriginal(path: Path): File = {
-    new File(path.toString)
+  private def cache(image: BufferedImage, cachePath: Path): File = {
+    val outputFile = new File(cachePath.toString)
+    if (!outputFile.getParentFile.exists)
+      outputFile.getParentFile.mkdirs
+    //PNG generates the best quality for thumbnails
+    ImageIO.write(image, "png", outputFile)
+    outputFile
   }
 }

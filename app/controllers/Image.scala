@@ -7,12 +7,11 @@ import models.Picture
 import helpers.ImageCacher
 import play.api.Play.current
 import play.api.Play
-import helpers.ImageHelper.getRectangle
+import helpers.ImageHelper.getDimension
 
 class Image @Inject()(val imageRepository: ImageRepository) extends Controller {
   def get(productId: Int, imageNumber: String, imageSize: String) = Action {
     val picture: Picture = imageRepository.get(productId, imageNumber, imageSize)
-    Ok.sendFile(new ImageCacher(Play.application.path.getPath).getImage(picture, getRectangle(imageSize)))
+    Ok.sendFile(new ImageCacher(Play.application.path.getPath).getImage(picture, getDimension(imageSize)))
   }
-
 }

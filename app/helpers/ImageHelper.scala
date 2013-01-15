@@ -1,10 +1,10 @@
 package helpers
 
-import java.awt.Rectangle
+import java.awt.{Dimension}
 
 object ImageHelper {
-  def getRectangle(imageSize: String): Rectangle = {
+  def getDimension(imageSize: String) = {
     val arr = imageSize.split("x").map(_.toInt)
-    new Rectangle(arr(0), arr(1))
+    new Dimension(arr(0), arr(1))
   }
 }
