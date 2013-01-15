@@ -15,7 +15,6 @@ class ImageCacher(val appPath: String) {
 
   def cache(image: BufferedImage, cachePath: Path): File = {
     val outputFile = new File(cachePath.toString)
-    //TODO: create category if does not exist. Now it fails with NullReferenceException
     if (!outputFile.getParentFile.exists)
       outputFile.getParentFile.mkdirs
     ImageIO.write(image, "png", outputFile)
