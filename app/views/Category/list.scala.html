@@ -41,7 +41,7 @@
             <ul>
             @products.map { product =>
                 <li class="odd">
-                    <img src="@routes.Image.get(1, product.id + ".jpg", "210x210")" />
+                    <img src="@routes.Image.productImage(1, product.id + ".jpg", "210x210")" />
                 </li>
             }
             </ul>

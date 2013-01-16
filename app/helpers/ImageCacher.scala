@@ -9,13 +9,13 @@ import java.awt.{Dimension, Rectangle}
 
 class ImageCacher(val appPath: String) {
 
-  def getImage(picture: Picture, outputDimension: Dimension): File = {
+  def getImage(picture: Picture, outputDimension: Dimension, crop: Boolean = false, preserveAlpha: Boolean = true): File = {
     val cachePath = Paths.get(appPath, "data", "images", "cache", outputDimension.width + "x" + outputDimension.height, picture.path)
     if (Files.exists(cachePath)) {
       new File(cachePath.toString)
     } else {
       val originalFile = new File(Paths.get(appPath, "data", "images", "originals", picture.path).toString)
-      val resizedImage: BufferedImage = ImageResizer.resize(originalFile, outputDimension)
+      val resizedImage: BufferedImage = ImageResizer.resize(originalFile, outputDimension, preserveAlpha, crop)
       cache(resizedImage, cachePath)
     }
   }

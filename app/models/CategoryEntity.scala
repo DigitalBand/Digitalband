@@ -1,3 +1,3 @@
 package models
 
-class CategoryEntity(id: Int, title: String)
+class CategoryEntity(val id: Int, val title: String, val imageId: Int)
