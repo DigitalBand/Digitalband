@@ -11,18 +11,20 @@ import play.api.Play.current
 
 object ImageCacher {
   val appPath = Play.application.path.toString
-  def CachedFile(imageId: Int, outputDimension: Dimension,
-                 compressQuality: Float = 0.5f, crop: Boolean = false, preserveAlpha: Boolean = true)(picture: => Picture) = {
+  val dataPath = Paths.get(appPath, "data").toString
+  val imagesPath = Paths.get(dataPath, "images").toString
+
+  def CachedFile(imageId: Int, outputDimension: Dimension, compressQuality: Float, crop: Boolean, preserveAlpha: Boolean = true)(picture: => Picture) = {
     Results.Ok.sendFile(getImage(imageId, picture, outputDimension, crop, preserveAlpha, compressQuality))
   }
   def getImage(imageId: Int, picture: => Picture, outputDimension: Dimension, crop: Boolean = false, preserveAlpha: Boolean = true, compressQuality: Float): File = {
     val fill = crop match {case true => "cropped" case false => "full"}
     val quality = (compressQuality * 100).toInt.toString
-    val cachePath = Paths.get(appPath, "data", "images", "cache", outputDimension.width + "x" + outputDimension.height, quality, fill, imageId + ".jpg")
+    val cachePath = Paths.get(imagesPath, "cache", outputDimension.width + "x" + outputDimension.height, quality, fill, imageId + ".jpg")
     if (Files.exists(cachePath)) {
       new File(cachePath.toString)
     } else {
-      val originalFile = new File(Paths.get(appPath, "data", "images", "originals", picture.path).toString)
+      val originalFile = new File(Paths.get(imagesPath, "originals", picture.path).toString)
       val resizedImage: BufferedImage = ImageResizer.resize(originalFile, outputDimension, preserveAlpha, crop)
       cache(resizedImage, cachePath, compressQuality)
     }
