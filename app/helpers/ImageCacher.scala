@@ -14,7 +14,7 @@ object ImageCacher {
   val dataPath = Paths.get(appPath, "data").toString
   val imagesPath = Paths.get(dataPath, "images").toString
 
-  def CachedFile(imageId: Int, outputDimension: Dimension, compressQuality: Float, crop: Boolean, preserveAlpha: Boolean = true)(picture: => Picture) = {
+  def sendCachedImage(imageId: Int, outputDimension: Dimension, compressQuality: Float, crop: Boolean, preserveAlpha: Boolean = true)(picture: => Picture) = {
     Results.Ok.sendFile(getImage(imageId, picture, outputDimension, crop, preserveAlpha, compressQuality))
   }
   def getImage(imageId: Int, picture: => Picture, outputDimension: Dimension, crop: Boolean = false, preserveAlpha: Boolean = true, compressQuality: Float): File = {
@@ -26,12 +26,12 @@ object ImageCacher {
     } else {
       val originalFile = new File(Paths.get(imagesPath, "originals", picture.path).toString)
       val resizedImage: BufferedImage = ImageResizer.resize(originalFile, outputDimension, preserveAlpha, crop)
-      cache(resizedImage, cachePath, compressQuality)
+      cache(resizedImage, cachePath.toString, compressQuality)
     }
   }
 
-  private def cache(image: BufferedImage, cachePath: Path, quality: Float): File = {
-    val outputFile = new File(cachePath.toString)
+  private def cache(image: BufferedImage, cachePath: String, quality: Float): File = {
+    val outputFile = new File(cachePath)
     if (!outputFile.getParentFile.exists)
       outputFile.getParentFile.mkdirs
     ImageHelper.write(image, outputFile, quality)
