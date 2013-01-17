@@ -10,7 +10,10 @@ class Image @Inject()(val imageRepository: ImageRepository) extends Controller {
   def get(imageNumber: String, quality: Int, imageSize: String, fill: String) = Action {
     val imageId: Int = getImageId(imageNumber)
     CachedFile(imageId, getDimension(imageSize), checkQuality(quality), isCropped(fill)) {
-      imageRepository.get(imageId)
+      if (imageId > 0)
+        imageRepository.get(imageId)
+      else
+        imageRepository.getDefaultImage
     }
   }
 }
