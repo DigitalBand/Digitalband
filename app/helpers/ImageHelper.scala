@@ -11,7 +11,21 @@ object ImageHelper {
     val arr = imageSize.split("x").map(_.toInt)
     new Dimension(arr(0), arr(1))
   }
-  def getImageNumber(imageNumber: String): Int = {
+  def isCropped(fill: String) = {
+    fill match {
+      case "cropped" => true
+      case "full" => false
+    }
+  }
+  def checkQuality(quality: Int): Float = {
+    if (quality < 20)
+      0.2f
+    else if (quality > 100)
+      1.0f
+    else
+      (quality.toFloat / 100)
+  }
+  def getImageId(imageNumber: String): Int = {
     imageNumber.split("[\\.]")(0).toInt
   }
   def write(image: BufferedImage, outputFile: File, quality: Float): File = {
