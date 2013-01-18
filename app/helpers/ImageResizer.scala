@@ -14,7 +14,7 @@ object ImageResizer {
     val scaledRectangle = getScaledRectangle(originalImageSize, outputSize, getRatio(crop, outputSize, originalImageSize))
     drawImage(originalImage, new BufferedImage(outputSize.width, outputSize.height, getImageType(preserveAlpha)), outputSize, scaledRectangle, preserveAlpha)
   }
-  //TODO: When images are large i.e. 1500x1000 then a file size is also large. There should be an option to optimize the size
+
   private def drawImage(sourceImage: BufferedImage, outputImage: BufferedImage, outputSize: Dimension, scaledRectangle: Rectangle, preserveAlpha: Boolean) = {
     using (outputImage.createGraphics()) { canvas =>
       val scaledImage = sourceImage.getScaledInstance(scaledRectangle.width, scaledRectangle.height, Image.SCALE_SMOOTH)
