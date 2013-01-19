@@ -2,15 +2,17 @@ package controllers
 
 import models._
 import play.api._
+import cache.Cached
 import data.Form
 import data.Forms._
 import play.api.mvc._
+import play.api.Play.current
 import helpers.{ReCaptchaHelper, EmailHelper}
 import com.google.inject.Inject
-import dao.common.CategoryRepository
+import dao.common.{ProductRepository, CategoryRepository}
 
-class Application @Inject()(val categoryRepository: CategoryRepository) extends Controller {
-
+class Application @Inject()(val categoryRepository: CategoryRepository, val productRepository: ProductRepository) extends Controller {
+  val oneDayDuration = 86400
   def contactsForm(implicit request: Request[Any]) = {
     Form(
       mapping(
@@ -30,10 +32,13 @@ class Application @Inject()(val categoryRepository: CategoryRepository) extends 
       }))
   }
 
-  def index = Action {
-    implicit request =>
-      val categories: Seq[CategoryEntity] = categoryRepository.getListWithPictures()
-      Ok(views.html.index(categories))
+  def index = Cached("homePage", oneDayDuration) {
+    Action {
+      implicit request =>
+        val categories: Seq[CategoryEntity] = categoryRepository.getListWithPictures()
+        val products: Seq[ProductUnit] = productRepository.listMostVisited(8)
+        Ok(views.html.index(categories, products))
+    }
   }
 
   def about = Action {

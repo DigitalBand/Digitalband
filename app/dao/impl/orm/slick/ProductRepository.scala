@@ -1,8 +1,9 @@
-package dao.impl.fake
+package dao.impl.orm.slick
 
+import common.RepositoryBase
 import models.ProductUnit
 
-class ProductRepository extends dao.common.ProductRepository {
+class ProductRepository extends RepositoryBase with dao.common.ProductRepository {
   def getList(): Seq[ProductUnit] = {
     List(
       new models.ProductUnit(
@@ -27,13 +28,5 @@ class ProductRepository extends dao.common.ProductRepository {
         2, 0))
   }
 
-  def listMostVisited(count: Int) = {
-    for (i <- 1 to count)
-      yield new models.ProductUnit(
-        "IBANEZ GRX40 BLACK NIGHT",
-        "электрогитара, цвет черный, корпус липа, гриф клен, звукосниматели S-S-H, бридж FAT6, фурнитура хром",
-        6828,
-        i, 2)
-
-  }
+  def listMostVisited(count: Int) = ???
 }
