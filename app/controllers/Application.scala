@@ -32,7 +32,7 @@ class Application @Inject()(val categoryRepository: CategoryRepository) extends 
 
   def index = Action {
     implicit request =>
-      val categories: List[CategoryEntity] = categoryRepository.getListWithPictures()
+      val categories: Seq[CategoryEntity] = categoryRepository.getListWithPictures()
       Ok(views.html.index(categories))
   }
 

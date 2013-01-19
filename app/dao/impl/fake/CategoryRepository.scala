@@ -3,7 +3,7 @@ package dao.impl.fake
 import models.CategoryEntity
 
 class CategoryRepository extends dao.common.CategoryRepository {
-  def getListWithPictures: List[CategoryEntity] = {
+  def getListWithPictures: Seq[CategoryEntity] = {
     List(new CategoryEntity(1, "Test 1", 4), new CategoryEntity(2, "Test 2", 5))
   }
 }
