@@ -1,14 +1,11 @@
 @(categories: Seq[CategoryEntity], products: Seq[models.ProductUnit])
+@import Shared._
 @main("Интернет-магазин музыкального оборудования Digital Band", scripts = scripts) {
     <div id="myCarousel" class="carousel slide">
         <div class="carousel-inner">
-            <div class="item active">
-            <img src="@routes.Image.get(categories.head.imageId + ".jpg", 65, "1500x550", "cropped")" alt=""/>
-            </div>
+            @carouselItem(categories.head.imageId, "active", categories.head.title, "")
             @categories.tail.map { category =>
-                <div class="item">
-                <img src="@routes.Image.get(category.imageId + ".jpg", 65, "1500x550", "cropped")" alt=""/>
-                </div>
+                @carouselItem(category.imageId, "", category.title, "")
             }
         </div>
         <a class="carousel-control left" href="#myCarousel" data-slide="prev">&lsaquo;</a>
@@ -23,8 +20,8 @@
                 </a>
             <hr/>
                 <blockquote>
-                    <p>Dynacord Powersub 315</p>
-                    <small>45 000 р.</small>
+                    <p>@product.title</p>
+                    <small>@product.price р.</small>
                 </blockquote>
             </div>
         </li>

@@ -1,0 +1,11 @@
+@(imageId: Int, activeClass: String, captionTitle: String, description: String)
+
+<div class="item  @activeClass">
+    <img src="@routes.Image.get(imageId + ".jpg", 65, "1500x550", "cropped")" alt="@captionTitle"/>
+    <div class="carousel-caption">
+        <h3>@captionTitle</h3>
+        <p>
+        @description
+        </p>
+    </div>
+</div>
