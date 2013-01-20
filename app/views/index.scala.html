@@ -3,9 +3,9 @@
 @main("Интернет-магазин музыкального оборудования Digital Band", scripts = scripts) {
     <div id="myCarousel" class="carousel slide">
         <div class="carousel-inner">
-            @carouselItem(categories.head.imageId, "active", categories.head.title, "")
+            @carouselItem(categories.head.imageId, isActive = true, captionTitle = categories.head.title)
             @categories.tail.map { category =>
-                @carouselItem(category.imageId, "", category.title, "")
+                @carouselItem(category.imageId, isActive = false, captionTitle = category.title)
             }
         </div>
         <a class="carousel-control left" href="#myCarousel" data-slide="prev">&lsaquo;</a>
@@ -16,7 +16,7 @@
         <li class="span3">
             <div class="thumbnail">
                 <a href="#">
-                    <img src="@routes.Image.get(product.defaultImageId + ".jpg", quality = 90, "260x180", "full")"/>
+                    <img src="@routes.Image.get(product.defaultImageId + ".jpg", quality = 60, "660x580", "full")"/>
                 </a>
             <hr/>
                 <blockquote>

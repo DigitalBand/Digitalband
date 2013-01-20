@@ -2,7 +2,7 @@ import com.google.inject.Guice
 
 import play.api.GlobalSettings
 import com.tzavellas.sse.guice.ScalaModule
-import dao.impl.fake._
+import dao.impl.orm.slick._
 
 object Global extends GlobalSettings {
   private lazy val injector = Guice.createInjector(new InjectionModule)

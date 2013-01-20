@@ -5,6 +5,8 @@ import models.{ProductTable, ProductUnit}
 import scala.slick.driver.MySQLDriver.simple._
 import Database.threadLocalSession
 
+
+
 class ProductRepository extends RepositoryBase with dao.common.ProductRepository {
   def getList(): Seq[ProductUnit] = {
     List(
@@ -32,16 +34,15 @@ class ProductRepository extends RepositoryBase with dao.common.ProductRepository
 
   def listMostVisited(count: Int) = {
     database withSession {
-     /* val productsQuery = Query(ProductTable)
-      productsQuery.filter(_.archived === false).sortBy(_.visitCounter.desc).take(8) */
-
-      val productsQuery = for {
-        p <- ProductTable if p.archived === false && p.price > 0.0
-      } yield (p.title, p.shortDescription, p.price, p.id, p.defaultImageId, p.visitCounter)
-      productsQuery.take(8).sortBy(_._6.desc).list.map {
+      val productsQuery = ProductTable.filter(p =>
+        p.archived === false && p.price > 0.0
+      ).sortBy(_.visitCounter.desc).map(p => p.title ~ p.description ~ p.price ~ p.id ~ p.defaultImageId).take(count)
+      val statement = productsQuery.selectStatement
+      play.api.Logger.info(statement)
+      productsQuery.list.map {
         product =>
           product match {
-            case (title: String, descr: String, price: Double, id: Int, imageId: Int, visitCounter: Int) => ProductUnit(title, descr, price, id, imageId)
+            case (title: String, descr: String, price: Double, id: Int, imageId: Option[Int]) => ProductUnit(title, descr, price, id, imageId.getOrElse(0))
           }
       }
     }
