@@ -3,7 +3,8 @@ package dao.impl.fake
 import models.ProductUnit
 
 class ProductRepository extends dao.common.ProductRepository {
-  def getList(): Seq[ProductUnit] = {
+
+  def getList(categoryId: Int, brandId: Int, pageNumber: Int, pageSize: Int): Seq[ProductUnit] = {
     List(
       new models.ProductUnit(
         "IBANEZ GRX40 BLACK NIGHT",
@@ -26,7 +27,6 @@ class ProductRepository extends dao.common.ProductRepository {
         8351,
         2, 0))
   }
-
   def listMostVisited(count: Int) = {
     for (i <- 1 to count)
       yield new models.ProductUnit(

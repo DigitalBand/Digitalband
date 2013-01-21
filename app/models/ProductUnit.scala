@@ -19,3 +19,9 @@ object ProductTable extends Table[(Int, String, String, String, Double, java.sql
   def * = id ~ title ~ description ~ shortDescription ~ price ~ addedDate ~ brandId ~ defaultImageId ~ visitCounter ~ archived
 }
 
+object ProductsCategories extends Table[(Int, Int)]("products_categories") {
+  def productId = column[Int]("productId")
+  def categoryId = column[Int]("categoryId")
+  def * = productId ~ categoryId
+}
+
