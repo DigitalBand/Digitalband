@@ -1,4 +1,5 @@
 @(productListPage: models.ListPage[models.ProductEntity], categoryId: Int)
+@import Shared._
 @main("Каталог", "catalogue") {
 
     <div class="row">
@@ -51,6 +52,7 @@
                     <a href="category.html">Mac</a>
                 </li>
             </ul>
+            @pager(productListPage, pageNumber => routes.Product.filteredList(categoryId, pageNumber))
             @productListPage.items.map { product =>
                 <div class="row">
                     <div class="span2">
@@ -71,25 +73,8 @@
                 </div>
                 <hr>
             }
-            <div class="pagination">
-                <ul>
-                    @if(productListPage.number > 1) {
-                        <li>
-                            <a href="@routes.Product.filteredList(categoryId, productListPage.number - 1)">Prev</a>
-                        </li>
-                    }
-                    @for(i <- productListPage.startPage to productListPage.localPageCount){
-                        <li class="@{if (productListPage.number == i) "active" else ""}">
-                            <a href="@routes.Product.filteredList(categoryId, i)">@i</a>
-                        </li>
-                    }
-                    @if(productListPage.totalPageCount > productListPage.number){
-                        <li>
-                            <a href="@routes.Product.filteredList(categoryId, productListPage.number + 1)">Next</a>
-                        </li>
-                    }
-                </ul>
-            </div>
+            @pager(productListPage, pageNumber => routes.Product.filteredList(categoryId, pageNumber))
+
         </div>
     </div>
 }

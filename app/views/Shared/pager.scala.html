@@ -1,0 +1,20 @@
+@(listPage: models.ListPage[ProductEntity], currentUrl: Int => Call)
+<div class="pagination">
+    <ul>
+        @if(listPage.number > 1) {
+            <li>
+                <a href="@currentUrl(listPage.number - 1)">Prev</a>
+            </li>
+        }
+        @for(i <- listPage.startPage to listPage.localPageCount){
+            <li class="@{if (listPage.number == i) "active" else ""}">
+                <a href="@currentUrl(i)">@i</a>
+            </li>
+        }
+        @if(listPage.totalPageCount > listPage.number){
+            <li>
+                <a href="@currentUrl(listPage.number+1)">Next</a>
+            </li>
+        }
+    </ul>
+</div>
