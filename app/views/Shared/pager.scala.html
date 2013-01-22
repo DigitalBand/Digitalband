@@ -1,4 +1,4 @@
-@(listPage: models.ListPage[ProductEntity], currentUrl: Int => Call)
+@(listPage: helpers.PagerHelper, currentUrl: Int => Call)
 <div class="pagination">
     <ul>
         @if(listPage.number > 1) {

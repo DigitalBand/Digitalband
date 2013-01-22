@@ -52,7 +52,8 @@
                     <a href="category.html">Mac</a>
                 </li>
             </ul>
-            @pager(productListPage, pageNumber => routes.Product.filteredList(categoryId, pageNumber))
+            @pager(helpers.PagerHelper(productListPage.items.length, productListPage.totalPageCount, productListPage.number),
+                pageNumber => routes.Product.filteredList(categoryId, pageNumber))
             @productListPage.items.map { product =>
                 <div class="row">
                     <div class="span2">
@@ -73,7 +74,8 @@
                 </div>
                 <hr>
             }
-            @pager(productListPage, pageNumber => routes.Product.filteredList(categoryId, pageNumber))
+            @pager(helpers.PagerHelper(productListPage.items.length, productListPage.totalPageCount, productListPage.number),
+                pageNumber => routes.Product.filteredList(categoryId, pageNumber))
 
         </div>
     </div>
