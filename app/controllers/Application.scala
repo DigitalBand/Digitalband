@@ -22,7 +22,7 @@ class Application @Inject()(val categoryRepository: CategoryRepository, val prod
         "message" -> nonEmptyText,
         "recaptcha_challenge_field" -> nonEmptyText,
         "recaptcha_response_field" -> nonEmptyText
-      )(Contact.apply)(Contact.unapply).verifying(contact => {
+      )(ContactEntity.apply)(ContactEntity.unapply).verifying(contact => {
         ReCaptchaHelper.validate(
           ReCaptcha(
             contact.recaptcha_challenge_field,
@@ -36,7 +36,7 @@ class Application @Inject()(val categoryRepository: CategoryRepository, val prod
     Action {
       implicit request =>
         val categories: Seq[CategoryEntity] = categoryRepository.getListWithPictures()
-        val products: Seq[ProductUnit] = productRepository.listMostVisited(8)
+        val products: Seq[ProductEntity] = productRepository.listMostVisited(8)
         Ok(views.html.index(categories, products))
     }
   }

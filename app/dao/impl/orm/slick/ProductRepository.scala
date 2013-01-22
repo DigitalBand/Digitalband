@@ -5,7 +5,7 @@ import models._
 import scala.slick.driver.MySQLDriver.simple._
 import Database.threadLocalSession
 import models.CategoryEntity
-import models.ProductUnit
+import models.ProductEntity
 
 class ProductRepository extends RepositoryBase with dao.common.ProductRepository {
   def listMostVisited(count: Int) = {
@@ -16,11 +16,11 @@ class ProductRepository extends RepositoryBase with dao.common.ProductRepository
       play.api.Logger.info(productsQuery.selectStatement)
       productsQuery.list.map {
           case (title: String, descr:String, price:Double, id:Int, imageId:Option[Int]) =>
-            ProductUnit(title, descr, price, id, imageId.getOrElse(0))
+            ProductEntity(title, descr, price, id, imageId.getOrElse(0))
       }
     }
   }
-  def getList(getCategory: => CategoryEntity, brandId: Int, pageNumber: Int, pageSize: Int): Seq[ProductUnit] = {
+  def getList(getCategory: => CategoryEntity, brandId: Int, pageNumber: Int, pageSize: Int): ListPage[ProductEntity] = {
     val category = getCategory
     database withSession {
       val productsQuery = for {
@@ -29,12 +29,20 @@ class ProductRepository extends RepositoryBase with dao.common.ProductRepository
         c <- CategoryTable if pc.categoryId === c.id && c.leftValue >= category.leftValue && c.rightValue <= category.rightValue
       } yield (p.title, p.shortDescription, p.price, p.id, p.defaultImageId)
       play.api.Logger.info(productsQuery.selectStatement)
-      productsQuery.drop(pageSize*(pageNumber-1)).take(pageSize).list.map {
+      val countQuery = for {
+        p <- ProductTable
+        pc <- ProductsCategories if p.id === pc.productId && (if (brandId == 0) true else p.brandId === brandId)
+        c <- CategoryTable if pc.categoryId === c.id && c.leftValue >= category.leftValue && c.rightValue <= category.rightValue
+      } yield (p.title.count)
+      val count = countQuery.firstOption.getOrElse(0)
+      play.api.Logger.info(countQuery.selectStatement)
+      val products = productsQuery.drop(pageSize*(pageNumber-1)).take(pageSize).list.map {
         case (title: String, descr: String, price: Double, id: Int, imageId:Option[Int]) =>
-          ProductUnit(title, descr, price, id, imageId.getOrElse(0))
+          ProductEntity(title, descr, price, id, imageId.getOrElse(0))
       }
+      new ListPage(pageNumber, products, count)
     }
   }
 
-  def get(id: Int): ProductUnit = ???
+  def get(id: Int): ProductEntity = ???
 }

@@ -3,7 +3,7 @@ package models
 import scala.slick.driver.MySQLDriver.simple._
 import Database.threadLocalSession
 
-case class Picture (val id: Int, val path: String, val imageType: String)
+case class PictureEntity (val id: Int, val path: String, val imageType: String)
 
 object ImageTable extends Table[(Int, String)]("images") {
   def id = column[Int]("imageId", O.PrimaryKey, O.AutoInc)

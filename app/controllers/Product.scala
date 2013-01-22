@@ -7,7 +7,7 @@ import dao.common._
 
 class Product @Inject()(productRepository: ProductRepository, categoryRepository: CategoryRepository, imageRepository: ImageRepository, brandRepository: BrandRepository) extends ControllerBase {
   def list = Action {
-    Ok(views.html.Category.list(productRepository.getList(categoryRepository.get(1))))
+    Ok(views.html.Product.list(productRepository.getList(categoryRepository.get(1)), 1))
   }
   def filteredList(categoryId: Int, pageNumber: Int) = Action {
     implicit request =>
@@ -18,7 +18,7 @@ class Product @Inject()(productRepository: ProductRepository, categoryRepository
         Ok(views.html.Product.display(productRepository.get(productId), imageRepository.listByProductId(productId)))
       else {
         val brands = brandRepository.list(categoryRepository.get(categoryId), brandPage)
-        Ok(views.html.Product.list(productRepository.getList(categoryRepository.get(categoryId), brandId, pageNumber, 10), brands))
+        Ok(views.html.Product.list(productRepository.getList(categoryRepository.get(categoryId), brandId, pageNumber, 10), categoryId))
       }
   }
 

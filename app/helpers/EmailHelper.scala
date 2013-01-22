@@ -1,11 +1,11 @@
 package helpers
 
-import models.Contact
+import models.ContactEntity
 import com.typesafe.plugin._
 import play.api.Play.current
 
 object EmailHelper {
-  def sendFeedback(message: Contact) = {
+  def sendFeedback(message: ContactEntity) = {
     val mail: MailerAPI = use[MailerPlugin].email
     mail.setSubject("Сообщение со страницы Контакты")
     mail.addRecipient("tim@digitalband.ru")

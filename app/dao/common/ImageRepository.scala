@@ -1,14 +1,14 @@
 package dao.common
 
-import models.Picture
+import models.PictureEntity
 
 trait ImageRepository {
   def listByProductId(productId: Int): Seq[Int]
 
-  def getDefaultImage: Picture
+  def getDefaultImage: PictureEntity
 
-  def get(imageId: Int): Picture
+  def get(imageId: Int): PictureEntity
 
-  def getProductImage(productId: Int, imageNumber: Int): Picture
+  def getProductImage(productId: Int, imageNumber: Int): PictureEntity
 
 }
