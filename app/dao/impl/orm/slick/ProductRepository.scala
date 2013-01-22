@@ -36,4 +36,5 @@ class ProductRepository extends RepositoryBase with dao.common.ProductRepository
     }
   }
 
+  def get(id: Int): ProductUnit = ???
 }

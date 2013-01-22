@@ -13,4 +13,6 @@ class ImageRepository extends dao.common.ImageRepository {
   }
 
   def getDefaultImage: Picture = new Picture(0, "/default/noimage.png", "jpg")
+
+  def listByProductId(productId: Int): Seq[Int] = ???
 }

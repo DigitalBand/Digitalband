@@ -26,4 +26,5 @@ class ImageRepository extends RepositoryBase with dao.common.ImageRepository {
   }
 
   def getProductImage(productId: Int, imageNumber: Int) = ???
+  def listByProductId(productId: Int): Seq[Int] = ???
 }
