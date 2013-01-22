@@ -1,10 +1,10 @@
 package dao.impl.fake
 
-import models.ProductUnit
+import models.{CategoryEntity, ProductUnit}
 
 class ProductRepository extends dao.common.ProductRepository {
 
-  def getList(categoryId: Int, brandId: Int, pageNumber: Int, pageSize: Int): Seq[ProductUnit] = {
+  def getList(getCategory: => CategoryEntity, brandId: Int, pageNumber: Int, pageSize: Int): Seq[ProductUnit] = {
     List(
       new models.ProductUnit(
         "IBANEZ GRX40 BLACK NIGHT",
