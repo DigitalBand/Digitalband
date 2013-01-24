@@ -1,9 +1,10 @@
 package dao.impl.orm.slick
 
 import common.RepositoryBase
-import models.{ImageTable, PictureEntity}
-import scala.slick.driver.MySQLDriver.simple._
+import models.{PictureEntity}
+import common.Profile.driver.simple._
 import Database.threadLocalSession
+import tables.ImagesTable
 
 class ImageRepository extends RepositoryBase with dao.common.ImageRepository {
 
@@ -13,7 +14,7 @@ class ImageRepository extends RepositoryBase with dao.common.ImageRepository {
     if (imageId > 0) {
       database withSession {
         val imageQuery = for {
-          img <- ImageTable if img.id === imageId
+          img <- ImagesTable if img.id === imageId
         } yield (img.id, img.path)
         imageQuery.first match {
           case (id: Int, path: String) => PictureEntity(id, path, "jpg")

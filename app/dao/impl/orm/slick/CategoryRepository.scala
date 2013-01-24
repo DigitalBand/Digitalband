@@ -1,17 +1,19 @@
 package dao.impl.orm.slick
 
-import common.RepositoryBase
-import scala.slick.driver.MySQLDriver.simple._
+import common.{Profile, RepositoryBase}
+import Profile.driver.simple._
 import Database.threadLocalSession
-import models.{CategoryEntity, CategoryImages, CategoryTable}
+import models.{CategoryEntity}
+import tables.{CategoryImagesTable, CategoriesTable}
 
 class CategoryRepository extends RepositoryBase with dao.common.CategoryRepository {
+
 
   def getListWithPictures: Seq[CategoryEntity] = {
      database withSession {
        val categories = for {
-         c <- CategoryTable
-         ci <- CategoryImages if c.id === ci.categoryId
+         c <- CategoriesTable
+         ci <- CategoryImagesTable if c.id === ci.categoryId
        } yield (c.id, c.title, ci.imageId)
        categories.list.map {
            case (id: Int, title: String, imageId: Int) => CategoryEntity(id, title, imageId)
@@ -21,7 +23,7 @@ class CategoryRepository extends RepositoryBase with dao.common.CategoryReposito
 
   def get(id: Int): CategoryEntity = {
     database withSession {
-      val categoryQuery = CategoryTable.filter(_.id === id).map(c => c.id ~ c.title ~ c.leftValue ~ c.rightValue)
+      val categoryQuery = CategoriesTable.filter(_.id === id).map(c => c.id ~ c.title ~ c.leftValue ~ c.rightValue)
       categoryQuery.list.map {
        case (id: Int, title: String, leftValue: Int, rightValue: Int) => CategoryEntity(id, title, 0, leftValue, rightValue)
       }.head

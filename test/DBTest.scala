@@ -1,4 +1,5 @@
-import models.{CategoryImages, CategoryEntity, CategoryTable}
+import dao.impl.orm.slick.tables.{CategoryImagesTable, CategoriesTable}
+import models.{CategoryEntity}
 import org.specs2.mutable.Specification
 import scala.slick.driver.MySQLDriver.simple._
 import Database.threadLocalSession
@@ -15,8 +16,8 @@ class DBTest extends Specification {
     "get list of categories" in {
       database withSession {
         val categories = for {
-          c <- CategoryTable
-          ci <- CategoryImages if c.id === ci.categoryId
+          c <- CategoriesTable
+          ci <- CategoryImagesTable if c.id === ci.categoryId
         } yield (c.id, c.title, ci.imageId)
         val cat = categories.list.map {
           image => image match {
