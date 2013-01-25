@@ -3,7 +3,7 @@
     <ul>
         @if(listPage.number > 1) {
             <li>
-                <a href="@currentUrl(listPage.number - 1)">Prev</a>
+                <a href="@currentUrl(listPage.number - 1)">«</a>
             </li>
         }
         @for(i <- listPage.startPage to listPage.localPageCount){
@@ -13,7 +13,7 @@
         }
         @if(listPage.totalPageCount > listPage.number){
             <li>
-                <a href="@currentUrl(listPage.number+1)">Next</a>
+                <a href="@currentUrl(listPage.number+1)">»</a>
             </li>
         }
     </ul>
