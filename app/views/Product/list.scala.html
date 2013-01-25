@@ -1,4 +1,4 @@
-@(productListPage: models.ListPage[models.ProductEntity], categoryId: Int)
+@(productListPage: models.ListPage[models.ProductEntity], categoryId: Int, brands: ListPage[models.BrandEntity])
 @import Shared._
 @main("Каталог", "catalogue") {
 
@@ -52,7 +52,25 @@
                     <a href="category.html">Mac</a>
                 </li>
             </ul>
-            @pager(helpers.PagerHelper(productListPage.items.length, productListPage.totalPageCount, productListPage.number),
+            <ul class="thumbnails">
+                @brands.items.map { brand =>
+                <li style="text-align: center">
+                    <a href="#" class="thumbnail">
+                        @brand.imageId match {
+                            case Some(x) => {
+                            <img data-src="holder.js/260x180" alt="@brand.title" src="@routes.Image.get(brand.imageId.get + ".jpg", 100, "71x60", "full")" />
+                            }
+                            case None => {
+                                <img data-src="holder.js/260x180" alt="@brand.title" src="@routes.Image.get("0.jpg", 90, "71x60", "full")" />
+                            }
+                        }
+
+                    </a>
+                    <h6>@brand.title</h6>
+                </li>
+                }
+            </ul>
+            @pager(helpers.PagerHelper(productListPage.items.length, productListPage.totalCount, productListPage.number),
                 pageNumber => routes.Product.filteredList(categoryId, pageNumber))
             @productListPage.items.map { product =>
                 <div class="row">
@@ -74,7 +92,7 @@
                 </div>
                 <hr>
             }
-            @pager(helpers.PagerHelper(productListPage.items.length, productListPage.totalPageCount, productListPage.number),
+            @pager(helpers.PagerHelper(productListPage.items.length, productListPage.totalCount, productListPage.number),
                 pageNumber => routes.Product.filteredList(categoryId, pageNumber))
 
         </div>
