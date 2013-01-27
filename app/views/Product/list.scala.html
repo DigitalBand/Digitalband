@@ -1,6 +1,7 @@
 @(productListPage: models.ListPage[models.ProductEntity], currentCategory: CategoryEntity, categories: Seq[models.CategoryListItem], brands: ListPage[models.BrandEntity], brand:Option[models.BrandEntity], pageNumber: Int)
+@import helpers.ViewHelper._
 @import Shared._
-@import controllers.ViewHelper._
+
 @main("Каталог", "catalogue") {
     <div class="row">
         <div class="span3 product_list">

@@ -25,19 +25,10 @@ class Product @Inject()(productRepository: ProductRepository, categoryRepository
       else {
         val brands = brandRepository.list(categoryRepository.get(categoryId), brandPage, 8)
         val products = productRepository.getList(categoryRepository.get(categoryId), brandId, pageNumber, 10)
-        val categories = categoryRepository.list(categoryId, 0)
+        val categories = categoryRepository.list(categoryId, brandId)
         val brand = brandRepository.get(brandId)
         Ok(views.html.Product.list(products, categoryRepository.get(categoryId), categories, brands, brand, pageNumber))
       }
   }
-
-
 }
-object ViewHelper {
-  def brandId(brand: Option[BrandEntity]): Int = {
-    brand match {
-      case Some(x) => x.id
-      case None => 0
-    }
-  }
-}
+
