@@ -10,25 +10,23 @@ class Product @Inject()(productRepository: ProductRepository, categoryRepository
   def list = Action {
     val brands = brandRepository.list(categoryRepository.get(1), 1, 5)
     val categories = categoryRepository.list(1, 0)
-    Ok(views.html.Product.list(productRepository.getList(
-      categoryRepository.get(1)),
-      categoryRepository.get(1),
+    Ok(views.html.Product.list(productRepository.getList(categoryRepository.get(1)), categoryRepository.get(1),
       categories,
       brands,
       None, 1))
   }
-  def filteredList(categoryId: Int, pageNumber: Int, brandId: Int = 0, brandPage: Int = 1) = Action {
+  def filteredList(categoryId: Int, pageNumber: Int, brandId: Int = 0, brandPage: Int = 1, productId: Int = 0) = Action {
     implicit request =>
-      val productId: Int = intParam("productId")
       if (productId > 0)
         Ok(views.html.Product.display(productRepository.get(productId), imageRepository.listByProductId(productId)))
       else {
-        val brands = brandRepository.list(categoryRepository.get(categoryId), brandPage, 8)
+        val brands = brandRepository.list(categoryRepository.get(categoryId), brandPage, 5)
         val products = productRepository.getList(categoryRepository.get(categoryId), brandId, pageNumber, 10)
         val categories = categoryRepository.list(categoryId, brandId)
         val brand = brandRepository.get(brandId)
         Ok(views.html.Product.list(products, categoryRepository.get(categoryId), categories, brands, brand, pageNumber))
       }
   }
+
 }
 

@@ -4,7 +4,7 @@ import common.RepositoryBase
 import models.{PictureEntity}
 import common.Profile.driver.simple._
 import Database.threadLocalSession
-import tables.ImagesTable
+import tables.{ProductImagesTable, ImagesTable}
 
 class ImageRepository extends RepositoryBase with dao.common.ImageRepository {
 
@@ -27,5 +27,7 @@ class ImageRepository extends RepositoryBase with dao.common.ImageRepository {
   }
 
   def getProductImage(productId: Int, imageNumber: Int) = ???
-  def listByProductId(productId: Int): Seq[Int] = ???
+  def listByProductId(productId: Int): Seq[Int] =  database withSession {
+    ProductImagesTable.filter(i => i.productId === productId).map(_.imageId).list
+  }
 }

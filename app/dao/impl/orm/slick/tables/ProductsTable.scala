@@ -1,7 +1,6 @@
 package dao.impl.orm.slick.tables
 import scala.Double
 import dao.impl.orm.slick.common.Profile.driver.simple._
-import Database.threadLocalSession
 
 object ProductsTable extends Table[(Int, String, String, String, Double, java.sql.Date, Int, Option[Int], Int, Boolean)]("products") {
   def id = column[Int]("productId", O.PrimaryKey, O.AutoInc)
