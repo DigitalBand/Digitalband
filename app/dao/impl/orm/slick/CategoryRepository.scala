@@ -12,7 +12,7 @@ import tables.{CategoryImagesTable, CategoriesTable}
 class CategoryRepository extends RepositoryBase with dao.common.CategoryRepository {
 
 
-  def getListWithPictures: Seq[CategoryEntity] = {
+  def listWithPictures: Seq[CategoryEntity] = {
     database withSession {
       val categories = for {
         c <- CategoriesTable
@@ -26,13 +26,15 @@ class CategoryRepository extends RepositoryBase with dao.common.CategoryReposito
 
   def get(id: Int): CategoryEntity = {
     database withSession {
-      val categoryQuery = CategoriesTable.filter(_.id === id).map(c => c.id ~ c.title ~ c.leftValue ~ c.rightValue)
+      val categoryQuery = CategoriesTable.filter(_.id === id).map(c => c.id ~ c.title ~ c.leftValue ~ c.rightValue ~ c.parentId)
       categoryQuery.list.map {
-        case (id: Int, title: String, leftValue: Int, rightValue: Int) => CategoryEntity(id, title, 0, leftValue, rightValue)
+        case (id: Int, title: String, leftValue: Int, rightValue: Int, parentCategoryId: Option[Int]) =>
+          CategoryEntity(id, title, 0, leftValue, rightValue, parentCategoryId match {case Some(x) => x case None => 0})
       }.head
     }
   }
 
+  //TODO: convert to slick
   def list(categoryId: Int, brandId: Int): Seq[CategoryListItem] = {
     implicit val getCategoryItem = GetResult(r => CategoryListItem(r.<<, r.<<, r.<<))
     database withSession {
@@ -40,8 +42,7 @@ class CategoryRepository extends RepositoryBase with dao.common.CategoryReposito
         case 0 => "1=1"
         case _ => s"product.brandId = $brandId"
       }
-
-      val query = Q.queryNA[CategoryListItem]( s"""
+      val query = Q.queryNA[CategoryListItem](s"""
           select
             cat.categoryId,
             cat.title,
@@ -63,7 +64,7 @@ class CategoryRepository extends RepositoryBase with dao.common.CategoryReposito
             cat.parentCategoryId = $categoryId;
                 """)
       play.api.Logger.info(query.getStatement)
-      query.list
+      query.list.filter(p => p.productCount > 0)
     }
   }
 }

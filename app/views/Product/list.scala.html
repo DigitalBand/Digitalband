@@ -1,20 +1,27 @@
-@(productListPage: models.ListPage[models.ProductEntity], currentCategory: CategoryEntity, categories: Seq[models.CategoryListItem], brands: ListPage[models.BrandEntity])
+@(productListPage: models.ListPage[models.ProductEntity], currentCategory: CategoryEntity, categories: Seq[models.CategoryListItem], brands: ListPage[models.BrandEntity], brandId: Int, pageNumber: Int)
 @import Shared._
 @main("Каталог", "catalogue") {
 
     <div class="row">
         <div class="span3 product_list">
             <ul class="breadcrumb">
-                <li><a href="#">@currentCategory.title</a></li>
+                <li>
+                    @currentCategory.parentId match {
+                        case 0 => {@currentCategory.title}
+                        case _ => {<a href="@routes.Product.filteredList(currentCategory.parentId, 1)">@currentCategory.title</a>}
+                    }
+                </li>
             </ul>
-            <ul class="nav">
+            <ul class="nav nav-tabs nav-stacked">
                 @categories.map { category =>
-                <li><a href="category.html">@category.title (@category.productCount)</a></li>
+                <li>
+                    <a href="@routes.Product.filteredList(category.id, 1)" title="Товаров в категории: @category.productCount">
+                        @category.title.toLowerCase.capitalize
+                    </a>
+                </li>
                 }
             </ul>
         </div>
-
-
         <div class="span9">
             <ul class="breadcrumb">
                 <li>

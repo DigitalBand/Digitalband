@@ -9,7 +9,7 @@ class SlickRepositoryTest extends Specification {
       "return results from real db" in {
         running(FakeApplication()){
           val repository = new CategoryRepository()
-          val categories = repository.getListWithPictures
+          val categories = repository.listWithPictures
           categories.length must beGreaterThan(5)
         }
       }

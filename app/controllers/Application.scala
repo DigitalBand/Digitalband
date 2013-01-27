@@ -35,7 +35,7 @@ class Application @Inject()(val categoryRepository: CategoryRepository, val prod
   def index = Cached("homePage", oneDayDuration) {
     Action {
       implicit request =>
-        val categories: Seq[CategoryEntity] = categoryRepository.getListWithPictures()
+        val categories: Seq[CategoryEntity] = categoryRepository.listWithPictures()
         val products: Seq[ProductEntity] = productRepository.listMostVisited(8)
         Ok(views.html.index(categories, products))
     }
