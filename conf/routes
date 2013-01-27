@@ -10,7 +10,7 @@ POST    /sendFeedback                                                           
 
 # Product
 GET     /category/list                                                            @controllers.Product.list
-GET     /category/:categoryId/products/:pageNumber                                @controllers.Product.filteredList(categoryId: Int, pageNumber: Int)
+GET     /category/:categoryId/products/:pageNumber                                @controllers.Product.filteredList(categoryId:Int, pageNumber:Int, brandId:Int ?= 0, brandPage:Int ?= 1)
 
 
 #Images

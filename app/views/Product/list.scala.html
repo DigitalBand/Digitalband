@@ -1,21 +1,21 @@
-@(productListPage: models.ListPage[models.ProductEntity], currentCategory: CategoryEntity, categories: Seq[models.CategoryListItem], brands: ListPage[models.BrandEntity], brandId: Int, pageNumber: Int)
+@(productListPage: models.ListPage[models.ProductEntity], currentCategory: CategoryEntity, categories: Seq[models.CategoryListItem], brands: ListPage[models.BrandEntity], brand:Option[models.BrandEntity], pageNumber: Int)
 @import Shared._
+@import controllers.ViewHelper._
 @main("Каталог", "catalogue") {
-
     <div class="row">
         <div class="span3 product_list">
             <ul class="breadcrumb">
                 <li>
                     @currentCategory.parentId match {
                         case 0 => {@currentCategory.title}
-                        case _ => {<a href="@routes.Product.filteredList(currentCategory.parentId, 1)">@currentCategory.title</a>}
+                        case _ => {<a href="@routes.Product.filteredList(currentCategory.parentId, 1, brandId(brand))">@currentCategory.title</a>}
                     }
                 </li>
             </ul>
             <ul class="nav nav-tabs nav-stacked">
                 @categories.map { category =>
                 <li>
-                    <a href="@routes.Product.filteredList(category.id, 1)" title="Товаров в категории: @category.productCount">
+                    <a href="@routes.Product.filteredList(category.id, 1, brandId(brand))" title="Товаров в категории: @category.productCount">
                         @category.title.toLowerCase.capitalize
                     </a>
                 </li>
@@ -34,26 +34,24 @@
                     <a href="category.html">Mac</a>
                 </li>
             </ul>
+            @brand match {
+                case None => {
             <ul class="thumbnails">
                 @brands.items.map { brand =>
                 <li style="text-align: center">
-                    <a href="#" class="thumbnail">
-                        @brand.imageId match {
-                            case Some(x) => {
-                            <img data-src="holder.js/260x180" alt="@brand.title" src="@routes.Image.get(brand.imageId.get + ".jpg", 100, "71x60", "full")" />
-                            }
-                            case None => {
-                                <img data-src="holder.js/260x180" alt="@brand.title" src="@routes.Image.get("0.jpg", 90, "71x60", "full")" />
-                            }
-                        }
-
+                    <a href="@routes.Product.filteredList(currentCategory.id, pageNumber, brand.id)" class="thumbnail">
+                        <img alt="@brand.title" src="@routes.Image.get(brand.imageId + ".jpg", 100, "71x60", "full")" />
                     </a>
                     <h6>@brand.title</h6>
                 </li>
                 }
             </ul>
+                } case Some(b) => {
+                    <a href="@routes.Product.filteredList(currentCategory.id, pageNumber)">@b.title</a>
+                }
+            }
             @pager(helpers.PagerHelper(productListPage.items.length, productListPage.totalCount, productListPage.number),
-                pageNumber => routes.Product.filteredList(currentCategory.id, pageNumber))
+                pageNumber => routes.Product.filteredList(currentCategory.id, pageNumber, brandId(brand)))
             @productListPage.items.map { product =>
                 <div class="row">
                     <div class="span2">
@@ -75,7 +73,7 @@
                 <hr>
             }
             @pager(helpers.PagerHelper(productListPage.items.length, productListPage.totalCount, productListPage.number),
-                pageNumber => routes.Product.filteredList(currentCategory.id, pageNumber))
+                pageNumber => routes.Product.filteredList(currentCategory.id, pageNumber, brandId(brand)))
 
         </div>
     </div>

@@ -4,7 +4,7 @@ import common.ControllerBase
 import play.api.mvc.Action
 import com.google.inject.Inject
 import dao.common._
-import models.{ListPage, ProductEntity}
+import models.{BrandEntity, ListPage, ProductEntity}
 
 class Product @Inject()(productRepository: ProductRepository, categoryRepository: CategoryRepository, imageRepository: ImageRepository, brandRepository: BrandRepository) extends ControllerBase {
   def list = Action {
@@ -15,12 +15,10 @@ class Product @Inject()(productRepository: ProductRepository, categoryRepository
       categoryRepository.get(1),
       categories,
       brands,
-      0, 1))
+      None, 1))
   }
-  def filteredList(categoryId: Int, pageNumber: Int) = Action {
+  def filteredList(categoryId: Int, pageNumber: Int, brandId: Int = 0, brandPage: Int = 1) = Action {
     implicit request =>
-      val brandId: Int = intParam("brandId")
-      val brandPage: Int = intParam("brandPage") match { case 0 => 1 }
       val productId: Int = intParam("productId")
       if (productId > 0)
         Ok(views.html.Product.display(productRepository.get(productId), imageRepository.listByProductId(productId)))
@@ -28,9 +26,18 @@ class Product @Inject()(productRepository: ProductRepository, categoryRepository
         val brands = brandRepository.list(categoryRepository.get(categoryId), brandPage, 8)
         val products = productRepository.getList(categoryRepository.get(categoryId), brandId, pageNumber, 10)
         val categories = categoryRepository.list(categoryId, 0)
-        Ok(views.html.Product.list(products, categoryRepository.get(categoryId), categories, brands, brandId, pageNumber))
+        val brand = brandRepository.get(brandId)
+        Ok(views.html.Product.list(products, categoryRepository.get(categoryId), categories, brands, brand, pageNumber))
       }
   }
 
 
+}
+object ViewHelper {
+  def brandId(brand: Option[BrandEntity]): Int = {
+    brand match {
+      case Some(x) => x.id
+      case None => 0
+    }
+  }
 }

@@ -8,11 +8,27 @@ import Q.interpolation
 import models.{ListPage, CategoryEntity, BrandEntity}
 
 class BrandRepository extends RepositoryBase with dao.common.BrandRepository {
-
+  implicit val getBrandEntityResult = GetResult(r => BrandEntity(r.<<, r.<<, r.<<, r.<<))
+  def get(id: Int): Option[BrandEntity] = {
+    database withSession {
+      def getBrands(brandId:Int) = sql"""
+        select
+          b.brandId,
+          b.title, 0 as productCount,
+          bi.imageId
+        from
+          brands b
+          left join brand_images bi on bi.brandId = b.brandId
+        where
+          b.brandId = $brandId
+      """.as[BrandEntity]
+      getBrands(id).firstOption()
+    }
+  }
   //TODO: rewrite for slick
   def list(getCategory: => CategoryEntity, pageNumber: Int, pageSize: Int): ListPage[BrandEntity] = {
     database withSession {
-      implicit val getBrandEntityResult = GetResult(r => BrandEntity(r.<<, r.<<, r.<<, r.<<))
+
       val category = getCategory
       def getBrands(leftValue: Int, rightValue: Int, drop: Int, take: Int) = sql"""
           select b.brandId, b.title, count(p.brandId) productCount,
