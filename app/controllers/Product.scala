@@ -9,7 +9,8 @@ import models.{ListPage, ProductEntity}
 class Product @Inject()(productRepository: ProductRepository, categoryRepository: CategoryRepository, imageRepository: ImageRepository, brandRepository: BrandRepository) extends ControllerBase {
   def list = Action {
     val brands = brandRepository.list(categoryRepository.get(1), 1, 5)
-    Ok(views.html.Product.list(productRepository.getList(categoryRepository.get(1)), 1, brands))
+    val categories = categoryRepository.list(1, 0)
+    Ok(views.html.Product.list(productRepository.getList(categoryRepository.get(1)), categoryRepository.get(1), categories, brands))
   }
   def filteredList(categoryId: Int, pageNumber: Int) = Action {
     implicit request =>
@@ -21,7 +22,8 @@ class Product @Inject()(productRepository: ProductRepository, categoryRepository
       else {
         val brands = brandRepository.list(categoryRepository.get(categoryId), brandPage, 8)
         val products = productRepository.getList(categoryRepository.get(categoryId), brandId, pageNumber, 10)
-        Ok(views.html.Product.list(products, categoryId, brands))
+        val categories = categoryRepository.list(categoryId, 0)
+        Ok(views.html.Product.list(products, categoryRepository.get(categoryId), categories, brands))
       }
   }
 

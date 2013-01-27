@@ -8,10 +8,11 @@ import Q.interpolation
 import models.{ListPage, CategoryEntity, BrandEntity}
 
 class BrandRepository extends RepositoryBase with dao.common.BrandRepository {
-  implicit val getBrandEntityResult = GetResult(r => BrandEntity(r.<<, r.<<, r.<<, r.<<))
+
   //TODO: rewrite for slick
   def list(getCategory: => CategoryEntity, pageNumber: Int, pageSize: Int): ListPage[BrandEntity] = {
     database withSession {
+      implicit val getBrandEntityResult = GetResult(r => BrandEntity(r.<<, r.<<, r.<<, r.<<))
       val category = getCategory
       def getBrands(leftValue: Int, rightValue: Int, drop: Int, take: Int) = sql"""
           select b.brandId, b.title, count(p.brandId) productCount,

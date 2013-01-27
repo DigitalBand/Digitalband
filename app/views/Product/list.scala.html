@@ -1,41 +1,16 @@
-@(productListPage: models.ListPage[models.ProductEntity], categoryId: Int, brands: ListPage[models.BrandEntity])
+@(productListPage: models.ListPage[models.ProductEntity], currentCategory: CategoryEntity, categories: Seq[models.CategoryListItem], brands: ListPage[models.BrandEntity])
 @import Shared._
 @main("Каталог", "catalogue") {
 
     <div class="row">
         <div class="span3 product_list">
             <ul class="breadcrumb">
-                <li>Категории</li>
+                <li><a href="#">@currentCategory.title</a></li>
             </ul>
             <ul class="nav">
-                <li>
-                    <a class="active" href="category.html">Desktops (12)</a>
-                    <ul>
-                        <li><a href="listings.html">- PC (11)</a></li>
-                        <li><a class="active" href="listings.html">- Mac (1)</a></li>
-                    </ul>
-                </li>
-                <li>
-                    <a href="category.html">Laptops &amp; Notebooks (5)</a>
-                    <ul>
-                        <li><a href="listings.html">- Macs (0)</a></li>
-                        <li><a href="listings.html">- Windows (0)</a></li>
-                    </ul>
-                </li>
-                <li>
-                    <a href="category.html">Components (2)</a>
-                    <ul>
-                        <li><a href="listings.html">- Mice and Trackballs (0)</a></li>
-                        <li><a href="listings.html">- Monitors (2)</a></li>
-                        <li><a href="listings.html">- Printers (0)</a></li>
-                        <li><a href="listings.html">- Scanners (0)</a></li>
-                        <li><a href="listings.html">- Web Cameras (0)</a></li>
-                    </ul>
-                </li>
-                <li><a href="category.html">Tablets (1)</a></li>
-                <li><a href="category.html">Software (0)</a></li>
-                <li><a href="category.html">Phones &amp; PDAs (3)</a></li>
-                <li><a href="category.html">Cameras (2)</a></li>
+                @categories.map { category =>
+                <li><a href="category.html">@category.title (@category.productCount)</a></li>
+                }
             </ul>
         </div>
 
@@ -71,7 +46,7 @@
                 }
             </ul>
             @pager(helpers.PagerHelper(productListPage.items.length, productListPage.totalCount, productListPage.number),
-                pageNumber => routes.Product.filteredList(categoryId, pageNumber))
+                pageNumber => routes.Product.filteredList(currentCategory.id, pageNumber))
             @productListPage.items.map { product =>
                 <div class="row">
                     <div class="span2">
@@ -83,8 +58,8 @@
                         <a href="product.html"><h5>@product.title</h5></a>
                         <p>@product.description</p>
                     </div>
-                    <div class="span1">
-                        <p>@product.price р.</p>
+                    <div class="span2">
+                        <h4>@product.price р.</h4>
                     </div>
                     <div class="span2">
                         <p><a class="btn btn-primary" href="cart.html">В корзину</a></p>
@@ -93,7 +68,7 @@
                 <hr>
             }
             @pager(helpers.PagerHelper(productListPage.items.length, productListPage.totalCount, productListPage.number),
-                pageNumber => routes.Product.filteredList(categoryId, pageNumber))
+                pageNumber => routes.Product.filteredList(currentCategory.id, pageNumber))
 
         </div>
     </div>
