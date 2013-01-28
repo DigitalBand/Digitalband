@@ -9,15 +9,16 @@ import tables.{ProductImagesTable, ImagesTable}
 class ImageRepository extends RepositoryBase with dao.common.ImageRepository {
 
   def getDefaultImage = new PictureEntity(0, "/default/noimage.png", "jpg")
-
+  def getErrorImage = new PictureEntity(0, "/default/error.jpg", "jpg")
   def get(imageId: Int): models.PictureEntity = {
     if (imageId > 0) {
       database withSession {
         val imageQuery = for {
           img <- ImagesTable if img.id === imageId
         } yield (img.id, img.path)
-        imageQuery.first match {
-          case (id: Int, path: String) => PictureEntity(id, path, "jpg")
+        imageQuery.firstOption match {
+          case Some(x) => PictureEntity(x._1, x._2, "jpg")
+          case None => getErrorImage
         }
       }
     }

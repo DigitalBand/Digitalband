@@ -45,12 +45,12 @@ class ProductRepository extends RepositoryBase with dao.common.ProductRepository
     }
   }
 
-  def get(id: Int): ProductEntity = {
+  def get(id: Int, getBrand: Int => Option[BrandEntity]): ProductDetails = {
     database withSession {
-      val productQuery = ProductsTable.filter(p => p.id === id).map(p => p.title ~ p.description ~ p.price ~ p.defaultImageId)
+      val productQuery = ProductsTable.filter(p => p.id === id).map(p => p.title ~ p.description ~ p.price ~ p.defaultImageId ~ p.brandId)
       productQuery.firstOption.map {
-        case (title: String, description: String, price: Double, defaultImageId: Option[Int]) =>
-          ProductEntity(title, description, price, id, defaultImageId.getOrElse(0))
+        case (title: String, description: String, price: Double, defaultImageId: Option[Int], brandId: Int) =>
+          ProductDetails(title, description, price, id, defaultImageId.getOrElse(0), getBrand(brandId).get)
       }.get
     }
   }

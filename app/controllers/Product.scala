@@ -18,7 +18,7 @@ class Product @Inject()(productRepository: ProductRepository, categoryRepository
   def filteredList(categoryId: Int, pageNumber: Int, brandId: Int = 0, brandPage: Int = 1, productId: Int = 0) = Action {
     implicit request =>
       if (productId > 0)
-        Ok(views.html.Product.display(productRepository.get(productId), imageRepository.listByProductId(productId)))
+        Ok(views.html.Product.display(productRepository.get(productId, brandRepository.get), imageRepository.listByProductId(productId)))
       else {
         val brands = brandRepository.list(categoryRepository.get(categoryId), brandPage, 5)
         val products = productRepository.getList(categoryRepository.get(categoryId), brandId, pageNumber, 10)

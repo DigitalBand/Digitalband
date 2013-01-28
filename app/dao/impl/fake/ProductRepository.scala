@@ -1,6 +1,9 @@
 package dao.impl.fake
 
-import models.{ListPage, CategoryEntity, ProductEntity}
+import models._
+import models.BrandEntity
+import models.CategoryEntity
+import models.ProductEntity
 
 class ProductRepository extends dao.common.ProductRepository {
 
@@ -37,4 +40,6 @@ class ProductRepository extends dao.common.ProductRepository {
 
   }
   def get(id: Int): ProductEntity = ???
+
+  def get(productId: Int, getBrand: (Int) => Option[BrandEntity]): ProductDetails = ???
 }
