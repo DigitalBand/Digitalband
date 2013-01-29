@@ -4,7 +4,6 @@ import common.ControllerBase
 import play.api.mvc.Action
 import com.google.inject.Inject
 import dao.common._
-import models.{BrandEntity, ListPage, ProductEntity}
 
 class Product @Inject()(productRepository: ProductRepository, categoryRepository: CategoryRepository, imageRepository: ImageRepository, brandRepository: BrandRepository) extends ControllerBase {
   def list = Action {
@@ -15,6 +14,7 @@ class Product @Inject()(productRepository: ProductRepository, categoryRepository
       brands,
       None, 1))
   }
+
   def filteredList(categoryId: Int, pageNumber: Int, brandId: Int = 0, brandPage: Int = 1, productId: Int = 0) = Action {
     implicit request =>
       if (productId > 0)
@@ -28,5 +28,8 @@ class Product @Inject()(productRepository: ProductRepository, categoryRepository
       }
   }
 
+  def display(id: Int) = Action {
+    Ok(views.html.Product.display(productRepository.get(id, brandRepository.get), imageRepository.listByProductId(id)))
+  }
 }
 

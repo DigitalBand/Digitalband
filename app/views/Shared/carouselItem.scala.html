@@ -1,8 +1,8 @@
-@(imageId: Int, isActive: Boolean, captionTitle: String = "", description: String = "")
+@(imageId: Int, isActive: Boolean, captionTitle: String = "", description: String = "", url: String)
 <div class="item@{if (isActive) " active" else ""}">
     <img src="@routes.Image.get(imageId + ".jpg", 65, "1500x550", "cropped")" alt="@captionTitle"/>
     <div class="carousel-caption">
-        <h3>@captionTitle</h3>
+        <h3><a href="@url">@captionTitle</a></h3>
         <p>
         @description
         </p>

@@ -3,9 +3,10 @@
 @main("Интернет-магазин музыкального оборудования Digital Band", scripts = scripts) {
     <div id="myCarousel" class="carousel slide">
         <div class="carousel-inner">
-            @carouselItem(categories.head.imageId, isActive = true, captionTitle = categories.head.title)
+            @carouselItem(categories.head.imageId, isActive = true, captionTitle = categories.head.title, url = routes.Product.filteredList(categories.head.id, 1).toString
+            )
             @categories.tail.map { category =>
-                @carouselItem(category.imageId, isActive = false, captionTitle = category.title)
+                @carouselItem(category.imageId, isActive = false, captionTitle = category.title, url = routes.Product.filteredList(category.id, 1).toString)
             }
         </div>
         <a class="carousel-control left" href="#myCarousel" data-slide="prev">&lsaquo;</a>
@@ -15,12 +16,12 @@
     @products.map { product =>
         <li class="span3">
             <div class="thumbnail">
-                <a href="#">
+                <a href="@routes.Product.display(product.id)">
                     <img src="@routes.Image.get(product.defaultImageId + ".jpg", quality = 60, "660x580", "full")"/>
                 </a>
             <hr/>
                 <blockquote>
-                    <p>@product.title</p>
+                    <p><a href="@routes.Product.display(product.id)">@product.title</a></p>
                     <small>@product.price р.</small>
                 </blockquote>
             </div>
