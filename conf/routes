@@ -11,7 +11,7 @@ POST    /sendFeedback                                                           
 # Product
 GET     /category/list                                                            @controllers.Product.list
 GET     /category/:categoryId/products/:pageNumber                                @controllers.Product.filteredList(categoryId:Int, pageNumber:Int, brandId:Int ?= 0, brandPage:Int ?= 1, productId:Int ?= 0, pageSize:Int ?= 10)
-
+GET     /product/:id                                                              @controllers.Product.display(id:Int)
 
 #Images
 GET     /images/:size/:quality/:fill/:imageNumber                                 @controllers.Image.get(imageNumber: String, quality: Int, size: String, fill: String)
