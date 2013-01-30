@@ -24,8 +24,12 @@ object ImageCacher {
     if (Files.exists(cachePath)) {
       new File(cachePath.toString)
     } else {
-      val originalFile = new File(Paths.get(imagesPath, "originals", picture.path).toString)
-      val resizedImage: BufferedImage = ImageResizer.resize(originalFile, outputDimension, preserveAlpha, crop)
+      val resizedImage: BufferedImage = ImageResizer.resize(
+        new File(Paths.get(imagesPath, "originals", picture.path).toString),
+        new File(Paths.get(imagesPath, "originals", "default", "error.jpg").toString),
+        outputDimension,
+        preserveAlpha,
+        crop)
       cache(resizedImage, cachePath.toString, compressQuality)
     }
   }

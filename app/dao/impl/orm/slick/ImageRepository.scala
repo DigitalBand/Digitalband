@@ -9,7 +9,7 @@ import tables.{ProductImagesTable, ImagesTable}
 class ImageRepository extends RepositoryBase with dao.common.ImageRepository {
 
   def getDefaultImage = new PictureEntity(0, "/default/noimage.png", "jpg")
-  def getErrorImage = new PictureEntity(0, "/default/error.jpg", "jpg")
+  def errorImage = new PictureEntity(0, "/default/error.jpg", "jpg")
   def get(imageId: Int): models.PictureEntity = {
     if (imageId > 0) {
       database withSession {
@@ -18,7 +18,7 @@ class ImageRepository extends RepositoryBase with dao.common.ImageRepository {
         } yield (img.id, img.path)
         imageQuery.firstOption match {
           case Some(x) => PictureEntity(x._1, x._2, "jpg")
-          case None => getErrorImage
+          case None => errorImage
         }
       }
     }

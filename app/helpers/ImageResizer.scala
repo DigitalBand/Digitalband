@@ -2,14 +2,14 @@ package helpers
 
 import java.awt._
 import java.awt.image.BufferedImage
-import javax.imageio.ImageIO
+import javax.imageio.{IIOException, ImageIO}
 import java.io.File
 
 object ImageResizer {
-  def resize(originalImageFile: File, maxSize: Dimension): BufferedImage = resize(originalImageFile, maxSize, preserveAlpha = true, crop = false)
-
-  def resize(originalImageFile: File, outputSize: Dimension, preserveAlpha: Boolean, crop: Boolean): BufferedImage = {
-    val originalImage: BufferedImage = ImageIO.read(originalImageFile)
+  def resize(originalImageFile: File, errorFile: File, outputSize: Dimension, preserveAlpha: Boolean, crop: Boolean): BufferedImage = {
+    val originalImage: BufferedImage = try ImageIO.read(originalImageFile) catch {
+      case e:IIOException => ImageIO.read(errorFile)
+    }
     val originalImageSize = getImageSize(originalImage)
     val scaledRectangle = getScaledRectangle(originalImageSize, outputSize, getRatio(crop, outputSize, originalImageSize))
     drawImage(originalImage, new BufferedImage(outputSize.width, outputSize.height, getImageType(preserveAlpha)), outputSize, scaledRectangle, preserveAlpha)
@@ -47,6 +47,4 @@ object ImageResizer {
   }
 
   private def getImageSize(image: BufferedImage) = new Rectangle(image.getWidth(null), image.getHeight(null))
-
-
 }

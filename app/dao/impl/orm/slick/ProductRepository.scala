@@ -16,8 +16,8 @@ class ProductRepository extends RepositoryBase with dao.common.ProductRepository
       ).sortBy(_.visitCounter.desc).take(count).map(p => p.title ~ p.description ~ p.price ~ p.id ~ p.defaultImageId)
       play.api.Logger.info(productsQuery.selectStatement)
       productsQuery.list.map {
-          case (title: String, descr:String, price:Double, id:Int, imageId:Option[Int]) =>
-            ProductEntity(title, descr, price, id, imageId.getOrElse(0))
+          case (title: String, descr:Option[String], price:Double, id:Int, imageId:Option[Int]) =>
+            ProductEntity(title, descr.getOrElse(""), price, id, imageId.getOrElse(0))
       }
     }
   }
@@ -38,8 +38,8 @@ class ProductRepository extends RepositoryBase with dao.common.ProductRepository
       val count = countQuery.firstOption.getOrElse(0)
       play.api.Logger.info(countQuery.selectStatement)
       val products = productsQuery.drop(pageSize*(pageNumber-1)).take(pageSize).list.map {
-        case (title: String, descr: String, price: Double, id: Int, imageId:Option[Int]) =>
-          ProductEntity(title, descr, price, id, imageId.getOrElse(0))
+        case (title: String, descr: Option[String], price: Double, id: Int, imageId:Option[Int]) =>
+          ProductEntity(title, descr.getOrElse(""), price, id, imageId.getOrElse(0))
       }
       new ListPage(pageNumber, products, count)
     }
@@ -49,8 +49,8 @@ class ProductRepository extends RepositoryBase with dao.common.ProductRepository
     database withSession {
       val productQuery = ProductsTable.filter(p => p.id === id).map(p => p.title ~ p.description ~ p.price ~ p.defaultImageId ~ p.brandId)
       productQuery.firstOption.map {
-        case (title: String, description: String, price: Double, defaultImageId: Option[Int], brandId: Int) =>
-          ProductDetails(title, description, price, id, defaultImageId.getOrElse(0), getBrand(brandId).get)
+        case (title: String, description: Option[String], price: Double, defaultImageId: Option[Int], brandId: Int) =>
+          ProductDetails(title, description.getOrElse(""), price, id, defaultImageId.getOrElse(0), getBrand(brandId).get)
       }.get
     }
   }

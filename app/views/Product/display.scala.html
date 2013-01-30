@@ -1,17 +1,13 @@
 @(product: models.ProductDetails, imageIds: Seq[Int])
 @main(product.title, "catalogue") {
     <div class="row">
-        <div class="span12">
-            <div class="row">
-                <div class="span9">
-                    <h1>@product.title</h1>
-                </div>
+        <div class="span9">
+            <div class="page-header">
+                <h1>@product.title</h1>
             </div>
-            <hr>
-
             <div class="row">
-                <div class="span3">
-                    <img alt="" src="@routes.Image.get(product.defaultImageId + ".jpg", 90, "220x220", "full")">
+                <div class="span4">
+                    <img alt="" src="@routes.Image.get(product.defaultImageId + ".jpg", 90, "330x250", "full")">
                     <ul class="thumbnails">
                         @imageIds.map { imageId =>
                         <li class="span1">
@@ -23,8 +19,8 @@
                     </ul>
                 </div>
 
-                <div class="span6">
-                    <div class="span6">
+                <div class="span5">
+                    <div>
                         <address>
                             <strong>Бренд:</strong> <span>@product.brand.title</span> <br>
                             <strong>Артикул:</strong> <span>@product.id</span> <br>
@@ -32,12 +28,12 @@
                         </address>
                     </div>
 
-                    <div class="span6">
+                    <div>
                         <h2>
                             <strong>Цена: @product.price</strong> <br> <br>
                         </h2>
                     </div>
-                    <div class="span6">
+                    <div>
                         <form class="form-inline">
                             <div class="span3 no_margin_left">
                                 <label>Количество:</label>
@@ -48,64 +44,13 @@
                     </div>
                 </div>
             </div>
-            <hr>
             <div class="row">
                 <div class="span9">
                     <div class="tabbable">
                         <ul class="nav nav-tabs">
-                            <li class="active"><a href="#1" data-toggle="tab">Description</a></li>
-                            <li><a href="#2" data-toggle="tab">Reviews</a></li>
-                            <li><a href="#3" data-toggle="tab">Related products</a></li>
+                            <li class="active"><a href="#" data-toggle="tab">Описание</a></li>
                         </ul>
-                        <div class="tab-content">
-                            <div class="tab-pane active" id="1">
-                                <p>
-                                    Just when you thought iMac had everything, now there's even more. More powerful Intel Core 2 Duo processors. And more memory standard. Combine this with Mac OS X Leopard and iLife '08, and it's more all-in-one than ever. iMac packs amazing performance into a stunningly slim space.
-                                </p>
-                            </div>
-                            <div class="tab-pane" id="2">
-                                <p>There are no reviews for this product.</p>
-                            </div>
-                            <div class="tab-pane" id="3">
-                                <ul class="thumbnails related_products">
-                                    <li class="span2">
-                                        <div class="thumbnail">
-                                            <a href="product.html"><img alt="" src="http://placehold.it/220x180"></a>
-                                            <div class="caption">
-                                                <a href="product.html"><h5>iPod Touch</h5></a> Price: $50.00 <br> <br>
-                                            </div>
-                                        </div>
-                                    </li>
-
-                                    <li class="span2">
-                                        <div class="thumbnail">
-                                            <a href="product.html"><img alt="" src="http://placehold.it/220x180"></a>
-                                            <div class="caption">
-                                                <a href="product.html"><h5>iPod Touch</h5></a> Price: $50.00 <br> <br>
-                                            </div>
-                                        </div>
-                                    </li>
-
-                                    <li class="span2">
-                                        <div class="thumbnail">
-                                            <a href="product.html"><img alt="" src="http://placehold.it/220x180"></a>
-                                            <div class="caption">
-                                                <a href="product.html"><h5>iPod Touch</h5></a> Price: $50.00 <br> <br>
-                                            </div>
-                                        </div>
-                                    </li>
-
-                                    <li class="span2">
-                                        <div class="thumbnail">
-                                            <a href="product.html"><img alt="" src="http://placehold.it/220x180"></a>
-                                            <div class="caption">
-                                                <a href="product.html"><h5>iPod Touch</h5></a> Price: $50.00 <br> <br>
-                                            </div>
-                                        </div>
-                                    </li>
-                                </ul>
-                            </div>
-                        </div>
+                        <article>@Html(product.description)</article>
                     </div>
                 </div>
             </div>

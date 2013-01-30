@@ -1,4 +1,4 @@
-@(productListPage: models.ListPage[models.ProductEntity], currentCategory: CategoryEntity, categories: Seq[models.CategoryListItem], brands: ListPage[models.BrandEntity], brand:Option[models.BrandEntity], pageNumber: Int)
+@(productListPage: models.ListPage[models.ProductEntity], currentCategory: CategoryEntity, categories: Seq[models.CategoryListItem], brands: ListPage[models.BrandEntity], brand:Option[models.BrandEntity], pageNumber: Int, pageSize: Int)
 @import helpers.ViewHelper._
 @import Shared._
 
@@ -37,9 +37,9 @@
             </ul>
             @brand match {
                 case None => {
-            <ul class="thumbnails">
+            <ul class="thumbnails brands">
                 @brands.items.map { brand =>
-                <li style="text-align: center">
+                <li>
                     <a href="@routes.Product.filteredList(currentCategory.id, pageNumber, brand.id)" class="thumbnail">
                         <img alt="@brand.title" src="@routes.Image.get(brand.imageId + ".jpg", 100, "71x60", "full")" />
                     </a>
@@ -51,12 +51,12 @@
                     <a href="@routes.Product.filteredList(currentCategory.id, pageNumber)">@b.title</a>
                 }
             }
-            @pager(helpers.PagerHelper(productListPage.items.length, productListPage.totalCount, productListPage.number),
+            @pager(helpers.PagerHelper(pageSize, productListPage.totalCount, productListPage.number),
                 pageNumber => routes.Product.filteredList(currentCategory.id, pageNumber, brandId(brand)))
             @productListPage.items.map { product =>
                 <div class="row">
                     <div class="span2">
-                        <a href="product.html">
+                        <a href="@routes.Product.filteredList(currentCategory.id, pageNumber, brandId(brand), productId = product.id)">
                             <img alt="" id="tmp" src="@routes.Image.get(product.defaultImageId + ".jpg", 90, "170x170", "full")">
                         </a>
                     </div>
@@ -65,7 +65,7 @@
                         <p>@product.description</p>
                     </div>
                     <div class="span2">
-                        <h4>@product.price р.</h4>
+                        <h4>@{product.price match {case d:Double if d == 0.0 => "Уточняйте цену" case e => e + " р."}}</h4>
                     </div>
                     <div class="span2">
                         <p><a class="btn btn-primary" href="cart.html">В корзину</a></p>
@@ -73,7 +73,7 @@
                 </div>
                 <hr>
             }
-            @pager(helpers.PagerHelper(productListPage.items.length, productListPage.totalCount, productListPage.number),
+            @pager(helpers.PagerHelper(pageSize, productListPage.totalCount, productListPage.number),
                 pageNumber => routes.Product.filteredList(currentCategory.id, pageNumber, brandId(brand)))
 
         </div>
