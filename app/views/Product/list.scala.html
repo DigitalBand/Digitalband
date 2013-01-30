@@ -38,21 +38,30 @@
             @brand match {
                 case None => {
             <ul class="thumbnails brands">
-                @brands.items.map { brand =>
+                @brands.items.map { brandItem =>
                 <li>
-                    <a href="@routes.Product.filteredList(currentCategory.id, pageNumber, brand.id)" class="thumbnail">
-                        <img alt="@brand.title" src="@routes.Image.get(brand.imageId + ".jpg", 100, "71x60", "full")" />
+                    <a href="@routes.Product.filteredList(currentCategory.id, pageNumber, brandItem.id)" class="thumbnail">
+                        <img alt="@brandItem.title" src="@routes.Image.get(brandItem.imageId + ".jpg", 100, "71x60", "full")" />
                     </a>
-                    <h6>@brand.title</h6>
+                    <h6>@brandItem.title</h6>
                 </li>
                 }
             </ul>
                 } case Some(b) => {
-                    <a href="@routes.Product.filteredList(currentCategory.id, pageNumber)">@b.title</a>
+                    <div class="page-header">
+                            @if(b.imageId > 0){
+                            <a class="img-link" href="@routes.Product.filteredList(currentCategory.id, pageNumber)">
+                                <img class="thumbnail" alt="@b.title" src="@routes.Image.get(b.imageId + ".jpg", 100, "71x60", "full")" />
+                            </a>
+                            }
+                            <h3>
+                                <a href="@routes.Product.filteredList(currentCategory.id, pageNumber)">@b.title</a>
+                            </h3>
+
+                    </div>
                 }
             }
-            @pager(helpers.PagerHelper(pageSize, productListPage.totalCount, productListPage.number),
-                pageNumber => routes.Product.filteredList(currentCategory.id, pageNumber, brandId(brand)))
+            @pager(helpers.PagerHelper(pageSize, productListPage.totalCount, productListPage.number), pageNumber => routes.Product.filteredList(currentCategory.id, pageNumber, brandId(brand)))
             @productListPage.items.map { product =>
                 <div class="row">
                     <div class="span2">
@@ -62,7 +71,7 @@
                     </div>
                     <div class="span5">
                         <a href="@routes.Product.filteredList(currentCategory.id, pageNumber, brandId(brand), productId = product.id)"><h5>@product.title</h5></a>
-                        <p>@product.description</p>
+                        <p>@product.description&nbsp;</p>
                     </div>
                     <div class="span2">
                         <h4>@{product.price match {case d:Double if d == 0.0 => "Уточняйте цену" case e => e + " р."}}</h4>
@@ -71,10 +80,9 @@
                         <p><a class="btn btn-primary" href="cart.html">В корзину</a></p>
                     </div>
                 </div>
-                <hr>
+                <hr />
             }
-            @pager(helpers.PagerHelper(pageSize, productListPage.totalCount, productListPage.number),
-                pageNumber => routes.Product.filteredList(currentCategory.id, pageNumber, brandId(brand)))
+            @pager(helpers.PagerHelper(pageSize, productListPage.totalCount, productListPage.number), pageNumber => routes.Product.filteredList(currentCategory.id, pageNumber, brandId(brand)))
 
         </div>
     </div>

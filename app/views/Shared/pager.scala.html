@@ -1,4 +1,5 @@
 @(listPage: helpers.PagerHelper, currentUrl: Int => Call)
+@if(listPage.totalCount > listPage.pageSize){
 <div class="pagination">
     <ul>
         @if(listPage.number > 1) {
@@ -8,7 +9,11 @@
         }
         @for(i <- listPage.startPage to listPage.localPageCount){
             <li class="@{if (listPage.number == i) "active" else ""}">
-                <a href="@currentUrl(i)">@i</a>
+                @if(listPage.number == i){
+                    <a href="#">@i</a>
+                } else {
+                    <a href="@currentUrl(i)">@i</a>
+                }
             </li>
         }
         @if(listPage.totalPageCount > listPage.number){
@@ -18,3 +23,4 @@
         }
     </ul>
 </div>
+}

@@ -1,8 +1,7 @@
 import com.google.inject.Guice
 
+import helpers.config.InjectionModule
 import play.api.GlobalSettings
-import com.tzavellas.sse.guice.ScalaModule
-import dao.impl.orm.slick._
 
 object Global extends GlobalSettings {
   private lazy val injector = Guice.createInjector(new InjectionModule)
@@ -14,11 +13,3 @@ object Global extends GlobalSettings {
 
 }
 
-class InjectionModule extends ScalaModule {
-  def configure() {
-    bind[dao.common.ProductRepository].toInstance(new ProductRepository())
-    bind[dao.common.ImageRepository].toInstance(new ImageRepository())
-    bind[dao.common.CategoryRepository].toInstance(new CategoryRepository)
-    bind[dao.common.BrandRepository].toInstance(new BrandRepository)
-  }
-}

@@ -7,7 +7,11 @@
             </div>
             <div class="row">
                 <div class="span4">
+                    @if(imageIds.length == 0){
                     <img alt="" src="@routes.Image.get(product.defaultImageId + ".jpg", 90, "330x250", "full")">
+                    }else{
+                        <img alt="" src="@routes.Image.get(imageIds.head + ".jpg", 90, "330x250", "full")">
+                    }
                     <ul class="thumbnails">
                         @imageIds.map { imageId =>
                         <li class="span1">
@@ -51,7 +55,9 @@
                             <li class="active"><a href="#" data-toggle="tab">Описание</a></li>
                         </ul>
                         <article>@Html(product.description)</article>
+                        <br/>
                     </div>
+
                 </div>
             </div>
         </div>
