@@ -1,6 +1,6 @@
 @(categories: Seq[CategoryEntity], products: Seq[models.ProductEntity])
 @import Shared._
-@main("Интернет-магазин музыкального оборудования Digital Band", scripts = scripts) {
+@main(scripts = scripts) {
     <div id="myCarousel" class="carousel slide">
         <div class="carousel-inner">
             @carouselItem(categories.head.imageId, isActive = true, captionTitle = categories.head.title, url = routes.Product.filteredList(categories.head.id, 1).toString

@@ -1,4 +1,4 @@
-@(title: String, menuItem: String = "index", scripts: Html = Html(""))(content: Html)
+@(title: String = Messages("main.head.title"), menuItem: String = "index", scripts: Html = Html(""))(content: Html)
 <!DOCTYPE html>
 <html>
     <head>
@@ -18,31 +18,17 @@
                     </a>
                     <div class="nav-collapse collapse">
                         <ul class="nav">
-                            <li class="@{
-                                if(menuItem.equals("index")) "active" else ""
-                            }">
-                                <a href="@routes.Application.index">Главная</a>
+                            <li class="@{if(menuItem.equals("index")) "active" else ""}">
+                                <a href="@routes.Application.index">@Messages("main.nav.homelink")</a>
                             </li>
-                            <li class="@{
-                                if(menuItem.equals("catalogue")) "active" else ""
-                            }">
-                                <a href="@routes.Product.list">Каталог</a>
-                            </li>
-                            <li class="@{
-                                if(menuItem.equals("about")) "active" else ""
-                            }">
-                                <a href="@routes.Application.about">О магазине</a>
-                            </li>
-                            <li class="@{
-                                if(menuItem.equals("contacts")) "active" else ""
-                            }">
-                                <a href="@routes.Application.contacts">Контакты</a>
+                            <li class="@{if(menuItem.equals("catalogue")) "active" else ""}">
+                                <a href="@routes.Product.list">@Messages("main.nav.catalogue")</a>
                             </li>
                         </ul>
                         <form class="navbar-form form-search pull-right">
                             <div class="input-append">
                                 <input type="text" class="span2 search-query">
-                                <button type="submit" class="btn btn-primary">Поиск</button>
+                                <button type="submit" class="btn btn-primary">@Messages("main.nav.searchbutton")</button>
                             </div>
                         </form>
                     </div>
@@ -56,8 +42,8 @@
             <section class="footerlinks">
                 <div class="container">
                     <ul class="nav">
-                        <a href="@routes.Application.about">О магазине</a> |
-                        <a href="@routes.Application.contacts">Контакты</a>
+                        <a href="@routes.Application.about">@Messages("main.footer.nav.about")</a> |
+                        <a href="@routes.Application.contacts">@Messages("main.footer.nav.contact")</a>
                     </ul>
                 </div>
             </section>

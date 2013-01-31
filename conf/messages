@@ -1,0 +1,18 @@
+global.buttons.addtocart.value=В корзину
+global.productItem.noprice=Уточняйте цену
+
+main.head.title=Интернет-магазин музыкального оборудования Digital Band
+
+main.nav.homelink=Главная
+main.nav.catalogue=Каталог
+main.nav.searchbutton=Поиск
+
+main.footer.nav.about=О магазине
+main.footer.nav.contact=Обратная связь
+
+product.list.title=Каталог
+product.list.categories.linkTitle=Товаров в категории:
+
+product.display.countlabel=Количество:
+product.display.navtab.descriptiontab=Описание
+product.display.requestAvailability=Запросить

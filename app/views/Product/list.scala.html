@@ -2,7 +2,7 @@
 @import helpers.ViewHelper._
 @import Shared._
 
-@main("Каталог", "catalogue") {
+@main(Messages("product.list.title"), "catalogue") {
     <div class="row">
         <div class="span3 product_list">
             <ul class="breadcrumb">
@@ -16,7 +16,7 @@
             <ul class="nav nav-tabs nav-stacked">
                 @categories.map { category =>
                 <li>
-                    <a href="@routes.Product.filteredList(category.id, 1, brandId(brand))" title="Товаров в категории: @category.productCount">
+                    <a href="@routes.Product.filteredList(category.id, 1, brandId(brand))" title="@Messages("product.list.categories.linkTitle") @category.productCount">
                         @category.title.toLowerCase.capitalize
                     </a>
                 </li>
@@ -74,10 +74,10 @@
                         <p>@product.description&nbsp;</p>
                     </div>
                     <div class="span2">
-                        <h4>@{product.price match {case d:Double if d == 0.0 => "Уточняйте цену" case e => e + " р."}}</h4>
+                        <h4>@{product.price match {case d:Double if d == 0.0 => Messages("global.productItem.noprice") case e => e + " р."}}</h4>
                     </div>
                     <div class="span2">
-                        <p><a class="btn btn-primary" href="cart.html">В корзину</a></p>
+                        <p><a class="btn btn-primary" href="cart.html">@Messages("global.buttons.addtocart.value")</a></p>
                     </div>
                 </div>
                 <hr />
