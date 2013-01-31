@@ -35,9 +35,11 @@
                     <a href="category.html">Mac</a>
                 </li>
             </ul>
+            <div class="row">
+            <div class="span9" style="overflow:hidden">
             @brand match {
                 case None => {
-            <ul class="thumbnails brands">
+            <ul class="thumbnails brands" style="width:900px; height:100px">
                 @brands.items.map { brandItem =>
                 <li>
                     <a href="@routes.Product.filteredList(currentCategory.id, pageNumber, brandItem.id)" class="thumbnail">
@@ -47,6 +49,8 @@
                 </li>
                 }
             </ul>
+                </div>
+                    </div>
                 } case Some(b) => {
                     <div class="page-header">
                             @if(b.imageId > 0){
