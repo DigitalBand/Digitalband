@@ -1,25 +1,24 @@
 @(form: Form[models.ContactEntity])
 @import views.html.common.bootstrap._
 
-@main("Digital Band - контакты", "contacts") {
+@main(Messages("contacts.title"), "contacts") {
     <div class="page-header">
         <h3>
-            Обратная связь
+            @Messages("contacts.subtitle")
         </h3>
     </div>
     <form class="form-horizontal" action="@routes.Application.sendFeedback()" method="POST">
         <div class="well">
-            @helper.inputText(form("name"), '_label -> "Имя")
-            @helper.inputText(form("email"), '_label -> "Email")
-            @helper.inputText(form("productName"), '_label -> "Название товара")
-            @helper.textarea(form("message"), '_label -> "Сообщение")
+            @helper.inputText(form("name"), '_label -> Messages("contacts.form.namelabel"))
+            @helper.inputText(form("email"), '_label -> Messages("contacts.form.emaillabel"))
+            @helper.inputText(form("productName"), '_label -> Messages("contacts.form.productnamelabel"))
+            @helper.textarea(form("message"), '_label -> Messages("contacts.form.messagelabel"))
             <div class="control-group">
-                <label class="control-label">Код</label>
+                <label class="control-label">@Messages("contacts.form.recaptchalabel")</label>
                 <div class="controls">
                     <script type="text/javascript">var RecaptchaOptions = {lang : 'ru', theme : 'white'};</script>
                     <script type="text/javascript" src="http://www.google.com/recaptcha/api/challenge?k=6LfMQdYSAAAAAJCe85Y6CRp9Ww7n-l3HOBf5bifB">
                     </script>
-
                     <noscript>
                         <iframe src="http://www.google.com/recaptcha/api/noscript?k=6LfMQdYSAAAAAJCe85Y6CRp9Ww7n-l3HOBf5bifB"
                         height="300" width="500" frameborder="0">
@@ -32,7 +31,7 @@
                 </div>
             </div>
             <div class="form-actions">
-                <button class="btn btn-primary">Отправить</button>
+                <button class="btn btn-primary">@Messages("contacts.form.submitbutton")</button>
             </div>
         </div>
     </form>

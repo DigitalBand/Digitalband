@@ -16,3 +16,12 @@ product.list.categories.linkTitle=Товаров в категории:
 product.display.countlabel=Количество:
 product.display.navtab.descriptiontab=Описание
 product.display.requestAvailability=Запросить
+
+contacts.title=Digital Band - контакты
+contacts.subtitle=Обратная связь
+contacts.form.namelabel=Имя
+contacts.form.emaillabel=Email
+contacts.form.productnamelabel=Название товара
+contacts.form.messagelabel=Сообщение
+contacts.form.recaptchalabel=Код
+contacts.form.submitbutton=Отправить

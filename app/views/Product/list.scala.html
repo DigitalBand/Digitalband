@@ -77,7 +77,7 @@
                         <h4>@{product.price match {case d:Double if d == 0.0 => Messages("global.productItem.noprice") case e => e + " р."}}</h4>
                     </div>
                     <div class="span2">
-                        <p><a class="btn btn-primary" href="cart.html">@Messages("global.buttons.addtocart.value")</a></p>
+                        @addToCartButton()
                     </div>
                 </div>
                 <hr />

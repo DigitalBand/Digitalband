@@ -19,10 +19,17 @@
                     <div class="nav-collapse collapse">
                         <ul class="nav">
                             <li class="@{if(menuItem.equals("index")) "active" else ""}">
-                                <a href="@routes.Application.index">@Messages("main.nav.homelink")</a>
+                                <a href="@routes.Application.index">
+                                    <i class="icon-home"></i>
+                                </a>
                             </li>
                             <li class="@{if(menuItem.equals("catalogue")) "active" else ""}">
                                 <a href="@routes.Product.list">@Messages("main.nav.catalogue")</a>
+                            </li>
+                            <li class="@{if(menuItem.equals("cart")) "active" else ""}">
+                                <a href="#">
+                                    <i class="icon-shopping-cart"></i>
+                                </a>
                             </li>
                         </ul>
                         <form class="navbar-form form-search pull-right">
