@@ -1,28 +1,24 @@
 package dao.impl.orm.slick
 
-import common.RepositoryBase
-import scala.slick.session.Database
+import common.{Profile, RepositoryBase}
+import Profile.driver.simple._
 import Database.threadLocalSession
 import slick.jdbc.{GetResult, StaticQuery => Q}
 import Q.interpolation
 import models.{ListPage, CategoryEntity, BrandEntity}
+import tables.{BrandImagesTable, BrandsTable}
 
 class BrandRepository extends RepositoryBase with dao.common.BrandRepository {
   implicit val getBrandEntityResult = GetResult(r => BrandEntity(r.<<, r.<<, r.<<, r.<<))
   def get(id: Int): Option[BrandEntity] = {
     database withSession {
-      def getBrands(brandId:Int) = sql"""
-        select
-          b.brandId,
-          b.title, 0 as productCount,
-          bi.imageId
-        from
-          brands b
-          left join brand_images bi on bi.brandId = b.brandId
-        where
-          b.brandId = $brandId
-      """.as[BrandEntity]
-      getBrands(id).firstOption()
+      val query = for {
+        b <- BrandsTable
+        bi <- BrandImagesTable if bi.brandId === b.id && b.id === id
+      } yield (b.id, b.title, 0, bi.imageId)
+      query.firstOption.map {
+        case (id:Int, title:String, productCount:Int, imageId:Int) => BrandEntity(id, title, productCount, imageId)
+      }
     }
   }
   //TODO: rewrite for slick

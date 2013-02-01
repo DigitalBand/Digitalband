@@ -5,7 +5,7 @@ import models.PictureEntity
 trait ImageRepository {
   def listByProductId(productId: Int): Seq[Int]
 
-  def getDefaultImage: PictureEntity
+  def defaultImage: PictureEntity
 
   def get(imageId: Int): PictureEntity
 

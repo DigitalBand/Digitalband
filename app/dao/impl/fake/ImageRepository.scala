@@ -9,10 +9,10 @@ class ImageRepository extends dao.common.ImageRepository {
     if (imageId > 0)
       new PictureEntity(imageId, "/other/" + imageId + ".jpg", "jpg")
     else
-      getDefaultImage
+      defaultImage
   }
 
-  def getDefaultImage: PictureEntity = new PictureEntity(0, "/default/noimage.png", "jpg")
+  def defaultImage: PictureEntity = new PictureEntity(0, "/default/noimage.png", "jpg")
 
   def listByProductId(productId: Int): Seq[Int] = ???
 }

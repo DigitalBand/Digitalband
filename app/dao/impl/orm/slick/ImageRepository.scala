@@ -8,7 +8,7 @@ import tables.{ProductImagesTable, ImagesTable}
 
 class ImageRepository extends RepositoryBase with dao.common.ImageRepository {
 
-  def getDefaultImage = new PictureEntity(0, "/default/noimage.png", "jpg")
+  def defaultImage = new PictureEntity(0, "/default/noimage.png", "jpg")
   def errorImage = new PictureEntity(0, "/default/error.jpg", "jpg")
   def get(imageId: Int): models.PictureEntity = {
     if (imageId > 0) {
@@ -23,7 +23,7 @@ class ImageRepository extends RepositoryBase with dao.common.ImageRepository {
       }
     }
     else {
-      getDefaultImage
+      defaultImage
     }
   }
 
