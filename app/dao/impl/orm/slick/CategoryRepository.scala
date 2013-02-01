@@ -7,7 +7,7 @@ import Database.threadLocalSession
 import slick.jdbc.{GetResult, StaticQuery => Q}
 
 import models.{CategoryListItem, CategoryEntity}
-import tables.{CategoryImagesTable, CategoriesTable}
+import tables.{ProductsCategoriesTable, ProductsTable, CategoryImagesTable, CategoriesTable}
 
 class CategoryRepository extends RepositoryBase with dao.common.CategoryRepository {
 
@@ -36,8 +36,17 @@ class CategoryRepository extends RepositoryBase with dao.common.CategoryReposito
 
   //TODO: convert to slick
   def list(categoryId: Int, brandId: Int): Seq[CategoryListItem] = {
-    implicit val getCategoryItem = GetResult(r => CategoryListItem(r.<<, r.<<, r.<<))
+
     database withSession {
+     /* val query = for {
+        cat <- CategoriesTable
+      } yield (cat.id, cat.title, (for {
+          p <- ProductsTable
+          pc <- ProductsCategoriesTable
+          c <- CategoriesTable
+          if c.leftValue >= cat.leftValue && c.rightValue <= cat.rightValue && (brandId match {case 0 =>})
+        } yield (p.id)).length) */
+      implicit val getCategoryItem = GetResult(r => CategoryListItem(r.<<, r.<<, r.<<))
       val brandPart = brandId match {
         case 0 => "1=1"
         case _ => s"product.brandId = $brandId"
