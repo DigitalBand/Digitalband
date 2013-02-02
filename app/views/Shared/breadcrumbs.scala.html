@@ -1,0 +1,17 @@
+@(items: Seq[(Int, String)], url: Int => Call)
+@import Shared._
+<ul class="breadcrumb">
+    <li>
+        <a href="#">
+            <i class="icon-home"></i>
+        </a> @items.length match {
+        case 0 => {
+
+        }
+        case _ => {
+            <span class="divider">/</span>
+        }
+    }
+    </li>
+    @breadcrumbItem(items, url)
+</ul>

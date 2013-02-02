@@ -8,15 +8,9 @@ import models.{BrandEntity, ListPage, ProductEntity}
 
 class Product @Inject()(productRepository: ProductRepository, categoryRepository: CategoryRepository, imageRepository: ImageRepository, brandRepository: BrandRepository) extends ControllerBase {
   val brandListCount = 8;
-  def list = Action {
-    val brands = brandRepository.list(categoryRepository.get(1), 1, brandListCount)
-    val categories = categoryRepository.list(1, 0)
-    Ok(views.html.Product.list(productRepository.getList(categoryRepository.get(1)), categoryRepository.get(1),
-      categories,
-      brands,
-      None, 1, 10))
-  }
-  def filteredList(categoryId: Int, pageNumber: Int, brandId: Int = 0, brandPage: Int = 1, productId: Int = 0, pageSize: Int = 10) = Action {
+  def list = filteredList(1)
+
+  def filteredList(categoryId: Int, pageNumber: Int = 1, brandId: Int = 0, brandPage: Int = 1, productId: Int = 0, pageSize: Int = 10) = Action {
     implicit request =>
       if (productId > 0)
         Ok(views.html.Product.display(productRepository.get(productId, brandRepository.get), imageRepository.listByProductId(productId)))
@@ -25,7 +19,16 @@ class Product @Inject()(productRepository: ProductRepository, categoryRepository
         val products = productRepository.getList(categoryRepository.get(categoryId), brandId, pageNumber, pageSize)
         val categories = categoryRepository.list(categoryId, brandId)
         val brand = brandRepository.get(brandId)
-        Ok(views.html.Product.list(products, categoryRepository.get(categoryId), categories, brands, brand, pageNumber, pageSize))
+        val breadcrumbs = categoryRepository.getBreadcrumbs(categoryId, productId)
+        Ok(views.html.Product.list(
+          products,
+          categoryRepository.get(categoryId),
+          categories,
+          brands,
+          brand,
+          pageNumber,
+          pageSize,
+          breadcrumbs))
       }
   }
 

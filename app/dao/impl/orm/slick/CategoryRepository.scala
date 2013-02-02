@@ -36,21 +36,8 @@ class CategoryRepository extends RepositoryBase with dao.common.CategoryReposito
 
   //TODO: convert to slick
   def list(categoryId: Int, brandId: Int): Seq[CategoryListItem] = {
-
     database withSession {
-     /* val query = for {
-        cat <- CategoriesTable
-      } yield (cat.id, cat.title, (for {
-          p <- ProductsTable
-          pc <- ProductsCategoriesTable
-          c <- CategoriesTable
-          if c.leftValue >= cat.leftValue && c.rightValue <= cat.rightValue && (brandId match {case 0 =>})
-        } yield (p.id)).length) */
       implicit val getCategoryItem = GetResult(r => CategoryListItem(r.<<, r.<<, r.<<))
-      val brandPart = brandId match {
-        case 0 => "1=1"
-        case _ => s"product.brandId = $brandId"
-      }
       val query = Q.queryNA[CategoryListItem](s"""
           select
             cat.categoryId,
@@ -65,7 +52,7 @@ class CategoryRepository extends RepositoryBase with dao.common.CategoryReposito
               where
                 c.leftValue >= cat.leftValue and
                 c.rightValue <= cat.rightValue and
-                $brandPart
+                ${brandId match {case 0 => "1=1" case _ => "product.brandId="+brandId}}
             ) as productCount
           from
             categories cat
@@ -74,6 +61,21 @@ class CategoryRepository extends RepositoryBase with dao.common.CategoryReposito
                 """)
       play.api.Logger.info(query.getStatement)
       query.list.filter(p => p.productCount > 0)
+    }
+  }
+  def getBreadcrumbs(categoryId: Int, productId: Int): Seq[(Int, String)] = {
+    database withSession {
+      implicit val getCategoryItem = GetResult(r => CategoryListItem(r.<<, r.<<, 0))
+      val category = get(categoryId)
+      val query = Q.queryNA[CategoryListItem](s"""
+         select
+            c.categoryId, c.title
+         from
+            categories c where c.leftValue < ${category.leftValue} and c.rightValue > ${category.rightValue}
+      """)
+      val list = query.list()
+      val statement = query.getStatement
+      list.map(item => (item.id, item.title))
     }
   }
 }

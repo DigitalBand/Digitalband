@@ -1,4 +1,4 @@
-@(productListPage: models.ListPage[models.ProductEntity], currentCategory: CategoryEntity, categories: Seq[models.CategoryListItem], brands: ListPage[models.BrandEntity], brand:Option[models.BrandEntity], pageNumber: Int, pageSize: Int)
+@(productListPage: models.ListPage[models.ProductEntity], currentCategory: CategoryEntity, categories: Seq[models.CategoryListItem], brands: ListPage[models.BrandEntity], brand:Option[models.BrandEntity], pageNumber: Int, pageSize: Int, breadcrumbItems:Seq[(Int, String)] = List())
 @import helpers.ViewHelper._
 @import Shared._
 
@@ -24,17 +24,7 @@
             </ul>
         </div>
         <div class="span9">
-            <ul class="breadcrumb">
-                <li>
-                    <a href="#">Home</a> <span class="divider">/</span>
-                </li>
-                <li>
-                    <a href="listings.html">Desktops</a> <span class="divider">/</span>
-                </li>
-                <li class="active">
-                    <a href="category.html">Mac</a>
-                </li>
-            </ul>
+            @breadcrumbs(breadcrumbItems, categoryId => routes.Product.filteredList(categoryId, 1, brandId(brand)))
             <div class="row">
             <div class="span9" style="overflow:hidden">
             @brand match {
@@ -65,7 +55,7 @@
             }
             </div>
             </div>
-            @pager(helpers.PagerHelper(pageSize, productListPage.totalCount, productListPage.number), pageNumber => routes.Product.filteredList(currentCategory.id, pageNumber, brandId(brand)))
+            @pager(helpers.PagerHelper(pageSize, productListPage.totalCount, productListPage.number), pn => routes.Product.filteredList(currentCategory.id, pn, brandId(brand)))
             @productListPage.items.map { product =>
                 <div class="row">
                     <div class="span2">
@@ -86,7 +76,7 @@
                 </div>
                 <hr />
             }
-            @pager(helpers.PagerHelper(pageSize, productListPage.totalCount, productListPage.number), pageNumber => routes.Product.filteredList(currentCategory.id, pageNumber, brandId(brand)))
+            @pager(helpers.PagerHelper(pageSize, productListPage.totalCount, productListPage.number), pn => routes.Product.filteredList(currentCategory.id, pn, brandId(brand)))
 
         </div>
     </div>
