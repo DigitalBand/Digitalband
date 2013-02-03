@@ -1,0 +1,32 @@
+@(categories: Seq[CategoryListItem], brands: models.ListPage[BrandEntity], categoryId: Int, brandId: Int)
+<div class="sidebar">
+    @if(categories.length > 0){
+        <ul class="breadcrumb">
+            <li>@Messages("product.list.sidebar.categories")</li>
+        </ul>
+        <ul class="nav nav-tabs nav-stacked">
+        @categories.map { category =>
+            <li>
+                <a href="@routes.Product.filteredList(category.id, 1, brandId)" title="@Messages("product.list.categories.linkTitle") @category.productCount">
+                @category.title.toLowerCase.capitalize
+                </a>
+            </li>
+        }
+        </ul>
+    }
+    @if(brands.items.length > 0){
+        <ul class="breadcrumb">
+            <li>@Messages("product.list.sidebar.brands")</li>
+        </ul>
+        <ul class="nav nav-tabs nav-stacked">
+        @brands.items.map { brandItem =>
+            <li>
+                <a href="@routes.Product.filteredList(categoryId, 1, brandItem.id)" >
+                <img alt="@brandItem.title" src="@routes.Image.get(brandItem.imageId + ".jpg", 100, "40x25", "full")" />&nbsp;
+                    @brandItem.title
+                </a>
+            </li>
+        }
+        </ul>
+    }
+</div>
