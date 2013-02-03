@@ -5,7 +5,7 @@
 @main(Messages("product.list.title"), "catalogue") {
 
     <div class="row">
-        <div class="span3 product_list">
+        <div class="span3 sidebar">
             @if(categories.length > 0){
                 <ul class="breadcrumb">
                     <li>@Messages("product.list.sidebar.categories")</li>
@@ -55,6 +55,7 @@
                 case None => {}
             }
             @pager(helpers.PagerHelper(pageSize, productListPage.totalCount, productListPage.number), pn => routes.Product.filteredList(currentCategory.id, pn, brandId(brand)))
+            <div class="product-list">
             @productListPage.items.map { product =>
                 <div class="row">
                     <div class="span2">
@@ -76,7 +77,7 @@
                 <hr />
             }
             @pager(helpers.PagerHelper(pageSize, productListPage.totalCount, productListPage.number), pn => routes.Product.filteredList(currentCategory.id, pn, brandId(brand)))
-
+            </div>
         </div>
     </div>
 }
