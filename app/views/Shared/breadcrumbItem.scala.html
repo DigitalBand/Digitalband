@@ -1,8 +1,7 @@
 @(items: Seq[(Int, String)], url: Int => Call)
-
 @if(items.length > 0){
-<li>
-    <a href="@url(items.head._1)">
+<li class="@{if(items.tail.length == 0) "active"}">
+    <a href="@{if(items.tail.length == 0) "#" else url(items.head._1)}">
     @items.head._2
     </a> @if(items.tail.length > 0) {
         <span class="divider">/</span>

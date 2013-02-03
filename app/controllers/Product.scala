@@ -7,7 +7,7 @@ import dao.common._
 import models.{BrandEntity, ListPage, ProductEntity}
 
 class Product @Inject()(productRepository: ProductRepository, categoryRepository: CategoryRepository, imageRepository: ImageRepository, brandRepository: BrandRepository) extends ControllerBase {
-  val brandListCount = 8;
+  val brandListCount = 14;
   def list = filteredList(1)
 
   def filteredList(categoryId: Int, pageNumber: Int = 1, brandId: Int = 0, brandPage: Int = 1, productId: Int = 0, pageSize: Int = 10) = Action {

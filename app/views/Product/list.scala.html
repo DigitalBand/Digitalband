@@ -4,15 +4,14 @@
 
 @main(Messages("product.list.title"), "catalogue") {
     <div class="row">
+        <div class="span12">
+        @breadcrumbs(breadcrumbItems, categoryId => routes.Product.filteredList(categoryId, 1, brandId(brand)))
+        </div>
+    </div>
+    <div class="row">
+        @if(categories.length > 0){
         <div class="span3 product_list">
-            <ul class="breadcrumb">
-                <li>
-                    @currentCategory.parentId match {
-                        case 0 => {@currentCategory.title}
-                        case _ => {<a href="@routes.Product.filteredList(currentCategory.parentId, 1, brandId(brand))">@currentCategory.title</a>}
-                    }
-                </li>
-            </ul>
+
             <ul class="nav nav-tabs nav-stacked">
                 @categories.map { category =>
                 <li>
@@ -23,16 +22,16 @@
                 }
             </ul>
         </div>
-        <div class="span9">
-            @breadcrumbs(breadcrumbItems, categoryId => routes.Product.filteredList(categoryId, 1, brandId(brand)))
-            <div class="row">
-            <div class="span9" style="overflow:hidden">
+        }
+        <div class="@{if(categories.length > 0) "span9" else "span12"}">
+
+            <div style="overflow:hidden">
             @brand match {
                 case None => {
                 <ul class="thumbnails brands" style="width:1900px; height:100px">
                     @brands.items.map { brandItem =>
                     <li>
-                        <a href="@routes.Product.filteredList(currentCategory.id, pageNumber, brandItem.id)" class="thumbnail">
+                        <a href="@routes.Product.filteredList(currentCategory.id, 1, brandItem.id)" class="thumbnail">
                             <img alt="@brandItem.title" src="@routes.Image.get(brandItem.imageId + ".jpg", 100, "71x60", "full")" />
                         </a>
                         <h6>@brandItem.title</h6>
@@ -42,19 +41,19 @@
                 } case Some(b) => {
                     <div class="page-header">
                             @if(b.imageId > 0){
-                            <a class="img-link" href="@routes.Product.filteredList(currentCategory.id, pageNumber)">
+                            <a class="img-link" href="@routes.Product.filteredList(currentCategory.id, 1)">
                                 <img class="thumbnail" alt="@b.title" src="@routes.Image.get(b.imageId + ".jpg", 100, "71x60", "full")" />
                             </a>
                             }
                             <h3>
-                                <a href="@routes.Product.filteredList(currentCategory.id, pageNumber)">@b.title</a>
+                                <a href="@routes.Product.filteredList(currentCategory.id, 1)">@b.title</a>
                             </h3>
 
                     </div>
                 }
             }
             </div>
-            </div>
+
             @pager(helpers.PagerHelper(pageSize, productListPage.totalCount, productListPage.number), pn => routes.Product.filteredList(currentCategory.id, pn, brandId(brand)))
             @productListPage.items.map { product =>
                 <div class="row">

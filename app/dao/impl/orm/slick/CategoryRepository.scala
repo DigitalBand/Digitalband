@@ -71,11 +71,9 @@ class CategoryRepository extends RepositoryBase with dao.common.CategoryReposito
          select
             c.categoryId, c.title
          from
-            categories c where c.leftValue < ${category.leftValue} and c.rightValue > ${category.rightValue}
+            categories c where c.leftValue <= ${category.leftValue} and c.rightValue >= ${category.rightValue}
       """)
-      val list = query.list()
-      val statement = query.getStatement
-      list.map(item => (item.id, item.title))
+      query.list.map(item => (item.id, item.title))
     }
   }
 }

@@ -13,18 +13,16 @@ class BrandRepository extends RepositoryBase with dao.common.BrandRepository {
   def get(id: Int): Option[BrandEntity] = {
     database withSession {
       val query = for {
-        b <- BrandsTable
-        bi <- BrandImagesTable if bi.brandId === b.id && b.id === id
-      } yield (b.id, b.title, 0, bi.imageId)
+        (b, bi) <- BrandsTable leftJoin BrandImagesTable on (_.id === _.brandId)if b.id === id
+      } yield (b.id, b.title, 0, bi.imageId.?)
       query.firstOption.map {
-        case (id:Int, title:String, productCount:Int, imageId:Int) => BrandEntity(id, title, productCount, imageId)
+        case (id:Int, title:String, productCount:Int, imageId:Option[Int]) => BrandEntity(id, title, productCount, imageId.getOrElse(0))
       }
     }
   }
   //TODO: rewrite for slick
   def list(getCategory: => CategoryEntity, pageNumber: Int, pageSize: Int): ListPage[BrandEntity] = {
     database withSession {
-
       val category = getCategory
       def getBrands(leftValue: Int, rightValue: Int, drop: Int, take: Int) = sql"""
           select b.brandId, b.title, count(p.brandId) productCount,
