@@ -3,15 +3,13 @@
 @import Shared._
 
 @main(Messages("product.list.title"), "catalogue") {
-    <div class="row">
-        <div class="span12">
-        @breadcrumbs(breadcrumbItems, categoryId => routes.Product.filteredList(categoryId, 1, brandId(brand)))
-        </div>
-    </div>
-    <div class="row">
-        @if(categories.length > 0){
-        <div class="span3 product_list">
 
+    <div class="row">
+        <div class="span3 product_list">
+            @if(categories.length > 0){
+                <ul class="breadcrumb">
+                    <li>@Messages("product.list.sidebar.categories")</li>
+                </ul>
             <ul class="nav nav-tabs nav-stacked">
                 @categories.map { category =>
                 <li>
@@ -21,39 +19,41 @@
                 </li>
                 }
             </ul>
-        </div>
-        }
-        <div class="@{if(categories.length > 0) "span9" else "span12"}">
-
-            <div style="overflow:hidden">
-            @brand match {
-                case None => {
-                <ul class="thumbnails brands" style="width:1900px; height:100px">
-                    @brands.items.map { brandItem =>
-                    <li>
-                        <a href="@routes.Product.filteredList(currentCategory.id, 1, brandItem.id)" class="thumbnail">
-                            <img alt="@brandItem.title" src="@routes.Image.get(brandItem.imageId + ".jpg", 100, "71x60", "full")" />
-                        </a>
-                        <h6>@brandItem.title</h6>
-                    </li>
-                    }
+            }
+            @if(brands.items.length > 0){
+                <ul class="breadcrumb">
+                    <li>@Messages("product.list.sidebar.brands")</li>
                 </ul>
-                } case Some(b) => {
-                    <div class="page-header">
-                            @if(b.imageId > 0){
-                            <a class="img-link" href="@routes.Product.filteredList(currentCategory.id, 1)">
-                                <img class="thumbnail" alt="@b.title" src="@routes.Image.get(b.imageId + ".jpg", 100, "71x60", "full")" />
-                            </a>
-                            }
-                            <h3>
-                                <a href="@routes.Product.filteredList(currentCategory.id, 1)">@b.title</a>
-                            </h3>
+            <ul class="nav nav-tabs nav-stacked">
+            @brands.items.map { brandItem =>
+                <li>
+                    <a href="@routes.Product.filteredList(currentCategory.id, 1, brandItem.id)" >
+                        <img alt="@brandItem.title" src="@routes.Image.get(brandItem.imageId + ".jpg", 100, "40x25", "full")" />&nbsp;
+                            @brandItem.title
+                    </a>
+                </li>
+            }
+            </ul>
+            }
+        </div>
 
+        <div class="span9">
+            @breadcrumbs(breadcrumbItems, categoryId => routes.Product.filteredList(categoryId, 1, brandId(brand)))
+            <h4>@currentCategory.title</h4>
+            @brand match {
+                case Some(b) => {
+                    <div>
+                            @if(b.imageId > 0){
+                            <a class="img-link pull-right" href="@routes.Product.filteredList(currentCategory.id, 1)">
+                                <img alt="@b.title" src="@routes.Image.get(b.imageId + ".jpg", 100, "60x50", "full")" />
+                            </a>
+                            } else {
+                                <a href="@routes.Product.filteredList(currentCategory.id, 1)">@b.title</a>
+                            }
                     </div>
                 }
+                case None => {}
             }
-            </div>
-
             @pager(helpers.PagerHelper(pageSize, productListPage.totalCount, productListPage.number), pn => routes.Product.filteredList(currentCategory.id, pn, brandId(brand)))
             @productListPage.items.map { product =>
                 <div class="row">

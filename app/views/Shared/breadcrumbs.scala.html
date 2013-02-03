@@ -1,5 +1,7 @@
 @(items: Seq[(Int, String)], url: Int => Call)
 @import Shared._
+@if(items.length > 0){
 <ul class="breadcrumb">
     @breadcrumbItem(items, url)
 </ul>
+}

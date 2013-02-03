@@ -65,15 +65,19 @@ class CategoryRepository extends RepositoryBase with dao.common.CategoryReposito
   }
   def getBreadcrumbs(categoryId: Int, productId: Int): Seq[(Int, String)] = {
     database withSession {
-      implicit val getCategoryItem = GetResult(r => CategoryListItem(r.<<, r.<<, 0))
+      implicit val getCategoryItem = GetResult(r => Tuple2[Int, String](r.<<, r.<<))
       val category = get(categoryId)
-      val query = Q.queryNA[CategoryListItem](s"""
+      val query = Q.queryNA[(Int, String)](
+        s"""
          select
             c.categoryId, c.title
          from
-            categories c where c.leftValue <= ${category.leftValue} and c.rightValue >= ${category.rightValue}
-      """)
-      query.list.map(item => (item.id, item.title))
+            categories c
+         where
+            c.leftValue < ${category.leftValue} and
+            c.rightValue > ${category.rightValue}
+        """)
+      query.list
     }
   }
 }

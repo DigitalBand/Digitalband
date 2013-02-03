@@ -7,7 +7,7 @@ import dao.common._
 import models.{BrandEntity, ListPage, ProductEntity}
 
 class Product @Inject()(productRepository: ProductRepository, categoryRepository: CategoryRepository, imageRepository: ImageRepository, brandRepository: BrandRepository) extends ControllerBase {
-  val brandListCount = 14;
+  val brandListCount = 24;
   def list = filteredList(1)
 
   def filteredList(categoryId: Int, pageNumber: Int = 1, brandId: Int = 0, brandPage: Int = 1, productId: Int = 0, pageSize: Int = 10) = Action {
@@ -15,20 +15,15 @@ class Product @Inject()(productRepository: ProductRepository, categoryRepository
       if (productId > 0)
         Ok(views.html.Product.display(productRepository.get(productId, brandRepository.get), imageRepository.listByProductId(productId)))
       else {
-        val brands = brandRepository.list(categoryRepository.get(categoryId), brandPage, brandListCount)
-        val products = productRepository.getList(categoryRepository.get(categoryId), brandId, pageNumber, pageSize)
-        val categories = categoryRepository.list(categoryId, brandId)
-        val brand = brandRepository.get(brandId)
-        val breadcrumbs = categoryRepository.getBreadcrumbs(categoryId, productId)
         Ok(views.html.Product.list(
-          products,
+          productRepository.getList(categoryRepository.get(categoryId), brandId, pageNumber, pageSize),
           categoryRepository.get(categoryId),
-          categories,
-          brands,
-          brand,
+          categoryRepository.list(categoryId, brandId),
+          brandRepository.list(categoryRepository.get(categoryId), brandPage, brandListCount),
+          brandRepository.get(brandId),
           pageNumber,
           pageSize,
-          breadcrumbs))
+          categoryRepository.getBreadcrumbs(categoryId, productId)))
       }
   }
 

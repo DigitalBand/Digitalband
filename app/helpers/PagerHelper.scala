@@ -1,7 +1,7 @@
 package helpers
 
 case class PagerHelper(val pageSize: Int, val totalCount: Int, val number: Int) {
-  val numbersLimit = 12
+  val numbersLimit = 7
   def totalPageCount: Int = {
     val rem: Long = totalCount % pageSize
     val pageCount = totalCount / pageSize

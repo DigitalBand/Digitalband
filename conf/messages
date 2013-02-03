@@ -12,6 +12,8 @@ main.footer.nav.contact=Обратная связь
 
 product.list.title=Каталог
 product.list.categories.linkTitle=Товаров в категории:
+product.list.sidebar.brands=Бренды
+product.list.sidebar.categories=Категории
 
 product.display.countlabel=Количество:
 product.display.navtab.descriptiontab=Описание
