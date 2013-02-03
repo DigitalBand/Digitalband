@@ -26,27 +26,27 @@
             }
             @pager(helpers.PagerHelper(pageSize, productListPage.totalCount, productListPage.number), pn => routes.Product.filteredList(currentCategory.id, pn, brandId(brand)))
             <div class="product-list">
-            @productListPage.items.map { product =>
-                <div class="row">
-                    <div class="span2">
-                        <a href="@routes.Product.filteredList(currentCategory.id, pageNumber, brandId(brand), productId = product.id)">
-                            <img alt="" id="tmp" src="@routes.Image.get(product.defaultImageId + ".jpg", 90, "170x170", "full")">
-                        </a>
+                @productListPage.items.map { product =>
+                    <div class="row">
+                        <div class="span2">
+                            <a href="@routes.Product.filteredList(currentCategory.id, pageNumber, brandId(brand), productId = product.id)">
+                                <img alt="" id="tmp" src="@routes.Image.get(product.defaultImageId + ".jpg", 90, "170x170", "full")">
+                            </a>
+                        </div>
+                        <div class="span5">
+                            <a href="@routes.Product.filteredList(currentCategory.id, pageNumber, brandId(brand), productId = product.id)"><h5>@product.title</h5></a>
+                            <p>@product.description&nbsp;</p>
+                        </div>
+                        <div class="span2">
+                            <h4>@{product.price match {case d:Double if d == 0.0 => Messages("global.productItem.noprice") case e => e + " р."}}</h4>
+                        </div>
+                        <div class="span2">
+                            @addToCartButton()
+                        </div>
                     </div>
-                    <div class="span5">
-                        <a href="@routes.Product.filteredList(currentCategory.id, pageNumber, brandId(brand), productId = product.id)"><h5>@product.title</h5></a>
-                        <p>@product.description&nbsp;</p>
-                    </div>
-                    <div class="span2">
-                        <h4>@{product.price match {case d:Double if d == 0.0 => Messages("global.productItem.noprice") case e => e + " р."}}</h4>
-                    </div>
-                    <div class="span2">
-                        @addToCartButton()
-                    </div>
-                </div>
-                <hr />
-            }
-            @pager(helpers.PagerHelper(pageSize, productListPage.totalCount, productListPage.number), pn => routes.Product.filteredList(currentCategory.id, pn, brandId(brand)))
+                    <hr />
+                }
+                @pager(helpers.PagerHelper(pageSize, productListPage.totalCount, productListPage.number), pn => routes.Product.filteredList(currentCategory.id, pn, brandId(brand)))
             </div>
         </div>
     </div>

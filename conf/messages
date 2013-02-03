@@ -18,6 +18,8 @@ product.list.sidebar.categories=Категории
 product.display.countlabel=Количество:
 product.display.navtab.descriptiontab=Описание
 product.display.requestAvailability=Запросить
+product.display.pricelabel=Цена:
+product.display.breadcrumb.pagenumber=Страница {0}
 
 contacts.title=Digital Band - контакты
 contacts.subtitle=Обратная связь

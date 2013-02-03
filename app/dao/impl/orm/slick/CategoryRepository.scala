@@ -74,8 +74,8 @@ class CategoryRepository extends RepositoryBase with dao.common.CategoryReposito
          from
             categories c
          where
-            c.leftValue < ${category.leftValue} and
-            c.rightValue > ${category.rightValue}
+            c.leftValue ${if(productId > 0) "<=" else "<"} ${category.leftValue} and
+            c.rightValue ${if(productId > 0) ">=" else ">"} ${category.rightValue}
         """)
       query.list
     }
