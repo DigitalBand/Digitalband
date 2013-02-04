@@ -7,7 +7,7 @@ import Database.threadLocalSession
 import slick.jdbc.{GetResult, StaticQuery => Q}
 
 import models.{CategoryListItem, CategoryEntity}
-import tables.{ProductsCategoriesTable, ProductsTable, CategoryImagesTable, CategoriesTable}
+import tables.{CategoryImagesTable, CategoriesTable}
 
 class CategoryRepository extends RepositoryBase with dao.common.CategoryRepository {
 
@@ -29,7 +29,7 @@ class CategoryRepository extends RepositoryBase with dao.common.CategoryReposito
       val categoryQuery = CategoriesTable.filter(_.id === id).map(c => c.id ~ c.title ~ c.leftValue ~ c.rightValue ~ c.parentId)
       categoryQuery.list.map {
         case (id: Int, title: String, leftValue: Int, rightValue: Int, parentCategoryId: Option[Int]) =>
-          CategoryEntity(id, title, 0, leftValue, rightValue, parentCategoryId match {case Some(x) => x case None => 0})
+          CategoryEntity(id, title, 0, leftValue, rightValue, parentCategoryId.getOrElse(0))
       }.head
     }
   }
