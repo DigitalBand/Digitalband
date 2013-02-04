@@ -14,7 +14,7 @@ class ProductRepository extends RepositoryBase with dao.common.ProductRepository
       val productsQuery = ProductsTable.filter(p =>
         p.archived === false && p.price > 0.0
       ).sortBy(_.visitCounter.desc).take(count).map(p => p.title ~ p.description ~ p.price ~ p.id ~ p.defaultImageId)
-      play.api.Logger.info(productsQuery.selectStatement)
+      play.api.Logger.debug(productsQuery.selectStatement)
       productsQuery.list.map {
           case (title: String, descr:Option[String], price:Double, id:Int, imageId:Option[Int]) =>
             ProductEntity(title, descr.getOrElse(""), price, id, imageId.getOrElse(0))
@@ -31,14 +31,14 @@ class ProductRepository extends RepositoryBase with dao.common.ProductRepository
         c <- CategoriesTable if pc.categoryId === c.id && c.leftValue >= category.leftValue && c.rightValue <= category.rightValue
       } yield (p.title, p.shortDescription, p.price, p.id, p.defaultImageId)
 
-      play.api.Logger.info(productsQuery.selectStatement)
+      play.api.Logger.debug(productsQuery.selectStatement)
       val countQuery = for {
         p <- ProductsTable
         pc <- ProductsCategoriesTable if p.id === pc.productId && (if (brandId == 0) true else p.brandId === brandId)
         c <- CategoriesTable if pc.categoryId === c.id && c.leftValue >= category.leftValue && c.rightValue <= category.rightValue
       } yield (p.title.count)
       val count = countQuery.firstOption.getOrElse(0)
-      play.api.Logger.info(countQuery.selectStatement)
+      play.api.Logger.debug(countQuery.selectStatement)
       val products = productsQuery.drop(pageSize*(pageNumber-1)).take(pageSize).list.map {
         case (title: String, descr: Option[String], price: Double, id: Int, imageId:Option[Int]) =>
           ProductEntity(title, descr.getOrElse(""), price, id, imageId.getOrElse(0))
@@ -50,7 +50,6 @@ class ProductRepository extends RepositoryBase with dao.common.ProductRepository
   def get(id: Int, getBrand: Int => Option[BrandEntity]): ProductDetails = {
     database withSession {
       val productQuery = ProductsTable.filter(p => p.id === id).map(p => p.title ~ p.description ~ p.price ~ p.defaultImageId ~ p.brandId)
-      val statement = productQuery.selectStatement
       productQuery.firstOption.map {
         case (title: String, description: Option[String], price: Double, defaultImageId: Option[Int], brandId: Int) =>
           ProductDetails(title, description.getOrElse(""), price, id, defaultImageId.getOrElse(0), getBrand(brandId).get)
