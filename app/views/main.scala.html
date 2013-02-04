@@ -32,9 +32,9 @@
                                 </a>
                             </li>
                         </ul>
-                        <form class="navbar-form form-search pull-right">
+                        <form class="navbar-form form-search pull-right" action="@routes.Product.filteredList(1, 1)">
                             <div class="input-append">
-                                <input type="text" class="span2 search-query">
+                                <input type="text" class="span2 search-query" name="s">
                                 <button type="submit" class="btn btn-primary">@Messages("main.nav.searchbutton")</button>
                             </div>
                         </form>

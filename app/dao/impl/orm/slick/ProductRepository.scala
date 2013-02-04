@@ -21,7 +21,8 @@ class ProductRepository extends RepositoryBase with dao.common.ProductRepository
       }
     }
   }
-  def getList(getCategory: => CategoryEntity, brandId: Int, pageNumber: Int, pageSize: Int): ListPage[ProductEntity] = {
+  //TODO: Implement search
+  def getList(getCategory: => CategoryEntity, brandId: Int, pageNumber: Int, pageSize: Int, search: String): ListPage[ProductEntity] = {
     val category = getCategory
     database withSession {
       val productsQuery = for {
@@ -29,6 +30,7 @@ class ProductRepository extends RepositoryBase with dao.common.ProductRepository
         pc <- ProductsCategoriesTable if p.id === pc.productId && (if (brandId == 0) true else p.brandId === brandId)
         c <- CategoriesTable if pc.categoryId === c.id && c.leftValue >= category.leftValue && c.rightValue <= category.rightValue
       } yield (p.title, p.shortDescription, p.price, p.id, p.defaultImageId)
+
       play.api.Logger.info(productsQuery.selectStatement)
       val countQuery = for {
         p <- ProductsTable

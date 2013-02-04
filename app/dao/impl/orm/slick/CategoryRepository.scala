@@ -35,7 +35,8 @@ class CategoryRepository extends RepositoryBase with dao.common.CategoryReposito
   }
 
   //TODO: convert to slick
-  def list(categoryId: Int, brandId: Int): Seq[CategoryListItem] = {
+  //TODO: implement search
+  def list(categoryId: Int, brandId: Int, search:String): Seq[CategoryListItem] = {
     database withSession {
       implicit val getCategoryItem = GetResult(r => CategoryListItem(r.<<, r.<<, r.<<))
       val query = Q.queryNA[CategoryListItem](s"""
