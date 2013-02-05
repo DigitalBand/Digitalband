@@ -64,7 +64,7 @@ class CategoryRepository extends RepositoryBase with dao.common.CategoryReposito
       query.list.filter(p => p.productCount > 0)
     }
   }
-  def getBreadcrumbs(categoryId: Int, productId: Int): Seq[(Int, String)] = {
+  def getBreadcrumbs(categoryId: Int, productId: Int, search:String): Seq[(Int, String)] = {
     database withSession {
       implicit val getCategoryItem = GetResult(r => Tuple2[Int, String](r.<<, r.<<))
       val category = get(categoryId)
@@ -75,8 +75,8 @@ class CategoryRepository extends RepositoryBase with dao.common.CategoryReposito
          from
             categories c
          where
-            c.leftValue ${if(productId > 0) "<=" else "<"} ${category.leftValue} and
-            c.rightValue ${if(productId > 0) ">=" else ">"} ${category.rightValue}
+            c.leftValue ${if(productId > 0 || !search.isEmpty) "<=" else "<"} ${category.leftValue} and
+            c.rightValue ${if(productId > 0 || !search.isEmpty) ">=" else ">"} ${category.rightValue}
         """)
       query.list
     }
