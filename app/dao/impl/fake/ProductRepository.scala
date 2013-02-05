@@ -7,7 +7,7 @@ import models.ProductEntity
 
 class ProductRepository extends dao.common.ProductRepository {
 
-  def getList(getCategory: => CategoryEntity, brandId: Int, pageNumber: Int, pageSize: Int): ListPage[ProductEntity] = {
+  def getList(getCategory: => CategoryEntity, brandId: Int, pageNumber: Int, pageSize: Int, search:String): ListPage[ProductEntity] = {
     new ListPage(1, List(
       new models.ProductEntity(
         "IBANEZ GRX40 BLACK NIGHT",

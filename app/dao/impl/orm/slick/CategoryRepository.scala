@@ -35,7 +35,6 @@ class CategoryRepository extends RepositoryBase with dao.common.CategoryReposito
   }
 
   //TODO: convert to slick
-  //TODO: implement search
   def list(categoryId: Int, brandId: Int, search:String): Seq[CategoryListItem] = {
     database withSession {
       implicit val getCategoryItem = GetResult(r => CategoryListItem(r.<<, r.<<, r.<<))
@@ -53,7 +52,8 @@ class CategoryRepository extends RepositoryBase with dao.common.CategoryReposito
               where
                 c.leftValue >= cat.leftValue and
                 c.rightValue <= cat.rightValue and
-                ${brandId match {case 0 => "1=1" case _ => "product.brandId="+brandId}}
+                ${brandId match {case 0 => "1=1" case _ => "product.brandId="+brandId}} and
+                ${if(search.isEmpty) "1=1" else "product.title like '%" + search + "%'"}
             ) as productCount
           from
             categories cat

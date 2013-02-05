@@ -21,21 +21,26 @@ class ProductRepository extends RepositoryBase with dao.common.ProductRepository
       }
     }
   }
-  //TODO: Implement search
+
   def getList(getCategory: => CategoryEntity, brandId: Int, pageNumber: Int, pageSize: Int, search: String): ListPage[ProductEntity] = {
     val category = getCategory
     database withSession {
       val productsQuery = for {
         p <- ProductsTable
         pc <- ProductsCategoriesTable if p.id === pc.productId && (if (brandId == 0) true else p.brandId === brandId)
-        c <- CategoriesTable if pc.categoryId === c.id && c.leftValue >= category.leftValue && c.rightValue <= category.rightValue
+        c <- CategoriesTable
+        if pc.categoryId === c.id &&
+          c.leftValue >= category.leftValue &&
+          c.rightValue <= category.rightValue  &&
+          (if (!search.isEmpty()) p.title.like("%"+search+"%") else true)
       } yield (p.title, p.shortDescription, p.price, p.id, p.defaultImageId)
 
       play.api.Logger.debug(productsQuery.selectStatement)
       val countQuery = for {
         p <- ProductsTable
         pc <- ProductsCategoriesTable if p.id === pc.productId && (if (brandId == 0) true else p.brandId === brandId)
-        c <- CategoriesTable if pc.categoryId === c.id && c.leftValue >= category.leftValue && c.rightValue <= category.rightValue
+        c <- CategoriesTable if pc.categoryId === c.id && c.leftValue >= category.leftValue && c.rightValue <= category.rightValue &&
+        (if (!search.isEmpty()) p.title.like("%"+search+"%") else true)
       } yield (p.title.count)
       val count = countQuery.firstOption.getOrElse(0)
       play.api.Logger.debug(countQuery.selectStatement)

@@ -22,7 +22,7 @@ class Product @Inject()(productRepository: ProductRepository,
                    productId: Int = 0,
                    pageSize: Int = 10,
                    search: String = "") =
-    Cached(s"$categoryId-$pageNumber-$brandId-$brandPage-$productId-$pageSize-$search", 7200) {
+    //Cached(s"$categoryId-$pageNumber-$brandId-$brandPage-$productId-$pageSize-$search", 7200) {
       Action {
         implicit request =>
           if (productId > 0)
@@ -36,10 +36,11 @@ class Product @Inject()(productRepository: ProductRepository,
               brandRepository.get(brandId),
               pageNumber,
               pageSize,
-              categoryRepository.getBreadcrumbs(categoryId, productId)))
+              categoryRepository.getBreadcrumbs(categoryId, productId),
+              search))
           }
       }
-    }
+    //}
 
   def display(id: Int): Action[AnyContent] = Action {
     display(id, 1, 0, 1, 1, "")

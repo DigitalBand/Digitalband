@@ -1,4 +1,4 @@
-@(title: String = Messages("main.head.title"), menuItem: String = "index", scripts: Html = Html(""))(content: Html)
+@(title: String = Messages("main.head.title"), menuItem: String = "index", scripts: Html = Html(""), search: String = "")(content: Html)
 <!DOCTYPE html>
 <html>
     <head>
@@ -34,7 +34,7 @@
                         </ul>
                         <form class="navbar-form form-search pull-right" action="@routes.Product.filteredList(1, 1)">
                             <div class="input-append">
-                                <input type="text" class="span2 search-query" name="s">
+                                <input type="text" class="span2 search-query" name="s" value="@search">
                                 <button type="submit" class="btn btn-primary">@Messages("main.nav.searchbutton")</button>
                             </div>
                         </form>
