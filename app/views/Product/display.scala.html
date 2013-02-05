@@ -3,86 +3,82 @@ brands:ListPage[BrandEntity], categoryId: Int, brandId: Int, breadcrumbItems: Se
 pageNumber:Int, search: String)
 @import Shared._
 
-@main(product.title, "catalogue", search = search) {
-    <div class="row">
-        <div class="span3">
-            @sidebar(categories, brands, categoryId, brandId, search)
+@withsidebar(product.title, "catalogue", search = search, brands = brands, categories = categories,
+categoryId = categoryId, brandId = brandId) {
+
+<ul class="breadcrumb">
+    @breadcrumbItem(breadcrumbItems, categoryId => routes.Product.filteredList(categoryId, 1, brandId, s = search))
+    @if(!search.isEmpty){
+        <li>
+            <span class="divider">/</span>
+            <a href="@routes.Product.filteredList(categoryId, 1, brandId, s = search)">
+            @Messages("product.display.breadcrumb.search", search)
+            </a>
+        </li>
+    }
+    @if(pageNumber > 1) {
+    <li>
+        <span class="divider">/</span>
+        <a href="@routes.Product.filteredList(categoryId, pageNumber, brandId, s = search)">
+            @Messages("product.display.breadcrumb.pagenumber", pageNumber)
+        </a>
+    </li>
+    }
+</ul>
+<h4>@product.title</h4>
+<div class="row">
+    <div class="span4">
+        @if(imageIds.length == 0){
+        <img alt="" src="@routes.Image.get(product.defaultImageId + ".jpg", 90, "330x250", "full")">
+        }else{
+            <img alt="" src="@routes.Image.get(imageIds.head + ".jpg", 90, "330x250", "full")">
+        }
+        <ul class="thumbnails">
+            @imageIds.map { imageId =>
+            <li class="span1">
+                <a href="#" class="thumbnail">
+                    <img src="@routes.Image.get(imageId + ".jpg", 90, "50x50", "full")" alt="">
+                </a>
+            </li>
+            }
+        </ul>
+    </div>
+    <div class="span5">
+        <div>
+            <address>
+                <strong>Бренд:</strong> <span>@product.brand.title</span> <br>
+                <strong>Артикул:</strong> <span>@product.id</span> <br>
+                <strong>Наличие:</strong> <span><a href="#">@Messages("product.display.requestAvailability")</a></span> <br>
+            </address>
         </div>
-        <div class="span9">
-            <ul class="breadcrumb">
-                @breadcrumbItem(breadcrumbItems, categoryId => routes.Product.filteredList(categoryId, 1, brandId, s = search))
-                @if(!search.isEmpty){
-                    <li>
-                        <span class="divider">/</span>
-                        <a href="@routes.Product.filteredList(categoryId, 1, brandId, s = search)">
-                        @Messages("product.display.breadcrumb.search", search)
-                        </a>
-                    </li>
-                }
-                @if(pageNumber > 1) {
-                <li>
-                    <span class="divider">/</span>
-                    <a href="@routes.Product.filteredList(categoryId, pageNumber, brandId, s = search)">
-                        @Messages("product.display.breadcrumb.pagenumber", pageNumber)
-                    </a>
-                </li>
-                }
-            </ul>
-            <h4>@product.title</h4>
-            <div class="row">
-                <div class="span4">
-                    @if(imageIds.length == 0){
-                    <img alt="" src="@routes.Image.get(product.defaultImageId + ".jpg", 90, "330x250", "full")">
-                    }else{
-                        <img alt="" src="@routes.Image.get(imageIds.head + ".jpg", 90, "330x250", "full")">
-                    }
-                    <ul class="thumbnails">
-                        @imageIds.map { imageId =>
-                        <li class="span1">
-                            <a href="#" class="thumbnail">
-                                <img src="@routes.Image.get(imageId + ".jpg", 90, "50x50", "full")" alt="">
-                            </a>
-                        </li>
-                        }
-                    </ul>
-                </div>
-                <div class="span5">
-                    <div>
-                        <address>
-                            <strong>Бренд:</strong> <span>@product.brand.title</span> <br>
-                            <strong>Артикул:</strong> <span>@product.id</span> <br>
-                            <strong>Наличие:</strong> <span><a href="#">@Messages("product.display.requestAvailability")</a></span> <br>
-                        </address>
-                    </div>
-                    <h3>
-                        @Messages("product.display.pricelabel")
-                        <span id="productprice">
-                            @{product.price match { case d:Double if d == 0.0 => Messages("global.productItem.noprice") case e => e + " р."}}
-                        </span>
-                        <br/>
-                        <br/>
-                    </h3>
-                    <hr/>
-                    <div>
-                        <form class="form-inline">
-                            <label>@Messages("product.display.countlabel")</label>
-                            <input type="text" class="input-mini" placeholder="1">
-                            @addToCartButton()
-                        </form>
-                    </div>
-                </div>
-            </div>
-            <div class="row">
-                <div class="span9">
-                    <div class="tabbable">
-                        <ul class="nav nav-tabs">
-                            <li class="active"><a href="#" data-toggle="tab">@Messages("product.display.navtab.descriptiontab")</a></li>
-                        </ul>
-                        <article>@Html(product.description)</article>
-                        <br/>
-                    </div>
-                </div>
-            </div>
+        <h3>
+            @Messages("product.display.pricelabel")
+            <span id="productprice">
+                @{product.price match { case d:Double if d == 0.0 => Messages("global.productItem.noprice") case e => e + " р."}}
+            </span>
+            <br/>
+            <br/>
+        </h3>
+        <hr/>
+        <div>
+            <form class="form-inline">
+                <label>@Messages("product.display.countlabel")</label>
+                <input type="text" class="input-mini" placeholder="1">
+                @addToCartButton()
+            </form>
         </div>
     </div>
+</div>
+<div class="row">
+    <div class="span9">
+        <div class="tabbable">
+            <ul class="nav nav-tabs">
+                <li class="active"><a href="#" data-toggle="tab">@Messages("product.display.navtab.descriptiontab")</a></li>
+            </ul>
+            <article>@Html(product.description)</article>
+            <br/>
+        </div>
+    </div>
+</div>
+
 }
