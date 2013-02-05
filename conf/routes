@@ -13,6 +13,8 @@ GET     /category/list                                                          
 GET     /category/:categoryId/products/:pageNumber                                @controllers.Product.filteredList(categoryId:Int, pageNumber:Int, brandId:Int ?= 0, brandPage:Int ?= 1, productId:Int ?= 0, pageSize:Int ?= 10, s:String ?= "")
 GET     /product/:id                                                              @controllers.Product.display(id:Int)
 
+# Cart
+POST    /cart/add                                                                 @controllers.Cart.add(productId: Int, count: Int ?= 1)
 #Images
 GET     /images/:size/:quality/:fill/:imageNumber                                 @controllers.Image.get(imageNumber: String, quality: Int, size: String, fill: String)
 # Map static resources from the /public folder to the /assets URL path

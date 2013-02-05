@@ -7,8 +7,7 @@ pageNumber: Int, pageSize: Int, breadcrumbItems:Seq[(Int, String)] = List(), sea
 @withsidebar(Messages("product.list.title"), "catalogue", search = searchQuery, brandId = brandId(brand),
 brands = brands, categories = categories, categoryId = currentCategory.id) {
 
-@breadcrumbs(breadcrumbItems,
-    categoryId => routes.Product.filteredList(categoryId, 1, brandId(brand), s = searchQuery))
+@breadcrumbs(breadcrumbItems, cId => routes.Product.filteredList(cId, 1, brandId(brand), s = searchQuery))
 <h4>
     @currentCategory.title<br/>
     <small>
