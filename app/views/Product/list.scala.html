@@ -1,9 +1,8 @@
-@(productListPage: models.ListPage[models.ProductEntity], currentCategory: CategoryEntity, categories: Seq[models.CategoryListItem],
-brands: ListPage[models.BrandEntity], brand:Option[models.BrandEntity], pageNumber: Int, pageSize: Int,
-breadcrumbItems:Seq[(Int, String)] = List(), searchQuery:String)
+@(productListPage: models.ListPage[models.ProductEntity], currentCategory: CategoryEntity,
+categories: Seq[models.CategoryListItem], brands: ListPage[models.BrandEntity], brand:Option[models.BrandEntity],
+pageNumber: Int, pageSize: Int, breadcrumbItems:Seq[(Int, String)] = List(), searchQuery:String)
 @import helpers.ViewHelper._
 @import Shared._
-
 @main(Messages("product.list.title"), "catalogue", search = searchQuery) {
     <div class="row">
         <div class="span3">
