@@ -1,0 +1,18 @@
+@(title: String, linkTitle: String, items: Seq[models.SidebarItem], url: Int => Call)
+@if(!items.isEmpty){
+<ul class="breadcrumb">
+    <li>@title</li>
+</ul>
+<ul class="nav nav-tabs nav-stacked">
+@items.map { item =>
+    <li>
+        <a href="@url(item.id)" title="@{s"$linkTitle ${item.productCount}"}">
+            @if(item.imageId > 0){
+                <img alt="@item.title" src="@routes.Image.get(item.imageId + ".jpg", 100, "40x25", "full")" />&nbsp;
+            }
+            @item.title.toLowerCase.capitalize
+        </a>
+    </li>
+}
+</ul>
+}

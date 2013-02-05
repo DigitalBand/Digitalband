@@ -28,16 +28,20 @@ class Product @Inject()(productRepository: ProductRepository,
           if (productId > 0)
             display(productId, categoryId, brandId, brandPage, pageNumber, search)
           else {
-            Ok(views.html.Product.list(
-              productRepository.getList(categoryRepository.get(categoryId), brandId, pageNumber, pageSize, search),
-              categoryRepository.get(categoryId),
-              categoryRepository.list(categoryId, brandId, search),
-              brandRepository.list(categoryRepository.get(categoryId), brandPage, pageSize = 24, search),
-              brandRepository.get(brandId),
-              pageNumber,
-              pageSize,
-              categoryRepository.getBreadcrumbs(categoryId, productId, search),
-              search))
+            val products = productRepository.getList(categoryRepository.get(categoryId), brandId, pageNumber, pageSize, search)
+            if (categoryId == 1 && !search.isEmpty && products.totalCount == 1)
+              Redirect(routes.Product.display(products.items.head.id))
+            else
+              Ok(views.html.Product.list(
+                products,
+                categoryRepository.get(categoryId),
+                categoryRepository.list(categoryId, brandId, search),
+                brandRepository.list(categoryRepository.get(categoryId), brandPage, pageSize = 24, search),
+                brandRepository.get(brandId),
+                pageNumber,
+                pageSize,
+                categoryRepository.getBreadcrumbs(categoryId, productId, search),
+                search))
           }
       }
     //}

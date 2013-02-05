@@ -2,10 +2,10 @@
 brands:ListPage[BrandEntity], categoryId: Int, brandId: Int, breadcrumbItems: Seq[(Int, String)],
 pageNumber:Int, search: String)
 @import Shared._
-@main(product.title, "catalogue") {
+@main(product.title, "catalogue", search = search) {
     <div class="row">
         <div class="span3">
-            @sidebar(categories, brands, categoryId, brandId)
+            @sidebar(categories, brands, categoryId, brandId, search)
         </div>
         <div class="span9">
             <ul class="breadcrumb">
