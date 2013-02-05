@@ -1,6 +1,7 @@
 package dao.impl.orm.slick
 
 import common.{Profile, RepositoryBase}
+
 import Profile.driver.simple._
 import Database.threadLocalSession
 
@@ -75,8 +76,8 @@ class CategoryRepository extends RepositoryBase with dao.common.CategoryReposito
          from
             categories c
          where
-            c.leftValue ${if(productId > 0 || !search.isEmpty) "<=" else "<"} ${category.leftValue} and
-            c.rightValue ${if(productId > 0 || !search.isEmpty) ">=" else ">"} ${category.rightValue}
+            c.leftValue ${if(productId > 0) "<=" else "<"} ${category.leftValue} and
+            c.rightValue ${if(productId > 0) ">=" else ">"} ${category.rightValue}
         """)
       query.list
     }

@@ -32,7 +32,7 @@ class ProductRepository extends RepositoryBase with dao.common.ProductRepository
         if pc.categoryId === c.id &&
           c.leftValue >= category.leftValue &&
           c.rightValue <= category.rightValue  &&
-          (if (!search.isEmpty()) p.title.like("%"+search+"%") else true)
+          (if (!search.isEmpty()) p.title like "%"+search+"%" else true)
       } yield (p.title, p.shortDescription, p.price, p.id, p.defaultImageId)
 
       play.api.Logger.debug(productsQuery.selectStatement)
@@ -40,7 +40,7 @@ class ProductRepository extends RepositoryBase with dao.common.ProductRepository
         p <- ProductsTable
         pc <- ProductsCategoriesTable if p.id === pc.productId && (if (brandId == 0) true else p.brandId === brandId)
         c <- CategoriesTable if pc.categoryId === c.id && c.leftValue >= category.leftValue && c.rightValue <= category.rightValue &&
-        (if (!search.isEmpty()) p.title.like("%"+search+"%") else true)
+        (if (!search.isEmpty()) p.title like "%"+search+"%" else true)
       } yield (p.title.count)
       val count = countQuery.firstOption.getOrElse(0)
       play.api.Logger.debug(countQuery.selectStatement)

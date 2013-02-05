@@ -9,7 +9,7 @@ pageNumber:Int, search: String)
         </div>
         <div class="span9">
             <ul class="breadcrumb">
-                @breadcrumbItem(breadcrumbItems, categoryId => routes.Product.filteredList(categoryId, 1, brandId))
+                @breadcrumbItem(breadcrumbItems, categoryId => routes.Product.filteredList(categoryId, 1, brandId, s = search))
                 @if(!search.isEmpty){
                     <li>
                         <span class="divider">/</span>

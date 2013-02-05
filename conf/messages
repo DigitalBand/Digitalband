@@ -14,6 +14,7 @@ product.list.title=Каталог
 product.list.categories.linkTitle=Товаров в категории:
 product.list.sidebar.brands=Бренды
 product.list.sidebar.categories=Категории
+product.list.pagesubtitle=поиск:
 
 product.display.countlabel=Количество:
 product.display.navtab.descriptiontab=Описание
