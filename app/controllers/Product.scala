@@ -55,7 +55,7 @@ class Product @Inject()(productRepository: ProductRepository,
       categoryRepository.list(categoryId, brandId, search),
       brandRepository.list(categoryRepository.get(categoryId), brandPage, pageSize = 24, search),
       categoryId, brandId,
-      categoryRepository.getBreadcrumbs(categoryId, id, ""), pageNumber))
+      categoryRepository.getBreadcrumbs(categoryId, id, ""), pageNumber, search))
   }
 }
 

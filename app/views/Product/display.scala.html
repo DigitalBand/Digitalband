@@ -1,4 +1,6 @@
-@(product: models.ProductDetails, imageIds: Seq[Int], categories: Seq[models.CategoryListItem], brands:ListPage[BrandEntity], categoryId: Int, brandId: Int, breadcrumbItems: Seq[(Int, String)], pageNumber:Int)
+@(product: models.ProductDetails, imageIds: Seq[Int], categories: Seq[models.CategoryListItem],
+brands:ListPage[BrandEntity], categoryId: Int, brandId: Int, breadcrumbItems: Seq[(Int, String)],
+pageNumber:Int, search: String)
 @import Shared._
 @main(product.title, "catalogue") {
     <div class="row">
@@ -8,10 +10,18 @@
         <div class="span9">
             <ul class="breadcrumb">
                 @breadcrumbItem(breadcrumbItems, categoryId => routes.Product.filteredList(categoryId, 1, brandId))
+                @if(!search.isEmpty){
+                    <li>
+                        <span class="divider">/</span>
+                        <a href="@routes.Product.filteredList(categoryId, 1, brandId, s = search)">
+                        @Messages("product.display.breadcrumb.search", search)
+                        </a>
+                    </li>
+                }
                 @if(pageNumber > 1) {
                 <li>
                     <span class="divider">/</span>
-                    <a href="@routes.Product.filteredList(categoryId, pageNumber, brandId)">
+                    <a href="@routes.Product.filteredList(categoryId, pageNumber, brandId, s = search)">
                         @Messages("product.display.breadcrumb.pagenumber", pageNumber)
                     </a>
                 </li>
@@ -44,7 +54,12 @@
                         </address>
                     </div>
                     <h3>
-                        @Messages("product.display.pricelabel") <span id="productprice">@{product.price match {case d:Double if d == 0.0 => Messages("global.productItem.noprice") case e => e + " р."}}</span><br> <br>
+                        @Messages("product.display.pricelabel")
+                        <span id="productprice">
+                            @{product.price match {case d:Double if d == 0.0 => Messages("global.productItem.noprice") case e => e + " р."}}
+                        </span>
+                        <br/>
+                        <br/>
                     </h3>
                     <hr/>
                     <div>

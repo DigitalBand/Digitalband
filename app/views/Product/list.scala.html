@@ -34,12 +34,13 @@ breadcrumbItems:Seq[(Int, String)] = List(), searchQuery:String, listTitle:Strin
                     <div class="row">
                         <div class="span2">
                             <a href="@routes.Product.filteredList(categoryId, pageNumber, brandId(brand),
-                                productId = product.id)">
+                                productId = product.id, s = searchQuery)">
                                 <img alt="" id="tmp" src="@routes.Image.get(product.defaultImageId + ".jpg", 90, "170x170", "full")">
                             </a>
                         </div>
                         <div class="span5">
-                            <a href="@routes.Product.filteredList(categoryId, pageNumber, brandId(brand), productId = product.id)">
+                            <a href="@routes.Product.filteredList(categoryId, pageNumber, brandId(brand),
+                                productId = product.id, s = searchQuery)">
                                 <h5>@product.title</h5>
                             </a>
                             <p>@product.description&nbsp;</p>
