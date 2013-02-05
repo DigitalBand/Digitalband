@@ -2,6 +2,7 @@
 brands:ListPage[BrandEntity], categoryId: Int, brandId: Int, breadcrumbItems: Seq[(Int, String)],
 pageNumber:Int, search: String)
 @import Shared._
+
 @main(product.title, "catalogue", search = search) {
     <div class="row">
         <div class="span3">
@@ -56,7 +57,7 @@ pageNumber:Int, search: String)
                     <h3>
                         @Messages("product.display.pricelabel")
                         <span id="productprice">
-                            @{product.price match {case d:Double if d == 0.0 => Messages("global.productItem.noprice") case e => e + " р."}}
+                            @{product.price match { case d:Double if d == 0.0 => Messages("global.productItem.noprice") case e => e + " р."}}
                         </span>
                         <br/>
                         <br/>

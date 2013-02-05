@@ -1,0 +1,28 @@
+@(title: String = Messages("main.head.title"), menuItem: String = "index", scripts: Html = Html(""),
+search: String = "", categories: Seq[CategoryListItem], brands: ListPage[BrandEntity], categoryId: Int,
+brandId: Int)(content:Html)
+@import Shared._
+
+@main(title, menuItem, scripts, search) {
+    <div class="row">
+        <div class="span3">
+            <div class="sidebar">
+                @sidenav(Messages("product.list.sidebar.categories"),
+                    Messages("product.list.categories.linkTitle"),
+                    categories.map {
+                        case c => SidebarItem(c.id, 0, c.title, c.productCount)
+                    },
+                    id => routes.Product.filteredList(id, 1, brandId, s = search))
+                @sidenav(Messages("product.list.sidebar.brands"),
+                    "",
+                    brands.items.map {
+                        case b => SidebarItem(b.id, b.imageId, b.title, b.productCount)
+                    },
+                    id => routes.Product.filteredList(categoryId, 1, id, s = search))
+            </div>
+        </div>
+        <div class="span9">
+            @content
+        </div>
+    </div>
+}
