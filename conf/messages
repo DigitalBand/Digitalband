@@ -1,3 +1,7 @@
+error.required=Это поле обязательно для заполнения
+login=Эл. почта
+password=Пароль
+
 global.buttons.addtocart.value=В корзину
 global.productItem.noprice=Уточняйте цену
 
@@ -9,6 +13,8 @@ main.nav.searchbutton=Поиск
 
 main.footer.nav.about=О магазине
 main.footer.nav.contact=Обратная связь
+
+security.login.form.legend=Вход
 
 product.list.title=Каталог
 product.list.categories.linkTitle=Товаров в категории:

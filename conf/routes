@@ -18,6 +18,13 @@ POST    /cart/add                                                               
 POST    /cart/delete                                                              @controllers.Cart.delete(productId: Int)
 POST    /cart/update                                                              @controllers.Cart.update(productId: Int, count: Int)
 GET     /cart/display                                                             @controllers.Cart.display
+
+#Security
+GET     /login                                                                    @controllers.Security.login
+GET     /registration                                                             @controllers.Security.registration
+GET     /signOff                                                                  @controllers.Security.signOff
+POST    /signIn                                                                   @controllers.Security.signIn(login:String ?= "", password:String ?= "")
+POST    /signUp                                                                   @controllers.Security.signUp(login:String ?= "", password:String ?= "")
 #Images
 GET     /images/:size/:quality/:fill/:imageNumber                                 @controllers.Image.get(imageNumber: String, quality: Int, size: String, fill: String)
 # Map static resources from the /public folder to the /assets URL path

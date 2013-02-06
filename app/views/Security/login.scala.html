@@ -1,0 +1,22 @@
+@(loginForm: Form[(String, String)])(implicit lang: Lang, request: play.api.mvc.Request[Any])
+@import views.html.common.bootstrap._
+
+@main(){
+    @loginForm.globalError.map { error =>
+        <div class="alert alert-error">
+            @error.message
+        </div>
+    }
+    <form class="form-horizontal">
+        <fieldset>
+            <legend><i class="icon-key"></i>
+                @Messages("security.login.form.legend")
+            </legend>
+            @helper.inputText(loginForm("login"), args = 'type -> "email")
+            @helper.inputPassword(loginForm("password"))
+            <div class="form-actions">
+                <button class="btn btn-primary">Войти</button>
+            </div>
+        </fieldset>
+    </form>
+}
