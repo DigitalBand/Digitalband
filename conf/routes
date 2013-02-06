@@ -25,6 +25,8 @@ GET     /registration                                                           
 GET     /signOff                                                                  @controllers.Security.signOff
 POST    /signIn                                                                   @controllers.Security.signIn(login:String ?= "", password:String ?= "")
 POST    /signUp                                                                   @controllers.Security.signUp(login:String ?= "", password:String ?= "")
+GET     /forgotPassword                                                           @controllers.Security.forgotPassword
+POST    /sendPassword                                                             @controllers.Security.sendPassword
 #Images
 GET     /images/:size/:quality/:fill/:imageNumber                                 @controllers.Image.get(imageNumber: String, quality: Int, size: String, fill: String)
 # Map static resources from the /public folder to the /assets URL path
