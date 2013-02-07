@@ -61,7 +61,7 @@ categoryId = categoryId, brandId = brandId) {
         </h3>
         <hr/>
         <div>
-            <form class="form-inline" action="@routes.Cart.add()">
+            <form class="form-inline" action="@routes.Cart.add()" method="POST">
                 <label>@Messages("product.display.countlabel")</label>
                 <input type="text" class="input-mini" placeholder="1" name="count">
                 <input type="hidden" name="productId" value="@product.id" />

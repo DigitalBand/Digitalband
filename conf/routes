@@ -16,7 +16,7 @@ GET     /product/:id                                                            
 # Cart
 POST    /cart/add                                                                 @controllers.Cart.add(productId: Int ?= 0, count: Int ?= 1)
 POST    /cart/delete                                                              @controllers.Cart.delete(productId: Int)
-POST    /cart/update                                                              @controllers.Cart.update(productId: Int, count: Int)
+POST    /cart/update                                                              @controllers.Cart.update
 GET     /cart/display                                                             @controllers.Cart.display
 
 #Security

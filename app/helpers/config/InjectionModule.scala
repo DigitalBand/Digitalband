@@ -2,7 +2,7 @@ package helpers.config
 
 import com.tzavellas.sse.guice.ScalaModule
 import dao.impl.orm.slick.{BrandRepository, CategoryRepository, ImageRepository, ProductRepository}
-import dao.impl.fake.UserRepository
+import dao.impl.fake.{CartRepository, UserRepository}
 
 class InjectionModule extends ScalaModule {
   def configure() {
@@ -11,5 +11,6 @@ class InjectionModule extends ScalaModule {
     bind[dao.common.CategoryRepository].toInstance(new CategoryRepository)
     bind[dao.common.BrandRepository].toInstance(new BrandRepository)
     bind[dao.common.UserRepository].toInstance(new UserRepository)
+    bind[dao.common.CartRepository].toInstance(new CartRepository)
   }
 }
