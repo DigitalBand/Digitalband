@@ -1,7 +1,7 @@
 @(loginForm: Form[(String, String)])(implicit lang: Lang, request: play.api.mvc.Request[Any])
 @import views.html.common.bootstrap._
 
-@main() {
+@main(menuItem = "security") {
     @loginForm.globalError.map { error =>
         <div class="alert alert-error">
             @error.message
@@ -9,7 +9,8 @@
     }
     <form class="form-horizontal" action="@routes.Security.signIn()" method="POST">
         <fieldset>
-            <legend><i class="icon-key"></i>
+            <legend>
+                <i class="icon-key"></i>
                 @Messages("security.login.form.legend")
             </legend>
             @helper.inputText(loginForm("email"), args = 'type -> "email")
