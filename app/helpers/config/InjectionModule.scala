@@ -1,8 +1,8 @@
 package helpers.config
 
 import com.tzavellas.sse.guice.ScalaModule
-import dao.impl.orm.slick.{BrandRepository, CategoryRepository, ImageRepository, ProductRepository}
-import dao.impl.fake.{CartRepository, UserRepository}
+import dao.impl.orm.slick._
+import dao.impl.fake.{UserRepository}
 
 class InjectionModule extends ScalaModule {
   def configure() {

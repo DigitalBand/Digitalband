@@ -4,12 +4,21 @@ import play.api.mvc._
 import com.google.inject.Inject
 import dao.common.CartRepository
 import models.CartItem
-
+import play.api.data.Form
+import play.api.data.Forms._
+import scala.Some
+case class CItem(productId: Int, count: Int)
 class Cart @Inject()(val cartRepository: CartRepository) extends Controller{
-
-  def add(productId: Int, count: Int = 1) = Action {
+  val addToCartForm = Form(
+    mapping(
+      "productId" -> number,
+      "count" -> number
+    )(CItem.apply)(CItem.unapply)
+  )
+  def add = Action {
     implicit request =>
-      val cartId = cartRepository.add(new CartItem(getCartId(session), productId, count))
+      val cItem = addToCartForm.bindFromRequest.get
+      val cartId = cartRepository.add(new CartItem(getCartId(session), cItem.productId, cItem.count))
       Redirect(routes.Cart.display()) withSession
         session + ("cartid" -> cartId.toString)
   }

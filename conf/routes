@@ -14,7 +14,7 @@ GET     /category/:categoryId/products/:pageNumber                              
 GET     /product/:id                                                              @controllers.Product.display(id:Int)
 
 # Cart
-POST    /cart/add                                                                 @controllers.Cart.add(productId: Int ?= 0, count: Int ?= 1)
+POST    /cart/add                                                                 @controllers.Cart.add
 POST    /cart/delete                                                              @controllers.Cart.delete(productId: Int)
 POST    /cart/update                                                              @controllers.Cart.update
 GET     /cart/display                                                             @controllers.Cart.display
