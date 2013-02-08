@@ -13,7 +13,7 @@ object ApplicationBuild extends Build {
     "org.jsoup" % "jsoup" % "1.6.3",
     "com.typesafe" %% "play-plugins-mailer" % "2.1-SNAPSHOT",
     "com.tzavellas" % "sse-guice" % "0.7.0",
-    "com.typesafe.slick" %% "slick" % "1.0.0-RC2",
+    "com.typesafe.slick" %% "slick" % "1.0.0",
     "ch.qos.logback" % "logback-classic" % "1.0.9"
   )
 

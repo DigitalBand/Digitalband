@@ -9,13 +9,13 @@ class Cart @Inject()(val cartRepository: CartRepository) extends Controller{
 
   def add(productId: Int, count: Int = 1) = Action {
     implicit request =>
-      val cartId = cartRepository.add(new CartItem(getCartId(request), productId, count) )
-      request.session + ("cartid", cartId.toString)
-      Redirect(routes.Cart.display())
+      val cartId = cartRepository.add(new CartItem(getCartId(session), productId, count))
+      Redirect(routes.Cart.display()) withSession
+        session + ("cartid" -> cartId.toString)
   }
   def display = Action {
     implicit request =>
-    val cartItems: Seq[CartItem] = cartRepository.list(getCartId(request))
+    val cartItems: Seq[CartItem] = cartRepository.list(getCartId(session))
     Ok(views.html.Cart.display(cartItems))
   }
   def delete(productId: Int) = Action {
@@ -24,7 +24,7 @@ class Cart @Inject()(val cartRepository: CartRepository) extends Controller{
   def update = Action {
     NotImplemented
   }
-  def getCartId(request: Request[AnyContent]) = request.session.get("cartid") match {
+  def getCartId(session: Session) = session.get("cartid") match {
     case Some(x) => x.toInt
     case None => 0
   }
