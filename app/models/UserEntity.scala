@@ -1,3 +1,3 @@
 package models
 
-case class UserEntity(email:String)
+class UserEntity(val email:String, val id: Int)

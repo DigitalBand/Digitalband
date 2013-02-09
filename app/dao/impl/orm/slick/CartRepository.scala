@@ -33,10 +33,7 @@ class CartRepository extends dao.common.CartRepository {
 
   def add(item: CartItem): Int = {
     database withSession {
-      val cartId = item.cartId match {
-        case 0 => createCart
-        case x => x
-      }
+      val cartId = item.cartId
       val query = Q.updateNA( s"""
       insert into shopping_items(productId, cartId, quantity, unitPrice)
         select ${item.productId}, ${cartId}, 0,
@@ -62,9 +59,9 @@ class CartRepository extends dao.common.CartRepository {
     }
   }
 
-  private def createCart: Int = {
+  def createCart(userId:Int = 0): Int = {
     database withSession {
-      Q.updateNA("insert into cart() values();").execute()
+      Q.updateNA(s"insert into cart(userId) values($userId);").execute()
       val query = Q.queryNA[Int]("select max(cartId) from cart;")
       query.first()
     }

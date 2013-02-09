@@ -8,5 +8,5 @@ trait CartRepository {
   def list(cartId: Int): Seq[CartItem]
 
   def add(item: CartItem): Int
-
+  def createCart(userId: Int): Int
 }

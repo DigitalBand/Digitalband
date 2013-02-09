@@ -1,53 +1,59 @@
 @(items: Seq[models.CartItem])
 
-@main(menuItem = "cart"){
-    <h3>Ваша корзина</h3>
+@main(menuItem = "cart") {
+    <h3> Ваша корзина </h3>
     <hr/>
+    @if(items.length == 0) {
+        <div class="alert alert-info">
+                Ваша корзина пуста
+        </div>
+    } else{
     <form method="POST" action="@routes.Cart.update">
-    <table class="table table-bordered table-striped">
-        <thead>
-            <tr>
-                <th><i class="icon-trash"></i></th>
-                <th class="center-text">Изображение</th>
-                <th>Название</th>
-                <th class="center-text">Количество</th>
-                <th class="right-text">Цена за шт.</th>
-                <th class="right-text">Сумма</th>
-            </tr>
-        </thead>
-        <tbody>
-            @items.map { cartItem =>
-            <tr>
-                <td class="">
-                    <a href="@routes.Cart.deleteConfirmation(cartItem.productId)"><i class="icon-remove"></i></a></td>
-                <td class="muted center-text"><a href="@routes.Product.display(cartItem.productId)">
-                    <img src="@routes.Image.get(cartItem.imageId + ".jpg", 90, "80x80", "full")" />
-                </a></td>
-                <td><a href="@routes.Product.display(cartItem.productId)">@cartItem.title</a></td>
-                <td class="center-text">
-                    <input type="text" placeholder="1" class="input-mini right-text" value="@cartItem.count"></td>
-                <td class="right-text">@Messages("formats.price", cartItem.unitPrice)</td>
-                <td class="right-text">@Messages("formats.price", cartItem.total)</td>
-            </tr>
-            }
-            <tr>
-                <td>&nbsp;</td>
-                <td>&nbsp;</td>
-                <td>&nbsp;</td>
-                <td>&nbsp;</td>
-                <td>&nbsp;</td>
-                <td class="right-text">
-                    <strong>
-                        @Messages("formats.price", items.map(i => i.total).sum)
-                    </strong>
-                </td>
-            </tr>
-        </tbody>
-    </table>
+        <table class="table table-bordered table-striped">
+            <thead>
+                <tr>
+                    <th> <i class="icon-trash"></i> </th>
+                    <th class="center-text"> Изображение </th>
+                    <th> Название </th>
+                    <th class="center-text"> Количество </th>
+                    <th class="right-text"> Цена за шт.</th>
+                    <th class="right-text"> Сумма </th>
+                </tr>
+            </thead>
+            <tbody>
+                @items.map { cartItem =>
+                    <tr>
+                        <td class="">
+                            <a href="@routes.Cart.deleteConfirmation(cartItem.productId)"> <i class="icon-remove"></i> </a> </td>
+                        <td class="muted center-text"> <a href="@routes.Product.display(cartItem.productId)">
+                            <img src="@routes.Image.get(cartItem.imageId + ".jpg", 90, "80x80", "full")" />
+                        </a> </td>
+                        <td> <a href="@routes.Product.display(cartItem.productId)"> @cartItem.title </a> </td>
+                        <td class="center-text">
+                            <input type="text" placeholder="1" class="input-mini right-text" value="@cartItem.count"> </td>
+                        <td class="right-text"> @Messages("formats.price", cartItem.unitPrice) </td>
+                        <td class="right-text"> @Messages("formats.price", cartItem.total) </td>
+                    </tr>
+                }
+                <tr>
+                    <td> &nbsp; </td>
+                    <td> &nbsp; </td>
+                    <td> &nbsp; </td>
+                    <td> &nbsp; </td>
+                    <td> &nbsp; </td>
+                    <td class="right-text">
+                        <strong>
+                            @Messages("formats.price", items.map(i => i.total).sum)
+                        </strong>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
         <div class="form-actions">
-            <button class="btn btn-primary">Обновить</button>
-            <a href="#" class="btn btn-primary">Продолжить покупки</a>
-            <a href="#" class="btn btn-primary">Оформить заказ</a>
+            <button class="btn btn-primary"> Обновить </button>
+            <a href="#" class="btn btn-primary"> Продолжить покупки </a>
+            <a href="#" class="btn btn-primary"> Оформить заказ </a>
         </div>
     </form>
+    }
 }
