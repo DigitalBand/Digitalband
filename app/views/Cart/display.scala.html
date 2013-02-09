@@ -24,7 +24,7 @@
                 @items.map { cartItem =>
                     <tr>
                         <td class="">
-                            <a href="@routes.Cart.deleteConfirmation(cartItem.productId)"> <i class="icon-remove"></i> </a> </td>
+                            <a href="@routes.Cart.deleteConfirmation(cartItem.productId, returnUrl)"> <i class="icon-remove"></i> </a> </td>
                         <td class="muted center-text"> <a href="@routes.Product.display(cartItem.productId)">
                             <img src="@routes.Image.get(cartItem.imageId + ".jpg", 90, "80x80", "full")" />
                         </a> </td>

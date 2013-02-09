@@ -33,14 +33,14 @@ class Cart @Inject()(val cartRepository: CartRepository, productRepository: Prod
       Ok(views.html.Cart.display(cartItems, returnUrl))
   }
 
-  def delete(productId: Int) = Action {
+  def delete(productId: Int, returnUrl: String = "") = Action {
     implicit request =>
       cartRepository.deleteItem(getCartId(session), productId)
-      Redirect(routes.Cart.display())
+      Redirect(routes.Cart.display(returnUrl))
   }
 
-  def deleteConfirmation(productId: Int) = Action {
-    Ok(views.html.Cart.deleteConfirmation(productRepository.get(productId)))
+  def deleteConfirmation(productId: Int, returnUrl: String = "") = Action {
+    Ok(views.html.Cart.deleteConfirmation(productRepository.get(productId), returnUrl))
   }
 
   def update = Action {
