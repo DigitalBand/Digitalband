@@ -27,7 +27,7 @@ class CartRepository extends dao.common.CartRepository {
           c.productId = p.productId and
           c.cartId = $cartId
       """)
-      query.list
+      query.list.filter(p => p.unitPrice > 0)
     }
   }
 

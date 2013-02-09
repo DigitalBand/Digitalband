@@ -67,7 +67,7 @@ categoryId = categoryId, brandId = brandId) {
                 <input type="hidden" name="productId" value="@product.id" />
                 <input type="hidden" name="returnUrl"
                     value="@routes.Product.filteredList(categoryId, pageNumber, brandId, productId = product.id, s = search)"/>
-                @addToCartButton()
+                @addToCartButton(product.price)
             </form>
         </div>
     </div>

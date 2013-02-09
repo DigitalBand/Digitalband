@@ -1,0 +1,9 @@
+@(price: Double)
+@price match {
+    case 0.0 => {
+        @Messages("global.productItem.noprice")
+    }
+    case e => {
+        @Messages("formats.price", price)
+    }
+}

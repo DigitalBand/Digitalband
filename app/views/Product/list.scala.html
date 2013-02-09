@@ -1,72 +1,72 @@
 @(productListPage: models.ListPage[models.ProductEntity], currentCategory: CategoryEntity,
-categories: Seq[models.CategoryListItem], brands: ListPage[models.BrandEntity], brand:Option[models.BrandEntity],
-pageNumber: Int, pageSize: Int, breadcrumbItems:Seq[(Int, String)] = List(), searchQuery:String)
+categories: Seq[models.CategoryListItem], brands: ListPage[models.BrandEntity], brand: Option[models.BrandEntity],
+pageNumber: Int, pageSize: Int, breadcrumbItems: Seq[(Int, String)] = List(), searchQuery: String)
 @import helpers.ViewHelper._
 @import Shared._
 
 @withsidebar(Messages("product.list.title"), "catalogue", search = searchQuery, brandId = brandId(brand),
-brands = brands, categories = categories, categoryId = currentCategory.id) {
+    brands = brands, categories = categories, categoryId = currentCategory.id) {
 
-@breadcrumbs(breadcrumbItems, cId => routes.Product.filteredList(cId, 1, brandId(brand), s = searchQuery))
-<h4>
-    @currentCategory.title<br/>
-    <small>
-        @searchQuery match {
-            case s if s.isEmpty => {}
-            case s => {
-                <i>@Messages("product.list.pagesubtitle")</i> @s
+    @breadcrumbs(breadcrumbItems, cId => routes.Product.filteredList(cId, 1, brandId(brand), s = searchQuery))
+    <h4>
+        @currentCategory.title <br/>
+        <small>
+            @searchQuery match {
+                case s if s.isEmpty => {}
+                case s => {
+                    <i> @Messages("product.list.pagesubtitle") </i> @s
+                }
             }
-        }
-    </small>
-</h4>
-@if(!brand.isEmpty) {
-    <div>
-            @if(brand.get.imageId > 0){
-            <a class="img-link pull-right" href="@routes.Product.filteredList(currentCategory.id, 1)">
-                <img alt="@brand.get.title" src="@routes.Image.get(brand.get.imageId + ".jpg", 100, "60x50", "full")" />
-            </a>
+        </small>
+    </h4>
+    @if(!brand.isEmpty) {
+        <div>
+            @if(brand.get.imageId > 0) {
+                <a class="img-link pull-right" href="@routes.Product.filteredList(currentCategory.id, 1)">
+                    <img alt="@brand.get.title" src="@routes.Image.get(brand.get.imageId + ".jpg", 100, "60x50", "full")" />
+                </a>
             } else {
-                <a href="@routes.Product.filteredList(currentCategory.id, 1)">@brand.get.title</a>
+                <a href="@routes.Product.filteredList(currentCategory.id, 1)"> @brand.get.title </a>
             }
-    </div>
-}
-@pager(helpers.PagerHelper(pageSize, productListPage.totalCount, productListPage.number),
-    pn => routes.Product.filteredList(currentCategory.id, pn, brandId(brand), s = searchQuery))
-<div class="product-list">
-    @productListPage.items.map { product =>
-        <div class="row">
-            <div class="span2">
-                <a href="@routes.Product.filteredList(currentCategory.id, pageNumber, brandId(brand),
-                    productId = product.id, s = searchQuery)">
-                    <img alt="" id="tmp" src="@routes.Image.get(product.defaultImageId + ".jpg", 90, "170x170", "full")">
-                </a>
-            </div>
-            <div class="span5">
-                <a href="@routes.Product.filteredList(currentCategory.id, pageNumber, brandId(brand),
-                    productId = product.id, s = searchQuery)">
-                    <h5>@product.title</h5>
-                </a>
-                <p>@product.description&nbsp;</p>
-            </div>
-            <div class="span2">
-                <h4>
-                @{product.price match {case d:Double if d == 0.0 => Messages("global.productItem.noprice") case e => e + " р."}}
-                </h4>
-            </div>
-            <div class="span2">
-                <form action="@routes.Cart.add" method="POST">
-                    <input type="hidden" name="returnUrl"
-                        value="@routes.Product.filteredList(currentCategory.id, pageNumber, brandId(brand), 1, s = searchQuery)"/>
-                    <input type="hidden" name="productId" value="@product.id" />
-                    <input type="hidden" name="count" value="1" />
-                    @addToCartButton()
-                </form>
-            </div>
         </div>
-        <hr />
     }
     @pager(helpers.PagerHelper(pageSize, productListPage.totalCount, productListPage.number),
-        pn => routes.Product.filteredList(currentCategory.id, pn, brandId(brand)))
-</div>
+        pn => routes.Product.filteredList(currentCategory.id, pn, brandId(brand), s = searchQuery))
+    <div class="product-list">
+        @productListPage.items.map { product =>
+            <div class="row">
+                <div class="span2">
+                    <a href="@routes.Product.filteredList(currentCategory.id, pageNumber, brandId(brand),
+                        productId = product.id, s = searchQuery)">
+                        <img alt="" id="tmp" src="@routes.Image.get(product.defaultImageId + ".jpg", 90, "170x170", "full")">
+                    </a>
+                </div>
+                <div class="span5">
+                    <a href="@routes.Product.filteredList(currentCategory.id, pageNumber, brandId(brand),
+                        productId = product.id, s = searchQuery)">
+                        <h5> @product.title </h5>
+                    </a>
+                    <p> @product.description &nbsp; </p>
+                </div>
+                <div class="span2">
+                    <h4>
+                        @priceTag(product.price)
+                    </h4>
+                </div>
+                <div class="span2">
+                    <form action="@routes.Cart.add" method="POST">
+                        <input type="hidden" name="returnUrl"
+                        value="@routes.Product.filteredList(currentCategory.id, pageNumber, brandId(brand), 1, s = searchQuery)"/>
+                        <input type="hidden" name="productId" value="@product.id" />
+                        <input type="hidden" name="count" value="1" />
+                        @addToCartButton(product.price)
+                    </form>
+                </div>
+            </div>
+            <hr />
+        }
+        @pager(helpers.PagerHelper(pageSize, productListPage.totalCount, productListPage.number),
+            pn => routes.Product.filteredList(currentCategory.id, pn, brandId(brand)))
+    </div>
 
 }
