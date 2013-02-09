@@ -8,13 +8,14 @@ import play.api.data.Form
 import play.api.data.Forms._
 import scala.Some
 
-case class CItem(productId: Int, count: Int)
+case class CItem(productId: Int, count: Int, returnUrl: String)
 
 class Cart @Inject()(val cartRepository: CartRepository, productRepository: ProductRepository, userRepository: UserRepository) extends Controller {
   val addToCartForm = Form(
     mapping(
       "productId" -> number,
-      "count" -> number
+      "count" -> number,
+      "returnUrl" -> text
     )(CItem.apply)(CItem.unapply)
   )
 
@@ -22,20 +23,20 @@ class Cart @Inject()(val cartRepository: CartRepository, productRepository: Prod
     implicit request =>
       val cItem = addToCartForm.bindFromRequest.get
       val cartId = cartRepository.add(new CartItem(getCartId(session), cItem.productId, cItem.count))
-      Redirect(routes.Cart.display()) withSession
+      Redirect(routes.Cart.display(cItem.returnUrl)) withSession
         session + ("cartid" -> cartId.toString)
   }
 
-  def display = Action {
+  def display(returnUrl: String) = Action {
     implicit request =>
       val cartItems: Seq[CartItem] = cartRepository.list(getCartId(session))
-      Ok(views.html.Cart.display(cartItems))
+      Ok(views.html.Cart.display(cartItems, returnUrl))
   }
 
   def delete(productId: Int) = Action {
     implicit request =>
       cartRepository.deleteItem(getCartId(session), productId)
-      Redirect(routes.Cart.display)
+      Redirect(routes.Cart.display())
   }
 
   def deleteConfirmation(productId: Int) = Action {

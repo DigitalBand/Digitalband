@@ -18,7 +18,7 @@ POST    /cart/add                                                               
 POST    /cart/delete/:productId                                                   @controllers.Cart.delete(productId: Int)
 GET     /cart/confirm-delete/:productId                                           @controllers.Cart.deleteConfirmation(productId: Int)
 POST    /cart/update                                                              @controllers.Cart.update
-GET     /cart                                                                     @controllers.Cart.display
+GET     /cart                                                                     @controllers.Cart.display(returnUrl: String ?= "")
 
 #Security
 GET     /login                                                                    @controllers.Security.login

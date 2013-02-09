@@ -27,7 +27,7 @@
                                 <a href="@routes.Product.list">@Messages("main.nav.catalogue")</a>
                             </li>
                             <li class="@{if(menuItem.equals("cart")) "active" else ""}">
-                                <a href="@routes.Cart.display">
+                                <a href="@routes.Cart.display()">
                                     <i class="icon-shopping-cart"></i>
                                 </a>
                             </li>

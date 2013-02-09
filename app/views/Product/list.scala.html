@@ -54,7 +54,13 @@ brands = brands, categories = categories, categoryId = currentCategory.id) {
                 </h4>
             </div>
             <div class="span2">
-                @addToCartButton()
+                <form action="@routes.Cart.add" method="POST">
+                    <input type="hidden" name="returnUrl"
+                        value="@routes.Product.filteredList(currentCategory.id, pageNumber, brandId(brand), 1, s = searchQuery)"/>
+                    <input type="hidden" name="productId" value="@product.id" />
+                    <input type="hidden" name="count" value="1" />
+                    @addToCartButton()
+                </form>
             </div>
         </div>
         <hr />

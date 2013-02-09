@@ -65,6 +65,8 @@ categoryId = categoryId, brandId = brandId) {
                 <label>@Messages("product.display.countlabel")</label>
                 <input type="text" class="input-mini" placeholder="1" name="count" value="1">
                 <input type="hidden" name="productId" value="@product.id" />
+                <input type="hidden" name="returnUrl"
+                    value="@routes.Product.filteredList(categoryId, pageNumber, brandId, productId = product.id, s = search)"/>
                 @addToCartButton()
             </form>
         </div>
