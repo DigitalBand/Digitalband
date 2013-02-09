@@ -2,13 +2,13 @@ package controllers
 
 import play.api.mvc._
 import com.google.inject.Inject
-import dao.common.CartRepository
+import dao.common.{ProductRepository, CartRepository}
 import models.CartItem
 import play.api.data.Form
 import play.api.data.Forms._
 import scala.Some
 case class CItem(productId: Int, count: Int)
-class Cart @Inject()(val cartRepository: CartRepository) extends Controller{
+class Cart @Inject()(val cartRepository: CartRepository, productRepository: ProductRepository) extends Controller{
   val addToCartForm = Form(
     mapping(
       "productId" -> number,
@@ -28,7 +28,12 @@ class Cart @Inject()(val cartRepository: CartRepository) extends Controller{
     Ok(views.html.Cart.display(cartItems))
   }
   def delete(productId: Int) = Action {
-    NotImplemented
+    implicit request =>
+    cartRepository.deleteItem(getCartId(session), productId)
+    Redirect(routes.Cart.display)
+  }
+  def deleteConfirmation(productId: Int) = Action {
+    Ok(views.html.Cart.deleteConfirmation(productRepository.get(productId)))
   }
   def update = Action {
     NotImplemented

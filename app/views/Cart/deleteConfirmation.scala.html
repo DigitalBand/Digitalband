@@ -1,0 +1,11 @@
+@(product: models.ProductEntity)
+@main(menuItem = "cart") {
+    <form action="@routes.Cart.delete(product.id)" method="POST">
+        <div class="alert alert-block">
+            Вы действительно хотите удалить товар <a href="@routes.Product.display(product.id)"> @product.title </a> из корзины
+        </div>
+        <div class="form-actions">
+            <button class="btn btn-danger"> Удалить </button> &nbsp; <a href="@routes.Cart.display"> Назад </a>
+        </div>
+    </form>
+}

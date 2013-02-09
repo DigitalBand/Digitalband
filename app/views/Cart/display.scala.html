@@ -7,25 +7,27 @@
     <table class="table table-bordered table-striped">
         <thead>
             <tr>
-                <th>Удалить</th>
-                <th>Изображение</th>
+                <th><i class="icon-trash"></i></th>
+                <th class="center-text">Изображение</th>
                 <th>Название</th>
-                <th>Количество</th>
-                <th>Цена за шт.</th>
-                <th>Сумма</th>
+                <th class="center-text">Количество</th>
+                <th class="right-text">Цена за шт.</th>
+                <th class="right-text">Сумма</th>
             </tr>
         </thead>
         <tbody>
             @items.map { cartItem =>
             <tr>
-                <td class=""><input type="checkbox" value="option1" id="optionsCheckbox"></td>
-                <td class="muted center_text"><a href="product.html">
+                <td class="">
+                    <a href="@routes.Cart.deleteConfirmation(cartItem.productId)"><i class="icon-remove"></i></a></td>
+                <td class="muted center-text"><a href="@routes.Product.display(cartItem.productId)">
                     <img src="@routes.Image.get(cartItem.imageId + ".jpg", 90, "80x80", "full")" />
                 </a></td>
-                <td>@cartItem.title</td>
-                <td><input type="text" placeholder="1" class="input-mini" value="@cartItem.count"></td>
-                <td>@cartItem.unitPrice</td>
-                <td>@(cartItem.total) р.</td>
+                <td><a href="@routes.Product.display(cartItem.productId)">@cartItem.title</a></td>
+                <td class="center-text">
+                    <input type="text" placeholder="1" class="input-mini right-text" value="@cartItem.count"></td>
+                <td class="right-text">@Messages("formats.price", cartItem.unitPrice)</td>
+                <td class="right-text">@Messages("formats.price", cartItem.total)</td>
             </tr>
             }
             <tr>
@@ -34,9 +36,9 @@
                 <td>&nbsp;</td>
                 <td>&nbsp;</td>
                 <td>&nbsp;</td>
-                <td>
+                <td class="right-text">
                     <strong>
-                        @items.map(i => i.total).sum р.
+                        @Messages("formats.price", items.map(i => i.total).sum)
                     </strong>
                 </td>
             </tr>

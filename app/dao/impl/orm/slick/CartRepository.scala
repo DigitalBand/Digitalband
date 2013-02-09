@@ -13,7 +13,7 @@ class CartRepository extends dao.common.CartRepository {
   def list(cartId: Int): Seq[CartItem] = {
     database withSession {
       implicit val getCartItem = GetResult(r => new CartItem(r.<<, r.<<, r.<<, r.<<, r.<<, r.<<))
-      val query = Q.queryNA[CartItem](s"""
+      val query = Q.queryNA[CartItem]( s"""
         select
           c.cartId,
           c.productId,
@@ -50,6 +50,11 @@ class CartRepository extends dao.common.CartRepository {
           quantity = quantity + ${item.count}
         where
           productId = ${item.productId} and cartId = ${cartId};
+        update
+          cart
+        set
+          updateDate = CURRENT_TIMESTAMP
+        where cartId = $cartId;
         """)
       query.execute()
 
@@ -63,5 +68,11 @@ class CartRepository extends dao.common.CartRepository {
       val query = Q.queryNA[Int]("select max(cartId) from cart;")
       query.first()
     }
+  }
+
+  def deleteItem(cartId: Int, productId: Int) = {
+     database withSession {
+       Q.updateNA(s"delete from shopping_items where cartId = $cartId and productId = $productId").execute()
+     }
   }
 }

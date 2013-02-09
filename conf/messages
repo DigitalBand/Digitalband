@@ -1,3 +1,5 @@
+formats.price={0, number, ###,###.00} руб
+
 validation.login.wronginfo=Неверный логин или пароль
 security.forgotpassword.notregistered=Данный email не зарегистрирован в системе
 error.required=Это поле обязательно для заполнения
