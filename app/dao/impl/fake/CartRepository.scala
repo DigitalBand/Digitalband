@@ -1,6 +1,6 @@
 package dao.impl.fake
 
-import models.CartItem
+import models.{CItem, CartItem}
 
 class CartRepository extends dao.common.CartRepository {
   def add(item: CartItem): Int = 2
@@ -10,4 +10,5 @@ class CartRepository extends dao.common.CartRepository {
   def deleteItem(cartId: Int, productId: Int) = ???
 
   def createCart(userId: Int) = ???
+  def updateItems(cartId: Int, items: Seq[CItem]) = ???
 }

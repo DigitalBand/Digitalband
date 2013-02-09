@@ -3,12 +3,12 @@ package controllers
 import play.api.mvc._
 import com.google.inject.Inject
 import dao.common.{UserRepository, ProductRepository, CartRepository}
-import models.CartItem
+import models.{CItem, CartItem}
 import play.api.data.Form
 import play.api.data.Forms._
 import scala.Some
 
-case class CItem(productId: Int, count: Int, returnUrl: String)
+
 
 class Cart @Inject()(val cartRepository: CartRepository, productRepository: ProductRepository, userRepository: UserRepository) extends Controller {
   val addToCartForm = Form(
@@ -43,8 +43,17 @@ class Cart @Inject()(val cartRepository: CartRepository, productRepository: Prod
     Ok(views.html.Cart.deleteConfirmation(productRepository.get(productId), returnUrl))
   }
 
-  def update = Action {
-    NotImplemented
+  def update(returnUrl: String) = Action {
+    implicit request =>
+      val items = getCartItems(request.body)
+      cartRepository.updateItems(getCartId(session), items)
+      Redirect(routes.Cart.display(returnUrl))
+  }
+
+  private def getCartItems(body: AnyContent): Seq[CItem] = {
+    body.asFormUrlEncoded.get.map {
+      case (name: String, its: List[String]) => new CItem(its(0).toInt, its(1).toInt, "")
+    }.toSeq
   }
 
   def getCartId(session: Session) = session.get("cartid") match {

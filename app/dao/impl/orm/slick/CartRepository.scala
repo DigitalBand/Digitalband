@@ -1,7 +1,7 @@
 package dao.impl.orm.slick
 
 import common.Profile
-import models.{BrandEntity, CartItem}
+import models.{CItem, BrandEntity, CartItem}
 import Profile.database
 import Profile.driver.simple._
 import Database.threadLocalSession
@@ -59,7 +59,7 @@ class CartRepository extends dao.common.CartRepository {
     }
   }
 
-  def createCart(userId:Int = 0): Int = {
+  def createCart(userId: Int = 0): Int = {
     database withSession {
       Q.updateNA(s"insert into cart(userId) values($userId);").execute()
       val query = Q.queryNA[Int]("select max(cartId) from cart;")
@@ -68,8 +68,23 @@ class CartRepository extends dao.common.CartRepository {
   }
 
   def deleteItem(cartId: Int, productId: Int) = {
-     database withSession {
-       Q.updateNA(s"delete from shopping_items where cartId = $cartId and productId = $productId").execute()
-     }
+    database withSession {
+      Q.updateNA(s"delete from shopping_items where cartId = $cartId and productId = $productId").execute()
+    }
+  }
+
+  def updateItems(cartId: Int, items: Seq[CItem]) = {
+    database withSession {
+      def update(citem: Seq[CItem], query: String = ""): String = {
+        val item = citem.head
+        if (citem.tail.length > 0)
+          update(citem.tail,
+            query + s"update shopping_items set quantity = ${item.count} where productId = ${item.productId} and cartId = $cartId;")
+        else
+          query + s"update shopping_items set quantity = ${item.count} where productId = ${item.productId} and cartId = $cartId;"
+      }
+      val query = update(items)
+      Q.updateNA(query).execute()
+    }
   }
 }

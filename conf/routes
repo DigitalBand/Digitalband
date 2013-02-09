@@ -17,7 +17,7 @@ GET     /product/:id                                                            
 POST    /cart/add                                                                 @controllers.Cart.add
 POST    /cart/delete/:productId                                                   @controllers.Cart.delete(productId: Int, returnUrl: String ?= "")
 GET     /cart/confirm-delete/:productId                                           @controllers.Cart.deleteConfirmation(productId: Int, returnUrl: String ?= "")
-POST    /cart/update                                                              @controllers.Cart.update
+POST    /cart/update                                                              @controllers.Cart.update(returnUrl: String ?= "")
 GET     /cart                                                                     @controllers.Cart.display(returnUrl: String ?= "")
 
 #Security

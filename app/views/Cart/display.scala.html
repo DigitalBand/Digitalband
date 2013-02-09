@@ -8,7 +8,7 @@
                 Ваша корзина пуста
         </div>
     } else{
-    <form method="POST" action="@routes.Cart.update">
+    <form method="POST" action="@routes.Cart.update()">
         <table class="table table-bordered table-striped">
             <thead>
                 <tr>
@@ -30,7 +30,8 @@
                         </a> </td>
                         <td> <a href="@routes.Product.display(cartItem.productId)"> @cartItem.title </a> </td>
                         <td class="center-text">
-                            <input type="text" placeholder="1" class="input-mini right-text" value="@cartItem.count"> </td>
+                            <input type="hidden" name="cartItem[@{items.indexOf(cartItem)+1}]" value="@cartItem.productId" />
+                            <input type="text" name="cartItem[@{items.indexOf(cartItem)+1}]" placeholder="1" class="input-mini right-text" value="@cartItem.count"> </td>
                         <td class="right-text"> @Messages("formats.price", cartItem.unitPrice) </td>
                         <td class="right-text"> @Messages("formats.price", cartItem.total) </td>
                     </tr>
