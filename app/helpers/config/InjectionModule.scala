@@ -12,5 +12,6 @@ class InjectionModule extends ScalaModule {
     bind[dao.common.BrandRepository].toInstance(new BrandRepository)
     bind[dao.common.UserRepository].toInstance(new UserRepository)
     bind[dao.common.CartRepository].toInstance(new CartRepository)
+    bind[dao.common.OrderRepository].toInstance(new OrderRepository)
   }
 }

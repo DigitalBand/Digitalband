@@ -7,4 +7,5 @@ trait UserRepository {
 
   def authenticate(login: String, password: String): Option[UserEntity]
 
+  def getUserId(name: String): Int
 }

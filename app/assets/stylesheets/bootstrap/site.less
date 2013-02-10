@@ -69,7 +69,18 @@
   clear: right;
 }
 
-table {
+.table {
+  tr {
+    td {
+      .thumbnail {
+        &.pull-left {
+          margin-right: 10px;
+          padding: 0;
+        }
+      }
+      line-height: 40px;
+    }
+  }
   th, td, input {
     &.center-text {
       text-align: center;
@@ -78,4 +89,5 @@ table {
       text-align: right;
     }
   }
+
 }

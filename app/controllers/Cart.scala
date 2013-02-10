@@ -6,7 +6,7 @@ import dao.common.{UserRepository, ProductRepository, CartRepository}
 import models.{CItem, CartItem}
 import play.api.data.Form
 import play.api.data.Forms._
-import scala.Some
+import helpers.SessionHelper._
 
 
 
@@ -22,20 +22,22 @@ class Cart @Inject()(val cartRepository: CartRepository, productRepository: Prod
   def add = Action {
     implicit request =>
       val cItem = addToCartForm.bindFromRequest.get
-      val cartId = cartRepository.add(new CartItem(getCartId(session), cItem.productId, cItem.count))
+      val cartId = getCartId(session, cartRepository.createCart, userRepository.getUserId)
+      cartRepository.add(new CartItem(cartId, cItem.productId, cItem.count))
       Redirect(routes.Cart.display(cItem.returnUrl)) withSession
         session + ("cartid" -> cartId.toString)
   }
 
   def display(returnUrl: String) = Action {
     implicit request =>
-      val cartItems: Seq[CartItem] = cartRepository.list(getCartId(session))
+      val cartId = getCartId(session, cartRepository.createCart, userRepository.getUserId)
+      val cartItems: Seq[CartItem] = cartRepository.list(cartId)
       Ok(views.html.Cart.display(cartItems, returnUrl))
   }
 
   def delete(productId: Int, returnUrl: String = "") = Action {
     implicit request =>
-      cartRepository.deleteItem(getCartId(session), productId)
+      cartRepository.deleteItem(getCartId(session, cartRepository.createCart, userRepository.getUserId), productId)
       Redirect(routes.Cart.display(returnUrl))
   }
 
@@ -46,7 +48,8 @@ class Cart @Inject()(val cartRepository: CartRepository, productRepository: Prod
   def update(returnUrl: String) = Action {
     implicit request =>
       val items = getCartItems(request.body)
-      cartRepository.updateItems(getCartId(session), items)
+      val cartId = getCartId(session, cartRepository.createCart, userRepository.getUserId)
+      cartRepository.updateItems(cartId, items)
       Redirect(routes.Cart.display(returnUrl))
   }
 
@@ -60,18 +63,7 @@ class Cart @Inject()(val cartRepository: CartRepository, productRepository: Prod
     }.toSeq
   }
 
-  def getCartId(session: Session) = session.get("cartid") match {
-    case Some(x) => x.toInt
-    case None => cartRepository.createCart(session.get("username") match {
-      case None => 0
-      case Some(x) => getUserId(x)
-    })
-  }
 
-  def getUserId(userName: String) = {
-    userRepository.get(userName) match {
-      case None => 0
-      case Some(x) => x.id
-    }
-  }
+
+
 }

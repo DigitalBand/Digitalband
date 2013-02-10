@@ -1,60 +1,23 @@
 @(items: Seq[models.CartItem], returnUrl: String)
-
+@import Cart.shoppingList
 @main(menuItem = "cart") {
-    <h3>@Messages("cart.title")</h3>
-    <hr/>
+    <div class="page-header">
+    <h3> @Messages("cart.title") </h3>
+        @if(!returnUrl.isEmpty){
+    <a href="@returnUrl">@Messages("cart.links.continueshopping")&nbsp;<i class="icon-forward"></i></a>
+            }
+    </div>
     @if(items.length == 0) {
         <div class="alert alert-info">
-                @Messages("cart.alerts.empty")
+            @Messages("cart.alerts.empty")
         </div>
-    } else{
-    <form method="POST" action="@routes.Cart.update()">
-        <table class="table table-bordered table-striped">
-            <thead>
-                <tr>
-                    <th> <i class="icon-trash"></i> </th>
-                    <th class="center-text">@Messages("cart.itemlist.header.imagecolumn")</th>
-                    <th>@Messages("cart.itemlist.header.titlecolumn")</th>
-                    <th class="center-text">@Messages("cart.itemlist.header.countcolumn")</th>
-                    <th class="right-text">@Messages("cart.itemlist.header.unitprice")</th>
-                    <th class="right-text">@Messages("cart.itemlist.header.total")</th>
-                </tr>
-            </thead>
-            <tbody>
-                @items.map { cartItem =>
-                    <tr>
-                        <td class="">
-                            <a href="@routes.Cart.deleteConfirmation(cartItem.productId, returnUrl)"> <i class="icon-remove"></i> </a> </td>
-                        <td class="muted center-text"> <a href="@routes.Product.display(cartItem.productId)">
-                            <img src="@routes.Image.get(cartItem.imageId + ".jpg", 90, "80x80", "full")" />
-                        </a> </td>
-                        <td> <a href="@routes.Product.display(cartItem.productId)"> @cartItem.title </a> </td>
-                        <td class="center-text">
-                            <input type="hidden" name="cartItem[@{items.indexOf(cartItem)+1}]" value="@cartItem.productId" />
-                            <input type="text" maxlength="2" name="cartItem[@{items.indexOf(cartItem)+1}]" placeholder="1" class="input-mini right-text" value="@cartItem.count"> </td>
-                        <td class="right-text"> @Messages("formats.price", cartItem.unitPrice) </td>
-                        <td class="right-text"> @Messages("formats.price", cartItem.total) </td>
-                    </tr>
-                }
-                <tr>
-                    <td> &nbsp; </td>
-                    <td> &nbsp; </td>
-                    <td> &nbsp; </td>
-                    <td> &nbsp; </td>
-                    <td> &nbsp; </td>
-                    <td class="right-text">
-                        <strong>
-                            @Messages("formats.price", items.map(i => i.total).sum)
-                        </strong>
-                    </td>
-                </tr>
-            </tbody>
-        </table>
-        <div class="form-actions">
-            <button class="btn btn-primary">@Messages("cart.form.buttons.update")</button>
-            <a href="@returnUrl" class="btn btn-primary">@Messages("cart.links.continueshopping")</a>
-            <a href="#" class="btn btn-primary">@Messages("cart.links.makeorder")</a>
-        </div>
-    </form>
+    } else {
+        <form method="POST" action="@routes.Cart.update()">
+            @shoppingList(items, returnUrl)
+            <div class="form-actions">
+                <button class="btn btn-primary"> <i class="icon-refresh"></i> @Messages("cart.form.buttons.update") </button>
+                <a class="pull-right btn btn-success" href="@routes.Order.fill()"> @Messages("cart.links.makeorder")</a>
+            </div>
+        </form>
     }
 }

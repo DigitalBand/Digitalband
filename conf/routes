@@ -20,6 +20,9 @@ GET     /cart/confirm-delete/:productId                                         
 POST    /cart/update                                                              @controllers.Cart.update(returnUrl: String ?= "")
 GET     /cart                                                                     @controllers.Cart.display(returnUrl: String ?= "")
 
+# Order
+GET     /order                                                                    @controllers.Order.fill
+
 #Security
 GET     /login                                                                    @controllers.Security.login
 GET     /registration                                                             @controllers.Security.registration

@@ -1,0 +1,55 @@
+@(items: Seq[models.CartItem], returnUrl: String, editable: Boolean = true)
+<table class="table table-striped">
+<thead>
+    <tr>
+        @if(editable){
+        <th> <i class="icon-trash"></i> </th>
+            }
+
+        <th> @Messages("cart.itemlist.header.titlecolumn") </th>
+        <th class="center-text"> @Messages("cart.itemlist.header.countcolumn") </th>
+        <th class="right-text"> @Messages("cart.itemlist.header.unitprice") </th>
+        <th class="right-text"> @Messages("cart.itemlist.header.total") </th>
+    </tr>
+</thead>
+<tbody>
+    @items.map { cartItem =>
+        <tr>
+            @if(editable){
+            <td class="">
+                <a href="@routes.Cart.deleteConfirmation(cartItem.productId, returnUrl)"> <i class="icon-remove"></i> </a>
+
+            </td>
+            }
+            <td>
+                <a href="@routes.Product.display(cartItem.productId)">
+                    <img class="thumbnail pull-left" src="@routes.Image.get(cartItem.imageId + ".jpg", 90, "40x40", "full")" />
+                </a>
+                <a class="thumbnail-title" href="@routes.Product.display(cartItem.productId)"> @cartItem.title </a> </td>
+            <td class="center-text">
+                @if(editable){
+                <input type="hidden" name="cartItem[@{items.indexOf(cartItem) + 1}]" value="@cartItem.productId" />
+                <input type="text" maxlength="2" name="cartItem[@{items.indexOf(cartItem) + 1}]" placeholder="1" class="input-mini right-text" value="@cartItem.count">
+                    }else{
+                   <span>@cartItem.count</span>
+                }
+            </td>
+            <td class="right-text"> @Messages("formats.price", cartItem.unitPrice) </td>
+            <td class="right-text"> @Messages("formats.price", cartItem.total) </td>
+        </tr>
+    }
+    <tr>
+        @if(editable){
+        <td> &nbsp; </td>
+            }
+        <td> &nbsp; </td>
+        <td> &nbsp; </td>
+        <td> &nbsp; </td>
+        <td class="right-text">
+            <strong>
+                @Messages("formats.price", items.map(i => i.total).sum)
+            </strong>
+        </td>
+    </tr>
+</tbody>
+</table>

@@ -1,0 +1,13 @@
+@(items: Seq[models.CartItem], returnUrl: String)
+@import Cart.shoppingList
+@main(menuItem = "cart") {
+    <div class="page-header">
+        <h3> Ваш заказ </h3>
+            &nbsp;<a href="@routes.Cart.display()"><i class="icon-edit"></i> Редактировать заказ</a>
+    </div>
+    @shoppingList(items, returnUrl, false)
+    <div class="form-actions">
+        <button class="btn btn-success"><i class="icon-ok"></i> Оформить заказ </button>
+
+    </div>
+}
