@@ -1,6 +1,8 @@
 @(items: Seq[models.CartItem], returnUrl: String)
 @import Cart.shoppingList
+@import Shared.wizard
 @main(menuItem = "cart") {
+    @wizard(1)
     <div class="page-header">
     <h3> @Messages("cart.title") </h3>
         @if(!returnUrl.isEmpty){
