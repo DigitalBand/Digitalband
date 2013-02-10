@@ -52,7 +52,11 @@ class Cart @Inject()(val cartRepository: CartRepository, productRepository: Prod
 
   private def getCartItems(body: AnyContent): Seq[CItem] = {
     body.asFormUrlEncoded.get.map {
-      case (name: String, its: List[String]) => new CItem(its(0).toInt, its(1).toInt, "")
+      case (name: String, its: Seq[String]) =>
+        new CItem(its(0).toInt, its(1) match {
+          case s if s.matches("[+-]?\\d+")  => s.toInt
+          case _ => 1
+        }, "")
     }.toSeq
   }
 
