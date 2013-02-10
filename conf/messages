@@ -2,12 +2,41 @@ formats.price={0, number, ###,###.00} руб
 
 validation.login.wronginfo=Неверный логин или пароль
 security.forgotpassword.notregistered=Данный email не зарегистрирован в системе
+
+
+
+
 error.required=Это поле обязательно для заполнения
+# --- Constraints
+constraint.required=Required
+constraint.min=Minimum value: {0}
+constraint.max=Maximum value: {0}
+constraint.minLength=Минимальная длина: {0}
+constraint.maxLength=Максимальная длина: {0}
+constraint.email=Email
+# --- Formats
+format.date=Date (''{0}'')
+format.numeric=Numeric
+# --- Errors
+error.invalid=Invalid value
+error.number=Numeric value expected
+error.min=Must be greater or equal to {0}
+error.max=Must be less or equal to {0}
+error.minLength=Минимальная длина: {0}
+error.maxLength=Максимальная длина: {0}
+error.email=Valid email required
+error.pattern=Must satisfy {0}
+
+
 email=Эл. почта
 password=Пароль
-
+name=Имя
+phone=Телефон
+address=Адрес
 global.buttons.addtocart.value=В корзину
 global.productItem.noprice=Уточняйте цену
+
+
 
 main.head.title=Интернет-магазин музыкального оборудования Digital Band
 
@@ -34,6 +63,8 @@ cart.links.makeorder=Оформить заказ
 cart.delete.confirmation.alert=Вы действительно хотите удалить товар {0} из корзины
 cart.delete.confirmation.form.buttons.delete=Удалить
 cart.delete.confirmation.form.buttons.back=Назад
+
+order.fill.form.buttons.placeorder=Заказать
 
 product.list.title=Каталог
 product.list.categories.linkTitle=Товаров в категории:

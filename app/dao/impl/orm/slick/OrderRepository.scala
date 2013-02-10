@@ -1,5 +1,9 @@
 package dao.impl.orm.slick
 
-class OrderRepository extends dao.common.OrderRepository {
+import models.DeliveryInfo
 
+class OrderRepository extends dao.common.OrderRepository {
+  def create(deliveryInfo: DeliveryInfo, cartId: Int): Int = {
+    ???
+  }
 }

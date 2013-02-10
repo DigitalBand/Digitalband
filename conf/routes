@@ -22,6 +22,8 @@ GET     /cart                                                                   
 
 # Order
 GET     /order                                                                    @controllers.Order.fill
+POST    /order/place                                                              @controllers.Order.place
+GET     /order/display                                                            @controllers.Order.display(orderId: Int)
 
 #Security
 GET     /login                                                                    @controllers.Security.login
