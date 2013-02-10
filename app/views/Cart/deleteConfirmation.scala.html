@@ -1,11 +1,16 @@
 @(product: models.ProductEntity, returnUrl: String)
+@import Shared._
 @main(menuItem = "cart") {
     <form action="@routes.Cart.delete(product.id, returnUrl)" method="POST">
         <div class="alert alert-block">
-            Вы действительно хотите удалить товар <a href="@routes.Product.display(product.id)"> @product.title </a> из корзины
+            @withMessage("cart.delete.confirmation.alert"){
+                <a href="@routes.Product.display(product.id)"> @product.title</a>
+            }
         </div>
         <div class="form-actions">
-            <button class="btn btn-danger"> Удалить </button> &nbsp; <a href="@routes.Cart.display(returnUrl)"> Назад </a>
+            <button class="btn btn-danger">@Messages("cart.delete.confirmation.form.buttons.delete")</button>
+                &nbsp;<a href="@routes.Cart.display(returnUrl)">
+                @Messages("cart.delete.confirmation.form.buttons.back")</a>
         </div>
     </form>
 }

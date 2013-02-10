@@ -54,7 +54,7 @@ categoryId = categoryId, brandId = brandId) {
         <h3>
             @Messages("product.display.pricelabel")
             <span id="productprice">
-                @{product.price match { case d:Double if d == 0.0 => Messages("global.productItem.noprice") case e => e + " р."}}
+                @priceTag(product.price)
             </span>
             <br/>
             <br/>
