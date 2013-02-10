@@ -1,11 +1,11 @@
 @(items: Seq[models.CartItem], returnUrl: String)
 
 @main(menuItem = "cart") {
-    <h3> Ваша корзина </h3>
+    <h3>@Messages("cart.title")</h3>
     <hr/>
     @if(items.length == 0) {
         <div class="alert alert-info">
-                Ваша корзина пуста
+                @Messages("cart.alerts.empty")
         </div>
     } else{
     <form method="POST" action="@routes.Cart.update()">
@@ -13,11 +13,11 @@
             <thead>
                 <tr>
                     <th> <i class="icon-trash"></i> </th>
-                    <th class="center-text"> Изображение </th>
-                    <th> Название </th>
-                    <th class="center-text"> Количество </th>
-                    <th class="right-text"> Цена за шт.</th>
-                    <th class="right-text"> Сумма </th>
+                    <th class="center-text">@Messages("cart.itemlist.header.imagecolumn")</th>
+                    <th>@Messages("cart.itemlist.header.titlecolumn")</th>
+                    <th class="center-text">@Messages("cart.itemlist.header.countcolumn")</th>
+                    <th class="right-text">@Messages("cart.itemlist.header.unitprice")</th>
+                    <th class="right-text">@Messages("cart.itemlist.header.total")</th>
                 </tr>
             </thead>
             <tbody>
@@ -51,9 +51,9 @@
             </tbody>
         </table>
         <div class="form-actions">
-            <button class="btn btn-primary">Обновить</button>
-            <a href="@returnUrl" class="btn btn-primary">Продолжить покупки</a>
-            <a href="#" class="btn btn-primary">Оформить заказ</a>
+            <button class="btn btn-primary">@Messages("cart.form.buttons.update")</button>
+            <a href="@returnUrl" class="btn btn-primary">@Messages("cart.links.continueshopping")</a>
+            <a href="#" class="btn btn-primary">@Messages("cart.links.makeorder")</a>
         </div>
     </form>
     }

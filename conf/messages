@@ -21,6 +21,17 @@ main.footer.nav.contact=Обратная связь
 security.login.form.legend=Вход
 security.login.form.forgotpassword=Забыли пароль?
 
+cart.title=Ваша корзина
+cart.alerts.empty=Ваша корзина пуста
+cart.itemlist.header.imagecolumn=Изображение
+cart.itemlist.header.titlecolumn=Название
+cart.itemlist.header.countcolumn=Количество
+cart.itemlist.header.unitprice=Цена за шт.
+cart.itemlist.header.total=Сумма
+cart.form.buttons.update=Обновить
+cart.links.continueshopping=Продолжить покупки
+cart.links.makeorder=Оформить заказ
+
 product.list.title=Каталог
 product.list.categories.linkTitle=Товаров в категории:
 product.list.sidebar.brands=Бренды
