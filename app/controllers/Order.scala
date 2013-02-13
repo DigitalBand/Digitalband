@@ -11,8 +11,9 @@ import data.Forms._
 class Order @Inject()(orderRepository: OrderRepository, cartRepository: CartRepository, userRepository: UserRepository) extends Controller {
   val deliveryForm = Form(mapping(
     "name" -> nonEmptyText(minLength = 2, maxLength = 50),
+    "email" -> email,
     "phone" -> nonEmptyText(minLength = 10, maxLength = 25),
-    "address" -> nonEmptyText(minLength = 10, maxLength = 200)
+    "address" -> text
   )(DeliveryInfo.apply)(DeliveryInfo.unapply))
   def getCartId(sess: play.api.mvc.Session): Int =
     helpers.SessionHelper.getCartId(sess, cartRepository.createCart, userRepository.getUserId)
@@ -31,10 +32,16 @@ class Order @Inject()(orderRepository: OrderRepository, cartRepository: CartRepo
         },
         deliveryInfo => {
           val cartId:Int = getCartId(session)
-          val orderId = orderRepository.create(deliveryInfo, cartId)
-          Redirect(routes.Order.display(orderId))
+          //TODO: implement getUserId
+          val orderId = orderRepository.create(deliveryInfo, cartId, userRepository.getUserId(deliveryInfo.email))
+          Redirect(routes.Order.confirmation(orderId))
+          NotImplemented
         }
       )
+  }
+
+  def confirmation(orderId: Int) = Action {
+    Ok(views.html.Order.confirmation(orderRepository.getItems(orderId), orderId))
   }
 
   def display(orderId: Int) = Action {

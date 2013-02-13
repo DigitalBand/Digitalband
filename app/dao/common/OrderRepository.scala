@@ -1,8 +1,10 @@
 package dao.common
 
-import models.DeliveryInfo
+import models.{CartItem, DeliveryInfo}
 
 trait OrderRepository {
-  def create(deliveryInfo: DeliveryInfo, cartId: Int): Int
+  def getItems(orderId: Int): Seq[CartItem]
+
+  def create(deliveryInfo: DeliveryInfo, cartId: Int, userId: Int): Int
 
 }
