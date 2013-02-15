@@ -15,4 +15,6 @@ class UserRepository extends dao.common.UserRepository {
   }
 
   def get(email: String): Option[UserEntity] = if (email.equals("none@none.ru")) None else Option(new UserEntity("user@domain.ru", 1))
+
+  def createUser(name: String) = ???
 }

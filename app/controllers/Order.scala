@@ -34,10 +34,10 @@ class Order @Inject()(orderRepository: OrderRepository, cartRepository: CartRepo
           val cartId:Int = getCartId(session)
           val userId = userRepository.getUserId(deliveryInfo.email) match {
             case 0 => userRepository.createUser(deliveryInfo.email)
+            case x => x
           }
           val orderId = orderRepository.create(deliveryInfo, cartId, userId)
           Redirect(routes.Order.confirmation(orderId))
-          NotImplemented
         }
       )
   }
