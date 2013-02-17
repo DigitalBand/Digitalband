@@ -8,7 +8,7 @@ import Database.threadLocalSession
 import slick.jdbc.{GetResult, StaticQuery => Q}
 
 import models.{CategoryListItem, CategoryEntity}
-import tables.{CategoryImagesTable, CategoriesTable}
+import tables.{ProductsTable, CategoryImagesTable, CategoriesTable}
 
 class CategoryRepository extends RepositoryBase with dao.common.CategoryRepository {
 
