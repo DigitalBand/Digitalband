@@ -9,6 +9,7 @@ object ApplicationBuild extends Build {
 
   val appDependencies = Seq(
     jdbc,
+    "org.squeryl" %% "squeryl" % "0.9.5-6",
     "mysql" % "mysql-connector-java" % "5.1.22",
     "org.jsoup" % "jsoup" % "1.6.3",
     "com.typesafe" %% "play-plugins-mailer" % "2.1-SNAPSHOT",
