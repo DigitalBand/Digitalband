@@ -1,24 +1,35 @@
-@(items: Seq[models.CartItem], deliveryInfo: Form[DeliveryInfo], returnUrl: String)
+@(items: Seq[models.CartItem], deliveryInfo: Form[DeliveryInfo], loginForm: Option[Form[(String, String)]], returnUrl: String)
 @import Cart.shoppingList
 @import Shared.wizard
 @import views.html.common.bootstrap._
+@import views.html.Security.loginpart
+
 @main(menuItem = "cart") {
     @wizard(2)
     <div class="page-header">
         <h3> Ваш заказ </h3>
-            &nbsp;<a href="@routes.Cart.display()"><i class="icon-edit"></i> Редактировать заказ</a>
+            &nbsp; <a href="@routes.Cart.display()"> <i class="icon-edit"></i> Редактировать заказ </a>
     </div>
     @shoppingList(items, returnUrl, false)
-    <form method="post" action="@routes.Order.place" class="form-horizontal">
-        <fieldset>
-            <legend>Информация для доставки</legend>
-            @helper.inputText(deliveryInfo("name"))
-            @helper.inputText(deliveryInfo("email"))
-            @helper.inputText(deliveryInfo("phone"))
-            @helper.textarea(deliveryInfo("address"))
-        </fieldset>
-        <div class="form-actions">
-            <button class="btn btn-success pull-right"><i class="icon-ok"></i>&nbsp;@Messages("order.fill.form.buttons.placeorder")</button>
+    <div class="row">
+        <form method="post" action="@routes.Order.place" class="form-horizontal @(if(loginForm.isDefined)"span6")">
+            <fieldset>
+                <legend> Информация для доставки </legend>
+                @helper.inputText(deliveryInfo("name"))
+                @helper.inputText(deliveryInfo("email"))
+                @helper.inputText(deliveryInfo("phone"))
+                @helper.textarea(deliveryInfo("address"))
+            </fieldset>
+            <div class="form-actions">
+                <button class="btn btn-success pull-right"> <i class="icon-ok"></i> &nbsp; @Messages("order.fill.form.buttons.placeorder") </button>
+            </div>
+        </form>
+        @if(loginForm.isDefined){
+        <div class="span6">
+            <legend> Для зарегестрированных пользователей </legend>
+            @loginpart(loginForm.get)
         </div>
-    </form>
+        }
+    </div>
+
 }

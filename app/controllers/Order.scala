@@ -20,7 +20,7 @@ class Order @Inject()(orderRepository: OrderRepository, cartRepository: CartRepo
   def fill() = Action {
     implicit request =>
       val cartId = getCartId(session)
-      Ok(views.html.Order.fill(cartRepository.list(cartId), deliveryForm, ""))
+      Ok(views.html.Order.fill(cartRepository.list(cartId), deliveryForm, Option(loginForm(userRepository)), ""))
   }
 
   def place = Action {
@@ -28,7 +28,7 @@ class Order @Inject()(orderRepository: OrderRepository, cartRepository: CartRepo
       deliveryForm.bindFromRequest.fold(
         formWithErrors => {
           val cartId = getCartId(session)
-          BadRequest(views.html.Order.fill(cartRepository.list(cartId), formWithErrors, ""))
+          BadRequest(views.html.Order.fill(cartRepository.list(cartId), formWithErrors, Option(loginForm(userRepository)), ""))
         },
         deliveryInfo => {
           val cartId:Int = getCartId(session)
