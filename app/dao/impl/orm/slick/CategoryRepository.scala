@@ -38,6 +38,15 @@ class CategoryRepository extends RepositoryBase with dao.common.CategoryReposito
   //TODO: convert to slick
   def list(categoryId: Int, brandId: Int, search:String): Seq[CategoryListItem] = {
     database withSession {
+      def subQuery(c: CategoriesTable.type) = (for {
+        p <- ProductsTable
+
+      } yield(p.id.count))
+      val q2 = for {
+        c <- CategoriesTable
+        if (c.parentId === 2)
+      } yield(c.id, c.title, subQuery(c) as "productCount")
+      val statement = q2.selectStatement
       implicit val getCategoryItem = GetResult(r => CategoryListItem(r.<<, r.<<, r.<<))
       val query = Q.queryNA[CategoryListItem](s"""
           select
