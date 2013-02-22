@@ -1,7 +1,7 @@
 package dao.impl.orm.slick.driver
 
 import slick.ast.{FunctionSymbol, Node, LiteralNode}
-import slick.driver.QueryBuilderInput
+import slick.driver.{MySQLDriver, QueryBuilderInput}
 import slick.util.MacroSupport.macroSupportInterpolation
 
 
@@ -15,10 +15,11 @@ trait MySQLExtendedDriver extends slick.driver.MySQLDriver {
         b"("
         super.expr(column, skipParens)
         b") as ${name}"
-
       }
       case _ => super.expr(n, skipParens)
+
     }
+
   }
 }
 object MySQLExtendedDriver extends MySQLExtendedDriver {

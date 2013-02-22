@@ -35,43 +35,26 @@ class CategoryRepository extends RepositoryBase with dao.common.CategoryReposito
     }
   }
 
-  //TODO: convert to slick
   def list(categoryId: Int, brandId: Int, search:String): Seq[CategoryListItem] = {
     database withSession {
-      /*def subQuery(cat: CategoriesTable.type) = (for {
-        (p, pc) <- ProductsTable rightJoin ProductsCategoriesTable on (_.id === _.productId)
-        (pc, c) <- pc rightJoin CategoriesTable on (_.categoryId === _.id)
+      def subQuery(cat: CategoriesTable.type) = (for {
+        pc <- ProductsCategoriesTable
+        p <- ProductsTable
+        c <- CategoriesTable
+        if c.id === pc.categoryId &&
+        p.id === pc.productId &&
+        c.leftValue >= cat.leftValue &&
+        c.rightValue <= cat.rightValue &&
+        {if (brandId > 0) p.brandId === brandId else ConstColumn.TRUE === ConstColumn.TRUE } &&
+        {if (!search.isEmpty) p.title.like(s"%$search%") else ConstColumn.TRUE === ConstColumn.TRUE }
       } yield(p.id.count))
       val q2 = for {
         c <- CategoriesTable
         if (c.parentId === categoryId)
       } yield(c.id, c.title, subQuery(c) as "productCount")
-      val statement = q2.selectStatement  */
-      implicit val getCategoryItem = GetResult(r => CategoryListItem(r.<<, r.<<, r.<<))
-      val query = Q.queryNA[CategoryListItem](s"""
-          select
-            cat.categoryId,
-            cat.title,
-            (
-              select
-                count(product.productId)
-              from
-                products product
-                right join products_categories productCategory on productCategory.productId = product.productId
-                right join categories c on c.categoryId = productCategory.categoryId
-              where
-                c.leftValue >= cat.leftValue and
-                c.rightValue <= cat.rightValue and
-                ${brandId match {case 0 => "1=1" case _ => "product.brandId="+brandId}} and
-                ${if(search.isEmpty) "1=1" else "product.title like '%" + search + "%'"}
-            ) as productCount
-          from
-            categories cat
-          where
-            cat.parentCategoryId = $categoryId;
-                """)
-      play.api.Logger.info(query.getStatement)
-      query.list.filter(p => p.productCount > 0)
+      q2.list.map {
+        case (a:Int,b:String, c:Int) => new CategoryListItem(a, b, c)
+      }.filter(p => p.productCount > 0)
     }
   }
   def getBreadcrumbs(categoryId: Int, productId: Int, search:String): Seq[(Int, String)] = {
