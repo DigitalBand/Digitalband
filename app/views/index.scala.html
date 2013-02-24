@@ -2,6 +2,12 @@
 @import Shared._
 @main(scripts = scripts) {
     <div id="myCarousel" class="carousel slide">
+        <ol class="carousel-indicators">
+            <li data-target="#myCarousel" data-slide-to="0" class="active"></li>
+            @for(i <- 1 to (categories.length-1)){
+                <li data-target="#myCarousel" data-slide-to="@i"></li>
+            }
+        </ol>
         <div class="carousel-inner">
             @carouselItem(categories.head.imageId, isActive = true, captionTitle = categories.head.title, url = routes.Product.filteredList(categories.head.id, 1).toString
             )
