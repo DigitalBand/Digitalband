@@ -53,7 +53,6 @@ class OrderRepository extends dao.common.OrderRepository {
           o.productId = p.productId and
           o.orderId = $orderId
       """)
-    val statement = query.getStatement
     query.list
   }
 }

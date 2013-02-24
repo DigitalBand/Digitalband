@@ -14,7 +14,6 @@ class ProductRepository extends RepositoryBase with dao.common.ProductRepository
       val productsQuery = ProductsTable.filter(p =>
         p.archived === false && p.price > 0.0
       ).sortBy(_.visitCounter.desc).take(count).map(p => p.title ~ p.description ~ p.price ~ p.id ~ p.defaultImageId)
-      play.api.Logger.debug(productsQuery.selectStatement)
       productsQuery.list.map {
           case (title: String, descr:Option[String], price:Double, id:Int, imageId:Option[Int]) =>
             ProductEntity(title, descr.getOrElse(""), price, id, imageId.getOrElse(0))
@@ -43,7 +42,6 @@ class ProductRepository extends RepositoryBase with dao.common.ProductRepository
         (if (!search.isEmpty()) p.title like "%"+search+"%" else true)
       } yield (p.title.count)
       val count = countQuery.firstOption.getOrElse(0)
-      play.api.Logger.debug(countQuery.selectStatement)
       val products = productsQuery.drop(pageSize*(pageNumber-1)).take(pageSize).list.map {
         case (title: String, descr: Option[String], price: Double, id: Int, imageId:Option[Int]) =>
           ProductEntity(title, descr.getOrElse(""), price, id, imageId.getOrElse(0))
