@@ -8,7 +8,7 @@
     <li>
         <a href="@url(item.id)" title="@{s"$linkTitle ${item.productCount}"}">
             @if(item.imageId > 0){
-                <img alt="@item.title" src="@routes.Image.get(item.imageId + ".jpg", 100, "40x25", "full")" />&nbsp;
+                <img class="thumbnail sidenav-image" alt="@item.title" src="@routes.Image.get(item.imageId + ".jpg", 100, "80x50", "full")" />&nbsp;
             }
             @item.title.toLowerCase.capitalize
         </a>
