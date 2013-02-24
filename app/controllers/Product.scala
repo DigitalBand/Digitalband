@@ -9,9 +9,9 @@ import play.api.Play.current
 import play.api.cache.Cached
 
 class Product @Inject()(productRepository: ProductRepository,
-                         categoryRepository: CategoryRepository,
-                         imageRepository: ImageRepository,
-                         brandRepository: BrandRepository) extends ControllerBase {
+                        categoryRepository: CategoryRepository,
+                        imageRepository: ImageRepository,
+                        brandRepository: BrandRepository) extends ControllerBase {
 
   def list = filteredList(1)
 
@@ -22,7 +22,7 @@ class Product @Inject()(productRepository: ProductRepository,
                    productId: Int = 0,
                    pageSize: Int = 10,
                    search: String = "") =
-    //Cached(s"$categoryId-$pageNumber-$brandId-$brandPage-$productId-$pageSize-$search", 7200) {
+    Cached(req => req.toString, 82000) {
       Action {
         implicit request =>
           if (productId > 0)
@@ -44,11 +44,14 @@ class Product @Inject()(productRepository: ProductRepository,
                 search))
           }
       }
-    //}
+    }
 
-  def display(id: Int): Action[AnyContent] = Action {
-    display(id, 1, 0, 1, 1, "")
-  }
+  def display(id: Int): Action[AnyContent] =
+    Cached(req => req.toString, 82000) {
+      Action {
+        display(id, 1, 0, 1, 1, "")
+      }
+    }
 
   def display(id: Int, categoryId: Int, brandId: Int, brandPage: Int, pageNumber: Int, search: String) = {
     Ok(views.html.Product.display(
