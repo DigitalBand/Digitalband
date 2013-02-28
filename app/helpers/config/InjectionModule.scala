@@ -2,7 +2,6 @@ package helpers.config
 
 import com.tzavellas.sse.guice.ScalaModule
 import dao.impl.orm.slick._
-import dao.impl.fake.{UserRepository}
 
 class InjectionModule extends ScalaModule {
   def configure() {

@@ -1,4 +1,4 @@
-@(categories: Seq[CategoryEntity], products: Seq[models.ProductEntity])
+@(categories: Seq[CategoryEntity], products: Seq[models.ProductEntity])(implicit user: Option[models.UserEntity])
 @import Shared._
 @main(scripts = scripts) {
     <div id="myCarousel" class="carousel slide">

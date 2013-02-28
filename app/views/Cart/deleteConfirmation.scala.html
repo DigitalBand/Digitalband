@@ -1,4 +1,4 @@
-@(product: models.ProductEntity, returnUrl: String)
+@(product: models.ProductEntity, returnUrl: String)(implicit user:Option[models.UserEntity])
 @import Shared._
 @main(menuItem = "cart") {
     <form action="@routes.Cart.delete(product.id, returnUrl)" method="POST">

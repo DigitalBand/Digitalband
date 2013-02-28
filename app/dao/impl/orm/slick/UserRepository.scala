@@ -21,7 +21,13 @@ class UserRepository extends dao.common.UserRepository {
   }
 
 
-  def authenticate(login: String, password: String): Option[UserEntity] = ???
+  def authenticate(login: String, password: String): Option[UserEntity] = database withSession {
+    implicit val getUserResult = GetResult(r => new UserEntity(r.<<, r.<<))
+    def getUser(name: String, p:String) = sql"""
+      select email, userId from user_profiles where email = $name and password = $p;
+    """.as[UserEntity]
+    getUser(login, password).firstOption
+  }
 
   def get(email: String): Option[UserEntity] = database withSession {
     implicit val getUserResult = GetResult(r => new UserEntity(r.<<, r.<<))

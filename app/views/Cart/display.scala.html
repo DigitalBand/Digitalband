@@ -1,4 +1,4 @@
-@(items: Seq[models.CartItem], returnUrl: String)
+@(items: Seq[models.CartItem], returnUrl: String)(implicit user:Option[models.UserEntity])
 @import Cart.shoppingList
 @import Shared.wizard
 @main(menuItem = "cart") {

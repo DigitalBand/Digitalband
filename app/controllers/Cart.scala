@@ -1,5 +1,6 @@
 package controllers
 
+import common.ControllerBase
 import play.api.mvc._
 import com.google.inject.Inject
 import dao.common.{UserRepository, ProductRepository, CartRepository}
@@ -10,7 +11,7 @@ import helpers.SessionHelper._
 
 
 
-class Cart @Inject()(val cartRepository: CartRepository, productRepository: ProductRepository, userRepository: UserRepository) extends Controller {
+class Cart @Inject()(val cartRepository: CartRepository, productRepository: ProductRepository, ur: UserRepository) extends ControllerBase(ur) {
   val addToCartForm = Form(
     mapping(
       "productId" -> number,
@@ -42,6 +43,7 @@ class Cart @Inject()(val cartRepository: CartRepository, productRepository: Prod
   }
 
   def deleteConfirmation(productId: Int, returnUrl: String = "") = Action {
+    implicit request =>
     Ok(views.html.Cart.deleteConfirmation(productRepository.get(productId), returnUrl))
   }
 

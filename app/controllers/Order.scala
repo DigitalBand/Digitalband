@@ -1,14 +1,16 @@
 package controllers
 
 import _root_.models.DeliveryInfo
+import common.ControllerBase
 import play.api.mvc.{Action, Controller}
 import com.google.inject.Inject
 import dao.common.{UserRepository, CartRepository, OrderRepository}
 import play.api._
 import data.Form
 import data.Forms._
+import forms.loginForm
 
-class Order @Inject()(orderRepository: OrderRepository, cartRepository: CartRepository, userRepository: UserRepository) extends Controller {
+class Order @Inject()(orderRepository: OrderRepository, cartRepository: CartRepository, ur: UserRepository) extends ControllerBase(ur) {
   val deliveryForm = Form(mapping(
     "name" -> nonEmptyText(minLength = 2, maxLength = 50),
     "email" -> email,
@@ -43,6 +45,7 @@ class Order @Inject()(orderRepository: OrderRepository, cartRepository: CartRepo
   }
 
   def confirmation(orderId: Int) = Action {
+    implicit request =>
     Ok(views.html.Order.confirmation(orderRepository.getItems(orderId), orderId))
   }
 

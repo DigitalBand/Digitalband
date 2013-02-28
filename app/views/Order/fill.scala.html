@@ -1,4 +1,4 @@
-@(items: Seq[models.CartItem], deliveryInfo: Form[DeliveryInfo], loginForm: Option[Form[(String, String)]], returnUrl: String)
+@(items: Seq[models.CartItem], deliveryInfo: Form[DeliveryInfo], loginForm: Option[Form[(String, String)]], returnUrl: String)(implicit user:Option[models.UserEntity])
 @import Cart.shoppingList
 @import Shared.wizard
 @import views.html.common.bootstrap._

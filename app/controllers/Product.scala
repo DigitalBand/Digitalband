@@ -1,7 +1,7 @@
 package controllers
 
 import common.ControllerBase
-import play.api.mvc.{AnyContent, Action}
+import play.api.mvc.{Request, AnyContent, Action}
 import com.google.inject.Inject
 import dao.common._
 
@@ -11,7 +11,8 @@ import play.api.cache.Cached
 class Product @Inject()(productRepository: ProductRepository,
                         categoryRepository: CategoryRepository,
                         imageRepository: ImageRepository,
-                        brandRepository: BrandRepository) extends ControllerBase {
+                        brandRepository: BrandRepository,
+                         ur:UserRepository) extends ControllerBase(ur) {
 
   def list = filteredList(1)
 
@@ -49,11 +50,12 @@ class Product @Inject()(productRepository: ProductRepository,
   def display(id: Int): Action[AnyContent] =
     Cached(req => req.toString, 82000) {
       Action {
+        implicit request =>
         display(id, 1, 0, 1, 1, "")
       }
     }
 
-  def display(id: Int, categoryId: Int, brandId: Int, brandPage: Int, pageNumber: Int, search: String) = {
+  def display(id: Int, categoryId: Int, brandId: Int, brandPage: Int, pageNumber: Int, search: String)(implicit request:Request[AnyContent]) = {
     Ok(views.html.Product.display(
       productRepository.get(id, brandRepository.get),
       imageRepository.listByProductId(id),

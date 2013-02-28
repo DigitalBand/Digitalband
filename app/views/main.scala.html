@@ -1,10 +1,14 @@
-@(title: String = Messages("main.head.title"), menuItem: String = "index", scripts: Html = Html(""), search: String = "")(content: Html)
+@(title: String = Messages("main.head.title"),
+menuItem: String = "index",
+scripts: Html = Html(""),
+search: String = "")(content: Html)(implicit user:Option[models.UserEntity])
+
 <!DOCTYPE html>
 <html>
     <head>
         <title>@title</title>
 
-        <link rel="stylesheet" media="screen" href="@routes.Assets.at("stylesheets/bootstrap/main.min.css")">
+        <link rel="stylesheet" media="screen" href="@routes.Assets.at("stylesheets/bootstrap/main.css")">
         <link rel="shortcut icon" type="image/png" href="@routes.Assets.at("images/favicon.png")">
     </head>
     <body>
@@ -33,7 +37,7 @@
                             </li>
                             <li class="@{if(menuItem.equals("security")) "active" else ""}">
                                 <a href="@routes.Security.login">
-                                    <i class="icon-key"></i>
+                                    <i class="@(if (user.isDefined) "icon-off" else "icon-key" )"></i>&nbsp;
                                 </a>
                            </li>
                         </ul>
@@ -48,6 +52,7 @@
             </div>
         </div>
         <div class="container">
+
         @content
         </div>
         <footer>

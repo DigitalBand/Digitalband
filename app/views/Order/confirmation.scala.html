@@ -1,4 +1,4 @@
-@(items: Seq[models.CartItem], orderId: Int)
+@(items: Seq[models.CartItem], orderId: Int)(implicit user:Option[models.UserEntity])
 @import Cart.shoppingList
 @main() {
     <div class="page-header">

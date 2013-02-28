@@ -1,6 +1,6 @@
 @(product: models.ProductDetails, imageIds: Seq[Int], categories: Seq[models.CategoryListItem],
 brands:ListPage[BrandEntity], categoryId: Int, brandId: Int, breadcrumbItems: Seq[(Int, String)],
-pageNumber:Int, search: String)
+pageNumber:Int, search: String)(implicit user:Option[models.UserEntity])
 @import Shared._
 
 @withsidebar(product.title, "catalogue", search = search, brands = brands, categories = categories,

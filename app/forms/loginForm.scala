@@ -1,12 +1,10 @@
 package forms
+import play.api.mvc._
+import dao.common.UserRepository
+import play.api.data.Form
+import play.api.data.Forms._
+import play.api.i18n.Messages
 
-/**
- * Created with IntelliJ IDEA.
- * User: TTkachenko
- * Date: 28.02.13
- * Time: 12:10
- * To change this template use File | Settings | File Templates.
- */
 object loginForm {
   def apply(userService: UserRepository)(implicit request: Request[AnyContent]) = {
     Form(
@@ -16,7 +14,8 @@ object loginForm {
       ) verifying(Messages("validation.login.wronginfo"), result =>
         result match {
           case (email, password) =>
-            userService.authenticate(email, password).isDefined
+            val user = userService.authenticate(email, password)
+            user.isDefined
         })
     )
   }

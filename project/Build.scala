@@ -12,7 +12,7 @@ object ApplicationBuild extends Build {
     "org.squeryl" %% "squeryl" % "0.9.5-6",
     "mysql" % "mysql-connector-java" % "5.1.22",
     "org.jsoup" % "jsoup" % "1.6.3",
-    "com.typesafe" %% "play-plugins-mailer" % "2.1-SNAPSHOT",
+    "com.typesafe" %% "play-plugins-mailer" % "2.1.0",
     "com.tzavellas" % "sse-guice" % "0.7.0",
     "com.typesafe.slick" %% "slick" % "1.0.0",
     "ch.qos.logback" % "logback-classic" % "1.0.9"

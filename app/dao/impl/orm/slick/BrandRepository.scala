@@ -20,8 +20,7 @@ class BrandRepository extends RepositoryBase with dao.common.BrandRepository {
       }
     }
   }
-  //TODO: rewrite for slick
-  //TODO: implement search
+
   def list(getCategory: => CategoryEntity, pageNumber: Int, pageSize: Int, search: String): ListPage[BrandEntity] = {
     database withSession {
       val category = getCategory

@@ -1,29 +1,16 @@
 package controllers
 
 import com.google.inject.Inject
-import play.api.mvc.{AnyContent, Request, Action, Controller}
+import common.ControllerBase
+import play.api.mvc.{Action, Controller}
 import dao.common.UserRepository
 import play.api.data.Form
 import play.api.data.Forms._
 import play.api.i18n.Messages
-import helpers.EmailHelper
+import forms.loginForm
 
-object loginForm {
-  def apply(userService: UserRepository)(implicit request: Request[AnyContent]) = {
-    Form(
-      tuple(
-        "email" -> nonEmptyText,
-        "password" -> nonEmptyText
-      ) verifying(Messages("validation.login.wronginfo"), result =>
-        result match {
-          case (email, password) =>
-            userService.authenticate(email, password).isDefined
-        })
-    )
-  }
-}
 
-class Security @Inject()(val userRepository: UserRepository) extends Controller {
+class Security @Inject()(val ur: UserRepository) extends ControllerBase(ur) {
 
 
   val forgotPasswordForm = Form("email" -> nonEmptyText.verifying(Messages("security.forgotpassword.notregistered"),
@@ -37,8 +24,9 @@ class Security @Inject()(val userRepository: UserRepository) extends Controller 
     implicit request =>
       loginForm(userRepository).bindFromRequest.fold(
         formWithErrors => BadRequest(views.html.Security.login(formWithErrors)),
-        contactsForm => {
-          Redirect(routes.Application.index())
+        user => {
+          val (email, password) = user
+          Redirect(routes.Application.index()).withSession("email" -> email)
         }
       )
   }
@@ -56,7 +44,7 @@ class Security @Inject()(val userRepository: UserRepository) extends Controller 
   //GET
   def login = Action {
     implicit request =>
-      Ok(views.html.Security.login(loginForm(userRepository)))
+      Ok(views.html.Security.login(forms.loginForm(userRepository)))
   }
 
   //GET
@@ -66,6 +54,7 @@ class Security @Inject()(val userRepository: UserRepository) extends Controller 
 
   //GET
   def forgotPassword = Action {
+    implicit request =>
     Ok(views.html.Security.forgotpassword(forgotPasswordForm))
   }
 

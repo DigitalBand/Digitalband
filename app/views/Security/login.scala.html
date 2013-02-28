@@ -1,4 +1,4 @@
-@(loginForm: Form[(String, String)])(implicit lang: Lang, request: play.api.mvc.Request[Any])
+@(loginForm: Form[(String, String)])(implicit lang: Lang, request: play.api.mvc.Request[Any], user:Option[models.UserEntity])
 @import views.html.Security.loginpart
 
 @main(menuItem = "security") {
