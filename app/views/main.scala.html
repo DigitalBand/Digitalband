@@ -39,6 +39,7 @@ search: String = "")(content: Html)(implicit user:Option[models.UserEntity])
                                 <a href="@routes.Security.login">
                                     <i class="@(if (user.isDefined) "icon-off" else "icon-key" )"></i>&nbsp;
                                     @user match {
+                                        case None => {}
                                         case Some(u) => { @u.email }
                                     }
                                 </a>
