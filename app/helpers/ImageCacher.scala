@@ -10,7 +10,7 @@ import models.PictureEntity
 import play.api.Play.current
 
 object ImageCacher {
-  val appPath = Play.application.path.toString
+  val appPath = System.getProperty("user.home")//Play.application.path.toString
   val dataPath = Paths.get(appPath, "data").toString
   val imagesPath = Paths.get(dataPath, "images").toString
 
