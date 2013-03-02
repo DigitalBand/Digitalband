@@ -8,7 +8,10 @@
     <li>
         <a href="@url(item.id)" title="@{s"$linkTitle ${item.productCount}"}">
             @if(item.imageId > 0){
-                <img class="thumbnail sidenav-image" alt="@item.title" src="@routes.Image.get(item.imageId + ".jpg", 100, "80x50", "full")" />&nbsp;
+                <img class="thumbnail sidenav-image lazy-brand" width="40" height="25" alt="@item.title" src="@routes.Assets.at("images/empty.gif")" data-original="@routes.Image.get(item.imageId + ".jpg", 100, "80x50", "full")" />&nbsp;
+                <noscript>
+                    <img class="thumbnail sidenav-image" width="40" height="25" alt="@item.title" src="@routes.Image.get(item.imageId + ".jpg", 100, "80x50", "full")" />&nbsp;
+                </noscript>
             }
             @item.title.toLowerCase.capitalize
         </a>

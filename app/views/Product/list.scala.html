@@ -39,6 +39,9 @@ pageNumber: Int, pageSize: Int, breadcrumbItems: Seq[(Int, String)] = List(), se
                     <a href="@routes.Product.filteredList(currentCategory.id, pageNumber, brandId(brand),
                         productId = product.id, s = searchQuery)">
                         <img class="thumbnail lazy" width="170" height="170" src="@routes.Assets.at("images/empty.gif")" data-original="@routes.Image.get(product.defaultImageId + ".jpg", 90, "340x340", "full")">
+                        <noscript>
+                            <img class="thumbnail" width="170" height="170" src="@routes.Image.get(product.defaultImageId + ".jpg", 90, "340x340", "full")">
+                        </noscript>
                     </a>
                 </div>
                 <div class="span5">

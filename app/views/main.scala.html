@@ -10,6 +10,13 @@ search: String = "")(content: Html)(implicit user: Option[models.UserEntity])
 
     <link rel="stylesheet" media="screen" href="@routes.Assets.at("stylesheets/bootstrap/main.min.css")">
     <link rel="shortcut icon" type="image/png" href="@routes.Assets.at("images/favicon.png")">
+    <noscript>
+        <style>
+                .lazy, .lazy-brand {
+                    display: none;
+                }
+        </style>
+    </noscript>
 </head>
 <body>
     <div class="navbar navbar-fixed-top">
@@ -93,7 +100,8 @@ search: String = "")(content: Html)(implicit user: Option[models.UserEntity])
     @scripts
     <script>
             $(document).ready(function(){
-                $("img.lazy").lazyload();
+            $("img.lazy").lazyload();
+            $("img.lazy-brand").lazyload();
             });
     </script>
 </body>
