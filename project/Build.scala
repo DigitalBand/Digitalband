@@ -4,8 +4,8 @@ import play.Project._
 
 object ApplicationBuild extends Build {
 
-  val appName         = "Digitalband"
-  val appVersion      = "1.0-SNAPSHOT"
+  val appName = "Digitalband"
+  val appVersion = "1.0-SNAPSHOT"
 
   val appDependencies = Seq(
     jdbc,
@@ -18,9 +18,13 @@ object ApplicationBuild extends Build {
     "ch.qos.logback" % "logback-classic" % "1.0.9"
   )
 
+  def customLessEntryPoints(base: File): PathFinder = (
+      (base / "app" / "assets" / "stylesheets" / "bootstrap" ** "main.less") +++
+      (base / "app" / "assets" / "stylesheets" ** "site.less")
+    )
 
   val main = play.Project(appName, appVersion, appDependencies).settings(
-    lessEntryPoints <<= baseDirectory(_ / "app" / "assets" / "stylesheets" / "bootstrap" ** "main.less")
+    lessEntryPoints <<= baseDirectory(customLessEntryPoints)
   )
 
 }
