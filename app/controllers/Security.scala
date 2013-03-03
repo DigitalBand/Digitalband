@@ -2,7 +2,7 @@ package controllers
 
 import com.google.inject.Inject
 import common.ControllerBase
-import play.api.mvc.{Action, Controller}
+import play.api.mvc.Action
 import dao.common.UserRepository
 import play.api.data.Form
 import play.api.data.Forms._
@@ -29,10 +29,14 @@ class Security @Inject()(val ur: UserRepository) extends ControllerBase(ur) {
         user => {
           val (email, password) = user
           if (redirectUrl.isEmpty)
-            Redirect(routes.Application.index()).withSession("email" -> email)
+            Redirect(routes.Application.index()).withSession{
+              session + ("email" -> email)
+            }
           else {
             Cache.remove(redirectUrl)
-            Redirect(redirectUrl).withSession("email" -> email)
+            Redirect(redirectUrl).withSession{
+              session + ("email" -> email)
+            }
           }
         }
       )
@@ -45,11 +49,14 @@ class Security @Inject()(val ur: UserRepository) extends ControllerBase(ur) {
 
   //GET
   def signOff(redirectUrl: String) = Action {
+    implicit request =>
     if (redirectUrl.isEmpty)
-      Redirect(routes.Application.index()).withNewSession
+      Redirect(routes.Application.index()).withSession(session - "email")
     else {
       Cache.remove(redirectUrl)
-      Redirect(redirectUrl).withNewSession
+      Redirect(redirectUrl).withSession(
+        session - "email"
+      )
     }
   }
 

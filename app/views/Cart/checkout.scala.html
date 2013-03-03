@@ -27,7 +27,7 @@
             <div class="well">
                 <h4> Уже зарегистрированы? <br/>
                     <small> Пожалуйста, введите информацию для входа: </small> </h4>
-                <form class="form-inline" action="@routes.Security.signIn()" method="POST">
+                <form class="form-inline" action="@routes.Security.signIn(request.uri)" method="POST">
                     @loginForm.globalError.map { error =>
                         <div class="alert alert-error">
                             @error.message

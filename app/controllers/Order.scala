@@ -18,19 +18,23 @@ class Order @Inject()(orderRepository: OrderRepository, cartRepository: CartRepo
   )(DeliveryInfo.apply)(DeliveryInfo.unapply))
 
   def getCartId(implicit sess: play.api.mvc.Session): Int =
-    helpers.SessionHelper.getCartId(sess, cartRepository.createCart, userRepository.getUserId)
+    helpers.SessionHelper.getCartId(cartRepository.createCart, userRepository.getUserId)
 
   def fill(checkoutMethod: String) = Action {
     implicit request =>
-      val cartId = getCartId(session)
-      Ok(views.html.Order.fill(cartRepository.list(cartId), deliveryForm))
+      val cartId = getCartId
+      val itemsList = cartRepository.list(cartId)
+      if (!itemsList.isEmpty)
+        Ok(views.html.Order.fill(itemsList, deliveryForm))
+      else
+        Redirect(routes.Cart.display())
   }
 
   def place = Action {
     implicit request =>
       deliveryForm.bindFromRequest.fold(
         formWithErrors => {
-          val cartId = getCartId(session)
+          val cartId = getCartId
           BadRequest(views.html.Order.fill(cartRepository.list(cartId), formWithErrors))
         },
         deliveryInfo => {

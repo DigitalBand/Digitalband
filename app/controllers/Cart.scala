@@ -7,7 +7,7 @@ import dao.common.{UserRepository, ProductRepository, CartRepository}
 import models.{CItem, CartItem}
 import play.api.data.Form
 import play.api.data.Forms._
-import helpers.SessionHelper._
+import helpers.SessionHelper
 import forms.loginForm
 
 
@@ -19,11 +19,11 @@ class Cart @Inject()(val cartRepository: CartRepository, productRepository: Prod
       "returnUrl" -> text
     )(CItem.apply)(CItem.unapply)
   )
-
+  def getCartId(implicit session: Session) = SessionHelper.getCartId(cartRepository.createCart, userRepository.getUserId)
   def add = Action {
     implicit request =>
       val cItem = addToCartForm.bindFromRequest.get
-      val cartId = getCartId(session, cartRepository.createCart, userRepository.getUserId)
+      val cartId = getCartId
       cartRepository.add(new CartItem(cartId, cItem.productId, cItem.count))
       Redirect(routes.Cart.display(cItem.returnUrl)) withSession
         session + ("cartid" -> cartId.toString)
@@ -31,14 +31,14 @@ class Cart @Inject()(val cartRepository: CartRepository, productRepository: Prod
 
   def display(returnUrl: String) = Action {
     implicit request =>
-      val cartId = getCartId(session, cartRepository.createCart, userRepository.getUserId)
+      val cartId = getCartId
       val cartItems: Seq[CartItem] = cartRepository.list(cartId)
       Ok(views.html.Cart.display(cartItems, returnUrl))
   }
 
   def delete(productId: Int, returnUrl: String = "") = Action {
     implicit request =>
-      cartRepository.deleteItem(getCartId(session, cartRepository.createCart, userRepository.getUserId), productId)
+      cartRepository.deleteItem(getCartId, productId)
       Redirect(routes.Cart.display(returnUrl))
   }
 
@@ -50,14 +50,17 @@ class Cart @Inject()(val cartRepository: CartRepository, productRepository: Prod
   def update(returnUrl: String) = Action {
     implicit request =>
       val items = getCartItems(request.body)
-      val cartId = getCartId(session, cartRepository.createCart, userRepository.getUserId)
+      val cartId = getCartId
       cartRepository.updateItems(cartId, items)
       Redirect(routes.Cart.display(returnUrl))
   }
 
   def checkout = Action {
     implicit request =>
-      Ok(views.html.Cart.checkout(loginForm(userRepository)))
+      if (!user.isDefined)
+        Ok(views.html.Cart.checkout(loginForm(userRepository)))
+      else
+        Redirect(routes.Order.fill())
   }
 
   private def getCartItems(body: AnyContent): Seq[CItem] = {
