@@ -1,4 +1,4 @@
-@(loginForm: Form[(String, String)])(implicit user: Option[models.UserEntity])
+@(loginForm: Form[(String, String)])(implicit user: Option[models.UserEntity],request: play.api.mvc.Request[Any])
 @import views.html.common.bootstrap._
 @import views.html.Security.loginpart
 @import Shared.wizard

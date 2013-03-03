@@ -19,7 +19,7 @@ POST    /cart/delete/:productId                                                 
 GET     /cart/confirm-delete/:productId                                           @controllers.Cart.deleteConfirmation(productId: Int, returnUrl: String ?= "")
 POST    /cart/update                                                              @controllers.Cart.update(returnUrl: String ?= "")
 GET     /cart                                                                     @controllers.Cart.display(returnUrl: String ?= "")
-GET     /checkout                                                            @controllers.Cart.checkout
+GET     /checkout                                                                 @controllers.Cart.checkout
 # Order
 GET     /order                                                                    @controllers.Order.fill(m: String ?= "guest")
 POST    /order/place                                                              @controllers.Order.place
@@ -27,7 +27,7 @@ GET     /order/:orderId/display                                                 
 GET     /order/:orderId/confirmation                                              @controllers.Order.confirmation(orderId: Int)
 
 #Security
-GET     /login                                                                    @controllers.Security.login
+GET     /login                                                                    @controllers.Security.login(returnUrl: String ?= "")
 GET     /registration                                                             @controllers.Security.registration(returnUrl: String ?= "")
 GET     /signOff                                                                  @controllers.Security.signOff(returnUrl: String ?= "")
 POST    /signIn                                                                   @controllers.Security.signIn(returnUrl: String ?= "")

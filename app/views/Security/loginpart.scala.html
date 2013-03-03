@@ -1,4 +1,4 @@
-@(loginForm: Form[(String, String)])(implicit lang: Lang)
+@(loginForm: Form[(String, String)], returnUrl: String = "")(implicit lang: Lang)
 @import views.html.common.bootstrap._
 
 @loginForm.globalError.map { error =>
@@ -6,7 +6,7 @@
         @error.message
     </div>
 }
-<form class="form-horizontal" action="@routes.Security.signIn()" method="POST">
+<form class="form-horizontal" action="@routes.Security.signIn(returnUrl)" method="POST">
     <fieldset>
         <legend>
             <i class="icon-key"></i>

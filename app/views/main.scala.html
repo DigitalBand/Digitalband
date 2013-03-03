@@ -64,7 +64,7 @@ search: String = "")(content: Html)(implicit user: Option[models.UserEntity], re
                         <li class="@{
                             if(menuItem.equals("security")) "active" else ""
                         }">
-                            <a href="@(if (user.isDefined) routes.Security.signOff(request.uri) else routes.Security.login)">
+                            <a href="@(if (user.isDefined) routes.Security.signOff(request.uri) else routes.Security.login(request.uri))">
                                 <i class="@(if(user.isDefined) "icon-off" else "icon-key")"></i>
                             </a>
                         </li>
@@ -74,7 +74,6 @@ search: String = "")(content: Html)(implicit user: Option[models.UserEntity], re
         </div>
     </div>
     <div class="container">
-
         @content
     </div>
     <footer>

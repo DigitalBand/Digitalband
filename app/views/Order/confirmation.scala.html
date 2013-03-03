@@ -1,4 +1,4 @@
-@(items: Seq[models.CartItem], orderId: Int)(implicit user:Option[models.UserEntity])
+@(items: Seq[models.CartItem], orderId: Int)(implicit user:Option[models.UserEntity],request: play.api.mvc.Request[Any])
 @import Cart.shoppingList
 @main() {
     <div class="page-header">

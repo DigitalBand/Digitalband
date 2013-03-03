@@ -1,6 +1,8 @@
 @(productListPage: models.ListPage[models.ProductEntity], currentCategory: CategoryEntity,
 categories: Seq[models.CategoryListItem], brands: ListPage[models.BrandEntity], brand: Option[models.BrandEntity],
-pageNumber: Int, pageSize: Int, breadcrumbItems: Seq[(Int, String)] = List(), searchQuery: String)(implicit user:Option[models.UserEntity])
+pageNumber: Int, pageSize: Int,
+breadcrumbItems: Seq[(Int, String)] = List(),
+searchQuery: String)(implicit user:Option[models.UserEntity],request: play.api.mvc.Request[Any])
 @import helpers.ViewHelper._
 @import Shared._
 

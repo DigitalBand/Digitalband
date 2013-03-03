@@ -1,4 +1,4 @@
-@(items: Seq[models.CartItem], deliveryInfo: Form[DeliveryInfo])(implicit user: Option[models.UserEntity])
+@(items: Seq[models.CartItem], deliveryInfo: Form[DeliveryInfo])(implicit user: Option[models.UserEntity],request: play.api.mvc.Request[Any])
 @import Cart.shoppingList
 @import Shared.wizard
 @import views.html.common.bootstrap._

@@ -23,7 +23,7 @@ class Product @Inject()(productRepository: ProductRepository,
                    productId: Int = 0,
                    pageSize: Int = 10,
                    search: String = "") =
-    Cached(req => req.toString, 82000) {
+    Cached(req => req.uri, 82000) {
       Action {
         implicit request =>
           if (productId > 0)
