@@ -19,9 +19,9 @@ POST    /cart/delete/:productId                                                 
 GET     /cart/confirm-delete/:productId                                           @controllers.Cart.deleteConfirmation(productId: Int, returnUrl: String ?= "")
 POST    /cart/update                                                              @controllers.Cart.update(returnUrl: String ?= "")
 GET     /cart                                                                     @controllers.Cart.display(returnUrl: String ?= "")
-
+GET     /cart/checkout                                                            @controllers.Cart.checkout
 # Order
-GET     /order                                                                    @controllers.Order.fill
+GET     /order                                                                    @controllers.Order.fill(m: String ?= "guest")
 POST    /order/place                                                              @controllers.Order.place
 GET     /order/:orderId/display                                                   @controllers.Order.display(orderId: Int)
 GET     /order/:orderId/confirmation                                              @controllers.Order.confirmation(orderId: Int)

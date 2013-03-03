@@ -1,0 +1,50 @@
+@(loginForm: Form[(String, String)])(implicit user: Option[models.UserEntity])
+@import views.html.common.bootstrap._
+@import views.html.Security.loginpart
+@import Shared.wizard
+@main(menuItem = "cart") {
+    @wizard(1)<br/>
+    <div class="row">
+        <div class="span6" style="padding-bottom:10px">
+            <div class="page-header" style="margin-top:0;margin-bottom: 18px;">
+                <h4 style="margin-top:0;"> Как вы хотите оформить заказ? </h4>
+            </div>
+
+            <h4> Зарегистрируйтесь и экономьте время! </h4>
+            <p> Зарегистрируйтесь на сайте для удобства в будущем: </p>
+            <ul class="ul">
+                <li> Быстрое оформление заказа </li>
+                <li> Удобный доступ к истории и статусам ваших заказов </li>
+            </ul>
+            <a href="@routes.Order.fill("register")" class="btn btn-success" title="Необходимо будет ввести пароль">
+                    Оформить заказ с регистрацией
+            </a>
+            <h5> Не хотите регистрироваться при оформлении заказа? </h5>
+            <a href="@routes.Order.fill("guest")" class="btn btn-primary"> Оформить заказ как гость </a>
+
+        </div>
+        <div class="span6">
+            <div class="well">
+                <h4> Уже зарегистрированы? <br/>
+                    <small> Пожалуйста, введите информацию для входа: </small> </h4>
+                <form class="form-inline" action="@routes.Security.signIn()" method="POST">
+                    @loginForm.globalError.map { error =>
+                        <div class="alert alert-error">
+                            @error.message
+                        </div>
+                    }
+                    <fieldset>
+
+
+                        @helper.inputText(loginForm("email"), args = 'type -> "email")
+                        @helper.inputPassword(loginForm("password"))
+
+                        <button class="btn btn-primary"> Войти и оформить заказ </button> &nbsp;
+                        <a href="@routes.Security.forgotPassword"> @Messages("security.login.form.forgotpassword") </a>
+
+                    </fieldset>
+                </form>
+            </div>
+        </div>
+    </div>
+}

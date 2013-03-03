@@ -38,7 +38,7 @@ class Security @Inject()(val ur: UserRepository) extends ControllerBase(ur) {
 
   //GET
   def signOff = Action {
-    NotImplemented
+    Redirect(routes.Application.index()).withNewSession
   }
 
   //GET

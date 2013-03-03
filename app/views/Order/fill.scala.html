@@ -1,4 +1,4 @@
-@(items: Seq[models.CartItem], deliveryInfo: Form[DeliveryInfo], loginForm: Option[Form[(String, String)]], returnUrl: String)(implicit user:Option[models.UserEntity])
+@(items: Seq[models.CartItem], deliveryInfo: Form[DeliveryInfo], loginForm: Option[Form[(String, String)]], returnUrl: String)(implicit user: Option[models.UserEntity])
 @import Cart.shoppingList
 @import Shared.wizard
 @import views.html.common.bootstrap._
@@ -11,25 +11,26 @@
             &nbsp; <a href="@routes.Cart.display()"> <i class="icon-edit"></i> Редактировать заказ </a>
     </div>
     @shoppingList(items, returnUrl, false)
-    <div class="row">
-        <form method="post" action="@routes.Order.place" class="form-horizontal @(if(loginForm.isDefined)"span6")">
-            <fieldset>
-                <legend> Информация для доставки </legend>
-                @helper.inputText(deliveryInfo("name"))
-                @helper.inputText(deliveryInfo("email"))
-                @helper.inputText(deliveryInfo("phone"))
-                @helper.textarea(deliveryInfo("address"))
-            </fieldset>
-            <div class="form-actions">
-                <button class="btn btn-success pull-right"> <i class="icon-ok"></i> &nbsp; @Messages("order.fill.form.buttons.placeorder") </button>
+
+    <form method="post" action="@routes.Order.place" class="form-inline">
+        <fieldset>
+            <legend> Информация для доставки </legend>
+            <div class="row">
+                <div class="span6">
+                    @helper.inputText(deliveryInfo("name"), 'class -> "input-xlarge")
+                    @helper.inputText(deliveryInfo("email"), 'class -> "input-xlarge")
+                    @helper.inputText(deliveryInfo("phone"), 'class -> "input-xlarge")
+                </div>
+                <div class="span6">
+
+                    @helper.textarea(deliveryInfo("address"), 'rows -> 7, 'class -> "input-xlarge")
+                </div>
             </div>
-        </form>
-        @if(loginForm.isDefined){
-        <div class="span6">
-            <legend> Для зарегестрированных пользователей </legend>
-            @loginpart(loginForm.get)
+        </fieldset>
+        <div class="form-actions">
+            <button class="btn btn-success"> <i class="icon-ok"></i> &nbsp; @Messages("order.fill.form.buttons.placeorder") </button>
         </div>
-        }
-    </div>
+    </form>
+
 
 }

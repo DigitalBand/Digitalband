@@ -19,7 +19,7 @@ class Order @Inject()(orderRepository: OrderRepository, cartRepository: CartRepo
   )(DeliveryInfo.apply)(DeliveryInfo.unapply))
   def getCartId(sess: play.api.mvc.Session): Int =
     helpers.SessionHelper.getCartId(sess, cartRepository.createCart, userRepository.getUserId)
-  def fill() = Action {
+  def fill(checkoutMethod: String) = Action {
     implicit request =>
       val cartId = getCartId(session)
       Ok(views.html.Order.fill(cartRepository.list(cartId), deliveryForm, Option(loginForm(userRepository)), ""))

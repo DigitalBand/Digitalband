@@ -8,7 +8,7 @@ import models.{CItem, CartItem}
 import play.api.data.Form
 import play.api.data.Forms._
 import helpers.SessionHelper._
-
+import forms.loginForm
 
 
 class Cart @Inject()(val cartRepository: CartRepository, productRepository: ProductRepository, ur: UserRepository) extends ControllerBase(ur) {
@@ -53,6 +53,11 @@ class Cart @Inject()(val cartRepository: CartRepository, productRepository: Prod
       val cartId = getCartId(session, cartRepository.createCart, userRepository.getUserId)
       cartRepository.updateItems(cartId, items)
       Redirect(routes.Cart.display(returnUrl))
+  }
+
+  def checkout = Action {
+    implicit request =>
+      Ok(views.html.Cart.checkout(loginForm(userRepository)))
   }
 
   private def getCartItems(body: AnyContent): Seq[CItem] = {
