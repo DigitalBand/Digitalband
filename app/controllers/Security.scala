@@ -20,7 +20,7 @@ class Security @Inject()(val ur: UserRepository) extends ControllerBase(ur) {
     }))
 
   //POST
-  def signIn(login: String, password: String) = Action {
+  def signIn(redirectUrl: String) = Action {
     implicit request =>
       loginForm(userRepository).bindFromRequest.fold(
         formWithErrors => BadRequest(views.html.Security.login(formWithErrors)),
@@ -32,13 +32,16 @@ class Security @Inject()(val ur: UserRepository) extends ControllerBase(ur) {
   }
 
   //POST
-  def signUp(login: String, password: String) = Action {
+  def signUp(redirectUrl:String) = Action {
     NotImplemented
   }
 
   //GET
-  def signOff = Action {
-    Redirect(routes.Application.index()).withNewSession
+  def signOff(redirectUrl:String) = Action {
+    if (redirectUrl.isEmpty)
+      Redirect(routes.Application.index()).withNewSession
+    else
+      Redirect(redirectUrl)
   }
 
   //GET
@@ -48,7 +51,7 @@ class Security @Inject()(val ur: UserRepository) extends ControllerBase(ur) {
   }
 
   //GET
-  def registration = Action {
+  def registration(redirectUrl:String) = Action {
     NotImplemented
   }
 

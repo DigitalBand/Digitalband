@@ -1,4 +1,4 @@
-@(items: Seq[models.CartItem], deliveryInfo: Form[DeliveryInfo], loginForm: Option[Form[(String, String)]], returnUrl: String)(implicit user: Option[models.UserEntity])
+@(items: Seq[models.CartItem], deliveryInfo: Form[DeliveryInfo])(implicit user: Option[models.UserEntity])
 @import Cart.shoppingList
 @import Shared.wizard
 @import views.html.common.bootstrap._
@@ -8,21 +8,21 @@
     @wizard(2)
     <div class="page-header">
         <h3> Ваш заказ </h3>
-            &nbsp; <a href="@routes.Cart.display()"> <i class="icon-edit"></i> Редактировать заказ </a>
+            &nbsp;<a href="@routes.Cart.display()"> <i class="icon-edit"></i> Редактировать заказ </a>
     </div>
-    @shoppingList(items, returnUrl, false)
-
+    @shoppingList(items, "", false)
     <form method="post" action="@routes.Order.place" class="form-inline">
         <fieldset>
             <legend> Информация для доставки </legend>
             <div class="row">
                 <div class="span6">
+
                     @helper.inputText(deliveryInfo("name"), 'class -> "input-xlarge")
                     @helper.inputText(deliveryInfo("email"), 'class -> "input-xlarge")
+
                     @helper.inputText(deliveryInfo("phone"), 'class -> "input-xlarge")
                 </div>
                 <div class="span6">
-
                     @helper.textarea(deliveryInfo("address"), 'rows -> 7, 'class -> "input-xlarge")
                 </div>
             </div>

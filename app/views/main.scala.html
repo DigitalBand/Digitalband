@@ -1,7 +1,7 @@
 @(title: String = Messages("main.head.title"),
 menuItem: String = "index",
 scripts: Html = Html(""),
-search: String = "")(content: Html)(implicit user: Option[models.UserEntity])
+search: String = "")(content: Html)(implicit user: Option[models.UserEntity], request: play.api.mvc.Request[Any])
 
 <!DOCTYPE html>
 <html>
@@ -64,7 +64,7 @@ search: String = "")(content: Html)(implicit user: Option[models.UserEntity])
                         <li class="@{
                             if(menuItem.equals("security")) "active" else ""
                         }">
-                            <a href="@(if (user.isDefined) routes.Security.signOff else routes.Security.login)">
+                            <a href="@(if (user.isDefined) routes.Security.signOff(request.uri) else routes.Security.login)">
                                 <i class="@(if(user.isDefined) "icon-off" else "icon-key")"></i>
                             </a>
                         </li>

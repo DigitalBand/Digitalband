@@ -19,7 +19,7 @@ POST    /cart/delete/:productId                                                 
 GET     /cart/confirm-delete/:productId                                           @controllers.Cart.deleteConfirmation(productId: Int, returnUrl: String ?= "")
 POST    /cart/update                                                              @controllers.Cart.update(returnUrl: String ?= "")
 GET     /cart                                                                     @controllers.Cart.display(returnUrl: String ?= "")
-GET     /cart/checkout                                                            @controllers.Cart.checkout
+GET     /checkout                                                            @controllers.Cart.checkout
 # Order
 GET     /order                                                                    @controllers.Order.fill(m: String ?= "guest")
 POST    /order/place                                                              @controllers.Order.place
@@ -28,10 +28,10 @@ GET     /order/:orderId/confirmation                                            
 
 #Security
 GET     /login                                                                    @controllers.Security.login
-GET     /registration                                                             @controllers.Security.registration
-GET     /signOff                                                                  @controllers.Security.signOff
-POST    /signIn                                                                   @controllers.Security.signIn(login:String ?= "", password:String ?= "")
-POST    /signUp                                                                   @controllers.Security.signUp(login:String ?= "", password:String ?= "")
+GET     /registration                                                             @controllers.Security.registration(returnUrl: String ?= "")
+GET     /signOff                                                                  @controllers.Security.signOff(returnUrl: String ?= "")
+POST    /signIn                                                                   @controllers.Security.signIn(returnUrl: String ?= "")
+POST    /signUp                                                                   @controllers.Security.signUp(returnUrl: String ?= "")
 GET     /forgotPassword                                                           @controllers.Security.forgotPassword
 POST    /sendPassword                                                             @controllers.Security.sendPassword
 #Images
