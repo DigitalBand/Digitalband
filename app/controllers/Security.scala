@@ -30,12 +30,12 @@ class Security @Inject()(val ur: UserRepository) extends ControllerBase(ur) {
           val (email, password) = user
           if (redirectUrl.isEmpty)
             Redirect(routes.Application.index()).withSession{
-              session + ("email" -> email)
+              "email" -> email
             }
           else {
             Cache.remove(redirectUrl)
             Redirect(redirectUrl).withSession{
-              session + ("email" -> email)
+              "email" -> email
             }
           }
         }
@@ -51,12 +51,10 @@ class Security @Inject()(val ur: UserRepository) extends ControllerBase(ur) {
   def signOff(redirectUrl: String) = Action {
     implicit request =>
     if (redirectUrl.isEmpty)
-      Redirect(routes.Application.index()).withSession(session - "email")
+      Redirect(routes.Application.index()).withNewSession
     else {
       Cache.remove(redirectUrl)
-      Redirect(redirectUrl).withSession(
-        session - "email"
-      )
+      Redirect(redirectUrl).withNewSession
     }
   }
 

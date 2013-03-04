@@ -20,7 +20,6 @@ class UserRepository extends dao.common.UserRepository {
     insertUser(name).first
   }
 
-
   def authenticate(login: String, password: String): Option[UserEntity] = database withSession {
     implicit val getUserResult = GetResult(r => new UserEntity(r.<<, r.<<))
     def getUser(name: String, p:String) = sql"""
@@ -37,10 +36,10 @@ class UserRepository extends dao.common.UserRepository {
     getUser(email).firstOption
   }
 
-  def getUserId(name: String) = {
-    get(name) match {
-      case Some(user) => user.id
-      case None => 0
-    }
+  def createUser = database withSession{
+    sql"""
+      insert into users(sessionId) values('');
+      select last_insert_id();
+    """.as[Int].first()
   }
 }

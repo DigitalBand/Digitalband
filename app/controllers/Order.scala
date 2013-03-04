@@ -17,13 +17,9 @@ class Order @Inject()(orderRepository: OrderRepository, cartRepository: CartRepo
     "address" -> text
   )(DeliveryInfo.apply)(DeliveryInfo.unapply))
 
-  def getCartId(implicit sess: play.api.mvc.Session): Int =
-    helpers.SessionHelper.getCartId(cartRepository.createCart, userRepository.getUserId)
-
   def fill(checkoutMethod: String) = Action {
     implicit request =>
-      val cartId = getCartId
-      val itemsList = cartRepository.list(cartId)
+      val itemsList = cartRepository.list(userId)
       if (!itemsList.isEmpty)
         Ok(views.html.Order.fill(itemsList, deliveryForm))
       else
@@ -34,16 +30,14 @@ class Order @Inject()(orderRepository: OrderRepository, cartRepository: CartRepo
     implicit request =>
       deliveryForm.bindFromRequest.fold(
         formWithErrors => {
-          val cartId = getCartId
-          BadRequest(views.html.Order.fill(cartRepository.list(cartId), formWithErrors))
+          BadRequest(views.html.Order.fill(cartRepository.list(userId), formWithErrors))
         },
         deliveryInfo => {
-          val cartId:Int = getCartId
           val userId = userRepository.getUserId(deliveryInfo.email) match {
             case 0 => userRepository.createUser(deliveryInfo.email)
             case x => x
           }
-          val orderId = orderRepository.create(deliveryInfo, cartId, userId)
+          val orderId = orderRepository.create(deliveryInfo, userId, userId)
           Redirect(routes.Order.confirmation(orderId))
         }
       )

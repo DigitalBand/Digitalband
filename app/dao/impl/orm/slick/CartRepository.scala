@@ -10,7 +10,7 @@ import Database.threadLocalSession
 import slick.jdbc.{StaticQuery => Q, GetResult}
 
 class CartRepository extends dao.common.CartRepository {
-  def list(cartId: Int): Seq[CartItem] = {
+  def list(userId: Int): Seq[CartItem] = {
     database withSession {
       implicit val getCartItem = GetResult(r => new CartItem(r.<<, r.<<, r.<<, r.<<, r.<<, r.<<))
       val query = Q.queryNA[CartItem]( s"""
@@ -25,7 +25,7 @@ class CartRepository extends dao.common.CartRepository {
           shopping_items c, products p
          where
           c.productId = p.productId and
-          c.cartId = $cartId
+          c.userId = $userId
       """)
       query.list.filter(p => p.unitPrice > 0)
     }
@@ -33,55 +33,46 @@ class CartRepository extends dao.common.CartRepository {
 
   def add(item: CartItem): Int = {
     database withSession {
-      val cartId = item.cartId
       val query = Q.updateNA( s"""
-      insert into shopping_items(productId, cartId, quantity, unitPrice)
-        select ${item.productId}, ${cartId}, 0,
+      insert into shopping_items(productId, userId, quantity, unitPrice)
+        select ${item.productId}, ${item.userId}, 0,
         (select price from products where productId = ${item.productId} limit 1)
         from
           dual
         where not exists
-          (select * from shopping_items where productId = ${item.productId} and cartId = ${cartId});
+          (select * from shopping_items where productId = ${item.productId} and userId = ${item.userId});
         update shopping_items
         set
           quantity = quantity + ${item.count}
         where
-          productId = ${item.productId} and cartId = ${cartId};
+          productId = ${item.productId} and userId = ${item.userId};
         update
           cart
         set
           updateDate = CURRENT_TIMESTAMP
-        where cartId = $cartId;
+        where userId = ${item.userId};
         """)
       query.execute()
 
-      cartId
+      item.userId
     }
   }
 
-  def createCart(userId: Int = 0): Int = {
+  def deleteItem(userId: Int, productId: Int) = {
     database withSession {
-      Q.updateNA(s"insert into cart(userId) values($userId);").execute()
-      val query = Q.queryNA[Int]("select max(cartId) from cart;")
-      query.first()
+      Q.updateNA(s"delete from shopping_items where userId = $userId and productId = $productId").execute()
     }
   }
 
-  def deleteItem(cartId: Int, productId: Int) = {
-    database withSession {
-      Q.updateNA(s"delete from shopping_items where cartId = $cartId and productId = $productId").execute()
-    }
-  }
-
-  def updateItems(cartId: Int, items: Seq[CItem]) = {
+  def updateItems(userId: Int, items: Seq[CItem]) = {
     database withSession {
       def update(citem: Seq[CItem], query: String = ""): String = {
         val item = citem.head
         if (citem.tail.length > 0)
           update(citem.tail,
-            query + s"update shopping_items set quantity = ${item.count} where productId = ${item.productId} and cartId = $cartId;")
+            query + s"update shopping_items set quantity = ${item.count} where productId = ${item.productId} and userId = $userId;")
         else
-          query + s"update shopping_items set quantity = ${item.count} where productId = ${item.productId} and cartId = $cartId;"
+          query + s"update shopping_items set quantity = ${item.count} where productId = ${item.productId} and userId = $userId;"
       }
       val query = update(items)
       Q.updateNA(query).execute()

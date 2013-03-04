@@ -9,7 +9,6 @@
             <div class="page-header" style="margin-top:0;margin-bottom: 18px;">
                 <h4 style="margin-top:0;">Оформить заказ как Гость или Зарегистрироваться</h4>
             </div>
-
             <h4> Зарегистрируйтесь и экономьте время! </h4>
             <p> Зарегистрируйтесь на сайте для удобства в будущем: </p>
             <ul class="ul">
@@ -21,7 +20,6 @@
             </a>
             <h5> Не хотите регистрироваться при оформлении заказа? </h5>
             <a href="@routes.Order.fill("guest")" class="btn btn-primary"> Оформить заказ как гость </a>
-
         </div>
         <div class="span6">
             <div class="well">
@@ -34,14 +32,10 @@
                         </div>
                     }
                     <fieldset>
-
-
                         @helper.inputText(loginForm("email"), args = 'type -> "email")
                         @helper.inputPassword(loginForm("password"))
-
                         <button class="btn btn-primary"> Войти и оформить заказ </button> &nbsp;
                         <a href="@routes.Security.forgotPassword"> @Messages("security.login.form.forgotpassword") </a>
-
                     </fieldset>
                 </form>
             </div>
