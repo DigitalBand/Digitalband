@@ -37,9 +37,11 @@ class UserRepository extends dao.common.UserRepository {
   }
 
   def createUser = database withSession{
-    sql"""
+    sqlu"""
       insert into users(sessionId) values('');
+    """.first
+    sql"""
       select last_insert_id();
-    """.as[Int].first()
+    """.as[Int].first
   }
 }

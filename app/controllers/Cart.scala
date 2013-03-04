@@ -22,20 +22,21 @@ class Cart @Inject()(val cartRepository: CartRepository, productRepository: Prod
   def add = Action {
     implicit request =>
       val cItem = addToCartForm.bindFromRequest.get
+      val userId = getUserId
       cartRepository.add(new CartItem(userId, cItem.productId, cItem.count))
       Redirect(routes.Cart.display(cItem.returnUrl)) withSession
-        session + ("userId" -> userId.toString)
+        session + ("userid" -> userId.toString)
   }
 
   def display(returnUrl: String) = Action {
     implicit request =>
-      val cartItems: Seq[CartItem] = cartRepository.list(userId)
+      val cartItems: Seq[CartItem] = cartRepository.list(getUserId)
       Ok(views.html.Cart.display(cartItems, returnUrl))
   }
 
   def delete(productId: Int, returnUrl: String = "") = Action {
     implicit request =>
-      cartRepository.deleteItem(userId, productId)
+      cartRepository.deleteItem(getUserId, productId)
       Redirect(routes.Cart.display(returnUrl))
   }
 
@@ -47,7 +48,7 @@ class Cart @Inject()(val cartRepository: CartRepository, productRepository: Prod
   def update(returnUrl: String) = Action {
     implicit request =>
       val items = getCartItems(request.body)
-      cartRepository.updateItems(userId, items)
+      cartRepository.updateItems(getUserId, items)
       Redirect(routes.Cart.display(returnUrl))
   }
 

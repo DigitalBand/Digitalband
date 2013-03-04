@@ -6,7 +6,7 @@ import scala.Some
 import helpers.SessionHelper
 
 class ControllerBase(val userRepository:UserRepository) extends Controller {
-  def userId(implicit session: Session): Int = SessionHelper.getUserId(userRepository.createUser, userRepository.getUserId)
+  def getUserId(implicit session: Session): Int = SessionHelper.getUserId(userRepository.createUser, userRepository.getUserId)
   implicit def user(implicit request: RequestHeader) = {
     userRepository.get(request.session.get("email").getOrElse(""))
   }

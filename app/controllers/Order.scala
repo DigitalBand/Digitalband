@@ -19,7 +19,7 @@ class Order @Inject()(orderRepository: OrderRepository, cartRepository: CartRepo
 
   def fill(checkoutMethod: String) = Action {
     implicit request =>
-      val itemsList = cartRepository.list(userId)
+      val itemsList = cartRepository.list(getUserId)
       if (!itemsList.isEmpty)
         Ok(views.html.Order.fill(itemsList, deliveryForm))
       else
@@ -30,7 +30,7 @@ class Order @Inject()(orderRepository: OrderRepository, cartRepository: CartRepo
     implicit request =>
       deliveryForm.bindFromRequest.fold(
         formWithErrors => {
-          BadRequest(views.html.Order.fill(cartRepository.list(userId), formWithErrors))
+          BadRequest(views.html.Order.fill(cartRepository.list(getUserId), formWithErrors))
         },
         deliveryInfo => {
           val userId = userRepository.getUserId(deliveryInfo.email) match {
