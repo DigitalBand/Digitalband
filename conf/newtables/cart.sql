@@ -14,3 +14,6 @@ ALTER TABLE `cart` ADD COLUMN `updateDate` TIMESTAMP NULL  AFTER `userId` ;
 
 ALTER TABLE `cart` CHANGE COLUMN `userId` `userId` INT(11) NULL
 , DROP INDEX `cartcol_UNIQUE` ;
+
+ALTER TABLE `dbs`.`products` CHANGE COLUMN `brandId` `brandId` INT(11)
+  NOT NULL  ;
