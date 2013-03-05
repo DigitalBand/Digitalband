@@ -26,25 +26,26 @@ class ProductRepository extends RepositoryBase with dao.common.ProductRepository
     database withSession {
       val productsQuery = for {
         p <- ProductsTable
-        pc <- ProductsCategoriesTable if p.id === pc.productId && (if (brandId == 0) true else p.brandId === brandId)
+        pc <- ProductsCategoriesTable if p.id === pc.productId &&
+        {if (brandId == 0) ConstColumn.TRUE === ConstColumn.TRUE else p.brandId.get is brandId}
         c <- CategoriesTable
         if pc.categoryId === c.id &&
           c.leftValue >= category.leftValue &&
           c.rightValue <= category.rightValue  &&
-          (if (!search.isEmpty()) p.title like "%"+search+"%" else true)
+          (if (!search.isEmpty()) p.title like "%"+search+"%" else ConstColumn.TRUE === ConstColumn.TRUE)
       } yield (p.title, p.shortDescription, p.price, p.id, p.defaultImageId)
 
       play.api.Logger.debug(productsQuery.selectStatement)
       val countQuery = for {
         p <- ProductsTable
-        pc <- ProductsCategoriesTable if p.id === pc.productId && (if (brandId == 0) true else p.brandId === brandId)
+        pc <- ProductsCategoriesTable if p.id === pc.productId && (if (brandId == 0) true else p.brandId.get === brandId)
         c <- CategoriesTable if pc.categoryId === c.id && c.leftValue >= category.leftValue && c.rightValue <= category.rightValue &&
         (if (!search.isEmpty()) p.title like "%"+search+"%" else true)
       } yield (p.title.count)
       val count = countQuery.firstOption.getOrElse(0)
       val products = productsQuery.drop(pageSize*(pageNumber-1)).take(pageSize).list.map {
-        case (title: String, descr: Option[String], price: Double, id: Int, imageId:Option[Int]) =>
-          ProductEntity(title, descr.getOrElse(""), price, id, imageId.getOrElse(0))
+        case (title: String, Some(descr: String), price: Double, id: Int, Some(imageId:Int)) =>
+          ProductEntity(title, descr, price, id, imageId)
       }
       new ListPage(pageNumber, products, count)
     }
@@ -65,7 +66,7 @@ class ProductRepository extends RepositoryBase with dao.common.ProductRepository
     database withSession {
       val productQuery = ProductsTable.filter(p => p.id === id).map(p => p.title ~ p.description ~ p.price ~ p.defaultImageId ~ p.brandId)
       productQuery.firstOption.map {
-        case (title: String, description: Option[String], price: Double, defaultImageId: Option[Int], brandId: Int) =>
+        case (title: String, description: Option[String], price: Double, defaultImageId: Option[Int], brandId: Option[Int]) =>
           ProductEntity(title, description.getOrElse(""), price, id, defaultImageId.getOrElse(0))
       }.get
     }

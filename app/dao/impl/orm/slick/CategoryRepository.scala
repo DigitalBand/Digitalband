@@ -41,11 +41,9 @@ class CategoryRepository extends RepositoryBase with dao.common.CategoryReposito
         if c.id === pc.categoryId &&
           p.id === pc.productId &&
           c.leftValue >= cat.leftValue &&
-          c.rightValue <= cat.rightValue && {
-          if (brandId > 0) p.brandId === brandId else ConstColumn.TRUE === ConstColumn.TRUE
-        } && {
-          if (!search.isEmpty) p.title.like(s"%$search%") else ConstColumn.TRUE === ConstColumn.TRUE
-        }
+          c.rightValue <= cat.rightValue &&
+          {if (brandId > 0) p.brandId.get === brandId else ConstColumn.TRUE === ConstColumn.TRUE} &&
+          {if (!search.isEmpty) p.title.like(s"%$search%") else ConstColumn.TRUE === ConstColumn.TRUE }
       } yield (p.id.count))
       val categoryListQuery = for {
         c <- CategoriesTable
