@@ -1,11 +1,12 @@
 package dao.impl.orm.slick
 
 import common.Profile
-import models.{CItem, BrandEntity, CartItem}
+import models.{CItem, CartItem}
 import Profile.database
 import Profile.driver.simple._
 import Database.threadLocalSession
-
+import slick.jdbc.{StaticQuery => Q, GetResult}
+import Q.interpolation
 
 import slick.jdbc.{StaticQuery => Q, GetResult}
 
@@ -13,21 +14,20 @@ class CartRepository extends dao.common.CartRepository {
   def list(userId: Int): Seq[CartItem] = {
     database withSession {
       implicit val getCartItem = GetResult(r => new CartItem(r.<<, r.<<, r.<<, r.<<, r.<<, r.<<))
-      val query = Q.queryNA[CartItem]( s"""
-        select
-          c.cartId,
-          c.productId,
-          p.title,
-          (select imageId from product_images where productId = c.productId) as imageId,
-          c.quantity,
-          p.price
-        from
-          shopping_items c, products p
-         where
-          c.productId = p.productId and
-          c.userId = $userId
-      """)
-      query.list.filter(p => p.unitPrice > 0)
+      sql"""
+         select
+            shop.userId,
+            shop.productId,
+            p.title,
+            (select imageId from product_images where productId = shop.productId) as imageId,
+            sum(shop.quantity) as quantity,
+            p.price
+          from shopping_items shop
+            left join products p on p.productId = shop.productId
+          where shop.userId = $userId
+            group by p.productId
+      """.as[CartItem].list.filter(p => p.unitPrice > 0)
+
     }
   }
 
@@ -68,14 +68,23 @@ class CartRepository extends dao.common.CartRepository {
     database withSession {
       def update(citem: Seq[CItem], query: String = ""): String = {
         val item = citem.head
+        val mainQuery = s"""
+            delete from shopping_items where productId = ${item.productId} and userId = $userId;
+            insert into shopping_items(productId, userId, quantity) values (${item.productId}, $userId, ${item.count});
+         """
         if (citem.tail.length > 0)
           update(citem.tail,
-            query + s"update shopping_items set quantity = ${item.count} where productId = ${item.productId} and userId = $userId;")
+            query + mainQuery)
         else
-          query + s"update shopping_items set quantity = ${item.count} where productId = ${item.productId} and userId = $userId;"
+          query + mainQuery
       }
       val query = update(items)
       Q.updateNA(query).execute()
     }
   }
+ def mergeShoppingCarts(authenticatedUserId: Int, anonymousUserId: Int) = database withSession {
+   sqlu"""
+      update shopping_items set userId = ${authenticatedUserId} where userId = ${anonymousUserId};
+    """.execute()
+ }
 }

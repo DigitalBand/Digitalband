@@ -3,7 +3,7 @@ package controllers
 import com.google.inject.Inject
 import common.ControllerBase
 import play.api.mvc.Action
-import dao.common.UserRepository
+import dao.common.{CartRepository, UserRepository}
 import play.api.data.Form
 import play.api.data.Forms._
 import play.api.i18n.Messages
@@ -12,7 +12,7 @@ import play.api.cache.Cache
 import play.api.Play.current
 
 
-class Security @Inject()(val ur: UserRepository) extends ControllerBase(ur) {
+class Security @Inject()(val ur: UserRepository, val cartRepository: CartRepository) extends ControllerBase(ur) {
 
 
   val forgotPasswordForm = Form("email" -> nonEmptyText.verifying(Messages("security.forgotpassword.notregistered"),
@@ -27,14 +27,17 @@ class Security @Inject()(val ur: UserRepository) extends ControllerBase(ur) {
       loginForm(userRepository).bindFromRequest.fold(
         formWithErrors => BadRequest(views.html.Security.login(formWithErrors, redirectUrl)),
         user => {
+
           val (email, password) = user
-          if (redirectUrl.isEmpty)
-            Redirect(routes.Application.index()).withSession{
+          cartRepository.mergeShoppingCarts(userRepository.getUserId(email), getUserId)
+          if (redirectUrl.isEmpty){
+            Redirect(routes.Application.index()).withSession {
               "email" -> email
             }
+          }
           else {
             Cache.remove(redirectUrl)
-            Redirect(redirectUrl).withSession{
+            Redirect(redirectUrl).withSession {
               "email" -> email
             }
           }
@@ -50,12 +53,12 @@ class Security @Inject()(val ur: UserRepository) extends ControllerBase(ur) {
   //GET
   def signOff(redirectUrl: String) = Action {
     implicit request =>
-    if (redirectUrl.isEmpty)
-      Redirect(routes.Application.index()).withNewSession
-    else {
-      Cache.remove(redirectUrl)
-      Redirect(redirectUrl).withNewSession
-    }
+      if (redirectUrl.isEmpty)
+        Redirect(routes.Application.index()).withNewSession
+      else {
+        Cache.remove(redirectUrl)
+        Redirect(redirectUrl).withNewSession
+      }
   }
 
   //GET

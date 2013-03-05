@@ -10,5 +10,8 @@ class CartRepository extends dao.common.CartRepository {
   def deleteItem(cartId: Int, productId: Int) = ???
 
   def createCart(userId: Int) = ???
+
   def updateItems(cartId: Int, items: Seq[CItem]) = ???
+
+  def mergeShoppingCarts(authenticatedUserId: Int, anonymousUserId: Int) = ???
 }
