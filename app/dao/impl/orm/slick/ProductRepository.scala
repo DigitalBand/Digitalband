@@ -46,6 +46,12 @@ class ProductRepository extends RepositoryBase with dao.common.ProductRepository
       val products = productsQuery.drop(pageSize*(pageNumber-1)).take(pageSize).list.map {
         case (title: String, Some(descr: String), price: Double, id: Int, Some(imageId:Int)) =>
           ProductEntity(title, descr, price, id, imageId)
+        case (title: String, Some(descr: String), price: Double, id: Int, None) =>
+          ProductEntity(title, descr, price, id, 0)
+        case (title: String, None, price: Double, id: Int, None) =>
+          ProductEntity(title, "", price, id, 0)
+        case (title: String, None, price: Double, id: Int, Some(imageId:Int)) =>
+          ProductEntity(title, "", price, id, imageId)
       }
       new ListPage(pageNumber, products, count)
     }
