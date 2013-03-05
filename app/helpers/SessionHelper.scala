@@ -7,7 +7,7 @@ object SessionHelper {
      session.get("userid") match {
        case Some(x) => x.toInt
        case None => {
-         session.get("username") match {
+         session.get("email") match {
            case None => createUser
            case Some(userName) => getUserId(userName)
          }

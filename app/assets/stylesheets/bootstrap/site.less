@@ -43,11 +43,9 @@
 
 .navbar {
   .nav {
-    >li {
-      >a {
-        border-right: 1px solid #221A17;
-        border-left: 1px solid #3F302B;
-      }
+    >li >a {
+      border-right: 1px solid #221A17;
+      border-left: 1px solid #3F302B;
     }
   }
 }
@@ -55,11 +53,9 @@
 .sidebar {
   .nav-tabs {
     &.nav-stacked {
-      >li {
-        >a {
-          border: 0;
-          border-bottom: 1px solid #ddd;
-        }
+      >li >a {
+        border: 0;
+        border-bottom: 1px solid #ddd;
       }
     }
   }
@@ -91,16 +87,19 @@
   }
 
 }
+
 .thumbnail.sidenav-image {
   display: inline;
   padding: 0;
 }
+
 .top-products .thumbnail p {
   text-overflow: ellipsis;
   white-space: nowrap;
   overflow: hidden;
   width: 100%;
 }
- .nav .navbar-form{
-   margin-right: 10px;
- }
+
+.nav .navbar-form {
+  margin-right: 10px;
+}
