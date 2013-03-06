@@ -20,3 +20,19 @@ object loginForm {
     )
   }
 }
+
+object registrationForm {
+  def apply(userService: UserRepository)(implicit request: Request[AnyContent]) = {
+    Form(
+      tuple(
+        "email" -> nonEmptyText,
+        "password" -> nonEmptyText
+      ) verifying(Messages("validation.registration.emailexists"), result =>
+        result match {
+          case (email, password) =>
+            val user = userService.get(email)
+            !user.isDefined
+        })
+    )
+  }
+}

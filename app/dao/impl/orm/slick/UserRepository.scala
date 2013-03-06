@@ -39,9 +39,24 @@ class UserRepository extends dao.common.UserRepository {
   def createUser = database withSession{
     sqlu"""
       insert into users(sessionId) values('');
-    """.first
+    """.execute
     sql"""
       select last_insert_id();
     """.as[Int].first
+  }
+
+  def remove(userId: Int) = database withSession{
+    sqlu"""
+      delete from users where userId = $userId;
+      delete from user_profiles where userId = $userId;
+    """.execute()
+  }
+
+  def register(email: String, password: String): Int = database withSession {
+    val userId = createUser
+    sqlu"""
+        insert into user_profiles (email, password, userId) values($email, $password, $userId);
+      """.execute
+    userId
   }
 }

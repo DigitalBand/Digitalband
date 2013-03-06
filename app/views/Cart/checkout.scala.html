@@ -15,11 +15,11 @@
                 <li> Быстрое оформление заказа </li>
                 <li> Удобный доступ к истории и статусам ваших заказов </li>
             </ul>
-            <a href="@routes.Order.fill("register")" class="btn btn-success" title="Необходимо будет ввести пароль">
+            <a href="@routes.Security.registration(request.uri)" class="btn btn-success" title="Необходимо будет ввести пароль">
                     Регистрироваться
             </a>
             <h5> Не хотите регистрироваться при оформлении заказа? </h5>
-            <a href="@routes.Order.fill("guest")" class="btn btn-primary"> Оформить заказ как гость </a>
+            <a href="@routes.Order.fill" class="btn btn-primary"> Оформить заказ как гость </a>
         </div>
         <div class="span6">
             <div class="well">

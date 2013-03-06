@@ -12,4 +12,8 @@ class UserRepository extends dao.common.UserRepository {
   def createUser(name: String) = ???
 
   def createUser = ???
+
+  def remove(userId: Int) = ???
+
+  def register(email: String, password: String): Int = ???
 }

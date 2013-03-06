@@ -22,10 +22,8 @@ format.date=Date (''{0}'')
 formats.price={0, number, ###,###.00} руб
 
 validation.login.wronginfo=Неверный логин или пароль
+validation.registration.emailexists=Пользователь с данным email существует
 security.forgotpassword.notregistered=Данный email не зарегистрирован в системе
-
-
-
 
 
 email=Эл. почта
@@ -49,6 +47,8 @@ main.footer.nav.contact=Обратная связь
 
 security.login.form.legend=Вход
 security.login.form.forgotpassword=Забыли пароль?
+
+security.registration.form.legend=Регистрация
 
 cart.title=Ваша корзина
 cart.alerts.empty=Ваша корзина пуста

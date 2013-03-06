@@ -3,6 +3,10 @@ package dao.common
 import models.UserEntity
 
 trait UserRepository {
+  def remove(userId: Int)
+
+  def register(email:String, password:String): Int
+
   def createUser(name: String): Int
 
   def createUser: Int

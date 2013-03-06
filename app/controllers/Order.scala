@@ -17,7 +17,7 @@ class Order @Inject()(orderRepository: OrderRepository, cartRepository: CartRepo
     "address" -> text
   )(DeliveryInfo.apply)(DeliveryInfo.unapply))
 
-  def fill(checkoutMethod: String) = Action {
+  def fill = Action {
     implicit request =>
       val itemsList = cartRepository.list(getUserId)
       if (!itemsList.isEmpty)
