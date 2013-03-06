@@ -21,7 +21,9 @@ class Order @Inject()(orderRepository: OrderRepository, cartRepository: CartRepo
     implicit request =>
       val itemsList = cartRepository.list(getUserId)
       if (!itemsList.isEmpty)
-        Ok(views.html.Order.fill(itemsList, deliveryForm))
+        Ok(views.html.Order.fill(itemsList,
+          deliveryForm.fill(
+            userRepository.getDeliveryInfo(getUserId).getOrElse(new DeliveryInfo()))))
       else
         Redirect(routes.Cart.display())
   }
@@ -33,11 +35,8 @@ class Order @Inject()(orderRepository: OrderRepository, cartRepository: CartRepo
           BadRequest(views.html.Order.fill(cartRepository.list(getUserId), formWithErrors))
         },
         deliveryInfo => {
-          val userId = userRepository.getUserId(deliveryInfo.email) match {
-            case 0 => userRepository.createUser(deliveryInfo.email)
-            case x => x
-          }
-          val orderId = orderRepository.create(deliveryInfo, userId, userId)
+          userRepository.updateDeliveryInfo(deliveryInfo, getUserId)
+          val orderId = orderRepository.create(deliveryInfo, getUserId)
           Redirect(routes.Order.confirmation(orderId))
         }
       )

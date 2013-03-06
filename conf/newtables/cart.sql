@@ -17,3 +17,6 @@ ALTER TABLE `cart` CHANGE COLUMN `userId` `userId` INT(11) NULL
 
 ALTER TABLE `dbs`.`products` CHANGE COLUMN `brandId` `brandId` INT(11)
   NOT NULL  ;
+
+  ALTER TABLE `dbs`.`orders` ADD COLUMN `email` VARCHAR(85) NULL  AFTER `status` , ADD COLUMN `phone` VARCHAR(45) NULL  AFTER `email` , ADD COLUMN `name` VARCHAR(45) NULL  AFTER `phone` , ADD COLUMN `address` VARCHAR(255) NULL  AFTER `name` ;
+

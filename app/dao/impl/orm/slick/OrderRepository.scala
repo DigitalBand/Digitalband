@@ -6,31 +6,30 @@ import Profile.database
 import Profile.driver.simple._
 import Database.threadLocalSession
 import slick.jdbc.{StaticQuery => Q, GetResult}
+import Q.interpolation
 
 class OrderRepository extends dao.common.OrderRepository {
-  def create(deliveryInfo: DeliveryInfo, cartId: Int, userId: Int): Int = {
+  def create(deliveryInfo: DeliveryInfo, userId: Int): Int = {
     database withSession {
-      val insertQuery = Q.updateNA(s"""
-        SET SQL_SAFE_UPDATES=0;
-        update
-          shopping_items as si
-        set
-          unitPrice = (select price from products where productId = si.productId limit 1)
-        where cartId = $cartId;
-
-        insert into orders (userId) values($userId);
-       """)
-      insertQuery.execute()
-      val getOrderId = Q.queryNA[Int]("select max(orderId) from orders;")
-      val orderId = getOrderId.first()
+      sqlu"""
+        insert into orders (userId, name, email, phone, address)
+        values($userId, ${deliveryInfo.name}, ${deliveryInfo.email}, ${deliveryInfo.phone}, ${deliveryInfo.address});
+      """.execute()
+      val orderId = sql"select last_insert_id();".as[Int].first
       val query = Q.updateNA(s"""
-        insert into order_items(orderId, productId, quantity, unitPrice)
-
-        select $orderId, productId, sum(quantity) as quantity, unitPrice from shopping_items
-        where cartId = $cartId
+        insert into
+          order_items(orderId, productId, quantity, unitPrice)
+        select
+          $orderId,
+          productId,
+          sum(quantity) as quantity,
+          (select price from products where productId = si.productId limit 1) as unitPrice
+        from
+          shopping_items si
+        where
+          userId = $userId
         group by productId;
-
-        delete from shopping_items where cartId = $cartId;
+        delete from shopping_items where userId = $userId;
        """)
       query.execute()
       orderId

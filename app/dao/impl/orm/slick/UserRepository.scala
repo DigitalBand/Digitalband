@@ -1,6 +1,6 @@
 package dao.impl.orm.slick
 
-import models.UserEntity
+import models.{DeliveryInfo, UserEntity}
 import common.Profile
 import Profile.database
 import Profile.driver.simple._
@@ -11,38 +11,35 @@ import Q.interpolation
 class UserRepository extends dao.common.UserRepository {
 
   def createUser(name: String): Int = database withSession {
-    def insertUser(userName: String) = sql"""
+    sql"""
          insert into users(sessionId) values('');
         set @userId := (select last_insert_id());
-        insert into user_profiles (email, password, userId) values($userName, '', @userId);
+        insert into user_profiles (email, password, userId) values($name, '', @userId);
         select @userId;
-      """.as[Int]
-    insertUser(name).first
+      """.as[Int].first
   }
 
   def authenticate(login: String, password: String): Option[UserEntity] = database withSession {
     implicit val getUserResult = GetResult(r => new UserEntity(r.<<, r.<<))
-    def getUser(name: String, p:String) = sql"""
-      select email, userId from user_profiles where email = $name and password = $p;
-    """.as[UserEntity]
-    getUser(login, password).firstOption
+    sql"""
+      select
+        email, userId from user_profiles
+      where
+        email = $login and
+        password = $password;
+    """.as[UserEntity].firstOption
   }
 
   def get(email: String): Option[UserEntity] = database withSession {
     implicit val getUserResult = GetResult(r => new UserEntity(r.<<, r.<<))
-    def getUser(name: String) = sql"""
-      select email, userId from user_profiles where email = $name;
-    """.as[UserEntity]
-    getUser(email).firstOption
+    sql"""
+      select email, userId from user_profiles where email = $email;
+    """.as[UserEntity].firstOption
   }
 
   def createUser = database withSession{
-    sqlu"""
-      insert into users(sessionId) values('');
-    """.execute
-    sql"""
-      select last_insert_id();
-    """.as[Int].first
+    sqlu" insert into users(sessionId) values('');".execute
+    sql" select last_insert_id();".as[Int].first
   }
 
   def remove(userId: Int) = database withSession{
@@ -58,5 +55,25 @@ class UserRepository extends dao.common.UserRepository {
         insert into user_profiles (email, password, userId) values($email, $password, $userId);
       """.execute
     userId
+  }
+  def updateDeliveryInfo(info: DeliveryInfo, userId: Int) = database withSession {
+    sqlu"""
+      update
+        user_profiles
+      set
+        email = ${info.email},
+        userName = ${info.name},
+        phoneNumber = ${info.phone},
+        address = ${info.address}
+      where
+        userId = $userId
+    """.execute()
+  }
+
+  def getDeliveryInfo(userId: Int) = database withSession{
+    implicit val deliveryResult = GetResult(r => new DeliveryInfo(r.<<, r.<<, r.<<, r.<<))
+    sql"""
+      select userName, email, phoneNumber, address from user_profiles where userId = $userId;
+    """.as[DeliveryInfo].firstOption
   }
 }
