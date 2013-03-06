@@ -16,7 +16,7 @@ class OrderRepository extends dao.common.OrderRepository {
         values($userId, ${deliveryInfo.name}, ${deliveryInfo.email}, ${deliveryInfo.phone}, ${deliveryInfo.address});
       """.execute()
       val orderId = sql"select last_insert_id();".as[Int].first
-      val query = Q.updateNA(s"""
+      sqlu"""
         insert into
           order_items(orderId, productId, quantity, unitPrice)
         select
@@ -30,15 +30,14 @@ class OrderRepository extends dao.common.OrderRepository {
           userId = $userId
         group by productId;
         delete from shopping_items where userId = $userId;
-       """)
-      query.execute()
+       """.execute()
       orderId
     }
   }
 
   def getItems(orderId: Int): Seq[CartItem] = database withSession {
     implicit val getCartItem = GetResult(r => new CartItem(r.<<, r.<<, r.<<, r.<<, r.<<, r.<<))
-    val query = Q.queryNA[CartItem]( s"""
+    sql"""
         select
           o.orderId,
           o.productId,
@@ -51,7 +50,6 @@ class OrderRepository extends dao.common.OrderRepository {
          where
           o.productId = p.productId and
           o.orderId = $orderId
-      """)
-    query.list
+    """.as[CartItem].list
   }
 }
