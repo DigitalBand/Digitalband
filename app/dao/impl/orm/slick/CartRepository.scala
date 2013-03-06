@@ -33,7 +33,7 @@ class CartRepository extends dao.common.CartRepository {
 
   def add(item: CartItem): Int = {
     database withSession {
-      val query = Q.updateNA( s"""
+      sqlu"""
       insert into shopping_items(productId, userId, quantity, unitPrice)
         select ${item.productId}, ${item.userId}, 0,
         (select price from products where productId = ${item.productId} limit 1)
@@ -51,18 +51,15 @@ class CartRepository extends dao.common.CartRepository {
         set
           updateDate = CURRENT_TIMESTAMP
         where userId = ${item.userId};
-        """)
-      query.execute()
-
+        """.execute()
       item.userId
     }
   }
 
-  def deleteItem(userId: Int, productId: Int) = {
-    database withSession {
-      Q.updateNA(s"delete from shopping_items where userId = $userId and productId = $productId").execute()
-    }
+  def deleteItem(userId: Int, productId: Int) = database withSession {
+    sqlu"delete from shopping_items where userId = $userId and productId = $productId".execute()
   }
+
 
   def updateItems(userId: Int, items: Seq[CItem]) = {
     database withSession {
@@ -72,19 +69,20 @@ class CartRepository extends dao.common.CartRepository {
             delete from shopping_items where productId = ${item.productId} and userId = $userId;
             insert into shopping_items(productId, userId, quantity) values (${item.productId}, $userId, ${item.count});
          """
+        val combinedQuery = query+mainQuery
         if (citem.tail.length > 0)
-          update(citem.tail,
-            query + mainQuery)
+          update(citem.tail, combinedQuery)
         else
-          query + mainQuery
+          combinedQuery
       }
       val query = update(items)
       Q.updateNA(query).execute()
     }
   }
- def mergeShoppingCarts(authenticatedUserId: Int, anonymousUserId: Int) = database withSession {
-   sqlu"""
+
+  def mergeShoppingCarts(authenticatedUserId: Int, anonymousUserId: Int) = database withSession {
+    sqlu"""
       update shopping_items set userId = ${authenticatedUserId} where userId = ${anonymousUserId};
     """.execute()
- }
+  }
 }
