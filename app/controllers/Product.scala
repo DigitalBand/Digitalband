@@ -23,7 +23,7 @@ class Product @Inject()(productRepository: ProductRepository,
                    productId: Int = 0,
                    pageSize: Int = 10,
                    search: String = "") =
-    Cached(req => req.uri, 82000) {
+    //Cached(req => req.uri, 82000) {
       Action {
         implicit request =>
           if (productId > 0)
@@ -45,15 +45,15 @@ class Product @Inject()(productRepository: ProductRepository,
                 search))
           }
       }
-    }
+    //}
 
   def display(id: Int): Action[AnyContent] =
-    Cached(req => req.toString, 82000) {
+    //Cached(req => req.toString, 82000) {
       Action {
         implicit request =>
         display(id, 1, 0, 1, 1, "")
       }
-    }
+    //}
 
   def display(id: Int, categoryId: Int, brandId: Int, brandPage: Int, pageNumber: Int, search: String)(implicit request:Request[AnyContent]) = {
     Ok(views.html.Product.display(
