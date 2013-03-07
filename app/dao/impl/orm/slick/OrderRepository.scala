@@ -52,4 +52,6 @@ class OrderRepository extends dao.common.OrderRepository {
           o.orderId = $orderId
     """.as[CartItem].list
   }
+
+  def get(orderId: Int) = ???
 }

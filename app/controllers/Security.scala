@@ -12,7 +12,7 @@ import play.api.cache.Cache
 import play.api.Play.current
 
 
-class Security @Inject()(val ur: UserRepository, val cartRepository: CartRepository) extends ControllerBase(ur) {
+class Security @Inject()(implicit ur: UserRepository, val cartRepository: CartRepository) extends ControllerBase {
 
   val forgotPasswordForm = Form("email" -> nonEmptyText.verifying(Messages("security.forgotpassword.notregistered"),
     result => result match {

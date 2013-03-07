@@ -10,7 +10,7 @@ import play.api.data.Forms._
 import forms.loginForm
 
 
-class Cart @Inject()(val cartRepository: CartRepository, productRepository: ProductRepository, ur: UserRepository) extends ControllerBase(ur) {
+class Cart @Inject()(implicit ur: UserRepository, val cartRepository: CartRepository, productRepository: ProductRepository) extends ControllerBase {
   val addToCartForm = Form(
     mapping(
       "productId" -> number,

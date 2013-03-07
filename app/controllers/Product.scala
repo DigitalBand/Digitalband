@@ -8,11 +8,10 @@ import dao.common._
 import play.api.Play.current
 import play.api.cache.Cached
 
-class Product @Inject()(productRepository: ProductRepository,
+class Product @Inject()(implicit ur:UserRepository, productRepository: ProductRepository,
                         categoryRepository: CategoryRepository,
                         imageRepository: ImageRepository,
-                        brandRepository: BrandRepository,
-                         ur:UserRepository) extends ControllerBase(ur) {
+                        brandRepository: BrandRepository) extends ControllerBase {
 
   def list = filteredList(1)
 

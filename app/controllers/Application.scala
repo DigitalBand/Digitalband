@@ -12,9 +12,8 @@ import helpers.{ReCaptchaHelper, EmailHelper}
 import com.google.inject.Inject
 import dao.common.{UserRepository, ProductRepository, CategoryRepository}
 
-class Application @Inject()(val categoryRepository: CategoryRepository,
-                            val productRepository: ProductRepository,
-                            ur:UserRepository) extends ControllerBase(ur)  {
+class Application @Inject()(implicit ur:UserRepository, val categoryRepository: CategoryRepository,
+                            val productRepository: ProductRepository) extends ControllerBase  {
   val oneDayDuration = 86400
 
   def contactsForm(implicit request: Request[Any]) = {
@@ -60,7 +59,6 @@ class Application @Inject()(val categoryRepository: CategoryRepository,
       contactsForm.bindFromRequest.fold(
         formWithErrors => BadRequest(views.html.Application.contacts(formWithErrors)),
         contactsForm => {
-
           EmailHelper.sendFeedback(contactsForm)
           Redirect(routes.Application.contacts())
         }

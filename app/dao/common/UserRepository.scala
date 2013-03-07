@@ -3,6 +3,12 @@ package dao.common
 import models.{DeliveryInfo, UserEntity}
 
 trait UserRepository {
+  //TODO: implement this
+  def getAdminEmails: Seq[String] = List("tim@digitalband.ru")
+
+  //TODO: move this hardcoded string to DB
+  def getSystemEmail = "tim@digitalband.ru"
+
   def getDeliveryInfo(userId: Int): Option[DeliveryInfo]
 
   def updateDeliveryInfo(info: DeliveryInfo, userId: Int)

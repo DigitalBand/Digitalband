@@ -8,8 +8,9 @@ import dao.common.{UserRepository, CartRepository, OrderRepository}
 import play.api._
 import data.Form
 import data.Forms._
+import helpers.EmailHelper
 
-class Order @Inject()(orderRepository: OrderRepository, cartRepository: CartRepository, ur: UserRepository) extends ControllerBase(ur) {
+class Order @Inject()(implicit ur: UserRepository, orderRepository: OrderRepository, cartRepository: CartRepository) extends ControllerBase {
   val deliveryForm = Form(mapping(
     "name" -> nonEmptyText(minLength = 2, maxLength = 50),
     "email" -> email,
@@ -37,6 +38,9 @@ class Order @Inject()(orderRepository: OrderRepository, cartRepository: CartRepo
         deliveryInfo => {
           userRepository.updateDeliveryInfo(deliveryInfo, getUserId)
           val orderId = orderRepository.create(deliveryInfo, getUserId)
+
+          //TODO: Implement
+          EmailHelper.orderConfirmation(orderId, deliveryInfo.email)
           Redirect(routes.Order.confirmation(orderId))
         }
       )
