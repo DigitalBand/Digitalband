@@ -16,9 +16,7 @@ object EmailHelper {
     mail.sendHtml(views.html.emails.feedback(message).body)
   }
 
-  def orderConfirmation(orderInfo: Option[OrderInfo])(implicit userRepository: UserRepository) = {
-    orderInfo match {
-      case Some(order) =>
+  def orderConfirmation(order: OrderInfo)(implicit userRepository: UserRepository) = {
         val deliveryInfo = order.deliveryInfo
         val systemEmail = userRepository.getSystemEmail
         sendToClient(systemEmail, deliveryInfo.email)
@@ -29,7 +27,7 @@ object EmailHelper {
           mail.setSubject("Заказ на сайте Digitalband")
           mail.addRecipient(to)
           mail.addFrom(from)
-          mail.send(views.html.emails.plain.order.confirmation(orderInfo.get).body)
+          mail.send(views.html.emails.plain.order.confirmation(order).body)
         }
         def sendToAdmins(adminEmails: Seq[String], userEmail: String, systemEmail: String) = {
           val mail: MailerAPI = use[MailerPlugin].email
@@ -37,8 +35,8 @@ object EmailHelper {
           mail.addFrom(systemEmail)
           mail.setReplyTo(userEmail)
           adminEmails.map(email => mail.addRecipient(email))
-          mail.send(views.html.emails.plain.order.adminConfirmation(orderInfo.get).body)
+          mail.send(views.html.emails.plain.order.adminConfirmation(order).body)
         }
-    }
+
   }
 }
