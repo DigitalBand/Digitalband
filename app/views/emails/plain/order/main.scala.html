@@ -1,0 +1,5 @@
+@(order: OrderInfo, additionalContent: play.api.templates.Html = Html(""))(content: Html)
+@import emails.plain.shoppingList
+@content
+@shoppingList(order.items, editable = false)
+@additionalContent

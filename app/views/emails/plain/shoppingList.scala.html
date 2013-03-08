@@ -1,0 +1,7 @@
+@(items: Seq[models.CartItem], returnUrl: String = "", editable: Boolean = true)
+@items.map { cartItem =>
+@cartItem.title - @Messages("formats.price", cartItem.total).trim @Messages("formats.count", cartItem.count)
+}
+--------------------------
+Итого:@Messages("formats.price", items.map(i => i.total).sum)
+

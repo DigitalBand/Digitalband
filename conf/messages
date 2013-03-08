@@ -20,6 +20,7 @@ error.email=Введите действительный адрес электр�
 error.pattern=Must satisfy {0}
 format.date=Date (''{0}'')
 formats.price={0, number, ###,###.00} руб
+formats.count={0} шт.
 
 validation.login.wronginfo=Неверный логин или пароль
 validation.registration.emailexists=Пользователь с данным email существует

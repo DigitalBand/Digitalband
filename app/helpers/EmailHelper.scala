@@ -25,10 +25,11 @@ object EmailHelper {
         sendToAdmins(userRepository.getAdminEmails, deliveryInfo.email, systemEmail)
         def sendToClient(from: String, to: String) = {
           val mail: MailerAPI = use[MailerPlugin].email
+
           mail.setSubject("Заказ на сайте Digitalband")
           mail.addRecipient(to)
           mail.addFrom(from)
-          mail.sendHtml(views.html.emails.order.confirmation(orderInfo).body)
+          mail.send(views.html.emails.plain.order.confirmation(orderInfo.get).body)
         }
         def sendToAdmins(adminEmails: Seq[String], userEmail: String, systemEmail: String) = {
           val mail: MailerAPI = use[MailerPlugin].email
@@ -36,7 +37,7 @@ object EmailHelper {
           mail.addFrom(systemEmail)
           mail.setReplyTo(userEmail)
           adminEmails.map(email => mail.addRecipient(email))
-          mail.sendHtml(views.html.emails.order.adminConfirmation(orderInfo).body)
+          mail.send(views.html.emails.plain.order.adminConfirmation(orderInfo.get).body)
         }
     }
   }
