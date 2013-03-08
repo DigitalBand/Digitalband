@@ -1,6 +1,6 @@
 package controllers
 
-import models.{DeliveryInfo}
+import _root_.models.{OrderInfo, DeliveryInfo}
 import common.ControllerBase
 import play.api.mvc.{Action}
 import com.google.inject.Inject
@@ -40,7 +40,7 @@ class Order @Inject()(implicit ur: UserRepository, orderRepository: OrderReposit
           val orderId = orderRepository.create(deliveryInfo, getUserId)
 
           //TODO: Implement
-          EmailHelper.orderConfirmation(orderId, deliveryInfo.email)
+          EmailHelper.orderConfirmation(Option(new OrderInfo(deliveryInfo, orderRepository.getItems(orderId))))
           Redirect(routes.Order.confirmation(orderId))
         }
       )

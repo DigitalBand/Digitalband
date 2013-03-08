@@ -26,6 +26,10 @@ POST    /order/place                                                            
 GET     /order/:orderId/display                                                   @controllers.Order.display(orderId: Int)
 GET     /order/:orderId/confirmation                                              @controllers.Order.confirmation(orderId: Int)
 
+# Emails
+GET     /email/orderConfirmation/:orderId                                         @controllers.Emails.orderConfirmation(orderId: Int)
+GET     /email/admin/orderConfirmation/:orderId                                   @controllers.Emails.orderAdminConfirmation(orderId: Int)
+
 #Security
 GET     /login                                                                    @controllers.Security.login(returnUrl: String ?= "")
 GET     /registration                                                             @controllers.Security.registration(returnUrl: String ?= "")
