@@ -6,13 +6,18 @@
         <title></title>
         <link rel="stylesheet" media="screen" href="@routes.Assets.at("stylesheets/bootstrap/main.min.css")">
     </head>
-    @content
+
     <body style="padding:10px">
         @order match {
             case Some(orderInfo) => {
+                @content
                 @shoppingList(orderInfo.items, editable = false)
+                @additionalContent
+            }
+            case None => {
+                <span class="alert alert-error">Данный заказ не найден</span>
             }
         }
     </body>
-    @additionalContent
+
 </html>
