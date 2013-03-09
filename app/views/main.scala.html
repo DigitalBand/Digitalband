@@ -100,8 +100,9 @@ search: String = "")(content: Html)(implicit user: Option[models.UserEntity], re
     @scripts
     <script>
             $(document).ready(function(){
-                $("img.lazy").lazyload();
-                $("img.lazy-brand").lazyload();
+                var settings = {threshold : 200};
+                $("img.lazy").lazyload(settings);
+                $("img.lazy-brand").lazyload(settings);
             });
     </script>
     <script type="text/javascript" id="google-analytics">
