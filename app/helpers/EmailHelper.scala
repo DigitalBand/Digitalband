@@ -14,7 +14,7 @@ object EmailHelper {
     adminEmails.map(email => mail.addRecipient(email))
     mail.addFrom("tim@digitalband.ru")
     mail.setReplyTo(message.email)
-    mail.send(views.html.emails.plain.contact.feedback(message).body)
+    mail.sendHtml(views.html.emails.plain.contact.feedback(message).body)
   }
 
   def orderConfirmation(order: OrderInfo)(implicit userRepository: UserRepository) = {
