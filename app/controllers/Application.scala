@@ -60,7 +60,10 @@ class Application @Inject()(implicit ur:UserRepository, val categoryRepository: 
         formWithErrors => BadRequest(views.html.Application.contacts(formWithErrors)),
         contactsForm => {
           EmailHelper.sendFeedback(contactsForm)
-          Redirect(routes.Application.contacts())
+
+          Redirect(routes.Application.contacts()).flashing(
+            "alert-success" -> "Ваше сообщение было успешно отправлено"
+          )
         }
       )
   }

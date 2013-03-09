@@ -12,7 +12,7 @@ search: String = "")(content: Html)(implicit user: Option[models.UserEntity], re
     <noscript>
         <style>
                 .lazy, .lazy-brand {
-                    display: none;
+                display: none;
                 }
         </style>
     </noscript>
@@ -56,7 +56,7 @@ search: String = "")(content: Html)(implicit user: Option[models.UserEntity], re
                                 <div class="input-append">
                                     <input type="text" class="span2 search-query" name="s" value="@search">
                                     <button type="submit" class="btn btn-primary"> @Messages("main.nav.searchbutton") </button>
-                                    &nbsp;
+                                        &nbsp;
                                 </div>
                             </form>
 
@@ -64,11 +64,11 @@ search: String = "")(content: Html)(implicit user: Option[models.UserEntity], re
                         <li class="@{
                             if(menuItem.equals("security")) "active" else ""
                         }">
-                            <a href="@(if (user.isDefined) routes.Security.signOff(request.uri) else routes.Security.login(request.uri))">
+                            <a href="@(if(user.isDefined) routes.Security.signOff(request.uri) else routes.Security.login(request.uri))">
                                 <i class="@(if(user.isDefined) "icon-off" else "icon-key")"></i>
                             </a>
                         </li>
-                        </ul>
+                    </ul>
                 </div>
             </div>
         </div>
@@ -100,7 +100,9 @@ search: String = "")(content: Html)(implicit user: Option[models.UserEntity], re
     @scripts
     <script>
             $(document).ready(function(){
-                var settings = {threshold : 200};
+                var settings = {
+                    threshold : 100
+                };
                 $("img.lazy").lazyload(settings);
                 $("img.lazy-brand").lazyload(settings);
             });
@@ -109,7 +111,6 @@ search: String = "")(content: Html)(implicit user: Option[models.UserEntity], re
             var _gaq = _gaq || [];
             _gaq.push(['_setAccount', 'UA-38971133-1']);
             _gaq.push(['_trackPageview']);
-
             (function() {
             var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
             ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';

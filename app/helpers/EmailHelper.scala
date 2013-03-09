@@ -12,8 +12,9 @@ object EmailHelper {
     mail.setSubject("Сообщение со страницы Контакты")
     val adminEmails = userRepository.getAdminEmails
     adminEmails.map(email => mail.addRecipient(email))
-    mail.addFrom(message.email)
-    mail.sendHtml(views.html.emails.feedback(message).body)
+    mail.addFrom("tim@digitalband.ru")
+    mail.setReplyTo(message.email)
+    mail.send(views.html.emails.plain.contact.feedback(message).body)
   }
 
   def orderConfirmation(order: OrderInfo)(implicit userRepository: UserRepository) = {

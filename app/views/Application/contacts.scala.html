@@ -7,6 +7,11 @@
             @Messages("contacts.subtitle")
         </h3>
     </div>
+    @request.flash.data.map {
+        case (className, message) => {
+            <div class="alert @className">@message</div>
+        }
+    }
     <form class="form-horizontal" action="@routes.Application.sendFeedback()" method="POST">
         <div class="well">
             @helper.inputText(form("name"), '_label -> Messages("contacts.form.namelabel"))
