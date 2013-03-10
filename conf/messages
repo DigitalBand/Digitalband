@@ -29,6 +29,10 @@ security.forgotpassword.notregistered=Данный email не зарегистр
 emailhelper.sendfeedback.subject=Сообщение со страницы Контакты
 emailhelper.orderconfirmation.subject=Заказ на сайте Digitalband
 
+application.sendfeedback.alert.success=Ваше сообщение было успешно отправлено
+
+
+
 email=Эл. почта
 password=Пароль
 name=Имя
@@ -52,6 +56,7 @@ security.login.form.legend=Вход
 security.login.form.forgotpassword=Забыли пароль?
 
 security.registration.form.legend=Регистрация
+security.registration.form.submit=Зарегистрироваться
 
 cart.title=Ваша корзина
 cart.alerts.empty=Ваша корзина пуста
@@ -66,8 +71,28 @@ cart.links.makeorder=Оформить заказ
 cart.delete.confirmation.alert=Вы действительно хотите удалить товар {0} из корзины
 cart.delete.confirmation.form.buttons.delete=Удалить
 cart.delete.confirmation.form.buttons.back=Назад
+cart.views.checkout.orderorregister.title=Оформить заказ как Гость или Зарегистрироваться
+cart.views.checkout.orderorregister.subtitle=Зарегистрируйтесь и экономьте время!
+cart.views.checkout.orderorregister.text=Зарегистрируйтесь на сайте для удобства в будущем:
+cart.views.checkout.orderorregister.list.item1=Быстрое оформление заказа
+cart.views.checkout.orderorregister.list.item2=Удобный доступ к истории и статусам ваших заказов
+cart.views.checkout.orderorregister.registerlink=Регистрироваться
+cart.views.checkout.orderorregister.dontwanttoregister=Не хотите регистрироваться при оформлении заказа?
+cart.views.checkout.registeredalready.title=Уже зарегистрированы?
+cart.views.checkout.registeredalready.subtitle=Пожалуйста, введите информацию для входа:
+cart.views.checkout.registeredalready.signinbutton=Войти и оформить заказ
 
 order.fill.form.buttons.placeorder=Заказать
+order.confirmation.title=Подтверждение заказа
+order.confirmation.text=Заказ № {0} успешно сформирован и ожидает обработки. В ближайшее время с Вами свяжется продавец и уточнит детали доставки. Спасибо за заказ, всего вам доброго и ждем вас снова у нас в гостях!
+order.confirmation.details.title=Детали заказа:
+order.deliveryinfo.title=Ваш заказ
+order.deliveryinfo.editbutton=Редактировать заказ
+order.deliveryinfo.form.legend=Информация для доставки
+
+wizard.step1=Метод оформления заказа
+wizard.step2=Иформация о доставке
+wizard.step3=Подтверждение заказа
 
 product.list.title=Каталог
 product.list.categories.linkTitle=Товаров в категории:

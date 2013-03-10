@@ -6,8 +6,6 @@ import dao.common.ImageRepository
 import helpers.ImageCacher._
 import helpers.ImageHelper._
 
-
-
 class Image @Inject()(val imageRepository: ImageRepository) extends Controller {
   def get(imageNumber: String, quality: Int, imageSize: String, fill: String) =
 

@@ -1,5 +1,7 @@
 @(order: Option[OrderInfo])
-
+@*
+//TODO: Move this text out of templates and make it editable
+*@
 @emails.order.main(order, additionalContent(order.get)) {
     <h4> Уважаемый администратор! </h4>
     <p>

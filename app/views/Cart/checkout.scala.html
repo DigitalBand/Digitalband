@@ -1,30 +1,30 @@
-@(loginForm: Form[(String, String)])(implicit user: Option[models.UserEntity],request: play.api.mvc.Request[Any])
+@(loginForm: Form[(String, String)])(implicit user: Option[models.UserEntity], request: play.api.mvc.Request[Any])
 @import views.html.common.bootstrap._
 @import views.html.Security.loginpart
 @import Shared.wizard
 @main(menuItem = "cart") {
-    @wizard(1)<br/>
+    @wizard(1) <br/>
     <div class="row">
         <div class="span6" style="padding-bottom:10px">
             <div class="page-header" style="margin-top:0;margin-bottom: 18px;">
-                <h4 style="margin-top:0;">Оформить заказ как Гость или Зарегистрироваться</h4>
+                <h4 style="margin-top:0;"> @Messages("cart.views.checkout.orderorregister.title") </h4>
             </div>
-            <h4> Зарегистрируйтесь и экономьте время! </h4>
-            <p> Зарегистрируйтесь на сайте для удобства в будущем: </p>
+            <h4> @Messages("cart.views.checkout.orderorregister.subtitle") </h4>
+            <p> @Messages("cart.views.checkout.orderorregister.text") </p>
             <ul class="ul">
-                <li> Быстрое оформление заказа </li>
-                <li> Удобный доступ к истории и статусам ваших заказов </li>
+                <li> @Messages("cart.views.checkout.orderorregister.list.item1") </li>
+                <li> @Messages("cart.views.checkout.orderorregister.list.item2") </li>
             </ul>
-            <a href="@routes.Security.registration(request.uri)" class="btn btn-success" title="Необходимо будет ввести пароль">
-                    Регистрироваться
+            <a href="@routes.Security.registration(request.uri)" class="btn btn-success">
+                    @Messages("cart.views.checkout.orderorregister.registerlink")
             </a>
-            <h5> Не хотите регистрироваться при оформлении заказа? </h5>
+            <h5> @Messages("cart.views.checkout.orderorregister.dontwanttoregister") </h5>
             <a href="@routes.Order.fill" class="btn btn-primary"> Оформить заказ как гость </a>
         </div>
         <div class="span6">
             <div class="well">
-                <h4> Уже зарегистрированы? <br/>
-                    <small> Пожалуйста, введите информацию для входа: </small> </h4>
+                <h4> @Messages("cart.views.checkout.registeredalready.title") <br/>
+                    <small> @Messages("cart.views.checkout.registeredalready.subtitle") </small> </h4>
                 <form class="form-inline" action="@routes.Security.signIn(request.uri)" method="POST">
                     @loginForm.globalError.map { error =>
                         <div class="alert alert-error">
@@ -34,7 +34,7 @@
                     <fieldset>
                         @helper.inputText(loginForm("email"), args = 'type -> "email")
                         @helper.inputPassword(loginForm("password"))
-                        <button class="btn btn-primary"> Войти и оформить заказ </button> &nbsp;
+                        <button class="btn btn-primary"> @Messages("cart.views.checkout.registeredalready.signinbutton") </button> &nbsp;
                         <a href="@routes.Security.forgotPassword"> @Messages("security.login.form.forgotpassword") </a>
                     </fieldset>
                 </form>

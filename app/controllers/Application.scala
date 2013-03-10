@@ -6,6 +6,7 @@ import models._
 import play.api._
 import data.Form
 import data.Forms._
+import i18n.Messages
 import play.api.mvc._
 import play.api.Play.current
 import helpers.{ReCaptchaHelper, EmailHelper}
@@ -62,7 +63,7 @@ class Application @Inject()(implicit ur:UserRepository, val categoryRepository: 
           EmailHelper.sendFeedback(contactsForm)
 
           Redirect(routes.Application.contacts()).flashing(
-            "alert-success" -> "Ваше сообщение было успешно отправлено"
+            "alert-success" -> Messages("application.sendfeedback.alert.success")
           )
         }
       )

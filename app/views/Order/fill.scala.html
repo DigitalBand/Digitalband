@@ -7,13 +7,13 @@
 @main(menuItem = "cart") {
     @wizard(2)
     <div class="page-header">
-        <h3> Ваш заказ </h3>
-            &nbsp;<a href="@routes.Cart.display()"> <i class="icon-edit"></i> Редактировать заказ </a>
+        <h3> @Messages("order.deliveryinfo.title") </h3>
+            &nbsp;<a href="@routes.Cart.display()"> <i class="icon-edit"></i> @Messages("order.deliveryinfo.editbutton") </a>
     </div>
     @shoppingList(items, "", false)
     <form method="post" action="@routes.Order.place" class="form-inline">
         <fieldset>
-            <legend> Информация для доставки </legend>
+            <legend> @Messages("order.deliveryinfo.form.legend")</legend>
             <div class="row">
                 <div class="span6">
 

@@ -1,17 +1,14 @@
-@(items: Seq[models.CartItem], orderId: Int)(implicit user:Option[models.UserEntity],request: play.api.mvc.Request[Any])
+@(items: Seq[models.CartItem], orderId: Int)(implicit user: Option[models.UserEntity], request: play.api.mvc.Request[Any])
 @import Cart.shoppingList
 @main() {
     <div class="page-header">
-        <h3> Подтверждение заказа </h3>
+        <h3> @Messages("order.confirmation.title") </h3>
     </div>
     <p>
-            Заказ №
-            @orderId
-            успешно сформирован и ожидает обработки. В ближайшее время с Вами свяжется продавец
-            и уточнит детали доставки. Спасибо за заказ, всего вам доброго и ждем вас снова у нас в гостях!
+        @Messages("order.confirmation.text", orderId)
     </p>
     <div class="page-header">
-        <h4> Детали заказа: </h4>
+        <h4> @Messages("order.confirmation.details.title") </h4>
     </div>
     @shoppingList(items, "", false)
 }
