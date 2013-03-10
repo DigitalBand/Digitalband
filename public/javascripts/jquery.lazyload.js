@@ -22,7 +22,7 @@
             threshold       : 0,
             failure_limit   : 0,
             event           : "scroll",
-            effect          : "show",
+            effect          : "fadeIn",
             container       : window,
             data_attribute  : "original",
             skip_invisible  : true,

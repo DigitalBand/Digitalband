@@ -1,12 +1,12 @@
-@(title: String = Messages("main.head.title"), menuItem: String = "index", scripts: Html = Html(""),
+@(title: String = Messages("main.head.title"), menuItem: String = "index", scripts: Html = Html(""), subnav: Html = Html(""),
 search: String = "", categories: Seq[CategoryListItem], brands: ListPage[BrandEntity], categoryId: Int,
 brandId: Int)(content:Html)(implicit user:Option[models.UserEntity],request: play.api.mvc.Request[Any])
 @import Shared._
 
-@main(title, menuItem, scripts, search) {
+@main(title, menuItem, scripts, subnav = subnav, search = search) {
     <div class="row">
         <div class="span3">
-            <div class="sidebar">
+            <div class="sidebar block">
                 @sidenav(Messages("product.list.sidebar.categories"),
                     Messages("product.list.categories.linkTitle"),
                     categories.map {

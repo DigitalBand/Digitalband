@@ -3,28 +3,38 @@ brands:ListPage[BrandEntity], categoryId: Int, brandId: Int, breadcrumbItems: Se
 pageNumber:Int, search: String)(implicit user:Option[models.UserEntity],request: play.api.mvc.Request[Any])
 @import Shared._
 
-@withsidebar(product.title, "catalogue", search = search, brands = brands, categories = categories,
-categoryId = categoryId, brandId = brandId) {
+@subnav = {
+    <div id="highlighted">
+        <div class="container">
+            <div class="row-fluid header">
+                <ul class="breadcrumb">
+                    @breadcrumbItem(breadcrumbItems, categoryId => routes.Product.filteredList(categoryId, 1, brandId, s = search))
+                    @if(!search.isEmpty){
+                        <li>
+                            <span class="divider">/</span>
+                            <a href="@routes.Product.filteredList(categoryId, 1, brandId, s = search)">
+                                @Messages("product.display.breadcrumb.search", search)
+                            </a>
+                        </li>
+                    }
+                    @if(pageNumber > 1) {
+                        <li>
+                            <span class="divider"><i class="icon-angle-right"></i></span>
+                            <a href="@routes.Product.filteredList(categoryId, pageNumber, brandId, s = search)">
+                                @Messages("product.display.breadcrumb.pagenumber", pageNumber)
+                            </a>
+                        </li>
+                    }
+                </ul>
 
-<ul class="breadcrumb">
-    @breadcrumbItem(breadcrumbItems, categoryId => routes.Product.filteredList(categoryId, 1, brandId, s = search))
-    @if(!search.isEmpty){
-        <li>
-            <span class="divider">/</span>
-            <a href="@routes.Product.filteredList(categoryId, 1, brandId, s = search)">
-            @Messages("product.display.breadcrumb.search", search)
-            </a>
-        </li>
-    }
-    @if(pageNumber > 1) {
-    <li>
-        <span class="divider">/</span>
-        <a href="@routes.Product.filteredList(categoryId, pageNumber, brandId, s = search)">
-            @Messages("product.display.breadcrumb.pagenumber", pageNumber)
-        </a>
-    </li>
-    }
-</ul>
+            </div>
+        </div>
+    </div>
+}
+@withsidebar(product.title, "catalogue", search = search, brands = brands, categories = categories,
+categoryId = categoryId, brandId = brandId, subnav = subnav) {
+
+
 <h4>@product.title</h4>
 <div class="row">
     <div class="span4">

@@ -1,9 +1,9 @@
 @(title: String, linkTitle: String, items: Seq[models.SidebarItem], url: Int => Call)
 @if(!items.isEmpty){
-<ul class="breadcrumb">
-    <li>@title</li>
-</ul>
-<ul class="nav nav-tabs nav-stacked">
+<h3 class="block-title sub-title">
+    <span>@title</span>
+</h3>
+<ul class="big-list">
 @items.map { item =>
     <li>
         <a href="@url(item.id)" title="@{s"$linkTitle ${item.productCount}"}">
