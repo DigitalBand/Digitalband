@@ -26,6 +26,8 @@ validation.login.wronginfo=Неверный логин или пароль
 validation.registration.emailexists=Пользователь с данным email существует
 security.forgotpassword.notregistered=Данный email не зарегистрирован в системе
 
+emailhelper.sendfeedback.subject=Сообщение со страницы Контакты
+emailhelper.orderconfirmation.subject=Заказ на сайте Digitalband
 
 email=Эл. почта
 password=Пароль

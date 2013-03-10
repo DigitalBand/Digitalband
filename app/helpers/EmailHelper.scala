@@ -1,18 +1,18 @@
 package helpers
 
-import models.{CartItem, DeliveryInfo, OrderInfo, ContactEntity}
+import models.{OrderInfo, ContactEntity}
 import com.typesafe.plugin._
 import play.api.Play.current
-import dao.common.{OrderRepository, UserRepository}
+import dao.common.UserRepository
+import play.api.i18n.Messages
 
-//TODO: This object contains localizable resources. Move to messages
 object EmailHelper {
   def sendFeedback(message: ContactEntity)(implicit userRepository: UserRepository) = {
     val mail: MailerAPI = use[MailerPlugin].email
-    mail.setSubject("Сообщение со страницы Контакты")
+    mail.setSubject(Messages("emailhelper.sendfeedback.subject"))
     val adminEmails = userRepository.getAdminEmails
     adminEmails.map(email => mail.addRecipient(email))
-    mail.addFrom("tim@digitalband.ru")
+    mail.addFrom(userRepository.getSystemEmail)
     mail.setReplyTo(message.email)
     mail.sendHtml(views.html.emails.plain.contact.feedback(message).body)
   }
@@ -25,14 +25,14 @@ object EmailHelper {
         def sendToClient(from: String, to: String) = {
           val mail: MailerAPI = use[MailerPlugin].email
 
-          mail.setSubject("Заказ на сайте Digitalband")
+          mail.setSubject(Messages("emailhelper.orderconfirmation.subject"))
           mail.addRecipient(to)
           mail.addFrom(from)
           mail.send(views.html.emails.plain.order.confirmation(order).body)
         }
         def sendToAdmins(adminEmails: Seq[String], userEmail: String, systemEmail: String) = {
           val mail: MailerAPI = use[MailerPlugin].email
-          mail.setSubject("Заказ на сайте Digitalband")
+          mail.setSubject(Messages("emailhelper.orderconfirmation.subject"))
           mail.addFrom(systemEmail)
           mail.setReplyTo(userEmail)
           adminEmails.map(email => mail.addRecipient(email))
