@@ -25,8 +25,8 @@ trait UserRepository {
 
   def authenticate(login: String, password: String): Option[UserEntity]
 
-  def getUserId(email: String) = {
-    get(email) match {
+  def getUserId(name: String) = {
+    get(name) match {
       case Some(user) => user.id
       case None => 0
     }

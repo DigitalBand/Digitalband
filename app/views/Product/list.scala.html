@@ -13,7 +13,7 @@ searchQuery: String)(implicit user:Option[models.UserEntity],request: play.api.m
                     <div class="pull-right">
                         @if(brand.get.imageId > 0) {
                             <a class="img-link thumbnail" href="@routes.Product.filteredList(currentCategory.id, 1)">
-                                <img alt="@brand.get.title" src="@routes.Image.get(brand.get.imageId + ".jpg", 100, "50x24", "full")" />
+                                <img alt="@brand.get.title" src="@routes.Image.get(brand.get.imageId + ".jpg", 100, "50x25", "full")" />
                             </a>
                         } else {
                             <div class="breadcrumb">
@@ -52,9 +52,9 @@ searchQuery: String)(implicit user:Option[models.UserEntity],request: play.api.m
                 <div class="span2">
                     <a href="@routes.Product.filteredList(currentCategory.id, pageNumber, brandId(brand),
                         productId = product.id, s = searchQuery)">
-                        <img class="thumbnail lazy" width="170" height="170" src="@routes.Assets.at("images/empty.gif")" data-original="@routes.Image.get(product.defaultImageId + ".jpg", 90, "340x340", "full")">
+                        <img class="thumbnail lazy" width="160" height="160" src="@routes.Assets.at("images/empty.gif")" data-original="@routes.Image.get(product.defaultImageId + ".jpg", 90, "340x340", "full")">
                         <noscript>
-                            <img class="thumbnail" width="170" height="170" src="@routes.Image.get(product.defaultImageId + ".jpg", 90, "340x300", "full")">
+                            <img class="thumbnail" width="160" height="160" src="@routes.Image.get(product.defaultImageId + ".jpg", 90, "340x300", "full")">
                         </noscript>
                     </a>
                 </div>

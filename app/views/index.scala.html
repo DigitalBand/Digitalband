@@ -1,10 +1,10 @@
-@(categories: Seq[CategoryEntity], products: Seq[models.ProductEntity])(implicit user: Option[models.UserEntity], request: play.api.mvc.Request[Any])
+@(categories: Seq[CategoryEntity], products: Seq[models.ProductEntity])(implicit user: Option[models.UserEntity],request: play.api.mvc.Request[Any])
 @import Shared._
-@main() {
+@main(scripts = scripts) {
     <div id="myCarousel" class="carousel slide">
         <ol class="carousel-indicators">
             <li data-target="#myCarousel" data-slide-to="0" class="active"></li>
-            @for(i <- 1 to (categories.length - 1)) {
+            @for(i <- 1 to (categories.length-1)){
                 <li data-target="#myCarousel" data-slide-to="@i"></li>
             }
         </ol>
@@ -15,24 +15,28 @@
                 @carouselItem(category.imageId, isActive = false, captionTitle = category.title, url = routes.Product.filteredList(category.id, 1).toString)
             }
         </div>
-        <a class="carousel-control left" href="#myCarousel" data-slide="prev"> &lsaquo; </a>
-        <a class="carousel-control right" href="#myCarousel" data-slide="next"> &rsaquo; </a>
+        <a class="carousel-control left" href="#myCarousel" data-slide="prev">&lsaquo;</a>
+        <a class="carousel-control right" href="#myCarousel" data-slide="next">&rsaquo;</a>
     </div>
 
     <ul class="thumbnails top-products">
-        @products.map { product =>
-            <li class="span3">
-                <div class="thumbnail">
-                    <a href="@routes.Product.display(product.id)">
-                        <img src="@routes.Image.get(product.defaultImageId + ".jpg", quality = 60, "660x580", "full")"/>
-                    </a>
-                    <hr/>
-                    <blockquote>
-                        <p> <a href="@routes.Product.display(product.id)"> @product.title </a> </p>
-                        <small> @product.price р.</small>
-                    </blockquote>
-                </div>
-            </li>
-        }
+    @products.map { product =>
+        <li class="span3">
+            <div class="thumbnail">
+                <a href="@routes.Product.display(product.id)">
+                    <img src="@routes.Image.get(product.defaultImageId + ".jpg", quality = 60, "660x580", "full")"/>
+                </a>
+            <hr/>
+                <blockquote>
+                    <p><a href="@routes.Product.display(product.id)">@product.title</a></p>
+                    <small>@product.price р.</small>
+                </blockquote>
+            </div>
+        </li>
+    }
     </ul>
+}
+@scripts = {
+    <script src="@routes.Assets.at("javascripts/bootstrap/bootstrap-carousel.js")"></script>
+    <script src="@routes.Assets.at("javascripts/main.js")" type="text/javascript"></script>
 }
