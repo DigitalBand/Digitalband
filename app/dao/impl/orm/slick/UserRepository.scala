@@ -31,9 +31,14 @@ class UserRepository extends dao.common.UserRepository {
   }
 
   def get(email: String): Option[UserEntity] = database withSession {
-    implicit val getUserResult = GetResult(r => new UserEntity(r.<<, r.<<))
+    implicit val getUserResult = GetResult(r => new UserEntity(r.<<, r.<<, r.<<))
     sql"""
-      select email, userId from user_profiles where email = $email;
+      select p.email, p.userId, ifnull(ur.roleId, 0) roleId
+      from
+        user_profiles p
+      left join users_roles ur on ur.userId = p.userId
+      where
+        p.email = $email;
     """.as[UserEntity].firstOption
   }
 
