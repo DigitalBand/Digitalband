@@ -29,9 +29,7 @@ search: String = "")(content: Html)(implicit user: Option[models.UserEntity], re
                 </a>
                 <div class="nav-collapse collapse">
                     <ul class="nav">
-                        <li class="@{
-                            if(menuItem.equals("index")) "active" else ""
-                        }">
+                        <li class="@{if(menuItem.equals("index")) "active" else ""}">
                             <a href="@routes.Application.index">
                                 <i class="icon-home"></i>
                             </a>

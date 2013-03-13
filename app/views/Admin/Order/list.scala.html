@@ -1,0 +1,19 @@
+@(items: Seq[models.OrderInfo])(implicit user: Option[models.UserEntity], request: play.api.mvc.Request[Any])
+@import views.html.Admin.main
+@main("Заказы", "orders") {
+    <div class="row">
+        @items.map {
+            case order => {
+                <div class="span2"> @order.id </div>
+                <div class="span3"> @order.orderDate </div>
+                <div class="span3"> @order.status </div>
+                <div class="span4"> @order.deliveryInfo.email </div>
+                }
+        }
+        @if(items.isEmpty){
+            <div class="alert alert-info">
+                Нет заказов
+            </div>
+        }
+    </div>
+}

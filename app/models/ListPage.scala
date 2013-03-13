@@ -1,3 +1,3 @@
 package models
 
-class ListPage[T](var number: Int, var items: Seq[T], var totalCount: Int)
+class ListPage[T](val number: Int, val items: Seq[T], val totalCount: Int)
