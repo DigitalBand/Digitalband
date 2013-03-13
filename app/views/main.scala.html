@@ -48,7 +48,16 @@ search: String = "")(content: Html)(implicit user: Option[models.UserEntity], re
                                 <i class="icon-shopping-cart"></i>
                             </a>
                         </li>
-
+                        @user match {
+                            case Some(u) => {
+                                @if(u.isAdmin) {
+                                    <li class="@{if(menuItem.equals("admin")) "active" else ""}">
+                                        <a href="@routes.Admin.index"><i class="icon-wrench"></i></a>
+                                    </li>
+                                }
+                            }
+                            case None => {}
+                        }
                     </ul>
 
                     <ul class="nav pull-right">
@@ -83,7 +92,7 @@ search: String = "")(content: Html)(implicit user: Option[models.UserEntity], re
         <section class="footerlinks">
             <div class="container">
                 <ul class="nav">
-                    <a href="@routes.Application.about"> @Messages("main.footer.nav.about") </a> <span class="divider">|</span>
+                    <a href="@routes.Application.about"> @Messages("main.footer.nav.about") </a> <span class="divider"> | </span>
                     <a href="@routes.Application.contacts"> @Messages("main.footer.nav.contact") </a>
                 </ul>
             </div>
