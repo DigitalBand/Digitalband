@@ -38,7 +38,7 @@ class Order @Inject()(implicit ur: UserRepository, orderRepository: OrderReposit
         deliveryInfo => {
           userRepository.updateDeliveryInfo(deliveryInfo, getUserId)
           val orderId = orderRepository.create(deliveryInfo, getUserId)
-          EmailHelper.orderConfirmation(new OrderInfo(deliveryInfo, orderRepository.getItems(orderId)))
+          EmailHelper.orderConfirmation(new OrderInfo(orderId, deliveryInfo, orderRepository.getItems(orderId)))
           Redirect(routes.Order.confirmation(orderId))
         }
       )

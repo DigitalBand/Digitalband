@@ -9,8 +9,8 @@ class OrderInfo(val id: Int, val orderDate: java.sql.Timestamp,
                 val status:String, val deliveryInfo: DeliveryInfo,
                 val items: Seq[CartItem]){
 
-  def this(deliveryInfo: DeliveryInfo, items: Seq[CartItem]) =
-    this(0, null, "", deliveryInfo, items)
+  def this(id: Int, deliveryInfo: DeliveryInfo, items: Seq[CartItem]) =
+    this(id, null, "", deliveryInfo, items)
 
   def this(orderId: Int, orderDate: java.sql.Timestamp, status:String, deliveryInfo:DeliveryInfo) =
     this(orderId, orderDate, status, deliveryInfo, List())

@@ -1,4 +1,12 @@
 @(order: models.OrderInfo)(implicit user: Option[models.UserEntity], request: play.api.mvc.Request[Any])
+@import Cart.shoppingList
 @views.html.admin.main("Просмотр заказа", "orders") {
+    <div class="page-header">
+        <h3>Обработка заказа </h3>
+    </div>
 
+    <div class="page-header">
+        <h4> @Messages("order.confirmation.details.title") </h4>
+    </div>
+    @shoppingList(order.items, "", false)
 }
