@@ -3,7 +3,7 @@ menuItem: String = "index",
 scripts: Html = Html(""),
 subnav: Html = Html(""),
 search: String = "")(content: Html)(implicit user: Option[models.UserEntity], request: play.api.mvc.Request[Any])
-
+@import controllers.admin.routes.Admin
 <!DOCTYPE html>
 <html>
 <head>
@@ -30,9 +30,9 @@ search: String = "")(content: Html)(implicit user: Option[models.UserEntity], re
                 <div class="nav-collapse collapse">
                     <ul class="nav">
                         <li class="@{if(menuItem.equals("index")) "active" else ""}">
-                            <a href="@routes.Admin.index"> <i class="icon-home"></i>  </a>
+                            <a href="@Admin.index"> <i class="icon-home"></i>  </a>
                         </li>
-                        <li class="@{if(menuItem.equals("orders")) "active" else ""}"> <a href="@routes.Admin.orders"> <i class="icon-shopping-cart"></i> Заказы </a> </li>
+                        <li class="@{if(menuItem.equals("orders")) "active" else ""}"> <a href="@Admin.orders"> <i class="icon-shopping-cart"></i> Заказы </a> </li>
                         <li> <a href=""> <i class="icon-group"></i> Пользователи </a> </li>
                         <li> <a href=""><i class="icon-cogs"></i> Роботы </a> </li>
                         <li> <a href=""><i class="icon-envelope-alt"></i> Уведомления</a> </li>

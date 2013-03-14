@@ -3,8 +3,8 @@
 # ~~~~
 ###Admin
 #Dashboard
-GET     /admin                                                                    @controllers.Admin.index
-GET     /admin/orders                                                             @controllers.Admin.orders
+GET     /admin                                                                    @controllers.admin.Admin.index
+GET     /admin/orders                                                             @controllers.admin.Admin.orders
 # Home page
 GET     /                                                                         @controllers.Application.index
 GET     /about                                                                    @controllers.Application.about
