@@ -78,9 +78,9 @@ class OrderRepository extends dao.common.OrderRepository {
     implicit val getOrderInfo = GetResult(r => new OrderInfo(r.<<, r.<<, r.<<, new DeliveryInfo(r.<<, r.<<, r.<<, r.<<)))
     val items = sql"""
       select
-        orderId, placeDate, status, o.name, o.email, o.phone, o.address
-      from orders o
-      order by o.placeDate desc
+        orderId, placeDate, status, name, email, phone, address
+      from orders
+      order by placeDate desc
       limit ${pageSize*(pageNumber-1)}, $pageSize
     """.as[OrderInfo].list
     val totalCount = sql"select count(*) from orders".as[Int].first
