@@ -4,7 +4,7 @@
 ###Admin
 #Dashboard
 GET     /admin                                                                    @controllers.admin.Admin.index
-GET     /admin/orders                                                             @controllers.admin.Admin.orders
+GET     /admin/orders                                                             @controllers.admin.Order.list
 # Home page
 GET     /                                                                         @controllers.Application.index
 GET     /about                                                                    @controllers.Application.about
