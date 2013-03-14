@@ -9,11 +9,11 @@ import play.api.mvc.Action
 class Admin @Inject()(implicit userRepository: UserRepository) extends ControllerBase {
   def index = Action {
     implicit request =>
-      Ok(views.html.Admin.index())
+      Ok(views.html.admin.index())
   }
 
   def orders = Action {
     implicit request =>
-    Ok(views.html.Admin.Order.list(List()))
+    Ok(views.html.admin.Order.list(List()))
   }
 }
