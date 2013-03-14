@@ -1,8 +1,12 @@
 order.list.ui.button.unconfirmed=danger
 order.list.ui.button.done=success
+order.list.ui.button.confirmed=info
+order.list.ui.button.canceled=warning
 
-order.list.ui.button.unconfirmed.text=Неподтвержденный
-order.list.ui.button.done.text=Выполненный
+order.list.ui.button.unconfirmed.text=Не подтвержден
+order.list.ui.button.done.text=Выполнен
+order.list.ui.button.confirmed.text=Подтвержден
+order.list.ui.button.canceled.text=Отменен
 
 error.required=Это поле обязательно для заполнения;
 # --- Constraints

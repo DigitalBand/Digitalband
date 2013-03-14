@@ -1,9 +1,9 @@
 package dao.common
 
-import models.{OrderInfo, CartItem, DeliveryInfo}
+import models.{ListPage, OrderInfo, CartItem, DeliveryInfo}
 
 trait OrderRepository {
-  def listAll(): Seq[OrderInfo]
+  def listAll(pageNumber: Int, pageSize: Int): ListPage[OrderInfo]
 
   def get(orderId: Int): OrderInfo = new OrderInfo(getDeliveryInfo(orderId), getItems(orderId))
 

@@ -3,8 +3,8 @@
 # ~~~~
 ###Admin
 GET     /admin                                                                    @controllers.admin.Dashboard.index
-GET     /admin/orders                                                             @controllers.admin.Order.list
-GET     /admin/orders/:orderId                                                    @controllers.admin.Order.display(orderId: Int)
+GET     /admin/order/list/:pageNumber                                             @controllers.admin.Order.list(pageNumber: Int, pageSize: Int ?= 10)
+GET     /admin/order/:orderId                                                     @controllers.admin.Order.display(orderId: Int)
 # Home page
 GET     /                                                                         @controllers.Application.index
 GET     /about                                                                    @controllers.Application.about

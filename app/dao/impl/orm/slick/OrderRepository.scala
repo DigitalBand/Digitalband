@@ -74,14 +74,16 @@ class OrderRepository extends dao.common.OrderRepository {
     """.as[Int].first > 0
   }
 
-  def listAll(): Seq[OrderInfo] = database withSession {
+  def listAll(pageNumber: Int, pageSize: Int): ListPage[OrderInfo] = database withSession {
     implicit val getOrderInfo = GetResult(r => new OrderInfo(r.<<, r.<<, r.<<, new DeliveryInfo(r.<<, r.<<, r.<<, r.<<)))
-    sql"""
+    val items = sql"""
       select
-        orderId, placeDate, status, up.userName, up.email, up.phoneNumber, up.address
+        orderId, placeDate, status, o.name, o.email, o.phone, o.address
       from orders o
-      inner join user_profiles up on up.userId = o.userId
       order by o.placeDate desc
+      limit ${pageSize*(pageNumber-1)}, $pageSize
     """.as[OrderInfo].list
+    val totalCount = sql"select count(*) from orders".as[Int].first
+    new ListPage[OrderInfo](pageNumber, items, totalCount)
   }
 }
