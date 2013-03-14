@@ -68,9 +68,20 @@ class OrderRepository extends dao.common.OrderRepository {
     """.as[DeliveryInfo].first
   }
 
-  def exists(orderId: Int) = database withSession{
+  def exists(orderId: Int) = database withSession {
     sql"""
       select count(orderId) from order_items where orderId = $orderId;
     """.as[Int].first > 0
+  }
+
+  def listAll(): Seq[OrderInfo] = database withSession {
+    implicit val getOrderInfo = GetResult(r => new OrderInfo(r.<<, r.<<, r.<<, new DeliveryInfo(r.<<, r.<<, r.<<, r.<<)))
+    sql"""
+      select
+        orderId, placeDate, status, up.userName, up.email, up.phoneNumber, up.address
+      from orders o
+      inner join user_profiles up on up.userId = o.userId
+      order by o.placeDate desc
+    """.as[OrderInfo].list
   }
 }

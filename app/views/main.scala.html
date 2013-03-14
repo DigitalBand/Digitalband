@@ -50,7 +50,7 @@ search: String = "")(content: Html)(implicit user: Option[models.UserEntity], re
                             case Some(u) => {
                                 @if(u.isAdmin) {
                                     <li class="@{if(menuItem.equals("admin")) "active" else ""}">
-                                        <a href="@controllers.admin.routes.Admin.index"><i class="icon-wrench"></i></a>
+                                        <a href="@controllers.admin.routes.Dashboard.index"><i class="icon-wrench"></i></a>
                                     </li>
                                 }
                             }

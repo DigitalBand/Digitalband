@@ -1,3 +1,9 @@
+order.list.ui.button.unconfirmed=danger
+order.list.ui.button.done=success
+
+order.list.ui.button.unconfirmed.text=Неподтвержденный
+order.list.ui.button.done.text=Выполненный
+
 error.required=Это поле обязательно для заполнения;
 # --- Constraints
 constraint.required=Required

@@ -3,12 +3,9 @@ package dao.common
 import models.{OrderInfo, CartItem, DeliveryInfo}
 
 trait OrderRepository {
-  def get(orderId: Int): Option[OrderInfo] = {
-    if (exists(orderId))
-      Option(new OrderInfo(getDeliveryInfo(orderId), getItems(orderId)))
-    else
-      None
-  }
+  def listAll(): Seq[OrderInfo]
+
+  def get(orderId: Int): OrderInfo = new OrderInfo(getDeliveryInfo(orderId), getItems(orderId))
 
   def exists(orderId: Int): Boolean
 

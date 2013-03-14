@@ -15,6 +15,7 @@ object ApplicationBuild extends Build {
     "com.typesafe" %% "play-plugins-mailer" % "2.1.0",
     "com.tzavellas" % "sse-guice" % "0.7.0",
     "com.typesafe.slick" %% "slick" % "1.0.0",
+    "org.ocpsoft.prettytime" % "prettytime" % "2.1.3.Final",
     "ch.qos.logback" % "logback-classic" % "1.0.9"
   )
 

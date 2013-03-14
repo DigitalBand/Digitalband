@@ -6,7 +6,7 @@ import controllers.common.ControllerBase
 import play.api.mvc.Action
 
 //should be secured
-class Admin @Inject()(implicit userRepository: UserRepository) extends ControllerBase {
+class Dashboard @Inject()(implicit userRepository: UserRepository) extends ControllerBase {
   def index = Action {
     implicit request =>
       Ok(views.html.admin.index())

@@ -3,11 +3,28 @@
     @items.map {
         case order => {
             <div class="row">
-                <div class="span2"> @order.id </div>
-                <div class="span3"> @order.orderDate </div>
-                <div class="span3"> @order.status </div>
-                <div class="span4"> @order.deliveryInfo.email </div>
-            </div>
+                <div class="span2">
+                    <a href="@controllers.admin.routes.Order.display(order.id)">
+                        <i class="icon-money"></i>
+                            Заказ № @order.id
+                    </a>
+                </div>
+                <div class="span4">
+                    <i class="icon-calendar"></i>
+                    @order.orderDateFormatted
+                </div>
+                <div class="span3">
+                    <i class="icon-user"></i> @order.deliveryInfo.email
+                </div>
+                <div class="span3">
+                    <a class="btn  @{
+                        "btn-" + Messages("order.list.ui.button." + order.status)
+                    }">
+                        @Messages("order.list.ui.button." + order.status + ".text")
+                    </a>
+                    </div>
+                </div>
+            <hr/>
         }
     }
     @if(items.isEmpty) {
