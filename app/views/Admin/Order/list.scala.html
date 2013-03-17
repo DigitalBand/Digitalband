@@ -1,6 +1,6 @@
 @(listPage: ListPage[models.OrderInfo], pageSize: Int, pageNumber: Int)(implicit user: Option[models.UserEntity], request: play.api.mvc.Request[Any])
 @import Shared.pager
-
+@import views.html.admin.Order.statusButton
 @views.html.admin.main("Заказы", "orders") {
     @if(!listPage.items.isEmpty){
         <div class="pull-right">
@@ -23,28 +23,7 @@
                         <i class="icon-user"></i> @order.deliveryInfo.email
                     </div>
                     <div class="span3">
-                        <div class="btn-group">
-                            <a data-toggle="dropdown" class="dropdown-toggle btn  @{
-                                "btn-" + Messages("order.list.ui.button." + order.status)
-                            }">
-                                @Messages("order.list.ui.button." + order.status + ".text")
-                            <span class="caret"></span>
-                            </a>
-                            <ul class="dropdown-menu">
-                                <li>
-                                    <a href="">Подтвердить</a>
-                                </li>
-                                <li>
-                                    <a href="">Отменить</a>
-                                </li>
-                                <li>
-                                    <a href="">Завершить</a>
-                                </li>
-                                <li>
-                                    <a href="">Удалить</a>
-                                </li>
-                            </ul>
-                        </div>
+                        @statusButton(order.status)
                     </div>
                 </div>
                 <hr/>

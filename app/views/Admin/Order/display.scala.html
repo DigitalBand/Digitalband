@@ -1,12 +1,30 @@
 @(order: models.OrderInfo)(implicit user: Option[models.UserEntity], request: play.api.mvc.Request[Any])
 @import Cart.shoppingList
+@import views.html.admin.Order.statusButton
 @views.html.admin.main("Просмотр заказа", "orders") {
-    <div class="page-header">
-        <h3>Обработка заказа </h3>
+    <h4> Заказ № @order.id </h4>
+    @statusButton(order.status)
+    <div class="row">
+        <dl class="span6">
+            <dt> Имя: </dt>
+            <dd>
+                @order.deliveryInfo.name
+            </dd>
+
+            <dt> email: </dt>
+            <dd>
+                <a href="mailto:  @order.deliveryInfo.email"> @order.deliveryInfo.email </a>
+            </dd>
+
+        </dl>
+        <dl class="span6">
+            <dt>Телефон:</dt>
+            <dd><a href="callto:@order.deliveryInfo.phone">@order.deliveryInfo.phone</a></dd>
+            <dt>Адрес:</dt>
+            <dd>@order.deliveryInfo.address</dd>
+        </dl>
     </div>
 
-    <div class="page-header">
-        <h4> @Messages("order.confirmation.details.title") </h4>
-    </div>
+
     @shoppingList(order.items, "", false)
 }

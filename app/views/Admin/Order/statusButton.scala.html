@@ -1,0 +1,23 @@
+@(status: String)
+<div class="btn-group">
+<a data-toggle="dropdown" class="dropdown-toggle btn   @{
+    "btn-" + Messages("order.list.ui.button." + status)
+}">
+@Messages("order.list.ui.button." + status + ".text")
+<span class="caret"></span>
+</a>
+<ul class="dropdown-menu">
+<li>
+<a href=""> Подтвердить </a>
+</li>
+<li>
+<a href=""> Отменить </a>
+</li>
+<li>
+<a href=""> Завершить </a>
+</li>
+<li>
+<a href=""> Удалить </a>
+</li>
+</ul>
+</div>

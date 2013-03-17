@@ -15,6 +15,9 @@ class OrderInfo(val id: Int, val orderDate: java.sql.Timestamp,
   def this(orderId: Int, orderDate: java.sql.Timestamp, status:String, deliveryInfo:DeliveryInfo) =
     this(orderId, orderDate, status, deliveryInfo, List())
 
+  def this(order: OrderInfo, items: Seq[CartItem]) =
+    this(order.id, order.orderDate, order.status, order.deliveryInfo, items)
+
   def orderDateFormatted = {
     new PrettyTime(new Locale("ru")).format(new Date(orderDate.getTime))
   }
