@@ -6,6 +6,7 @@ import controllers.common.ControllerBase
 import play.api.mvc.Action
 import models.ListPage
 import views.html.admin.Order
+import helpers.EmailHelper
 
 //TODO: Secure
 class Order @Inject()(implicit userRepository: UserRepository, orderRepository: OrderRepository) extends ControllerBase {
@@ -22,19 +23,27 @@ class Order @Inject()(implicit userRepository: UserRepository, orderRepository: 
   }
 
   def confirm(orderId: Int) = Action {
-    NotImplemented
+    orderRepository.changeStatus(orderId, "confirmed")
+    //TODO: send email to user
+    //EmailHelper.orderConfirmed(message)
+    Redirect(controllers.admin.routes.Order.display(orderId))
   }
 
   def cancel(orderId: Int) = Action {
-    NotImplemented
+    orderRepository.changeStatus(orderId, "canceled")
+    //TODO: send email to user
+    //EmailHelper.orderCanceled(message)
+    Redirect(controllers.admin.routes.Order.display(orderId))
   }
 
   def complete(orderId: Int) = Action {
-    NotImplemented
+    orderRepository.changeStatus(orderId, "done")
+    Redirect(controllers.admin.routes.Order.display(orderId))
   }
 
   def delete(orderId: Int) = Action {
-    NotImplemented
+    orderRepository.delete(orderId)
+    Redirect(controllers.admin.routes.Order.list(1))
   }
 
   def confirmPage(orderId: Int) = Action {

@@ -1,4 +1,7 @@
 @(orderId: Int)(implicit user: Option[models.UserEntity], request: play.api.mvc.Request[Any])
-@views.html.admin.main("Администрирование", "orders"){
-
+@views.html.admin.main("Администрирование", "orders") {
+    <div class="alert alert-info"> Пометить заказ как выполненный? </div>
+    <form method="POST" action="@controllers.admin.routes.Order.complete(orderId)">
+        <button class="btn btn-primary"> Выполнить </button>
+    </form>
 }

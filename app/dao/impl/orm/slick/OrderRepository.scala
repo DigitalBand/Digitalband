@@ -67,12 +67,14 @@ class OrderRepository extends dao.common.OrderRepository {
         orderId = $orderId
     """.as[DeliveryInfo].first
   }
-  override def get(orderId: Int): OrderInfo = database withSession{
+
+  override def get(orderId: Int): OrderInfo = database withSession {
     implicit val getOrderInfo = GetResult(r => new OrderInfo(r.<<, r.<<, r.<<, new DeliveryInfo(r.<<, r.<<, r.<<, r.<<)))
     val query = sql"select orderId, placeDate, status, name, email, phone, address from orders where orderId = $orderId"
     val order = query.as[OrderInfo].first()
     new OrderInfo(order, getItems(orderId))
   }
+
   def exists(orderId: Int) = database withSession {
     sql"""
       select count(orderId) from order_items where orderId = $orderId;
@@ -86,9 +88,17 @@ class OrderRepository extends dao.common.OrderRepository {
         orderId, placeDate, status, name, email, phone, address
       from orders
       order by placeDate desc
-      limit ${pageSize*(pageNumber-1)}, $pageSize
+      limit ${pageSize * (pageNumber - 1)}, $pageSize
     """.as[OrderInfo].list
     val totalCount = sql"select count(*) from orders".as[Int].first
     new ListPage[OrderInfo](pageNumber, items, totalCount)
+  }
+
+  def changeStatus(orderId: Int, status: String) = database withSession {
+    sqlu"update orders set status = $status where orderId = $orderId".execute()
+  }
+
+  def delete(orderId: Int) = database withSession {
+    sqlu"delete from orders where orderId = $orderId; delete from order_items where orderId = $orderId".execute()
   }
 }

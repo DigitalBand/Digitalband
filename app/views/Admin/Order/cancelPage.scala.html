@@ -1,4 +1,9 @@
 @(orderId: Int)(implicit user: Option[models.UserEntity], request: play.api.mvc.Request[Any])
 @views.html.admin.main("Администрирование", "orders"){
-
+     <div class="alert alert-info">
+         Вы действительно хотите отменить заказ?
+     </div>
+    <form method="POST" action="@controllers.admin.routes.Order.cancel(orderId)">
+        <button class="btn btn-primary">Отменить</button>
+    </form>
 }
