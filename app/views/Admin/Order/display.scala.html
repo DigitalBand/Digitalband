@@ -3,7 +3,7 @@
 @import views.html.admin.Order.statusButton
 @views.html.admin.main("Просмотр заказа", "orders") {
     <h4> Заказ № @order.id </h4>
-    @statusButton(order.status)
+    @statusButton(order.status, order.id)
     <div class="row">
         <dl class="span6">
             <dt> Имя: </dt>

@@ -1,4 +1,5 @@
-@(status: String)
+@(status: String, orderId: Int)
+@import controllers.admin.routes.Order
 <div class="btn-group">
 <a data-toggle="dropdown" class="dropdown-toggle btn   @{
     "btn-" + Messages("order.list.ui.button." + status)
@@ -8,16 +9,16 @@
 </a>
 <ul class="dropdown-menu">
 <li>
-<a href=""> Подтвердить </a>
+<a href="@Order.confirmPage(orderId)"> Подтвердить </a>
 </li>
 <li>
-<a href=""> Отменить </a>
+<a href="@Order.cancelPage(orderId)"> Отменить </a>
 </li>
 <li>
-<a href=""> Завершить </a>
+<a href="@Order.completePage(orderId)"> Завершить </a>
 </li>
 <li>
-<a href=""> Удалить </a>
+<a href="@Order.deletePage(orderId)"> Удалить </a>
 </li>
 </ul>
 </div>

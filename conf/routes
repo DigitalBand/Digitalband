@@ -2,9 +2,17 @@
 # This file defines all application routes (Higher priority routes first)
 # ~~~~
 ###Admin
-GET     /admin                                                                    @controllers.admin.Dashboard.index
-GET     /admin/order/list/:pageNumber                                             @controllers.admin.Order.list(pageNumber: Int, pageSize: Int ?= 10)
-GET     /admin/order/:orderId                                                     @controllers.admin.Order.display(orderId: Int)
+GET     /admin                                                                  @controllers.admin.Dashboard.index
+GET     /admin/order/list/:pageNumber                                           @controllers.admin.Order.list(pageNumber: Int, pageSize: Int ?= 10)
+GET     /admin/order/:orderId                                                   @controllers.admin.Order.display(orderId: Int)
+GET     /admin/order/:orderId/confirm                                           @controllers.admin.Order.confirmPage(orderId: Int)
+GET     /admin/order/:orderId/cancel                                            @controllers.admin.Order.cancelPage(orderId: Int)
+GET     /admin/order/:orderId/complete                                          @controllers.admin.Order.completePage(orderId: Int)
+GET     /admin/order/:orderId/delete                                            @controllers.admin.Order.deletePage(orderId: Int)
+POST    /admin/order/:orderId/confirm                                           @controllers.admin.Order.confirm(orderId: Int)
+POST    /admin/order/:orderId/cancel                                            @controllers.admin.Order.cancel(orderId:Int)
+POST    /admin/order/:orderId/complete                                          @controllers.admin.Order.complete(orderId:Int)
+POST    /admin/order/:orderId/delete                                            @controllers.admin.Order.delete(orderId:Int)
 # Home page
 GET     /                                                                         @controllers.Application.index
 GET     /about                                                                    @controllers.Application.about
