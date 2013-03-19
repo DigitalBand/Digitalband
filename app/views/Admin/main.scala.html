@@ -39,7 +39,7 @@ search: String = "")(content: Html)(implicit user: Option[models.UserEntity], re
 
                     </ul>
                     <ul class="nav pull-right">
-                        <li> <a href=""><i class="icon-globe"></i> На сайт</a> </li>
+                        <li> <a href="@routes.Application.index()"><i class="icon-globe"></i> На сайт</a> </li>
                         <li class="@{if(menuItem.equals("security")) "active" else ""}">
                             <a href="@(if(user.isDefined) routes.Security.signOff(request.uri) else routes.Security.login(request.uri))">
                                 <i class="@(if(user.isDefined) "icon-off" else "icon-key")"></i>
