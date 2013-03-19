@@ -7,6 +7,7 @@ import dao.common._
 
 import play.api.Play.current
 import play.api.cache.Cached
+import models.UserEntity
 
 class Product @Inject()(implicit ur:UserRepository, productRepository: ProductRepository,
                         categoryRepository: CategoryRepository,
@@ -23,7 +24,7 @@ class Product @Inject()(implicit ur:UserRepository, productRepository: ProductRe
                    pageSize: Int = 10,
                    search: String = "") =
     //Cached(req => req.uri, 82000) {
-      Action {
+    withUser { implicit user =>
         implicit request =>
           if (productId > 0)
             display(productId, categoryId, brandId, brandPage, pageNumber, search)
@@ -48,13 +49,13 @@ class Product @Inject()(implicit ur:UserRepository, productRepository: ProductRe
 
   def display(id: Int): Action[AnyContent] =
     //Cached(req => req.toString, 82000) {
-      Action {
+    withUser { implicit user =>
         implicit request =>
         display(id, 1, 0, 1, 1, "")
       }
     //}
 
-  def display(id: Int, categoryId: Int, brandId: Int, brandPage: Int, pageNumber: Int, search: String)(implicit request:Request[AnyContent]) = {
+  def display(id: Int, categoryId: Int, brandId: Int, brandPage: Int, pageNumber: Int, search: String)(implicit request:Request[AnyContent], user: Option[UserEntity]) = {
     Ok(views.html.Product.display(
       productRepository.get(id, brandRepository.get),
       imageRepository.listByProductId(id),

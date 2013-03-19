@@ -19,7 +19,7 @@ class Cart @Inject()(implicit ur: UserRepository, val cartRepository: CartReposi
     )(CItem.apply)(CItem.unapply)
   )
 
-  def add = Action {
+  def add = withUser { implicit user =>
     implicit request =>
       val cItem = addToCartForm.bindFromRequest.get
       val userId = getUserId
@@ -28,31 +28,31 @@ class Cart @Inject()(implicit ur: UserRepository, val cartRepository: CartReposi
         session + ("userid" -> userId.toString)
   }
 
-  def display(returnUrl: String) = Action {
+  def display(returnUrl: String) = withUser { implicit user =>
     implicit request =>
       val cartItems: Seq[CartItem] = cartRepository.list(getUserId)
       Ok(views.html.Cart.display(cartItems, returnUrl))
   }
 
-  def delete(productId: Int, returnUrl: String = "") = Action {
+  def delete(productId: Int, returnUrl: String = "") = withUser { implicit user =>
     implicit request =>
       cartRepository.deleteItem(getUserId, productId)
       Redirect(routes.Cart.display(returnUrl))
   }
 
-  def deleteConfirmation(productId: Int, returnUrl: String = "") = Action {
+  def deleteConfirmation(productId: Int, returnUrl: String = "") = withUser { implicit user =>
     implicit request =>
     Ok(views.html.Cart.deleteConfirmation(productRepository.get(productId), returnUrl))
   }
 
-  def update(returnUrl: String) = Action {
+  def update(returnUrl: String) = withUser { implicit user =>
     implicit request =>
       val items = getCartItems(request.body)
       cartRepository.updateItems(getUserId, items)
       Redirect(routes.Cart.display(returnUrl))
   }
 
-  def checkout = Action {
+  def checkout = withUser { implicit user =>
     implicit request =>
       if (!user.isDefined)
         Ok(views.html.Cart.checkout(loginForm(userRepository)))

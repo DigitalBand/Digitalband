@@ -18,7 +18,7 @@ class Order @Inject()(implicit ur: UserRepository, orderRepository: OrderReposit
     "address" -> text
   )(DeliveryInfo.apply)(DeliveryInfo.unapply))
   val emailHelper = new EmailHelper()
-  def fill = Action {
+  def fill = withUser { implicit user =>
     implicit request =>
       val itemsList = cartRepository.list(getUserId)
       if (!itemsList.isEmpty)
@@ -29,7 +29,7 @@ class Order @Inject()(implicit ur: UserRepository, orderRepository: OrderReposit
         Redirect(routes.Cart.display())
   }
 
-  def place = Action {
+  def place = withUser { implicit user =>
     implicit request =>
       deliveryForm.bindFromRequest.fold(
         formWithErrors => {
@@ -44,12 +44,13 @@ class Order @Inject()(implicit ur: UserRepository, orderRepository: OrderReposit
       )
   }
 
-  def confirmation(orderId: Int) = Action {
+  def confirmation(orderId: Int) = withUser { implicit user =>
     implicit request =>
     Ok(views.html.Order.confirmation(orderRepository.getItems(orderId), orderId))
   }
 
-  def display(orderId: Int) = Action {
-    NotImplemented
+  def display(orderId: Int) = withUser { implicit user =>
+    implicit request =>
+      NotImplemented
   }
 }

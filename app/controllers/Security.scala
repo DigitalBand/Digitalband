@@ -21,7 +21,7 @@ class Security @Inject()(implicit ur: UserRepository, val cartRepository: CartRe
     }))
 
   //POST
-  def signIn(redirectUrl: String) = Action {
+  def signIn(redirectUrl: String) = withUser { implicit user =>
     implicit request =>
       loginForm(userRepository).bindFromRequest.fold(
         formWithErrors => BadRequest(views.html.Security.login(formWithErrors, redirectUrl)),
@@ -44,7 +44,7 @@ class Security @Inject()(implicit ur: UserRepository, val cartRepository: CartRe
   }
 
   //POST
-  def signUp(redirectUrl: String) = Action {
+  def signUp(redirectUrl: String) = withUser { implicit user =>
     implicit request =>
       registrationForm(userRepository).bindFromRequest.fold(
         formWithErrors => BadRequest(views.html.Security.registration(formWithErrors, redirectUrl)),
@@ -70,7 +70,7 @@ class Security @Inject()(implicit ur: UserRepository, val cartRepository: CartRe
   }
 
   //GET
-  def signOff(redirectUrl: String) = Action {
+  def signOff(redirectUrl: String) = withUser { implicit user =>
     implicit request =>
       if (redirectUrl.isEmpty)
         Redirect(routes.Application.index()).withNewSession
@@ -81,25 +81,26 @@ class Security @Inject()(implicit ur: UserRepository, val cartRepository: CartRe
   }
 
   //GET
-  def login(returnUrl: String) = Action {
+  def login(returnUrl: String) = withUser { implicit user =>
     implicit request =>
       Ok(views.html.Security.login(forms.loginForm(userRepository), returnUrl))
   }
 
   //GET
-  def registration(redirectUrl: String) = Action {
+  def registration(redirectUrl: String) = withUser { implicit user =>
     implicit request =>
       Ok(views.html.Security.registration(registrationForm(userRepository), redirectUrl))
   }
 
   //GET
-  def forgotPassword = Action {
+  def forgotPassword = withUser { implicit user =>
     implicit request =>
       Ok(views.html.Security.forgotpassword(forgotPasswordForm))
   }
 
   //POST
-  def sendPassword = Action {
-    NotImplemented
+  def sendPassword = withUser { implicit user =>
+    implicit request =>
+      NotImplemented
   }
 }

@@ -37,7 +37,7 @@ class Application @Inject()(implicit ur:UserRepository, val categoryRepository: 
   }
 
   def index = /*Cached("homePage", oneDayDuration)*/ {
-    Action {
+    withUser { implicit user =>
       implicit request =>
         val categories: Seq[CategoryEntity] = categoryRepository.listWithPictures()
         val products: Seq[ProductEntity] = productRepository.listMostVisited(8)
@@ -45,17 +45,17 @@ class Application @Inject()(implicit ur:UserRepository, val categoryRepository: 
     }
  }
 
-  def about = Action {
+  def about = withUser { implicit user =>
     implicit request =>
       Ok(views.html.Application.about())
   }
 
-  def contacts = Action {
+  def contacts = withUser { implicit user =>
     implicit request =>
       Ok(views.html.Application.contacts(contactsForm))
   }
 
-  def sendFeedback = Action {
+  def sendFeedback = withUser { implicit user =>
     implicit request =>
       contactsForm.bindFromRequest.fold(
         formWithErrors => BadRequest(views.html.Application.contacts(formWithErrors)),
