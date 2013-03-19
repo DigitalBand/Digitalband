@@ -7,13 +7,18 @@ import Profile.driver.simple._
 import Database.threadLocalSession
 import slick.jdbc.{StaticQuery => Q, GetResult}
 import Q.interpolation
+import java.sql.Timestamp
 
 class OrderRepository extends dao.common.OrderRepository {
   def create(deliveryInfo: DeliveryInfo, userId: Int): Int = {
     database withSession {
       sqlu"""
-        insert into orders (userId, name, email, phone, address)
-        values($userId, ${deliveryInfo.name}, ${deliveryInfo.email}, ${deliveryInfo.phone}, ${deliveryInfo.address});
+        insert into orders (userId, placeDate, name, email, phone, address)
+        values($userId, ${new Timestamp(new java.util.Date().getTime)},
+        ${deliveryInfo.name},
+        ${deliveryInfo.email},
+        ${deliveryInfo.phone},
+        ${deliveryInfo.address});
       """.execute()
       val orderId = sql"select last_insert_id();".as[Int].first
       sqlu"""

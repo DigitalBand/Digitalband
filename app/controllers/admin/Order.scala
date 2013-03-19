@@ -48,7 +48,7 @@ class Order @Inject()(implicit userRepository: UserRepository, orderRepository: 
 
   def confirmPage(orderId: Int) = Action {
     implicit request =>
-      Ok(Order.confirmPage(orderId))
+      Ok(Order.confirmPage(orderRepository.get(orderId)))
   }
 
   def cancelPage(orderId: Int) = Action {
