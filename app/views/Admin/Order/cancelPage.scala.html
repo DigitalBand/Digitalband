@@ -1,9 +1,17 @@
-@(orderId: Int)(implicit user: Option[models.UserEntity], request: play.api.mvc.Request[Any])
+@(order: OrderInfo)(implicit user: Option[models.UserEntity], request: play.api.mvc.Request[Any])
 @views.html.admin.main("Администрирование", "orders"){
      <div class="alert alert-info">
          Вы действительно хотите отменить заказ?
      </div>
-    <form method="POST" action="@controllers.admin.routes.Order.cancel(orderId)">
+    <form method="POST" action="@controllers.admin.routes.Order.cancel(order.id)">
+        <div class="control-group">
+            <label for="comment" class="control-label">
+                    Комментарий
+            </label>
+            <div class="controls">
+                <textarea rows="10" class="input-xlarge" name="comment" id="comment">Здравствуйте, @order.deliveryInfo.name! Спасибо за ваш заказ в нашем интернет-магазине! К сожалению, @order.items.map(item => item.title).reduce((a, b) => a + ", " + b) нет в наличии.</textarea>
+            </div>
+        </div>
         <button class="btn btn-primary">Отменить</button>
     </form>
 }

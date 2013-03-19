@@ -6,10 +6,16 @@ import controllers.common.ControllerBase
 import play.api.mvc.Action
 import models.ListPage
 import views.html.admin.Order
+
+import play.api.data._
+import play.api.data.Forms._
 import helpers.EmailHelper
 
 //TODO: Secure
 class Order @Inject()(implicit userRepository: UserRepository, orderRepository: OrderRepository) extends ControllerBase {
+  val orderStatusForm = Form("comment" -> text)
+  val emailHelper = new EmailHelper()
+
   def list(pageNumber: Int = 1, pageSize: Int = 10) = Action {
     implicit request =>
       val orders: ListPage[models.OrderInfo] = orderRepository.listAll(pageNumber, pageSize)
@@ -23,17 +29,19 @@ class Order @Inject()(implicit userRepository: UserRepository, orderRepository: 
   }
 
   def confirm(orderId: Int) = Action {
-    orderRepository.changeStatus(orderId, "confirmed")
-    //TODO: send email to user
-    //EmailHelper.orderConfirmed(message)
-    Redirect(controllers.admin.routes.Order.display(orderId))
+    implicit request =>
+      val comment = orderStatusForm.bindFromRequest().get
+      orderRepository.changeStatus(orderId, "confirmed")
+      emailHelper.orderConfirmed(comment, orderRepository.get(orderId))
+      Redirect(controllers.admin.routes.Order.display(orderId))
   }
 
   def cancel(orderId: Int) = Action {
-    orderRepository.changeStatus(orderId, "canceled")
-    //TODO: send email to user
-    //EmailHelper.orderCanceled(message)
-    Redirect(controllers.admin.routes.Order.display(orderId))
+    implicit request =>
+      val comment = orderStatusForm.bindFromRequest().get
+      orderRepository.changeStatus(orderId, "canceled")
+      emailHelper.orderCanceled(comment, orderRepository.get(orderId))
+      Redirect(controllers.admin.routes.Order.display(orderId))
   }
 
   def complete(orderId: Int) = Action {
@@ -53,7 +61,7 @@ class Order @Inject()(implicit userRepository: UserRepository, orderRepository: 
 
   def cancelPage(orderId: Int) = Action {
     implicit request =>
-      Ok(Order.cancelPage(orderId))
+      Ok(Order.cancelPage(orderRepository.get(orderId)))
   }
 
   def completePage(orderId: Int) = Action {

@@ -17,7 +17,7 @@ class Order @Inject()(implicit ur: UserRepository, orderRepository: OrderReposit
     "phone" -> nonEmptyText(minLength = 10, maxLength = 25),
     "address" -> text
   )(DeliveryInfo.apply)(DeliveryInfo.unapply))
-
+  val emailHelper = new EmailHelper()
   def fill = Action {
     implicit request =>
       val itemsList = cartRepository.list(getUserId)
@@ -38,7 +38,7 @@ class Order @Inject()(implicit ur: UserRepository, orderRepository: OrderReposit
         deliveryInfo => {
           userRepository.updateDeliveryInfo(deliveryInfo, getUserId)
           val orderId = orderRepository.create(deliveryInfo, getUserId)
-          EmailHelper.orderConfirmation(new OrderInfo(orderId, deliveryInfo, orderRepository.getItems(orderId)))
+          emailHelper.orderConfirmation(new OrderInfo(orderId, deliveryInfo, orderRepository.getItems(orderId)))
           Redirect(routes.Order.confirmation(orderId))
         }
       )

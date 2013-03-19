@@ -6,25 +6,40 @@ import play.api.Play.current
 import dao.common.UserRepository
 import play.api.i18n.Messages
 
-object EmailHelper {
-  def sendFeedback(message: ContactEntity)(implicit userRepository: UserRepository) = {
+class EmailHelper(implicit userRepository: UserRepository) {
+  def systemEmail = userRepository.getSystemEmail
+  def adminEmails = userRepository.getAdminEmails
+
+  def orderConfirmed(comment: String, order: OrderInfo) = {
+    val mail = use[MailerPlugin].email
+    mail.setSubject(s"Подтверждение заказа №${order.id}")
+    mail.addFrom(systemEmail)
+    mail.addRecipient(order.deliveryInfo.email)
+    mail.send(comment)
+  }
+  def orderCanceled(comment: String, order: OrderInfo) = {
+    val mail = use[MailerPlugin].email
+    mail.setSubject(s"Информация по заказу №${order.id}")
+    mail.addFrom(systemEmail)
+    mail.addRecipient(order.deliveryInfo.email)
+    mail.send(comment)
+  }
+  def sendFeedback(message: ContactEntity) = {
     val mail: MailerAPI = use[MailerPlugin].email
     mail.setSubject(Messages("emailhelper.sendfeedback.subject"))
     val adminEmails = userRepository.getAdminEmails
     adminEmails.map(email => mail.addRecipient(email))
-    mail.addFrom(userRepository.getSystemEmail)
+    mail.addFrom(systemEmail)
     mail.setReplyTo(message.email)
     mail.sendHtml(views.html.emails.plain.contact.feedback(message).body)
   }
 
-  def orderConfirmation(order: OrderInfo)(implicit userRepository: UserRepository) = {
+  def orderConfirmation(order: OrderInfo) = {
         val deliveryInfo = order.deliveryInfo
-        val systemEmail = userRepository.getSystemEmail
         sendToClient(systemEmail, deliveryInfo.email)
-        sendToAdmins(userRepository.getAdminEmails, deliveryInfo.email, systemEmail)
+        sendToAdmins(adminEmails, deliveryInfo.email, systemEmail)
         def sendToClient(from: String, to: String) = {
           val mail: MailerAPI = use[MailerPlugin].email
-
           mail.setSubject(Messages("emailhelper.orderconfirmation.subject"))
           mail.addRecipient(to)
           mail.addFrom(from)

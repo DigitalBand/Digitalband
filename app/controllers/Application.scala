@@ -16,7 +16,7 @@ import dao.common.{UserRepository, ProductRepository, CategoryRepository}
 class Application @Inject()(implicit ur:UserRepository, val categoryRepository: CategoryRepository,
                             val productRepository: ProductRepository) extends ControllerBase  {
   val oneDayDuration = 86400
-
+  val emailHelper = new EmailHelper()
   def contactsForm(implicit request: Request[Any]) = {
     Form(
       mapping(
@@ -60,7 +60,7 @@ class Application @Inject()(implicit ur:UserRepository, val categoryRepository: 
       contactsForm.bindFromRequest.fold(
         formWithErrors => BadRequest(views.html.Application.contacts(formWithErrors)),
         contactsForm => {
-          EmailHelper.sendFeedback(contactsForm)
+          emailHelper.sendFeedback(contactsForm)
 
           Redirect(routes.Application.contacts()).flashing(
             "alert-success" -> Messages("application.sendfeedback.alert.success")
