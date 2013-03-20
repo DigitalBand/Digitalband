@@ -7,9 +7,10 @@ import Profile.driver.simple._
 import Database.threadLocalSession
 import slick.jdbc.{StaticQuery => Q, GetResult}
 import Q.interpolation
+import play.api.Play
 
 class UserRepository extends dao.common.UserRepository {
-
+  def defaultEmail = Play.current.configuration.getString("email.default").get
   def createUser(name: String): Int = database withSession {
     sql"""
          insert into users(sessionId) values('');
@@ -42,12 +43,12 @@ class UserRepository extends dao.common.UserRepository {
     """.as[UserEntity].firstOption
   }
 
-  def createUser = database withSession{
+  def createUser = database withSession {
     sqlu" insert into users(sessionId) values('');".execute
     sql" select last_insert_id();".as[Int].first
   }
 
-  def remove(userId: Int) = database withSession{
+  def remove(userId: Int) = database withSession {
     sqlu"""
       delete from users where userId = $userId;
       delete from user_profiles where userId = $userId;
@@ -61,6 +62,7 @@ class UserRepository extends dao.common.UserRepository {
       """.execute
     userId
   }
+
   def updateDeliveryInfo(info: DeliveryInfo, userId: Int) = database withSession {
     sqlu"""
       update
@@ -75,10 +77,18 @@ class UserRepository extends dao.common.UserRepository {
     """.execute()
   }
 
-  def getDeliveryInfo(userId: Int) = database withSession{
+  def getDeliveryInfo(userId: Int) = database withSession {
     implicit val deliveryResult = GetResult(r => new DeliveryInfo(r.<<, r.<<, r.<<, r.<<))
     sql"""
       select userName, email, phoneNumber, address from user_profiles where userId = $userId;
     """.as[DeliveryInfo].firstOption
   }
+
+  def getAdminEmails: Seq[String] = Play.current.configuration.getString("email.admins") match {
+    case Some(config: String) => config.split(";")
+    case None => List(defaultEmail)
+  }
+
+  def getSystemEmail: String = Play.current.configuration.getString("email.system").getOrElse(defaultEmail)
+
 }

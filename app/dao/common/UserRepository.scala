@@ -2,12 +2,12 @@ package dao.common
 
 import models.{DeliveryInfo, UserEntity}
 
-trait UserRepository {
-  //TODO: implement this. Cache it
-  def getAdminEmails: Seq[String] = List("tim@digitalband.ru")
 
-  //TODO: move this hardcoded string to DB. Cache it
-  def getSystemEmail = "tim@digitalband.ru"
+trait UserRepository {
+
+  def getAdminEmails: Seq[String]
+
+  def getSystemEmail: String
 
   def getDeliveryInfo(userId: Int): Option[DeliveryInfo]
 
