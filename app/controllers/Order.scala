@@ -29,6 +29,7 @@ class Order @Inject()(implicit ur: UserRepository, orderRepository: OrderReposit
         Redirect(routes.Cart.display())
   }
 
+  //TODO: rename to "create"
   def place = withUser { implicit user =>
     implicit request =>
       deliveryForm.bindFromRequest.fold(

@@ -10,21 +10,21 @@ class EmailHelper(implicit userRepository: UserRepository) {
   def systemEmail = userRepository.getSystemEmail
   def adminEmails = userRepository.getAdminEmails
 
-  def orderConfirmed(comment: String, order: OrderInfo) = {
+  def orderConfirmed(comment: String, order: OrderInfo)(implicit request: play.api.mvc.Request[Any]) = {
     val mail = use[MailerPlugin].email
     mail.setSubject(s"Подтверждение заказа №${order.id}")
     mail.addFrom(systemEmail)
     mail.addRecipient(order.deliveryInfo.email)
     mail.send(comment)
   }
-  def orderCanceled(comment: String, order: OrderInfo) = {
+  def orderCanceled(comment: String, order: OrderInfo)(implicit request: play.api.mvc.Request[Any]) = {
     val mail = use[MailerPlugin].email
     mail.setSubject(s"Информация по заказу №${order.id}")
     mail.addFrom(systemEmail)
     mail.addRecipient(order.deliveryInfo.email)
     mail.send(comment)
   }
-  def sendFeedback(message: ContactEntity) = {
+  def sendFeedback(message: ContactEntity)(implicit request: play.api.mvc.Request[Any]) = {
     val mail: MailerAPI = use[MailerPlugin].email
     mail.setSubject(Messages("emailhelper.sendfeedback.subject"))
     val adminEmails = userRepository.getAdminEmails
@@ -34,7 +34,7 @@ class EmailHelper(implicit userRepository: UserRepository) {
     mail.sendHtml(views.html.emails.plain.contact.feedback(message).body)
   }
 
-  def orderConfirmation(order: OrderInfo) = {
+  def orderConfirmation(order: OrderInfo)(implicit request: play.api.mvc.Request[Any]) = {
         val deliveryInfo = order.deliveryInfo
         sendToClient(systemEmail, deliveryInfo.email)
         sendToAdmins(adminEmails, deliveryInfo.email, systemEmail)

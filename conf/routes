@@ -38,8 +38,8 @@ GET     /order/:orderId/display                                                 
 GET     /order/:orderId/confirmation                                              @controllers.Order.confirmation(orderId: Int)
 
 # Emails
-#GET     /email/orderConfirmation/:orderId                                         @controllers.Emails.orderConfirmation(orderId: Int)
-#GET     /email/admin/orderConfirmation/:orderId                                   @controllers.Emails.orderAdminConfirmation(orderId: Int)
+GET     /email/orderConfirmation/:orderId                                         @controllers.Emails.orderConfirmation(orderId: Int)
+GET     /admin/email/orderConfirmation/:orderId                                   @controllers.Emails.orderAdminConfirmation(orderId: Int)
 
 #Security
 GET     /login                                                                    @controllers.Security.login(returnUrl: String ?= "")

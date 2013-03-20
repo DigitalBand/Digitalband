@@ -1,7 +1,13 @@
 @(items: Seq[models.CartItem], returnUrl: String = "", editable: Boolean = true)
-@items.map { cartItem =>
-@cartItem.title - @Messages("formats.price", cartItem.total).trim @Messages("formats.count", cartItem.count)
-}
---------------------------
+<ul>
+    @items.map { cartItem =>
+        <li><a href="@routes.Product.display(cartItem.productId)">
+            @cartItem.title</a> - @Messages("formats.price", cartItem.total).trim @Messages("formats.count", cartItem.count)
+        </li>
+    }
+</ul>
+<hr/>
+<p>
 Итого:@Messages("formats.price", items.map(i => i.total).sum)
+</p>
 

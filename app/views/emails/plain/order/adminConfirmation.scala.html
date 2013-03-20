@@ -1,19 +1,29 @@
-@(order: OrderInfo)
+@(order: OrderInfo)(implicit request: play.api.mvc.Request[Any])
 
 @emails.plain.order.main(order, additionalContent(order)) {
 Уважаемый администратор!
-
-На сайте был сформирован новый заказ и его статус в данный момент неподтвержденный. Клиент ожидает вашего действия. Вам необходимо подтвердить, либо отклонить заказ. В случае подтверждения клиенту будет отправлено письмо о том, что все заказанные товары имеются в наличии и будут доставлены. В случае отказа, клиенту будет отправлено письмо, уведомляющее о том, что товаров нет в наличии (если вы захотите предложить альтернативу, необходимо будет заполнить поле "комментарий"). Шаблоны писем, также можно исправить в панели администратора на сайте.
-
+<p>
+На сайте был сформирован новый заказ и его статус в данный момент "неподтвержденный".
+Клиент ожидает вашего действия. Вам необходимо подтвердить, либо отклонить заказ.
+В случае подтверждения клиенту будет отправлено письмо о том, что все заказанные товары имеются в наличии и будут доставлены.
+В случае отказа, клиенту будет отправлено письмо, уведомляющее о том, что товаров нет в наличии
+(если вы захотите предложить альтернативу, необходимо будет заполнить поле "комментарий").
+Шаблоны писем, также можно исправить в панели администратора на сайте.
+</p>
+<h4>
 Было заказано:
+</h4>
 }
 @additionalContent(order: OrderInfo) = {
-Информация для контакта и доставки
+<h4>Информация для контакта и доставки</h4>
+Имя: @order.deliveryInfo.name<br/>
+Адрес: @order.deliveryInfo.address<br/>
+тел.:  <a href="callto:@order.deliveryInfo.phone">@order.deliveryInfo.phone</a><br/>
+Эл. почта: <a href="mailto:@order.deliveryInfo.email">
+@order.deliveryInfo.email</a><br/><br/>
 
-Имя: @order.deliveryInfo.name
-Адрес: @order.deliveryInfo.address
-тел.: @order.deliveryInfo.phone
-Эл. почта:
-@order.deliveryInfo.email
+<a href="@controllers.admin.routes.Order.confirmPage(order.id).absoluteURL()">Подтвердить заказ</a><br/>
+<a href="@controllers.admin.routes.Order.cancel(order.id).absoluteURL()">Отменить заказ</a><br/>
+<a href="@controllers.admin.routes.Order.display(order.id).absoluteURL()">Другие действия</a><br/>
 }
 

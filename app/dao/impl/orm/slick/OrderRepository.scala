@@ -14,11 +14,13 @@ class OrderRepository extends dao.common.OrderRepository {
     database withSession {
       sqlu"""
         insert into orders (userId, placeDate, name, email, phone, address)
-        values($userId, ${new Timestamp(new java.util.Date().getTime)},
-        ${deliveryInfo.name},
-        ${deliveryInfo.email},
-        ${deliveryInfo.phone},
-        ${deliveryInfo.address});
+        values(
+          $userId,
+          ${new Timestamp(new java.util.Date().getTime)},
+          ${deliveryInfo.name},
+          ${deliveryInfo.email},
+          ${deliveryInfo.phone},
+          ${deliveryInfo.address});
       """.execute()
       val orderId = sql"select last_insert_id();".as[Int].first
       sqlu"""
