@@ -20,4 +20,8 @@ class UserRepository extends dao.common.UserRepository {
   def updateDeliveryInfo(info: DeliveryInfo, userId: Int) = ???
 
   def getDeliveryInfo(userId: Int) = ???
+
+  def getAdminEmails = ???
+
+  def getSystemEmail = ???
 }
