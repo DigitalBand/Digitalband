@@ -1,7 +1,7 @@
 @(order: models.OrderInfo)(implicit user: Option[models.UserEntity], request: play.api.mvc.Request[Any])
 @import Cart.shoppingList
-@import views.html.admin.Order.statusButton
-@views.html.admin.main("Просмотр заказа", "orders") {
+@import views.html.Admin.Order.statusButton
+@views.html.Admin.main("Просмотр заказа", "orders") {
     <h4> Заказ № @order.id </h4>
     @statusButton(order.status, order.id)
     <div class="row">

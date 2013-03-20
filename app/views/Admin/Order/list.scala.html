@@ -1,7 +1,7 @@
 @(listPage: ListPage[models.OrderInfo], pageSize: Int, pageNumber: Int)(implicit user: Option[models.UserEntity], request: play.api.mvc.Request[Any])
 @import Shared.pager
-@import views.html.admin.Order.statusButton
-@views.html.admin.main("Заказы", "orders") {
+@import views.html.Admin.Order.statusButton
+@views.html.Admin.main("Заказы", "orders") {
     @if(!listPage.items.isEmpty){
         <div class="pull-right">
         @pager(new helpers.PagerHelper(pageSize, listPage.totalCount, pageNumber), p => controllers.admin.routes.Order.list(p, pageSize))

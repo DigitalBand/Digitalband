@@ -10,6 +10,6 @@ import helpers.Secured
 class Dashboard @Inject()(implicit userRepository: UserRepository) extends ControllerBase with Secured{
   def index = withAdmin { implicit user =>
     implicit request =>
-      Ok(views.html.admin.index())
+      Ok(views.html.Admin.index())
   }
 }

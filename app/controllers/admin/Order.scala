@@ -5,7 +5,7 @@ import dao.common.{OrderRepository, UserRepository}
 import controllers.common.ControllerBase
 import play.api.mvc.Action
 import models.ListPage
-import views.html.admin.Order
+import views.html.Admin.Order
 
 import play.api.data._
 import play.api.data.Forms._
