@@ -1,6 +1,8 @@
 @(items: Seq[models.CartItem], orderId: Int)(implicit user: Option[models.UserEntity], request: play.api.mvc.Request[Any])
 @import Cart.shoppingList
+@import Shared.wizard
 @main() {
+    @wizard(3)
     <div class="page-header">
         <h3> @Messages("order.confirmation.title") </h3>
     </div>

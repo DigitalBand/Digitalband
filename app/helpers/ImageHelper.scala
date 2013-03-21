@@ -34,7 +34,8 @@ object ImageHelper {
       param.setCompressionMode(ImageWriteParam.MODE_EXPLICIT)
       param.setCompressionQuality(quality)
       closable(new FileImageOutputStream(outputFile)) {  out =>
-        jpegWriter.setOutput(out)
+        jpegWriter.setOutput(
+          out)
         jpegWriter.write(null, new IIOImage(image, null, null), param)
         outputFile
       }

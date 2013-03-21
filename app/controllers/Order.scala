@@ -24,7 +24,8 @@ class Order @Inject()(implicit ur: UserRepository, orderRepository: OrderReposit
       if (!itemsList.isEmpty)
         Ok(views.html.Order.fill(itemsList,
           deliveryForm.fill(
-            userRepository.getDeliveryInfo(getUserId).getOrElse(new DeliveryInfo()))))
+            userRepository.getDeliveryInfo(getUserId).getOrElse(new DeliveryInfo())))).
+              withHeaders(CACHE_CONTROL -> "no-cache, max-age=0, must-revalidate, no-store")
       else
         Redirect(routes.Cart.display())
   }
