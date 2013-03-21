@@ -46,11 +46,6 @@ class CartRepository extends dao.common.CartRepository {
           quantity = quantity + ${item.count}
         where
           productId = ${item.productId} and userId = ${item.userId};
-        update
-          cart
-        set
-          updateDate = CURRENT_TIMESTAMP
-        where userId = ${item.userId};
         """.execute()
       item.userId
     }
