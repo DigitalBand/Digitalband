@@ -536,7 +536,7 @@ jQuery.extend({
 	},
 
 	parseJSON: function( data ) {
-		// Attempt to parse using the native JSON parser first
+		// Attempt to parse disposable the native JSON parser first
 		if ( window.JSON && window.JSON.parse ) {
 			return window.JSON.parse( data );
 		}
@@ -980,7 +980,7 @@ function createOptions( options ) {
 }
 
 /*
- * Create a callback list using the following parameters:
+ * Create a callback list disposable the following parameters:
  *
  *	options: an optional list of space-separated options that will change how
  *			the callback list behaves or a more traditional option object
@@ -1035,7 +1035,7 @@ jQuery.Callbacks = function( options ) {
 			firing = true;
 			for ( ; list && firingIndex < firingLength; firingIndex++ ) {
 				if ( list[ firingIndex ].apply( data[ 0 ], data[ 1 ] ) === false && options.stopOnFalse ) {
-					memory = false; // To prevent further calls using add
+					memory = false; // To prevent further calls disposable add
 					break;
 				}
 			}
@@ -1470,7 +1470,7 @@ jQuery.support = (function() {
 		// Check if table cells still have offsetWidth/Height when they are set
 		// to display:none and there are still other visible table cells in a
 		// table row; if so, offsetWidth/Height are not reliable for use when
-		// determining if an element has been hidden directly using
+		// determining if an element has been hidden directly disposable
 		// display:none (it is still safe to use offsets if a parent element is
 		// hidden; don safety goggles and see bug #4512 for more information).
 		div.innerHTML = "<table><tr><td></td><td>t</td></tr></table>";
@@ -1589,7 +1589,7 @@ function internalData( elem, name, data, pvt /* Internal Use Only */ ){
 		cache[ id ] = {};
 
 		// Avoids exposing jQuery metadata on plain JS objects when the object
-		// is serialized using JSON.stringify
+		// is serialized disposable JSON.stringify
 		if ( !isNode ) {
 			cache[ id ].toJSON = jQuery.noop;
 		}
@@ -2541,7 +2541,7 @@ if ( !getSetInput || !getSetAttribute ) {
 			var ret = elem.getAttributeNode( name );
 			return jQuery.nodeName( elem, "input" ) ?
 
-				// Ignore the value *property* by using defaultValue
+				// Ignore the value *property* by disposable defaultValue
 				elem.defaultValue :
 
 				ret && ret.specified ? ret.value : undefined;
@@ -2581,7 +2581,7 @@ if ( !getSetAttribute ) {
 
 			ret.value = value += "";
 
-			// Break association with cloned elements by also using setAttribute (#9646)
+			// Break association with cloned elements by also disposable setAttribute (#9646)
 			return name === "value" || value === elem.getAttribute( name ) ?
 				value :
 				undefined;
@@ -3409,7 +3409,7 @@ jQuery.Event.prototype = {
 	}
 };
 
-// Create mouseenter/leave events using mouseover/out and event-time checks
+// Create mouseenter/leave events disposable mouseover/out and event-time checks
 jQuery.each({
 	mouseenter: "mouseover",
 	mouseleave: "mouseout"
@@ -3615,7 +3615,7 @@ jQuery.fn.extend({
 				jQuery().off( event );
 				return origFn.apply( this, arguments );
 			};
-			// Use same guid so caller can remove using origFn
+			// Use same guid so caller can remove disposable origFn
 			fn.guid = origFn.guid || ( origFn.guid = jQuery.guid++ );
 		}
 		return this.each( function() {
@@ -3872,7 +3872,7 @@ function markFunction( fn ) {
 }
 
 /**
- * Support testing using an element
+ * Support testing disposable an element
  * @param {Function} fn Passed the created div and expects a boolean result
  */
 function assert( fn ) {
@@ -6066,7 +6066,7 @@ jQuery.fn.extend({
 
 					elem = 0;
 
-				// If using innerHTML throws an exception, use the fallback method
+				// If disposable innerHTML throws an exception, use the fallback method
 				} catch(e) {}
 			}
 
@@ -6266,7 +6266,7 @@ function fixCloneNodeIssues( src, dest ) {
 
 	nodeName = dest.nodeName.toLowerCase();
 
-	// IE6-8 copies events bound via attachEvent when using cloneNode.
+	// IE6-8 copies events bound via attachEvent when disposable cloneNode.
 	if ( !jQuery.support.noCloneEvent && dest[ jQuery.expando ] ) {
 		data = jQuery._data( dest );
 
@@ -6283,7 +6283,7 @@ function fixCloneNodeIssues( src, dest ) {
 		disableScript( dest ).text = src.text;
 		restoreScript( dest );
 
-	// IE6-10 improperly clones children of object elements using classid.
+	// IE6-10 improperly clones children of object elements disposable classid.
 	// IE10 throws NoModificationAllowedError if parent is null, #12132.
 	} else if ( nodeName === "object" ) {
 		if ( dest.parentNode ) {
@@ -8405,7 +8405,7 @@ jQuery.ajaxPrefilter( "json jsonp", function( s, originalSettings, jqXHR ) {
 
 			// Save back as free
 			if ( s[ callbackName ] ) {
-				// make sure that re-using the options doesn't screw things around
+				// make sure that re-disposable the options doesn't screw things around
 				s.jsonpCallback = originalSettings.jsonpCallback;
 
 				// save the callback name for future use
@@ -8507,7 +8507,7 @@ if ( xhrSupported ) {
 					// X-Requested-With header
 					// For cross-domain requests, seeing as conditions for a preflight are
 					// akin to a jigsaw puzzle, we simply never set it to be sure.
-					// (it can always be set on a per-request basis or even using ajaxSetup)
+					// (it can always be set on a per-request basis or even disposable ajaxSetup)
 					// For same-domain requests, won't change header if already provided.
 					if ( !s.crossDomain && !headers["X-Requested-With"] ) {
 						headers["X-Requested-With"] = "XMLHttpRequest";

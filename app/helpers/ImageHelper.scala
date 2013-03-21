@@ -29,24 +29,15 @@ object ImageHelper {
     imageNumber.split("[\\.]")(0).toInt
   }
   def write(image: BufferedImage, outputFile: File, quality: Float): File = {
-    // Just get the first JPEG writer available
-    val jpegWriter = ImageIO.getImageWritersByFormatName("jpeg").next()
-    try {
-      // Set the compression quality to 0.8
+    disposable(ImageIO.getImageWritersByFormatName("jpeg").next()) { jpegWriter =>
       val param: ImageWriteParam = jpegWriter.getDefaultWriteParam()
       param.setCompressionMode(ImageWriteParam.MODE_EXPLICIT)
       param.setCompressionQuality(quality)
-      // Write the image to a file
-      val out: FileImageOutputStream = new FileImageOutputStream(outputFile)
-      try {
+      closable(new FileImageOutputStream(outputFile)) {  out =>
         jpegWriter.setOutput(out)
         jpegWriter.write(null, new IIOImage(image, null, null), param)
         outputFile
-      } finally {
-        out.close()
       }
-    } finally {
-      jpegWriter.dispose()
     }
   }
 }
