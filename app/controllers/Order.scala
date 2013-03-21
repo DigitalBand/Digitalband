@@ -18,41 +18,47 @@ class Order @Inject()(implicit ur: UserRepository, orderRepository: OrderReposit
     "address" -> text
   )(DeliveryInfo.apply)(DeliveryInfo.unapply))
   val emailHelper = new EmailHelper()
-  def fill = withUser { implicit user =>
-    implicit request =>
-      val itemsList = cartRepository.list(getUserId)
-      if (!itemsList.isEmpty)
-        Ok(views.html.Order.fill(itemsList,
-          deliveryForm.fill(
-            userRepository.getDeliveryInfo(getUserId).getOrElse(new DeliveryInfo())))).
-              withHeaders(CACHE_CONTROL -> "no-cache, max-age=0, must-revalidate, no-store")
-      else
-        Redirect(routes.Cart.display())
+
+  def fill = withUser {
+    implicit user =>
+      implicit request =>
+        val itemsList = cartRepository.list(getUserId)
+        if (!itemsList.isEmpty)
+          Ok {
+            val deliveryInfo = userRepository.getDeliveryInfo(getUserId).getOrElse(new DeliveryInfo())
+            val form = deliveryForm.fill(deliveryInfo)
+            views.html.Order.fill(itemsList, form)
+          }.withHeaders(CACHE_CONTROL -> "no-cache, max-age=0, must-revalidate, no-store")
+        else
+          Redirect(routes.Cart.display())
   }
 
   //TODO: rename to "create"
-  def place = withUser { implicit user =>
-    implicit request =>
-      deliveryForm.bindFromRequest.fold(
-        formWithErrors => {
-          BadRequest(views.html.Order.fill(cartRepository.list(getUserId), formWithErrors))
-        },
-        deliveryInfo => {
-          userRepository.updateDeliveryInfo(deliveryInfo, getUserId)
-          val orderId = orderRepository.create(deliveryInfo, getUserId)
-          emailHelper.orderConfirmation(new OrderInfo(orderId, deliveryInfo, orderRepository.getItems(orderId)))
-          Redirect(routes.Order.confirmation(orderId))
-        }
-      )
+  def place = withUser {
+    implicit user =>
+      implicit request =>
+        deliveryForm.bindFromRequest.fold(
+          formWithErrors => {
+            BadRequest(views.html.Order.fill(cartRepository.list(getUserId), formWithErrors))
+          },
+          deliveryInfo => {
+            userRepository.updateDeliveryInfo(deliveryInfo, getUserId)
+            val orderId = orderRepository.create(deliveryInfo, getUserId)
+            emailHelper.orderConfirmation(new OrderInfo(orderId, deliveryInfo, orderRepository.getItems(orderId)))
+            Redirect(routes.Order.confirmation(orderId))
+          }
+        )
   }
 
-  def confirmation(orderId: Int) = withUser { implicit user =>
-    implicit request =>
-    Ok(views.html.Order.confirmation(orderRepository.getItems(orderId), orderId))
+  def confirmation(orderId: Int) = withUser {
+    implicit user =>
+      implicit request =>
+        Ok(views.html.Order.confirmation(orderRepository.getItems(orderId), orderId))
   }
 
-  def display(orderId: Int) = withUser { implicit user =>
-    implicit request =>
-      NotImplemented
+  def display(orderId: Int) = withUser {
+    implicit user =>
+      implicit request =>
+        NotImplemented
   }
 }

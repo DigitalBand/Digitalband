@@ -78,7 +78,12 @@ class UserRepository extends dao.common.UserRepository {
   }
 
   def getDeliveryInfo(userId: Int) = database withSession {
-    implicit val deliveryResult = GetResult(r => new DeliveryInfo(r.<<, r.<<, r.<<, r.<<))
+    implicit val deliveryResult = GetResult(r =>
+      new DeliveryInfo(
+        r.nextStringOption().getOrElse(""),
+        r.nextStringOption().getOrElse(""),
+        r.nextStringOption().getOrElse(""),
+        r.nextStringOption().getOrElse("")))
     sql"""
       select userName, email, phoneNumber, address from user_profiles where userId = $userId;
     """.as[DeliveryInfo].firstOption
