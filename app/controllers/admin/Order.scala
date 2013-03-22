@@ -18,7 +18,8 @@ class Order @Inject()(implicit userRepository: UserRepository, orderRepository: 
   def list(pageNumber: Int = 1, pageSize: Int = 10) = withAdmin { implicit user =>
       implicit request =>
         val orders: ListPage[models.OrderInfo] = orderRepository.listAll(pageNumber, pageSize)
-        Ok(Order.list(orders, pageSize, pageNumber))
+        val orderCounters: Seq[(String, Int)] = orderRepository.getCounters
+        Ok(Order.list(orders, orderCounters, pageSize, pageNumber))
   }
 
   def display(id: Int) = withAdmin { implicit user =>

@@ -1,7 +1,10 @@
-@(listPage: ListPage[models.OrderInfo], pageSize: Int, pageNumber: Int)(implicit user: Option[models.UserEntity], request: play.api.mvc.Request[Any])
+@(listPage: ListPage[models.OrderInfo], orderCounters: Seq[(String, Int)], pageSize: Int, pageNumber: Int)(implicit user: Option[models.UserEntity], request: play.api.mvc.Request[Any])
 @import Shared.pager
 @import views.html.Admin.Order.statusButton
 @views.html.Admin.main("Заказы", "orders") {
+    @orderCounters.map { counter =>
+        <div class="label label-@Messages("order.list.ui.label."+counter._1)">@Messages("order.list.ui.button."+counter._1+".text"): @counter._2</div>
+    }
     @if(!listPage.items.isEmpty){
         <div class="pull-right">
         @pager(new helpers.PagerHelper(pageSize, listPage.totalCount, pageNumber), p => controllers.admin.routes.Order.list(p, pageSize))

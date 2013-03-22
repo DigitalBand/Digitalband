@@ -108,4 +108,9 @@ class OrderRepository extends dao.common.OrderRepository {
   def delete(orderId: Int) = database withSession {
     sqlu"delete from orders where orderId = $orderId; delete from order_items where orderId = $orderId".execute()
   }
+
+  def getCounters: Seq[(String, Int)] = database withSession {
+    val query = sql"select status, count(status) as orderCount from orders group by status;"
+    query.as[(String, Int)].list
+  }
 }

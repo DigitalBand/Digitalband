@@ -3,6 +3,11 @@ order.list.ui.button.done=success
 order.list.ui.button.confirmed=info
 order.list.ui.button.canceled=warning
 
+order.list.ui.label.unconfirmed=important
+order.list.ui.label.done=success
+order.list.ui.label.confirmed=info
+order.list.ui.label.canceled=warning
+
 order.list.ui.button.unconfirmed.text=Не подтвержден
 order.list.ui.button.done.text=Выполнен
 order.list.ui.button.confirmed.text=Подтвержден

@@ -2,13 +2,11 @@
 @import views.html.common.bootstrap._
 
 @main(Messages("contacts.title"), "contacts") {
-
     @request.flash.data.map {
         case (className, message) => {
             <div class="alert  @className"> @message </div>
         }
     }
-
     <form class="form-inline" action="@routes.Application.sendFeedback()" method="POST">
         <div class="row">
 
@@ -26,16 +24,10 @@
                         <label class="control-label" for="recaptcha_response_field">Код</label>
                         <div class="controls">
                             <input type="text" placeholder="Введите два слова с картинки" id="recaptcha_response_field" name="recaptcha_response_field" class="span6 recaptcha-input" />
-
-
                             <img src="@recaptcha.imageUrl" class="span6 thumbnail" style="margin: 10px 0; padding: 0" />
-
                         </div>
                     </div>
-
                 </div>
-
-
                 <div>
 
                     <button class="btn btn-primary pull-right"> @Messages("contacts.form.submitbutton") </button>
