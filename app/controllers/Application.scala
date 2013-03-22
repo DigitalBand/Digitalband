@@ -52,13 +52,15 @@ class Application @Inject()(implicit ur:UserRepository, val categoryRepository: 
 
   def contacts = withUser { implicit user =>
     implicit request =>
-      Ok(views.html.Application.contacts(contactsForm))
+      val recaptcha = ReCaptchaHelper.get("6LfMQdYSAAAAAJCe85Y6CRp9Ww7n-l3HOBf5bifB")
+      Ok(views.html.Application.contacts(contactsForm, recaptcha))
   }
 
   def sendFeedback = withUser { implicit user =>
     implicit request =>
       contactsForm.bindFromRequest.fold(
-        formWithErrors => BadRequest(views.html.Application.contacts(formWithErrors)),
+        formWithErrors => BadRequest(views.html.Application.contacts(formWithErrors,
+          ReCaptchaHelper.get("6LfMQdYSAAAAAJCe85Y6CRp9Ww7n-l3HOBf5bifB"))),
         contactsForm => {
           emailHelper.sendFeedback(contactsForm)
 

@@ -33,7 +33,7 @@ GET     /cart                                                                   
 GET     /checkout                                                                 @controllers.Cart.checkout
 # Order
 GET     /order                                                                    @controllers.Order.fill
-POST    /order/place                                                              @controllers.Order.place
+POST    /order/place                                                              @controllers.Order.create
 GET     /order/:orderId/display                                                   @controllers.Order.display(orderId: Int)
 GET     /order/:orderId/confirmation                                              @controllers.Order.confirmation(orderId: Int)
 

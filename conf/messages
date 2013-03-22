@@ -59,8 +59,7 @@ main.nav.homelink=Главная
 main.nav.catalogue=Каталог
 main.nav.searchbutton=Поиск
 
-main.footer.nav.about=О магазине
-main.footer.nav.contact=Обратная связь
+main.footer.nav.contact=Обратная связь / О магазине
 
 security.login.form.legend=Вход
 security.login.form.forgotpassword=Забыли пароль?

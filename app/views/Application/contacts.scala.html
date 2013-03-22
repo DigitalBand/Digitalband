@@ -1,43 +1,58 @@
-@(form: Form[models.ContactEntity])(implicit user:Option[models.UserEntity],request: play.api.mvc.Request[Any])
+@(form: Form[models.ContactEntity], recaptcha: helpers.RecaptchaChallenge)(implicit user:Option[models.UserEntity],request: play.api.mvc.Request[Any])
 @import views.html.common.bootstrap._
 
 @main(Messages("contacts.title"), "contacts") {
-    <div class="page-header">
-        <h3>
-            @Messages("contacts.subtitle")
-        </h3>
-    </div>
+
     @request.flash.data.map {
         case (className, message) => {
-            <div class="alert @className">@message</div>
+            <div class="alert  @className"> @message </div>
         }
     }
-    <form class="form-horizontal" action="@routes.Application.sendFeedback()" method="POST">
-        <div class="well">
-            @helper.inputText(form("name"), '_label -> Messages("contacts.form.namelabel"))
-            @helper.inputText(form("email"), '_label -> Messages("contacts.form.emaillabel"))
-            @helper.inputText(form("productName"), '_label -> Messages("contacts.form.productnamelabel"))
-            @helper.textarea(form("message"), '_label -> Messages("contacts.form.messagelabel"))
-            <div class="control-group">
-                <label class="control-label">@Messages("contacts.form.recaptchalabel")</label>
-                <div class="controls">
-                    <script type="text/javascript">var RecaptchaOptions = {lang : 'ru', theme : 'white'};</script>
-                    <script type="text/javascript" src="http://www.google.com/recaptcha/api/challenge?k=6LfMQdYSAAAAAJCe85Y6CRp9Ww7n-l3HOBf5bifB">
-                    </script>
-                    <noscript>
-                        <iframe src="http://www.google.com/recaptcha/api/noscript?k=6LfMQdYSAAAAAJCe85Y6CRp9Ww7n-l3HOBf5bifB"
-                        height="300" width="500" frameborder="0">
-                        </iframe> <br>
-                        <textarea name="recaptcha_challenge_field" rows="3" cols="40">
-                        </textarea>
-                        <input type="hidden" name="recaptcha_response_field"
-                            value="manual_challenge">
-                    </noscript>
+
+    <form class="form-inline" action="@routes.Application.sendFeedback()" method="POST">
+        <div class="row">
+
+            <div class="span6 block">
+                <h3 class="block-title sub-title">
+                    <span>Связаться с нами</span>
+                </h3>
+                <div>
+                    @helper.inputText(form("name"), 'placeholder -> "Введите Ваше имя", '_label -> Messages("contacts.form.namelabel"), 'class -> "span6")
+                    @helper.inputText(form("email"), 'placeholder -> "Введите Ваш email", '_label -> Messages("contacts.form.emaillabel"), 'class -> "span6")
+                    @helper.inputText(form("productName"), 'placeholder -> "Введите название товара", '_label -> Messages("contacts.form.productnamelabel"), 'class -> "span6")
+                    @helper.textarea(form("message"), 'placeholder -> "Введите сообщение", '_label -> Messages("contacts.form.messagelabel"), 'class -> "span6")
+                    <div class="control-group">
+                        <input name="recaptcha_challenge_field" type="hidden" value="@recaptcha.challenge">
+                        <label class="control-label" for="recaptcha_response_field">Код</label>
+                        <div class="controls">
+                            <input type="text" placeholder="Введите два слова с картинки" id="recaptcha_response_field" name="recaptcha_response_field" class="span6 recaptcha-input" />
+
+
+                            <img src="@recaptcha.imageUrl" class="span6 thumbnail" style="margin: 10px 0; padding: 0" />
+
+                        </div>
+                    </div>
+
+                </div>
+
+
+                <div>
+
+                    <button class="btn btn-primary pull-right"> @Messages("contacts.form.submitbutton") </button>
                 </div>
             </div>
-            <div class="form-actions">
-                <button class="btn btn-primary">@Messages("contacts.form.submitbutton")</button>
-            </div>
+            <article class="span6 block">
+                <h3 class="block-title sub-title">
+                    <span>О нас</span>
+                </h3>
+                <img class="text-img thumbnail pull-left" src="@routes.Assets.at("images/about.jpg")">
+                <p> <strong> Digitalband </strong> - это интернет магазин, в котором можно купить все что связано с шоу техникой,
+                    музыкальными инструментами, и музыкальным оборудованием.
+                    Что бы купить то, что вы хотите, больше не надо искать, где это продается,
+                    сколько это стоит и даже как это называется. Просто нужно связаться с нами по электронной почте или по Skype, и,
+                    в течении 24 часов мы предоставим вам информацию по вашему запросу.
+                    Только индивидуальный подход к каждому покупателю. У нас можно торговаться.</p>
+            </article>
         </div>
     </form>
 }

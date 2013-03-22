@@ -8,6 +8,8 @@ search: String = "")(content: Html)(implicit user: Option[models.UserEntity], re
 <html>
 <head>
     <title> @title </title>
+    <meta name="description" content="Музыкальные инструменты от DigitalBand.  Интернет магазин музыкальных инструментов. Широкий ассортимент, продажа музыкальных инструментов известных марок"/>
+    <meta name="keywords" content="музыкальные инструменты, музыкальный магазин, гитары, фортепиано, рояли, световое оборудование, шоу оборудование, купить гитару, купить гитару в ростове, купить гитару в москве, купить колонки, купить фортепиано в москве, купить рояль, купить фортепиано, продажа музыкальных инструментов, магазины музыкальных инструментов, интернет-магазин музыкальных инструментов"/>
     <link rel="stylesheet" media="screen" href="@routes.Assets.at("stylesheets/bootstrap/main.min.css")">
     <link rel="shortcut icon" type="image/png" href="@routes.Assets.at("images/favicon.png")">
     <noscript>
@@ -90,7 +92,7 @@ search: String = "")(content: Html)(implicit user: Option[models.UserEntity], re
         <section class="footerlinks">
             <div class="container">
                 <ul class="nav">
-                    <a href="@routes.Application.about"> @Messages("main.footer.nav.about") </a> <span class="divider"> | </span>
+
                     <a href="@routes.Application.contacts"> @Messages("main.footer.nav.contact") </a>
                 </ul>
             </div>

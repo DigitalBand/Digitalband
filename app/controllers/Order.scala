@@ -34,7 +34,7 @@ class Order @Inject()(implicit ur: UserRepository, orderRepository: OrderReposit
   }
 
   //TODO: rename to "create"
-  def place = withUser {
+  def create = withUser {
     implicit user =>
       implicit request =>
         deliveryForm.bindFromRequest.fold(

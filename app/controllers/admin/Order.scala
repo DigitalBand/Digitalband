@@ -11,8 +11,6 @@ import play.api.data._
 import play.api.data.Forms._
 import helpers.{Secured, EmailHelper}
 
-
-//TODO: Secure
 class Order @Inject()(implicit userRepository: UserRepository, orderRepository: OrderRepository) extends ControllerBase with Secured {
   val orderStatusForm = Form("comment" -> text)
   val emailHelper = new EmailHelper()

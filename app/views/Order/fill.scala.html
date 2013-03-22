@@ -11,7 +11,7 @@
             &nbsp;<a href="@routes.Cart.display()"> <i class="icon-edit"></i> @Messages("order.deliveryinfo.editbutton") </a>
     </div>
     @shoppingList(items, "", false)
-    <form method="post" action="@routes.Order.place" class="form-inline">
+    <form method="post" action="@routes.Order.create" class="form-inline">
         <fieldset>
             <legend> @Messages("order.deliveryinfo.form.legend")</legend>
             <div class="row">
