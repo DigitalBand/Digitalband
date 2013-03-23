@@ -47,7 +47,7 @@ searchQuery: String)(implicit user:Option[models.UserEntity],request: play.api.m
                 <a class="btn btn-primary dropdown-toggle" data-toggle="dropdown"><i class="icon-cog"></i></a>
                 <ul class="dropdown-menu">
                         <li>
-                            <a href="@controllers.admin.routes.Product.create"><i class="icon-plus"></i>
+                            <a href="@controllers.admin.routes.Product.create(currentCategory.id, brandId(brand))"><i class="icon-plus"></i>
                                     Новый товар
                             </a>
                         </li>

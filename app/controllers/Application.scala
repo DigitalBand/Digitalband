@@ -63,7 +63,6 @@ class Application @Inject()(implicit ur:UserRepository, val categoryRepository: 
           ReCaptchaHelper.get("6LfMQdYSAAAAAJCe85Y6CRp9Ww7n-l3HOBf5bifB"))),
         contactsForm => {
           emailHelper.sendFeedback(contactsForm)
-
           Redirect(routes.Application.contacts()).flashing(
             "alert-success" -> Messages("application.sendfeedback.alert.success")
           )

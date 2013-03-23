@@ -1,4 +1,31 @@
-@()(implicit user: Option[models.UserEntity], request: play.api.mvc.Request[Any])
+@(product: Form[models.ProductDetails])(implicit user: Option[models.UserEntity], request: play.api.mvc.Request[Any])
+@import views.html.common.bootstrap._
 @views.html.Admin.main("Администрирование", "index") {
-
+    <div class="page-header">
+        <h4>Создание нового товара</h4>
+    </div>
+    @request.flash.data.map {
+        case (className, message) => {
+            <div class="alert  @className"> @message </div>
+        }
+    }
+    <form action="@controllers.admin.routes.Product.save()" method="POST" class="form-horizontal" enctype="multipart/form-data">
+        <input type="hidden" name="categoryId" value="@product("categoryId").value" />
+        @helper.inputText(product("title"), '_label -> "Название")
+        @helper.textarea(product("shortDescription"), '_label -> "Краткое описание")
+        @helper.textarea(product("description"), '_label -> "Описание")
+        @helper.inputText(product("price"), '_label -> "Цена", 'type -> "number")
+        @helper.inputText(product("brand"), '_label -> "Бренд")
+        <div class="control-group">
+            <label class="control-label" for="image">
+                    Фото
+            </label>
+            <div class="controls">
+                <input type="file" name="image" id="image" />
+            </div>
+        </div>
+        <div class="form-actions">
+            <button class="btn btn-primary"><i class="icon-save"></i> Сохранить</button>
+        </div>
+    </form>
 }

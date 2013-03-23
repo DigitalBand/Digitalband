@@ -16,6 +16,7 @@ object ApplicationBuild extends Build {
     "com.tzavellas" % "sse-guice" % "0.7.0",
     "com.typesafe.slick" %% "slick" % "1.0.0",
     "org.ocpsoft.prettytime" % "prettytime" % "2.1.3.Final",
+    "commons-codec" % "commons-codec" % "1.7",
     "ch.qos.logback" % "logback-classic" % "1.0.9"
   )
 

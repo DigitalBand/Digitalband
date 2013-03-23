@@ -42,4 +42,6 @@ class ProductRepository extends dao.common.ProductRepository {
   def get(id: Int): ProductEntity = ???
 
   def get(productId: Int, getBrand: (Int) => Option[BrandEntity]): ProductDetails = ???
+
+  def create(details: ProductDetails, imageId: Int, getBrandId: (String) => Int, userId: Int) = ???
 }

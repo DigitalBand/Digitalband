@@ -15,7 +15,7 @@ POST    /admin/order/:orderId/complete                                          
 POST    /admin/order/:orderId/delete                                            @controllers.admin.Order.delete(orderId:Int)
 
 #Admin product
-GET     /admin/product/create                                                   @controllers.admin.Product.create
+GET     /admin/category/:categoryId/product/create                              @controllers.admin.Product.create(categoryId: Int, brandId: Int ?= 0)
 POST    /admin/product/save                                                     @controllers.admin.Product.save
 # Home page
 GET     /                                                                         @controllers.Application.index

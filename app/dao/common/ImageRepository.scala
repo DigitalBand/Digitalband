@@ -1,8 +1,10 @@
 package dao.common
 
-import models.PictureEntity
+import models.{ImageEntity, PictureEntity}
 
 trait ImageRepository {
+  def create(img: ImageEntity): Int
+
   def listByProductId(productId: Int): Seq[Int]
 
   def defaultImage: PictureEntity

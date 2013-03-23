@@ -9,4 +9,10 @@ object ViewHelper {
       case None => 0
     }
   }
+  def brandName(brand: Option[BrandEntity]): String = {
+    brand match {
+      case Some(x) => x.title
+      case _ => ""
+    }
+  }
 }

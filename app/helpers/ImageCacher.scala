@@ -8,11 +8,18 @@ import play.api.Play
 import play.api.mvc.Results
 import models.PictureEntity
 import play.api.Play.current
+import DataStore._
 
-object ImageCacher {
+object DataStore {
   val appPath = System.getProperty("user.home")//Play.application.path.toString
   val dataPath = Paths.get(appPath, "data").toString
   val imagesPath = Paths.get(dataPath, "images").toString
+  val imageOriginalsPath = Paths.get(imagesPath, "originals").toString
+  val productOriginalImagePath = Paths.get(imageOriginalsPath, "productimages").toString
+}
+
+object ImageCacher {
+
 
   def sendCachedImage(imageId: Int, outputDimension: Dimension, compressQuality: Float, crop: Boolean, preserveAlpha: Boolean = true)(picture: => PictureEntity) = {
     Results.Ok.sendFile(getImage(imageId, picture, outputDimension, crop, preserveAlpha, compressQuality))
