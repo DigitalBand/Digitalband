@@ -6,8 +6,10 @@ import play.api.Play.current
 import dao.common.UserRepository
 import play.api.i18n.Messages
 import play.api.libs.concurrent.Akka
+import play.api.mvc.Request
 
 class EmailHelper(implicit userRepository: UserRepository) {
+
   def systemEmail = userRepository.getSystemEmail
 
   def adminEmails = userRepository.getAdminEmails
@@ -20,7 +22,16 @@ class EmailHelper(implicit userRepository: UserRepository) {
     mail.sendHtml(comment)
   }
 
-  def orderCanceled(comment: String, order: OrderInfo)(implicit request: play.api.mvc.Request[Any]) = Akka.future {
+  def sendUnconfirmedOrdersExist(count: Int) = {
+    adminEmails.map { email =>
+      val mail = use[MailerPlugin].email
+      mail.setSubject("Digitalband - eсть неподтвержденные заказы!")
+      mail.addFrom(systemEmail)
+      mail.addRecipient(email)
+      mail.sendHtml(views.html.emails.order.unconfirmedExist(count).body)
+    }
+  }
+  def orderCanceled(comment: String, order: OrderInfo)(implicit request: Request[Any]) = Akka.future {
     val mail = use[MailerPlugin].email
     mail.setSubject(s"Информация по заказу №${order.id}")
     mail.addFrom(systemEmail)
@@ -28,7 +39,7 @@ class EmailHelper(implicit userRepository: UserRepository) {
     mail.sendHtml(comment)
   }
 
-  def sendFeedback(message: ContactEntity)(implicit request: play.api.mvc.Request[Any]) = Akka.future {
+  def sendFeedback(message: ContactEntity)(implicit request: Request[Any]) = Akka.future {
     adminEmails.map(email => send(message, email))
     def send(mess: ContactEntity, adminEmail: String) = {
       val mail: MailerAPI = use[MailerPlugin].email
@@ -40,7 +51,7 @@ class EmailHelper(implicit userRepository: UserRepository) {
     }
   }
 
-  def orderConfirmation(order: OrderInfo)(implicit request: play.api.mvc.Request[Any]) = Akka.future {
+  def orderConfirmation(order: OrderInfo)(implicit request: Request[Any]) = Akka.future {
     val deliveryInfo = order.deliveryInfo
     sendToClient(systemEmail, deliveryInfo.email)
     adminEmails.map(email => sendToAdmins(email, deliveryInfo.email, systemEmail))

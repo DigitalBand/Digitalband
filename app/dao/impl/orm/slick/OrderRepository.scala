@@ -10,6 +10,8 @@ import Q.interpolation
 import java.sql.Timestamp
 
 class OrderRepository extends dao.common.OrderRepository {
+
+
   def create(deliveryInfo: DeliveryInfo, userId: Int): Int = {
     database withSession {
       sqlu"""
@@ -113,4 +115,9 @@ class OrderRepository extends dao.common.OrderRepository {
     val query = sql"select status, count(status) as orderCount from orders group by status;"
     query.as[(String, Int)].list
   }
+
+  def countUnconfirmed: Int = database withSession {
+    sql"select count(*) from orders where status = 'unconfirmed'".as[Int].first
+  }
+
 }

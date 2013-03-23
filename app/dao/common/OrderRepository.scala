@@ -3,6 +3,8 @@ package dao.common
 import models.{ListPage, OrderInfo, CartItem, DeliveryInfo}
 
 trait OrderRepository {
+  def countUnconfirmed: Int
+
   def getCounters: Seq[(String, Int)]
 
   def delete(orderId: Int)
