@@ -1,4 +1,4 @@
-@(categories: Seq[CategoryEntity], products: Seq[models.ProductEntity])(implicit user: Option[models.UserEntity],request: play.api.mvc.Request[Any])
+@(categories: Seq[CategoryEntity], products: Seq[models.ProductDetails])(implicit user: Option[models.UserEntity],request: play.api.mvc.Request[Any])
 @import Shared._
 @main(scripts = scripts) {
     <div id="myCarousel" class="carousel slide">

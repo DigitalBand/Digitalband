@@ -2,7 +2,7 @@ package dao.common
 
 import models._
 import models.CategoryEntity
-import models.ProductEntity
+import models.{ProductDetails => ProductEntity}
 import models.BrandEntity
 
 trait ProductRepository {

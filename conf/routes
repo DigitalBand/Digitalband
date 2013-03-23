@@ -13,6 +13,10 @@ POST    /admin/order/:orderId/confirm                                           
 POST    /admin/order/:orderId/cancel                                            @controllers.admin.Order.cancel(orderId:Int)
 POST    /admin/order/:orderId/complete                                          @controllers.admin.Order.complete(orderId:Int)
 POST    /admin/order/:orderId/delete                                            @controllers.admin.Order.delete(orderId:Int)
+
+#Admin product
+GET     /admin/product/create                                                   @controllers.admin.Product.create
+POST    /admin/product/save                                                     @controllers.admin.Product.save
 # Home page
 GET     /                                                                         @controllers.Application.index
 GET     /about                                                                    @controllers.Application.about

@@ -5,7 +5,7 @@ import models._
 import Profile.driver.simple._
 import Database.threadLocalSession
 import models.CategoryEntity
-import models.ProductEntity
+import models.{ProductDetails => ProductEntity}
 import tables.{ProductsTable, ProductsCategoriesTable, CategoriesTable}
 
 class ProductRepository extends RepositoryBase with dao.common.ProductRepository {
@@ -16,13 +16,14 @@ class ProductRepository extends RepositoryBase with dao.common.ProductRepository
       ).sortBy(_.visitCounter.desc).take(count).map(p => p.title ~ p.description ~ p.price ~ p.id ~ p.defaultImageId)
       productsQuery.list.map {
           case (title: String, descr:Option[String], price:Double, id:Int, imageId:Option[Int]) =>
-            ProductEntity(title, descr.getOrElse(""), price, id, imageId.getOrElse(0))
+            new ProductEntity(title, descr.getOrElse(""), price, id, imageId.getOrElse(0))
       }
     }
   }
 
   def getList(getCategory: => CategoryEntity, brandId: Int, pageNumber: Int, pageSize: Int, search: String): ListPage[ProductEntity] = {
     val category = getCategory
+
     database withSession {
       val productsQuery = for {
         p <- ProductsTable
@@ -43,13 +44,13 @@ class ProductRepository extends RepositoryBase with dao.common.ProductRepository
       val count = countQuery.firstOption.getOrElse(0)
       val products = productsQuery.drop(pageSize*(pageNumber-1)).take(pageSize).list.map {
         case (title: String, Some(descr: String), price: Double, id: Int, Some(imageId:Int)) =>
-          ProductEntity(title, descr, price, id, imageId)
+          new ProductEntity(title, descr, price, id, imageId)
         case (title: String, Some(descr: String), price: Double, id: Int, None) =>
-          ProductEntity(title, descr, price, id, 0)
+          new ProductEntity(title, descr, price, id, 0)
         case (title: String, None, price: Double, id: Int, None) =>
-          ProductEntity(title, "", price, id, 0)
+          new ProductEntity(title, "", price, id, 0)
         case (title: String, None, price: Double, id: Int, Some(imageId:Int)) =>
-          ProductEntity(title, "", price, id, imageId)
+          new ProductEntity(title, "", price, id, imageId)
       }
       new ListPage(pageNumber, products, count)
     }
@@ -60,7 +61,7 @@ class ProductRepository extends RepositoryBase with dao.common.ProductRepository
       val productQuery = ProductsTable.filter(p => p.id === id).map(p => p.title ~ p.description ~ p.price ~ p.defaultImageId ~ p.brandId)
       productQuery.firstOption.map {
         case (title: String, description: Option[String], price: Double, defaultImageId: Option[Int], brandId: Option[Int]) =>
-          ProductDetails(title, description.getOrElse(""), price, id, defaultImageId.getOrElse(0),
+          new ProductDetails(title, description.getOrElse(""), price, id, defaultImageId.getOrElse(0),
             brandId match {case Some(x) => getBrand(x).get case None => new BrandEntity(0, "Error", 0, 0) })
       }.get
     }
@@ -71,7 +72,7 @@ class ProductRepository extends RepositoryBase with dao.common.ProductRepository
       val productQuery = ProductsTable.filter(p => p.id === id).map(p => p.title ~ p.description ~ p.price ~ p.defaultImageId ~ p.brandId)
       productQuery.firstOption.map {
         case (title: String, description: Option[String], price: Double, defaultImageId: Option[Int], brandId: Option[Int]) =>
-          ProductEntity(title, description.getOrElse(""), price, id, defaultImageId.getOrElse(0))
+          new ProductEntity(title, description.getOrElse(""), price, id, defaultImageId.getOrElse(0))
       }.get
     }
   }

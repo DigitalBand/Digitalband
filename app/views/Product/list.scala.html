@@ -1,4 +1,4 @@
-@(productListPage: models.ListPage[models.ProductEntity], currentCategory: CategoryEntity,
+@(productListPage: models.ListPage[models.ProductDetails], currentCategory: CategoryEntity,
 categories: Seq[models.CategoryListItem], brands: ListPage[models.BrandEntity], brand: Option[models.BrandEntity],
 pageNumber: Int, pageSize: Int,
 breadcrumbItems: Seq[(Int, String)] = List(),
@@ -30,8 +30,6 @@ searchQuery: String)(implicit user:Option[models.UserEntity],request: play.api.m
 }
 @withsidebar(Messages("product.list.title"), "catalogue", search = searchQuery, brandId = brandId(brand),
     brands = brands, categories = categories, categoryId = currentCategory.id, subnav = subnav) {
-
-
     <h4>
         @currentCategory.title <br/>
         <small>
@@ -43,7 +41,21 @@ searchQuery: String)(implicit user:Option[models.UserEntity],request: play.api.m
             }
         </small>
     </h4>
-
+    @user match {
+        case Some(u: UserEntity) if u.isAdmin => {
+            <div class="btn-group pull-right">
+                <a class="btn btn-primary dropdown-toggle" data-toggle="dropdown"><i class="icon-cog"></i></a>
+                <ul class="dropdown-menu">
+                        <li>
+                            <a href="@controllers.admin.routes.Product.create"><i class="icon-plus"></i>
+                                    Новый товар
+                            </a>
+                        </li>
+                </ul>
+            </div>
+        }
+        case _ => {}
+    }
     @pager(helpers.PagerHelper(pageSize, productListPage.totalCount, productListPage.number),
         pn => routes.Product.filteredList(currentCategory.id, pn, brandId(brand), s = searchQuery))
     <div class="product-list">
