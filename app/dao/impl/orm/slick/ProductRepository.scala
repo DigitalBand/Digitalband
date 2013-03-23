@@ -34,8 +34,6 @@ class ProductRepository extends RepositoryBase with dao.common.ProductRepository
           c.rightValue <= category.rightValue  &&
           (if (!search.isEmpty()) p.title like "%"+search+"%" else ConstColumn.TRUE === ConstColumn.TRUE)
       } yield (p.title, p.shortDescription, p.price, p.id, p.defaultImageId)
-
-      play.api.Logger.debug(productsQuery.selectStatement)
       val countQuery = for {
         p <- ProductsTable
         pc <- ProductsCategoriesTable if p.id === pc.productId && (if (brandId == 0) true else p.brandId.get === brandId)
