@@ -37,11 +37,17 @@ class ImageRepository extends RepositoryBase with dao.common.ImageRepository {
     ProductImagesTable.filter(i => i.productId === productId).map(_.imageId).list
   }
 
+  def getByMd5(md5:String): Option[PictureEntity] = database withSession {
+    implicit val getImage = GetResult(r => new PictureEntity(r.nextInt, r.nextString, r.nextString))
+    sql"select imageId, filePath, md5 from images where md5 = $md5".as[PictureEntity].firstOption
+  }
   def create(img: ImageEntity): Int = database withSession {
-
-    val query = sqlu"insert into images(filePath, md5) values(${img.path}, ${img.md5})"
-    val statement = query.getStatement
-      query.execute()
-    sql"select last_insert_id();".as[Int].first
+    getByMd5(img.md5) match {
+      case Some(i) => i.id
+      case _ => {
+        sqlu"insert into images(filePath, md5) values(${img.path}, ${img.md5})".execute()
+        sql"select last_insert_id();".as[Int].first
+      }
+    }
   }
 }

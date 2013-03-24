@@ -28,7 +28,7 @@ object ImageHelper {
           val name = md5 + ".jpg"
           val relativePath = Paths.get("productimages", name).toString
           val fileName = Paths.get(DataStore.imageOriginalsPath, relativePath).toString
-          picture.ref.moveTo(new File(fileName))
+          picture.ref.moveTo(new File(fileName), true)
           f(new ImageEntity(relativePath, md5))
         } else {
           0

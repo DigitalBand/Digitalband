@@ -56,8 +56,14 @@ class Product @Inject()(implicit userRepository: UserRepository, brandRepository
           product => {
             val file = request.body.file("image")
             val imageId = ImageHelper.save(file)(img => imageRepository.create(img))
-            val id = productRepository.create(product, imageId, brandRepository.getBrandId, user.get.id)
-            Redirect(controllers.routes.Product.display(id))
+            val productId = product.id match {
+              case 0 => productRepository.create(product, imageId, brandRepository.getBrandId, user.get.id)
+              case _ => {
+                productRepository.update(product, imageId, brandRepository.getBrandId, user.get.id)
+                product.id
+              }
+            }
+            Redirect (controllers.routes.Product.display(productId))
           }
         )
   }

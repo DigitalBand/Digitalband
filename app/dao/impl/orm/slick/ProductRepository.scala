@@ -112,9 +112,33 @@ class ProductRepository extends RepositoryBase with dao.common.ProductRepository
     """.execute
     val productId = sql"select last_insert_id();".as[Int].first
     sqlu"insert into products_categories(productId, categoryId) values($productId, ${details.category.id})".execute
-    if (imageId > 0) {
-      sqlu"insert into product_images(productId, imageId) values($productId, $imageId)".execute
-    }
+    insertImage(imageId, productId)
     productId
+  }
+  def insertImage(imageId: Int, productId: Int) = database withSession {
+    if (imageId > 0) {
+      sqlu"""
+        insert into product_images(productId, imageId) values($productId, $imageId);
+        update products
+        set
+          defaultImageId = $imageId
+        where
+          productId = $productId and (defaultImageId = 0 or defaultImageId is null)
+      """.execute
+    }
+  }
+  def update(product: ProductDetails, imageId: Int, getBrandId: String => Int, userId: Int): Int = database withSession {
+    sqlu"""
+      update products
+      set
+        title = ${product.title},
+        description = ${product.description},
+        shortDescription = ${product.shortDescription},
+        price = ${product.price},
+        brandId = ${getBrandId(product.brand.title)}
+      where productId = ${product.id}
+    """.execute
+    insertImage(imageId, product.id)
+    product.id
   }
 }
