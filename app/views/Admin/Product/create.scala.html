@@ -1,4 +1,4 @@
-@(product: Form[models.ProductDetails], images: Seq[Int])(implicit user: Option[models.UserEntity], request: play.api.mvc.Request[Any])
+@(product: Form[models.ProductDetails], images: Seq[Int], productId: Int)(implicit user: Option[models.UserEntity], request: play.api.mvc.Request[Any])
 @import views.html.common.bootstrap._
 @scripts = {
     <script>
@@ -9,7 +9,10 @@
 }
 @views.html.Admin.main("Администрирование", "index", scripts = scripts) {
     <div class="page-header">
-        <h4> Создание нового товара </h4>
+        <h4> @productId match {
+            case 0 => {Создание нового товара}
+            case _ => {Редактирование товара}
+            } </h4>
     </div>
     @request.flash.data.map {
         case (className, message) => {
@@ -24,6 +27,7 @@
                 @helper.inputText(product("title"), '_label -> "Название")
                 @helper.inputText(product("price"), '_label -> "Цена", 'type -> "number")
                 @helper.textarea(product("shortDescription"), '_label -> "Краткое описание", 'class -> "span6")
+                @helper.textarea(product("description"), '_label -> "Описание", 'rows -> "10", 'class -> "span6")
             </div>
             <div class="span6">
                 @helper.inputText(product("brand"), '_label -> "Бренд")
@@ -40,11 +44,7 @@
                 </div>
             </div>
         </div>
-        <div class="row">
-            <div class="span12">
-            @helper.textarea(product("description"), '_label -> "Описание", 'rows -> "10", 'class -> "span6")
-            </div>
-        </div>
+
         <div class="form-actions">
             <button class="btn btn-primary"> <i class="icon-save"></i> Сохранить </button>
         </div>

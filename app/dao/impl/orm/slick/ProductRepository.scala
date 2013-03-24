@@ -98,7 +98,7 @@ class ProductRepository extends RepositoryBase with dao.common.ProductRepository
   }
 
 
-  def create(details: ProductDetails, imageId: Int, getBrandId: String => Int, userId:Int): Int = database withSession {
+  def create(details: ProductDetails, imageId: Int, getBrandId: String => Int, userId: Int): Int = database withSession {
     sqlu"""
       insert into
         products(title, description, shortDescription, price, brandId, defaultImageId, createdByUser)
@@ -112,9 +112,9 @@ class ProductRepository extends RepositoryBase with dao.common.ProductRepository
     """.execute
     val productId = sql"select last_insert_id();".as[Int].first
     sqlu"insert into products_categories(productId, categoryId) values($productId, ${details.category.id})".execute
-    sqlu"""
-      insert into product_images(productId, imageId) values($productId, $imageId)
-    """.execute
+    if (imageId > 0) {
+      sqlu"insert into product_images(productId, imageId) values($productId, $imageId)".execute
+    }
     productId
   }
 }

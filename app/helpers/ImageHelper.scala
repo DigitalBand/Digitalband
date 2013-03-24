@@ -12,6 +12,7 @@ import models.ImageEntity
 import java.security.DigestInputStream
 
 object ImageHelper {
+
   import java.security.MessageDigest
 
   def getMd5(f: File) = {
@@ -20,13 +21,18 @@ object ImageHelper {
   }
 
   def save(filePart: Option[FilePart[TemporaryFile]])(f: ImageEntity => Int): Int = {
-    filePart.map { picture =>
-      val md5 = getMd5(picture.ref.file)
-      val name = md5 + ".jpg"
-      val relativePath = Paths.get("productimages", name).toString
-      val fileName = Paths.get(DataStore.imageOriginalsPath, relativePath).toString
-      picture.ref.moveTo(new File(fileName))
-      f(new ImageEntity(relativePath, md5))
+    filePart.map {
+      picture =>
+        if (!picture.filename.isEmpty) {
+          val md5 = getMd5(picture.ref.file)
+          val name = md5 + ".jpg"
+          val relativePath = Paths.get("productimages", name).toString
+          val fileName = Paths.get(DataStore.imageOriginalsPath, relativePath).toString
+          picture.ref.moveTo(new File(fileName))
+          f(new ImageEntity(relativePath, md5))
+        } else {
+          0
+        }
     }.getOrElse(0)
   }
 
@@ -34,12 +40,14 @@ object ImageHelper {
     val arr = imageSize.split("x").map(_.toInt)
     new Dimension(arr(0), arr(1))
   }
+
   def isCropped(fill: String) = {
     fill match {
       case "cropped" => true
       case "full" => false
     }
   }
+
   def checkQuality(quality: Int): Float = {
     if (quality < 20)
       0.2f
@@ -48,20 +56,24 @@ object ImageHelper {
     else
       (quality.toFloat / 100)
   }
+
   def getImageId(imageNumber: String): Int = {
     imageNumber.split("[\\.]")(0).toInt
   }
+
   def write(image: BufferedImage, outputFile: File, quality: Float): File = {
-    disposable(ImageIO.getImageWritersByFormatName("jpeg").next()) { jpegWriter =>
-      val param: ImageWriteParam = jpegWriter.getDefaultWriteParam()
-      param.setCompressionMode(ImageWriteParam.MODE_EXPLICIT)
-      param.setCompressionQuality(quality)
-      closable(new FileImageOutputStream(outputFile)) {  out =>
-        jpegWriter.setOutput(
-          out)
-        jpegWriter.write(null, new IIOImage(image, null, null), param)
-        outputFile
-      }
+    disposable(ImageIO.getImageWritersByFormatName("jpeg").next()) {
+      jpegWriter =>
+        val param: ImageWriteParam = jpegWriter.getDefaultWriteParam()
+        param.setCompressionMode(ImageWriteParam.MODE_EXPLICIT)
+        param.setCompressionQuality(quality)
+        closable(new FileImageOutputStream(outputFile)) {
+          out =>
+            jpegWriter.setOutput(
+              out)
+            jpegWriter.write(null, new IIOImage(image, null, null), param)
+            outputFile
+        }
     }
   }
 }
