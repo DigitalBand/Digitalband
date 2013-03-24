@@ -114,7 +114,7 @@ class ProductRepository extends RepositoryBase with dao.common.ProductRepository
     sqlu"insert into products_categories(productId, categoryId) values($productId, ${details.category.id})".execute
     sqlu"""
       insert into product_images(productId, imageId) values($productId, $imageId)
-    """
+    """.execute
     productId
   }
 }

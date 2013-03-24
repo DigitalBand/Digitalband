@@ -33,21 +33,24 @@ class Product @Inject()(implicit userRepository: UserRepository, brandRepository
           case Some(b: BrandEntity) => b.title
           case _ => ""
         }
-        Ok(views.html.Admin.Product.create(productForm.fill(new ProductDetails(categoryId, brand))))
+        Ok(views.html.Admin.Product.create(productForm.fill(new ProductDetails(categoryId, brand)), List()))
   }
 
   def edit(productId: Int) = withAdmin {
     implicit user =>
       implicit request =>
         val product = productRepository.get(productId, brandRepository.get)
-        Ok(views.html.Admin.Product.create(productForm.fill(product)))
+        val images = imageRepository.listByProductId(productId)
+        Ok(views.html.Admin.Product.create(productForm.fill(product), images))
   }
   def save = withAdmin(parse.multipartFormData) {
     implicit user =>
       implicit request =>
         productForm.bindFromRequest.fold(
-          formWithErrors =>
-            BadRequest(views.html.Admin.Product.create(formWithErrors)),
+          formWithErrors => {
+            val images = imageRepository.listByProductId(Int.unbox(formWithErrors("id").value))
+            BadRequest(views.html.Admin.Product.create(formWithErrors, images))
+          },
           product => {
             val file = request.body.file("image")
             val imageId = ImageHelper.save(file) {

@@ -1,32 +1,61 @@
-@(product: Form[models.ProductDetails])(implicit user: Option[models.UserEntity], request: play.api.mvc.Request[Any])
+@(product: Form[models.ProductDetails], images: Seq[Int])(implicit user: Option[models.UserEntity], request: play.api.mvc.Request[Any])
 @import views.html.common.bootstrap._
-@views.html.Admin.main("Администрирование", "index") {
+@scripts = {
+    <script>
+            $(document).ready(function() {
+                $("#description").wysihtml5({
+                    locale: "ru-RU",
+                    "font-styles": false,
+                    "emphasis": true,
+                    "lists": true,
+                    "html": true,
+                    "link": false,
+                    "image": false,
+                    "color": true
+                    }
+                );
+            });
+    </script>
+}
+@views.html.Admin.main("Администрирование", "index", scripts = scripts) {
     <div class="page-header">
-        <h4>Создание нового товара</h4>
+        <h4> Создание нового товара </h4>
     </div>
     @request.flash.data.map {
         case (className, message) => {
             <div class="alert  @className"> @message </div>
         }
     }
-    <form action="@controllers.admin.routes.Product.save()" method="POST" class="form-horizontal" enctype="multipart/form-data">
+    <form action="@controllers.admin.routes.Product.save()" method="POST" class="form-inline" enctype="multipart/form-data">
         <input type="hidden" name="categoryId" value="@product("categoryId").value" />
         <input type="hidden" name="id" value="@product("id").value" />
-        @helper.inputText(product("title"), '_label -> "Название")
-        @helper.textarea(product("shortDescription"), '_label -> "Краткое описание")
-        @helper.textarea(product("description"), '_label -> "Описание")
-        @helper.inputText(product("price"), '_label -> "Цена", 'type -> "number")
-        @helper.inputText(product("brand"), '_label -> "Бренд")
-        <div class="control-group">
-            <label class="control-label" for="image">
-                    Фото
-            </label>
-            <div class="controls">
-                <input type="file" name="image" id="image" />
+        <div class="row">
+            <div class="span6">
+                @helper.inputText(product("title"), '_label -> "Название")
+                @helper.textarea(product("shortDescription"), '_label -> "Краткое описание", 'class -> "span6")
+                @helper.textarea(product("description"), '_label -> "Описание", 'rows -> "10", 'class -> "span6")
+            </div>
+            <div class="span6">
+
+                @helper.inputText(product("price"), '_label -> "Цена", 'type -> "number")
+
+                @helper.inputText(product("brand"), '_label -> "Бренд")
+                <div class="control-group">
+                    <label class="control-label" for="image">
+                            Фото
+                    </label>
+                    <div class="controls">
+                        <input type="file" name="image" id="image" />
+                        @images.map { image =>
+                            <img class="thumbnail" src="@routes.Image.get(image + ".jpg", 90, "60x60", "full")"/>
+                        }
+                    </div>
+                </div>
             </div>
         </div>
         <div class="form-actions">
-            <button class="btn btn-primary"><i class="icon-save"></i> Сохранить</button>
+            <button class="btn btn-primary"> <i class="icon-save"></i> Сохранить </button>
         </div>
+
     </form>
 }
