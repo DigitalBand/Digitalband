@@ -23,7 +23,7 @@ class Security @Inject()(implicit ur: UserRepository, val cartRepository: CartRe
   //POST
   def signIn(redirectUrl: String) = withUser { implicit user =>
     implicit request =>
-      loginForm(userRepository).bindFromRequest.fold(
+      loginForm().bindFromRequest.fold(
         formWithErrors => BadRequest(views.html.Security.login(formWithErrors, redirectUrl)),
         user => {
           val (email, password) = user
@@ -46,7 +46,7 @@ class Security @Inject()(implicit ur: UserRepository, val cartRepository: CartRe
   //POST
   def signUp(redirectUrl: String) = withUser { implicit user =>
     implicit request =>
-      registrationForm(userRepository).bindFromRequest.fold(
+      registrationForm().bindFromRequest.fold(
         formWithErrors => BadRequest(views.html.Security.registration(formWithErrors, redirectUrl)),
         user => {
           val (email, password) = user
@@ -83,13 +83,13 @@ class Security @Inject()(implicit ur: UserRepository, val cartRepository: CartRe
   //GET
   def login(returnUrl: String) = withUser { implicit user =>
     implicit request =>
-      Ok(views.html.Security.login(forms.loginForm(userRepository), returnUrl))
+      Ok(views.html.Security.login(forms.loginForm(), returnUrl))
   }
 
   //GET
   def registration(redirectUrl: String) = withUser { implicit user =>
     implicit request =>
-      Ok(views.html.Security.registration(registrationForm(userRepository), redirectUrl))
+      Ok(views.html.Security.registration(registrationForm(), redirectUrl))
   }
 
   //GET

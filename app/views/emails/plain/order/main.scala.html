@@ -1,4 +1,4 @@
-@(order: OrderInfo, additionalContent: play.api.templates.Html = Html(""))(content: Html)
+@(order: OrderInfo, additionalContent: play.api.templates.Html = Html(""))(content: Html)(implicit request: play.api.mvc.Request[Any])
 @import emails.plain.shoppingList
 @content
 @shoppingList(order.items, editable = false)

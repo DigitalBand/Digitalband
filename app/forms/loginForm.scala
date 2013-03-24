@@ -6,7 +6,7 @@ import play.api.data.Forms._
 import play.api.i18n.Messages
 
 object loginForm {
-  def apply(userService: UserRepository)(implicit request: Request[AnyContent]) = {
+  def apply()(implicit request: Request[AnyContent], userService:UserRepository) = {
     Form(
       tuple(
         "email" -> nonEmptyText,
@@ -22,7 +22,7 @@ object loginForm {
 }
 
 object registrationForm {
-  def apply(userService: UserRepository)(implicit request: Request[AnyContent]) = {
+  def apply()(implicit request: Request[AnyContent], userService:UserRepository) = {
     Form(
       tuple(
         "email" -> nonEmptyText,

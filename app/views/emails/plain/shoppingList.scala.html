@@ -1,7 +1,7 @@
-@(items: Seq[models.CartItem], returnUrl: String = "", editable: Boolean = true)
+@(items: Seq[models.CartItem], returnUrl: String = "", editable: Boolean = true)(implicit request: play.api.mvc.Request[Any])
 <ul>
     @items.map { cartItem =>
-        <li><a href="@routes.Product.display(cartItem.productId)">
+        <li><a href="@routes.Product.display(cartItem.productId).absoluteURL()">
             @cartItem.title</a> - @Messages("formats.price", cartItem.total).trim @Messages("formats.count", cartItem.count)
         </li>
     }

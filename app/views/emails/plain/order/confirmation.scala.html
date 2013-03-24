@@ -1,4 +1,4 @@
-@(order: OrderInfo)
+@(order: OrderInfo)(implicit request: play.api.mvc.Request[Any])
 @emails.plain.order.main(order) {
 Уважаемый покупатель!
 
