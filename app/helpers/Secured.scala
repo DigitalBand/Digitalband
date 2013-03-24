@@ -37,7 +37,7 @@ trait Secured {
           if(user.isAdmin)
             f(Some(user))(request)
           else
-            Results.Redirect(routes.Security.login(request.uri))
+            Results.Redirect(routes.Security.login(request.uri)).flashing("alert-error" -> "security.alerts.admin.auth.denied")
         }.getOrElse(Results.Redirect(routes.Security.login(request.uri)))
     }
   }

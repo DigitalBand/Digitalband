@@ -2,5 +2,10 @@
 @import views.html.Security.loginpart
 
 @main(menuItem = "security") {
+    @request.flash.data.map {
+        case (className, message) => {
+            <div class="alert  @className"> @Messages(message) </div>
+        }
+    }
     @loginpart(loginForm, returnUrl)
 }

@@ -71,6 +71,7 @@ security.login.form.forgotpassword=Забыли пароль?
 
 security.registration.form.legend=Регистрация
 security.registration.form.submit=Зарегистрироваться
+security.alerts.admin.auth.denied=Для доступа на эту страницу необходимо ввести имя и пароль администратора
 
 cart.title=Ваша корзина
 cart.alerts.empty=Ваша корзина пуста
