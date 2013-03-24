@@ -3,17 +3,7 @@
 @scripts = {
     <script>
             $(document).ready(function() {
-                $("#description").wysihtml5({
-                    locale: "ru-RU",
-                    "font-styles": false,
-                    "emphasis": true,
-                    "lists": true,
-                    "html": true,
-                    "link": false,
-                    "image": false,
-                    "color": true
-                    }
-                );
+                CKEDITOR.replace("description")
             });
     </script>
 }
@@ -32,13 +22,10 @@
         <div class="row">
             <div class="span6">
                 @helper.inputText(product("title"), '_label -> "Название")
+                @helper.inputText(product("price"), '_label -> "Цена", 'type -> "number")
                 @helper.textarea(product("shortDescription"), '_label -> "Краткое описание", 'class -> "span6")
-                @helper.textarea(product("description"), '_label -> "Описание", 'rows -> "10", 'class -> "span6")
             </div>
             <div class="span6">
-
-                @helper.inputText(product("price"), '_label -> "Цена", 'type -> "number")
-
                 @helper.inputText(product("brand"), '_label -> "Бренд")
                 <div class="control-group">
                     <label class="control-label" for="image">
@@ -51,6 +38,11 @@
                         }
                     </div>
                 </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="span12">
+            @helper.textarea(product("description"), '_label -> "Описание", 'rows -> "10", 'class -> "span6")
             </div>
         </div>
         <div class="form-actions">
