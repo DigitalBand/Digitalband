@@ -1,0 +1,12 @@
+@(user: Option[UserEntity])(content: Html)
+@import helpers.ViewHelper._
+@user.map { u =>
+    @if(u.isAdmin) {
+        <div class="btn-group pull-right">
+            <a class="btn btn-primary dropdown-toggle" data-toggle="dropdown"><i class="icon-cog"></i></a>
+            <ul class="dropdown-menu">
+                @content
+            </ul>
+        </div>
+            }
+}.getOrElse("")

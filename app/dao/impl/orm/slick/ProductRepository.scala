@@ -9,6 +9,7 @@ import models.ProductDetails
 import tables.{ProductsTable, ProductsCategoriesTable, CategoriesTable}
 import slick.jdbc.{StaticQuery => Q, GetResult}
 import Q.interpolation
+import play.api.i18n.Messages
 
 class ProductRepository extends RepositoryBase with dao.common.ProductRepository {
   def listMostVisited(count: Int) = database withSession {
@@ -57,15 +58,35 @@ class ProductRepository extends RepositoryBase with dao.common.ProductRepository
 
 
   def get(id: Int, getBrand: Int => Option[BrandEntity]): ProductDetails = database withSession {
-    val productQuery = ProductsTable.filter(p => p.id === id).map(p => p.title ~ p.description ~ p.price ~ p.defaultImageId ~ p.brandId)
-    productQuery.firstOption.map {
-      case (title: String, description: Option[String], price: Double, defaultImageId: Option[Int], brandId: Option[Int]) =>
-        new ProductDetails(title, description.getOrElse(""), price, id, defaultImageId.getOrElse(0),
-          brandId match {
-            case Some(x) => getBrand(x).get
-            case None => new BrandEntity(0, "Error", 0, 0)
-          })
-    }.get
+    implicit val getProductDetails = GetResult(r =>
+      new ProductDetails(
+        r.nextString,
+        r.nextStringOption.getOrElse(""),
+        r.nextStringOption.getOrElse(""),
+        r.nextDouble,
+        r.nextInt,
+        r.nextIntOption.getOrElse(0),
+        new CategoryEntity(r.nextIntOption.getOrElse(0), r.nextStringOption.getOrElse(Messages("category.unknown"))),
+        new BrandEntity(r.nextIntOption.getOrElse(0), r.nextStringOption.getOrElse(Messages("brand.unknown")))))
+    sql"""
+      select
+        p.title,
+        p.description,
+        p.shortDescription,
+        p.price,
+        p.productId,
+        p.defaultImageId,
+        pc.categoryId,
+        c.title,
+        b.brandId,
+        b.title as brandTitle
+      from
+        products p
+      left join products_categories pc on pc.productId = p.productId
+      left join categories c on c.CategoryId = pc.categoryId
+      left join brands b on b.brandId = p.brandId
+      where p.productId = $id;
+    """.as[ProductDetails].first()
   }
 
   def get(id: Int): ProductDetails = database withSession {
@@ -85,12 +106,12 @@ class ProductRepository extends RepositoryBase with dao.common.ProductRepository
           ${details.description},
           ${details.shortDescription},
           ${details.price},
-          ${getBrandId(details.brandName)},
+          ${getBrandId(details.brand.title)},
           ${imageId},
           ${userId})
     """.execute
     val productId = sql"select last_insert_id();".as[Int].first
-    sqlu"insert into products_categories(productId, categoryId) values($productId, ${details.categoryId})".execute
+    sqlu"insert into products_categories(productId, categoryId) values($productId, ${details.category.id})".execute
     sqlu"""
       insert into product_images(productId, imageId) values($productId, $imageId)
     """

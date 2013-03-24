@@ -5,6 +5,7 @@ breadcrumbItems: Seq[(Int, String)] = List(),
 searchQuery: String)(implicit user:Option[models.UserEntity],request: play.api.mvc.Request[Any])
 @import helpers.ViewHelper._
 @import Shared._
+@import views.html.Product.adminToolbar
 @subnav = {
     <div id="highlighted">
         <div class="container">
@@ -41,20 +42,13 @@ searchQuery: String)(implicit user:Option[models.UserEntity],request: play.api.m
             }
         </small>
     </h4>
-    @user match {
-        case Some(u: UserEntity) if u.isAdmin => {
-            <div class="btn-group pull-right">
-                <a class="btn btn-primary dropdown-toggle" data-toggle="dropdown"><i class="icon-cog"></i></a>
-                <ul class="dropdown-menu">
-                        <li>
-                            <a href="@controllers.admin.routes.Product.create(currentCategory.id, brandId(brand))"><i class="icon-plus"></i>
-                                    Новый товар
-                            </a>
-                        </li>
-                </ul>
-            </div>
-        }
-        case _ => {}
+    @adminToolbar(user){
+        <li>
+            <a href="@controllers.admin.routes.Product.create(currentCategory.id, brandId(brand))">
+                <i class="icon-plus"></i>
+                    Новый товар
+            </a>
+        </li>
     }
     @pager(helpers.PagerHelper(pageSize, productListPage.totalCount, productListPage.number),
         pn => routes.Product.filteredList(currentCategory.id, pn, brandId(brand), s = searchQuery))

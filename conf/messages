@@ -72,7 +72,8 @@ security.login.form.forgotpassword=Забыли пароль?
 security.registration.form.legend=Регистрация
 security.registration.form.submit=Зарегистрироваться
 security.alerts.admin.auth.denied=Для доступа на эту страницу необходимо ввести имя и пароль администратора
-
+brand.unknown=Бренд не указан
+category.unknown=Категория не указана
 cart.title=Ваша корзина
 cart.alerts.empty=Ваша корзина пуста
 cart.itemlist.header.imagecolumn=Изображение

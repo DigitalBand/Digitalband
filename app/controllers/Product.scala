@@ -55,6 +55,7 @@ class Product @Inject()(implicit ur:UserRepository, productRepository: ProductRe
       }
     //}
 
+  //TODO: Make async
   def display(id: Int, categoryId: Int, brandId: Int, brandPage: Int, pageNumber: Int, search: String)(implicit request:Request[AnyContent], user: Option[UserEntity]) = {
     Ok(views.html.Product.display(
       productRepository.get(id, brandRepository.get),

@@ -2,23 +2,28 @@ package models
 
 class ProductDetails(val title: String, val description: String, val shortDescription: String,
                           val price: Double, val id: Int, val defaultImageId: Int,
-                          val brand: BrandEntity, val brandName: String, val categoryId: Int) {
-  def this(categoryId: Int, brandName: String) = this("", "", "", 0.0, 0, 0, new BrandEntity(), brandName, categoryId)
+                          val brand: BrandEntity, val category: CategoryEntity) {
+  def this(categoryId: Int, brandName: String) =
+    this("", "", "", 0.0, 0, 0, new BrandEntity(brandName), new CategoryEntity(categoryId, ""))
+
+  def this(title:String, description:String,shortDescription: String,price:Double,id: Int,defaultImageId:Int,category:CategoryEntity,brand:BrandEntity) =
+   this(title, description, shortDescription, price, id, defaultImageId, brand, category)
+
   def this(title: String, description: String, price: Double, id: Int, defaultImageId: Int, brand: BrandEntity) =
-    this(title, description, "", price, id, defaultImageId, brand, "", 0)
+    this(title, description, "", price, id, defaultImageId, brand, new CategoryEntity(0))
 
   def this(title: String, description: String, shortDescription: String, price: Double, id: Int, defaultImageId: Int) =
-    this(title, description, shortDescription, price, id, defaultImageId, new BrandEntity(), "", 0)
+    this(title, description, shortDescription, price, id, defaultImageId, new BrandEntity(), new CategoryEntity(0))
 
   def this(title: String, description: String, price: Double, id: Int, defaultImageId: Int) =
-    this(title, description, "", price, id, defaultImageId, new BrandEntity(), "", 0)
+    this(title, description, "", price, id, defaultImageId, new BrandEntity(), new CategoryEntity(0))
 }
 
 object ProductDetails {
-  def apply(title:String,description:String,shortDescription:String,price:Double,brandName:String, categoryId: Int) =
-    new ProductDetails(title, description, shortDescription, price, 0, 0, new BrandEntity(), brandName, categoryId)
+  def apply(id: Option[Int], title:String, description:String, shortDescription:String, price:Double, brandName:String, categoryId: Int) =
+    new ProductDetails(title, description, shortDescription, price, id.getOrElse(0), 0, new BrandEntity(brandName), new CategoryEntity(categoryId))
   def unapply(d: ProductDetails) = {
-    Some(Tuple6(d.title, d.description, d.shortDescription, d.price, d.brandName, d.categoryId))
+    Some(Tuple7(Some(d.id), d.title, d.description, d.shortDescription, d.price, d.brand.title, d.category.id))
   }
 }
 

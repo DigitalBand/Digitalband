@@ -14,8 +14,9 @@ import play.api.mvc.Action
 
 class Product @Inject()(implicit userRepository: UserRepository, brandRepository: BrandRepository, productRepository: ProductRepository, imageRepository: ImageRepository) extends ControllerBase with Secured {
 
- val productForm = Form(
+  val productForm = Form(
     mapping(
+      "id" -> optional(number),
       "title" -> nonEmptyText,
       "description" -> nonEmptyText,
       "shortDescription" -> nonEmptyText,
@@ -35,6 +36,12 @@ class Product @Inject()(implicit userRepository: UserRepository, brandRepository
         Ok(views.html.Admin.Product.create(productForm.fill(new ProductDetails(categoryId, brand))))
   }
 
+  def edit(productId: Int) = withAdmin {
+    implicit user =>
+      implicit request =>
+        val product = productRepository.get(productId, brandRepository.get)
+        Ok(views.html.Admin.Product.create(productForm.fill(product)))
+  }
   def save = withAdmin(parse.multipartFormData) {
     implicit user =>
       implicit request =>
@@ -43,8 +50,9 @@ class Product @Inject()(implicit userRepository: UserRepository, brandRepository
             BadRequest(views.html.Admin.Product.create(formWithErrors)),
           product => {
             val file = request.body.file("image")
-            val imageId = ImageHelper.save(file) { image =>
-              imageRepository.create(image)
+            val imageId = ImageHelper.save(file) {
+              image =>
+                imageRepository.create(image)
             }
             val id = productRepository.create(product, imageId, brandRepository.getBrandId, user.get.id)
             Redirect(controllers.routes.Product.display(id))

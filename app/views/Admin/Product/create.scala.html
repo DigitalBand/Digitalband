@@ -11,6 +11,7 @@
     }
     <form action="@controllers.admin.routes.Product.save()" method="POST" class="form-horizontal" enctype="multipart/form-data">
         <input type="hidden" name="categoryId" value="@product("categoryId").value" />
+        <input type="hidden" name="id" value="@product("id").value" />
         @helper.inputText(product("title"), '_label -> "Название")
         @helper.textarea(product("shortDescription"), '_label -> "Краткое описание")
         @helper.textarea(product("description"), '_label -> "Описание")
