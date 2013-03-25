@@ -40,22 +40,31 @@
                     <label class="control-label" for="image">
                             Фото
                     </label>
-                    <div class="controls">
-                        <input type="file" name="image" id="image" />
+                    <div class="controls images">
+
                         @images.map { image =>
-                            <img class="thumbnail" src="@routes.Image.get(image + ".jpg", 90, "60x60", "full")"/>
+                            <div class="fileupload fileupload-new" data-provides="fileupload">
+                                <img class="thumbnail" src="@routes.Image.get(image + ".jpg", 90, "90x90", "full")"/>
+                                <div>
+                                    <span class="btn btn-file">
+                                        <span class="fileupload-new"><i class="icon-remove"></i></span>
+                                    </span>
+                                    <a href="#" class="btn fileupload-exists" data-dismiss="fileupload"><i class="icon-remove"></i> </a>
+                                </div>
+                            </div>
+
                         }
                         <div class="fileupload fileupload-new" data-provides="fileupload">
-                            <div class="fileupload-preview thumbnail" style="width: 100px; height: 100px;">
+                            <div class="fileupload-preview thumbnail" style="width: 90px; height: 90px;">
 
                             </div>
                             <div>
                                 <span class="btn btn-file">
-                                    <span class="fileupload-new">Select image</span>
-                                    <span class="fileupload-exists">Change</span>
-                                    <input type="file" />
+                                    <span class="fileupload-new"><i class="icon-plus"></i></span>
+                                    <span class="fileupload-exists"><i class="icon-edit"></i></span>
+                                    <input type="file" name="image" id="image" />
                                 </span>
-                                <a href="#" class="btn fileupload-exists" data-dismiss="fileupload">Remove</a>
+                                <a href="#" class="btn fileupload-exists" data-dismiss="fileupload"><i class="icon-remove"></i> </a>
                             </div>
                         </div>
                     </div>
