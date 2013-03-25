@@ -1,14 +1,18 @@
 @(product: Form[models.ProductDetails], images: Seq[Int], productId: Int)(implicit user: Option[models.UserEntity], request: play.api.mvc.Request[Any])
 @import views.html.common.bootstrap._
+@styles = {
+    <link rel="stylesheet" media="screen" href="@routes.Assets.at("stylesheets/bootstrap/fileupload.min.css")"/>
+}
 @scripts = {
     <script src="@routes.Assets.at("javascripts/ckeditor/ckeditor.js")" type="text/javascript"></script>
+    <script src="@routes.Assets.at("javascripts/bootstrap-fileupload/bootstrap-fileupload.js")" type="text/javascript"></script>
     <script>
             $(document).ready(function() {
                 CKEDITOR.replace("description")
             });
     </script>
 }
-@views.html.Admin.main("Администрирование", "index", scripts = scripts) {
+@views.html.Admin.main("Администрирование", "index", scripts = scripts, styles = styles) {
     <div class="page-header">
         <h4> @productId match {
             case 0 => {Создание нового товара}
@@ -41,6 +45,19 @@
                         @images.map { image =>
                             <img class="thumbnail" src="@routes.Image.get(image + ".jpg", 90, "60x60", "full")"/>
                         }
+                        <div class="fileupload fileupload-new" data-provides="fileupload">
+                            <div class="fileupload-preview thumbnail" style="width: 100px; height: 100px;">
+
+                            </div>
+                            <div>
+                                <span class="btn btn-file">
+                                    <span class="fileupload-new">Select image</span>
+                                    <span class="fileupload-exists">Change</span>
+                                    <input type="file" />
+                                </span>
+                                <a href="#" class="btn fileupload-exists" data-dismiss="fileupload">Remove</a>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>

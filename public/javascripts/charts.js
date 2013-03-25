@@ -22,7 +22,7 @@ function renderChart(type, title, data) {
             text: title
         },
         tooltip: {
-            pointFormat: '{series.name}: <b>{point.percentage}%</b>',
+            pointFormat: '{series.name}: <b>{point.y}</b>',
             percentageDecimals: 1
         },
         plotOptions: {

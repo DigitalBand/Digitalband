@@ -22,7 +22,8 @@ object ApplicationBuild extends Build {
 
   def customLessEntryPoints(base: File): PathFinder = (
       (base / "app" / "assets" / "stylesheets" / "bootstrap" ** "main.less") +++
-      (base / "app" / "assets" / "stylesheets" ** "site.less")
+      (base / "app" / "assets" / "stylesheets" ** "site.less") +++
+      (base / "app" / "assets" / "stylesheets" ** "fileupload.less")
     )
 
   val main = play.Project(appName, appVersion, appDependencies).settings(
