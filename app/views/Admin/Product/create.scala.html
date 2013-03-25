@@ -8,7 +8,13 @@
     <script src="@routes.Assets.at("javascripts/bootstrap-fileupload/bootstrap-fileupload.js")" type="text/javascript"></script>
     <script>
             $(document).ready(function() {
-                CKEDITOR.replace("description")
+                CKEDITOR.replace("description");
+                $(".existent-image").click(function(){
+                    var id = $(this).attr("data-imageId");
+                    $("#image-" + id).after('<input type="hidden" name="deletedImage" value="' + id + '"/>');
+                    $("#image-" + id).remove();
+                    return false;
+                });
             });
     </script>
 }
@@ -41,23 +47,16 @@
                             Фото
                     </label>
                     <div class="controls images">
-
                         @images.map { image =>
-                            <div class="fileupload fileupload-new" data-provides="fileupload">
+                            <div id="image-@image" class="fileupload fileupload-new" data-provides="fileupload">
                                 <img class="thumbnail" src="@routes.Image.get(image + ".jpg", 90, "90x90", "full")"/>
                                 <div>
-                                    <span class="btn btn-file">
-                                        <span class="fileupload-new"><i class="icon-remove"></i></span>
-                                    </span>
-                                    <a href="#" class="btn fileupload-exists" data-dismiss="fileupload"><i class="icon-remove"></i> </a>
+                                    <a href="#" class="btn existent-image" data-imageId="@image"><i class="icon-remove"></i></a>
                                 </div>
                             </div>
-
                         }
                         <div class="fileupload fileupload-new" data-provides="fileupload">
-                            <div class="fileupload-preview thumbnail" style="width: 90px; height: 90px;">
-
-                            </div>
+                            <div class="fileupload-preview thumbnail" style="width: 90px; height: 90px;"></div>
                             <div>
                                 <span class="btn btn-file">
                                     <span class="fileupload-new"><i class="icon-plus"></i></span>

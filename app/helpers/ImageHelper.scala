@@ -10,14 +10,17 @@ import play.api.libs.Files.TemporaryFile
 import java.nio.file.Paths
 import models.ImageEntity
 import java.security.DigestInputStream
+import java.security.MessageDigest
 
 object ImageHelper {
-
-  import java.security.MessageDigest
 
   def getMd5(f: File) = {
     val fis = new FileInputStream(f)
     org.apache.commons.codec.digest.DigestUtils.md5Hex(fis)
+  }
+
+  def deleteImage(relativePath: String) = {
+     Paths.get(DataStore.imageOriginalsPath, relativePath).toFile.delete()
   }
 
   def save(picture: FilePart[TemporaryFile])(f: ImageEntity => Int): Int = {

@@ -17,4 +17,6 @@ class ImageRepository extends dao.common.ImageRepository {
   def listByProductId(productId: Int): Seq[Int] = ???
 
   def create(img: ImageEntity) = ???
+
+  def remove(imageId: Int) = ???
 }

@@ -3,6 +3,8 @@ package dao.common
 import models.{ImageEntity, PictureEntity}
 
 trait ImageRepository {
+  def remove(imageId: Int)
+
   def create(img: ImageEntity): Int
 
   def listByProductId(productId: Int): Seq[Int]

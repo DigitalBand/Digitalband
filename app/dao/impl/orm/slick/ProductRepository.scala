@@ -114,6 +114,7 @@ class ProductRepository extends RepositoryBase with dao.common.ProductRepository
     after(productId)
     productId
   }
+
   def insertImage(imageId: Int, productId: Int) = database withSession {
     if (imageId > 0) {
       sqlu"""
@@ -126,6 +127,7 @@ class ProductRepository extends RepositoryBase with dao.common.ProductRepository
       """.execute
     }
   }
+
   def update(product: ProductDetails, getBrandId: String => Int, userId: Int)(after: => Unit): Int = database withSession {
     sqlu"""
       update products
@@ -139,5 +141,17 @@ class ProductRepository extends RepositoryBase with dao.common.ProductRepository
     """.execute
     after
     product.id
+  }
+
+  def removeImage(imageId: Int, productId: Int)(after: Int => Unit) = database withSession {
+    sqlu"""
+      delete from product_images where productId = $productId and imageId = $imageId;
+    """.execute
+    val count = sql"""
+      select count(*) from product_images where imageId = $imageId
+     """.as[Int].first()
+    if (count == 0){
+       after(imageId)
+    }
   }
 }

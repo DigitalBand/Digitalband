@@ -55,15 +55,33 @@ class Product @Inject()(implicit userRepository: UserRepository, brandRepository
           },
           product => {
             def addImages(pId: Int) = {
-              request.body.files.map { case file =>
-                val imageId = ImageHelper.save(file)(img => imageRepository.create(img))
-                productRepository.insertImage(imageId, pId)
+              request.body.asFormUrlEncoded.map {
+                case (name, images) if name == "deletedImage" => {
+                  images.map {
+                    image => {
+
+                      productRepository.removeImage(image.toInt, pId) { imageId =>
+                          val i = imageRepository.get(imageId)
+                          imageRepository.remove(i.id)
+                          ImageHelper.deleteImage(i.path)
+                      }
+                    }
+                  }
+                }
+                case _ => {}
+              }
+              request.body.files.map {
+                file => {
+                  val imageId = ImageHelper.save(file)(img => imageRepository.create(img))
+                  productRepository.insertImage(imageId, pId)
+                }
               }
             }
             val productId = product.id match {
               case 0 => {
-                productRepository.create(product, brandRepository.getBrandId, user.get.id) { pId =>
-                  addImages(pId)
+                productRepository.create(product, brandRepository.getBrandId, user.get.id) {
+                  pId =>
+                    addImages(pId)
                 }
               }
               case _ => {
@@ -72,7 +90,7 @@ class Product @Inject()(implicit userRepository: UserRepository, brandRepository
                 }
               }
             }
-            Redirect (controllers.routes.Product.display(productId))
+            Redirect(controllers.routes.Product.display(productId))
           }
         )
   }
