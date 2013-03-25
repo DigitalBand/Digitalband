@@ -48,4 +48,10 @@ class ProductRepository extends dao.common.ProductRepository {
   def create(details: ProductDetails, imageId: Int, getBrandId: (String) => Int, userId: Int) = ???
 
   def update(product: ProductDetails, imageId: Int, getBrandId: String => Int, userId: Int): Int = ???
+
+  def insertImage(imageId: Int, productId: Int) {}
+
+  def update(product: ProductDetails, getBrandId: (String) => Int, userId: Int)(after: => Unit) = ???
+
+  def create(details: ProductDetails, getBrandId: (String) => Int, userId: Int)(after: (Int) => Unit) = ???
 }

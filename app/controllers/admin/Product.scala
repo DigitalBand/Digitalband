@@ -54,13 +54,22 @@ class Product @Inject()(implicit userRepository: UserRepository, brandRepository
             BadRequest(views.html.Admin.Product.create(formWithErrors, images, productId))
           },
           product => {
-            val file = request.body.file("image")
-            val imageId = ImageHelper.save(file)(img => imageRepository.create(img))
+            def addImages(pId: Int) = {
+              request.body.files.map { case file =>
+                val imageId = ImageHelper.save(file)(img => imageRepository.create(img))
+                productRepository.insertImage(imageId, pId)
+              }
+            }
             val productId = product.id match {
-              case 0 => productRepository.create(product, imageId, brandRepository.getBrandId, user.get.id)
+              case 0 => {
+                productRepository.create(product, brandRepository.getBrandId, user.get.id) { pId =>
+                  addImages(pId)
+                }
+              }
               case _ => {
-                productRepository.update(product, imageId, brandRepository.getBrandId, user.get.id)
-                product.id
+                productRepository.update(product, brandRepository.getBrandId, user.get.id) {
+                  addImages(product.id)
+                }
               }
             }
             Redirect (controllers.routes.Product.display(productId))

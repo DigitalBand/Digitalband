@@ -6,9 +6,10 @@ import models.ProductDetails
 import models.BrandEntity
 
 trait ProductRepository {
-  def update(product: ProductDetails, imageId: Int, getBrandId: String => Int, userId: Int): Int
+  def insertImage(imageId: Int, productId: Int)
+  def update(product: ProductDetails, getBrandId: String => Int, userId: Int)(after: => Unit): Int
 
-  def create(details: ProductDetails, imageId: Int, getBrandId: String => Int, userId: Int): Int
+  def create(details: ProductDetails, getBrandId: String => Int, userId: Int)(after: Int => Unit): Int
 
   def get(productId: Int, getBrand: Int => Option[BrandEntity]): ProductDetails
   def get(productId: Int): ProductDetails

@@ -98,21 +98,20 @@ class ProductRepository extends RepositoryBase with dao.common.ProductRepository
   }
 
 
-  def create(details: ProductDetails, imageId: Int, getBrandId: String => Int, userId: Int): Int = database withSession {
+  def create(details: ProductDetails, getBrandId: String => Int, userId: Int)(after: Int => Unit): Int = database withSession {
     sqlu"""
       insert into
-        products(title, description, shortDescription, price, brandId, defaultImageId, createdByUser)
+        products(title, description, shortDescription, price, brandId, createdByUser)
         values(${details.title},
           ${details.description},
           ${details.shortDescription},
           ${details.price},
           ${getBrandId(details.brand.title)},
-          ${imageId},
           ${userId})
     """.execute
     val productId = sql"select last_insert_id();".as[Int].first
     sqlu"insert into products_categories(productId, categoryId) values($productId, ${details.category.id})".execute
-    insertImage(imageId, productId)
+    after(productId)
     productId
   }
   def insertImage(imageId: Int, productId: Int) = database withSession {
@@ -127,7 +126,7 @@ class ProductRepository extends RepositoryBase with dao.common.ProductRepository
       """.execute
     }
   }
-  def update(product: ProductDetails, imageId: Int, getBrandId: String => Int, userId: Int): Int = database withSession {
+  def update(product: ProductDetails, getBrandId: String => Int, userId: Int)(after: => Unit): Int = database withSession {
     sqlu"""
       update products
       set
@@ -138,7 +137,7 @@ class ProductRepository extends RepositoryBase with dao.common.ProductRepository
         brandId = ${getBrandId(product.brand.title)}
       where productId = ${product.id}
     """.execute
-    insertImage(imageId, product.id)
+    after
     product.id
   }
 }

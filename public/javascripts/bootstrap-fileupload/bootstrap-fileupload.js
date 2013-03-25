@@ -66,7 +66,7 @@
     
     change: function(e, invoked) {
       if (invoked === 'clear') return
-      
+
       var file = e.target.files !== undefined ? e.target.files[0] : (e.target.value ? { name: e.target.value.replace(/^.+\\/, '') } : null)
       
       if (!file) {
@@ -82,7 +82,7 @@
         var reader = new FileReader()
         var preview = this.$preview
         var element = this.$element
-
+        element.after(element.clone(true).wrap("<div>").parent().html())
         reader.onload = function(e) {
           preview.html('<img src="' + e.target.result + '" ' + (preview.css('max-height') != 'none' ? 'style="max-height: ' + preview.css('max-height') + ';"' : '') + ' />')
           element.addClass('fileupload-exists').removeClass('fileupload-new')
@@ -93,9 +93,12 @@
         this.$preview.text(file.name)
         this.$element.addClass('fileupload-exists').removeClass('fileupload-new')
       }
+
     },
 
     clear: function(e) {
+      this.$element.remove();
+
       this.$hidden.val('')
       this.$hidden.attr('name', this.name)
       this.$input.attr('name', '')
@@ -117,6 +120,7 @@
         this.$input.trigger('change', [ 'clear' ])
         e.preventDefault()
       }
+
     },
     
     reset: function(e) {

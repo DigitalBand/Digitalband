@@ -20,20 +20,17 @@ object ImageHelper {
     org.apache.commons.codec.digest.DigestUtils.md5Hex(fis)
   }
 
-  def save(filePart: Option[FilePart[TemporaryFile]])(f: ImageEntity => Int): Int = {
-    filePart.map {
-      picture =>
-        if (!picture.filename.isEmpty) {
-          val md5 = getMd5(picture.ref.file)
-          val name = md5 + ".jpg"
-          val relativePath = Paths.get("productimages", name).toString
-          val fileName = Paths.get(DataStore.imageOriginalsPath, relativePath).toString
-          picture.ref.moveTo(new File(fileName), true)
-          f(new ImageEntity(relativePath, md5))
-        } else {
-          0
-        }
-    }.getOrElse(0)
+  def save(picture: FilePart[TemporaryFile])(f: ImageEntity => Int): Int = {
+    if (!picture.filename.isEmpty) {
+      val md5 = getMd5(picture.ref.file)
+      val name = md5 + ".jpg"
+      val relativePath = Paths.get("productimages", name).toString
+      val fileName = Paths.get(DataStore.imageOriginalsPath, relativePath).toString
+      picture.ref.moveTo(new File(fileName), true)
+      f(new ImageEntity(relativePath, md5))
+    } else {
+      0
+    }
   }
 
   def getDimension(imageSize: String) = {
