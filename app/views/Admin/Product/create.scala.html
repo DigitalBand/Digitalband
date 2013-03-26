@@ -11,23 +11,51 @@
                 CKEDITOR.replace("description");
                 $(".existent-image").click(function(){
                     var id = $(this).attr("data-imageId");
-                    $("#image-" + id).after('<input type="hidden" name="deletedImage" value="' + id + '"/>');
+                    $("#image-" + id).after(' <input type="hidden" name="deletedImage" value="' + id + '"/> ');
                     $("#image-" + id).remove();
                     return false;
                 });
+                $("#title").change(function(){
+                   var val = $(this).val();
+                   loadGoogleImages(val, 1);
+                });
+                loadGoogleImages($("#title").val(), 1);
             });
+            function loadGoogleImages(val, pageNumber){
+                if (val.trim() !== "") {
+                    $.get('@routes.GoogleSearch.imageList()',
+                        { search: val, pageNumber: pageNumber},
+                        function(data){
+                            setData(data);
+                        });
+                }
+            }
+            function setData(data){
+                $(".google.images").html(data);
+                $(".google.images .pagination a").click(function(){
+                    $.get($(this).attr("href"), function(data){
+                        setData(data);
+
+                    });
+                    return false;
+                });
+            }
     </script>
 }
 @views.html.Admin.main("Администрирование", "index", scripts = scripts, styles = styles) {
     <div class="page-header">
         <h4> @productId match {
-            case 0 => {Создание нового товара}
-            case _ => {Редактирование товара}
-            } </h4>
+            case 0 => {
+                    Создание нового товара
+                }
+            case _ => {
+                Редактирование товара
+            }
+        } </h4>
     </div>
     @request.flash.data.map {
         case (className, message) => {
-            <div class="alert  @className"> @message </div>
+            <div class="alert   @className"> @message </div>
         }
     }
     <form action="@controllers.admin.routes.Product.save()" method="POST" class="form-inline" enctype="multipart/form-data">
@@ -48,10 +76,10 @@
                     </label>
                     <div class="controls images">
                         @images.map { image =>
-                            <div id="image-@image" class="fileupload fileupload-new" data-provides="fileupload">
+                            <div id="image- @image" class="fileupload fileupload-new" data-provides="fileupload">
                                 <img class="thumbnail" src="@routes.Image.get(image + ".jpg", 90, "90x90", "full")"/>
                                 <div>
-                                    <a href="#" class="btn existent-image" data-imageId="@image"><i class="icon-remove"></i></a>
+                                    <a href="#" class="btn existent-image" data-imageId="@image"> <i class="icon-remove"></i> </a>
                                 </div>
                             </div>
                         }
@@ -59,13 +87,19 @@
                             <div class="fileupload-preview thumbnail" style="width: 90px; height: 90px;"></div>
                             <div>
                                 <span class="btn btn-file">
-                                    <span class="fileupload-new"><i class="icon-plus"></i></span>
-                                    <span class="fileupload-exists"><i class="icon-edit"></i></span>
+                                    <span class="fileupload-new"> <i class="icon-plus"></i> </span>
+                                    <span class="fileupload-exists"> <i class="icon-edit"></i> </span>
                                     <input type="file" name="image" id="image" />
                                 </span>
-                                <a href="#" class="btn fileupload-exists" data-dismiss="fileupload"><i class="icon-remove"></i> </a>
+                                <a href="#" class="btn fileupload-exists" data-dismiss="fileupload"> <i class="icon-remove"></i> </a>
                             </div>
                         </div>
+                    </div>
+                </div>
+                <div class="control-group" style="clear: both">
+                    <label class="control-label">Google - Картинки</label>
+                    <div class="controls google images">
+
                     </div>
                 </div>
             </div>

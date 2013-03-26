@@ -1,6 +1,8 @@
 # Routes
 # This file defines all application routes (Higher priority routes first)
 # ~~~~
+
+
 ###Admin
 GET     /admin                                                                  @controllers.admin.Dashboard.index
 GET     /admin/order/list/:pageNumber                                           @controllers.admin.Order.list(pageNumber: Int, pageSize: Int ?= 10)
@@ -18,6 +20,9 @@ POST    /admin/order/:orderId/delete                                            
 GET     /admin/category/:categoryId/product/create                              @controllers.admin.Product.create(categoryId: Int, brandId: Int ?= 0)
 GET     /admin/product/:productId/edit                                          @controllers.admin.Product.edit(productId: Int)
 POST    /admin/product/save                                                     @controllers.admin.Product.save
+
+#Google images
+GET     /admin/google/images/list                                               @controllers.GoogleSearch.imageList(search: String ?= "", pageNumber:Int ?= 1)
 # Home page
 GET     /                                                                         @controllers.Application.index
 GET     /about                                                                    @controllers.Application.about

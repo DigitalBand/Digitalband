@@ -1,0 +1,14 @@
+@(imageList: ListPage[GoogleImage], search: String)
+@import helpers.PagerHelper
+@import views.html.Shared.pager
+@pager(new PagerHelper(10, imageList.totalCount, imageList.number), pageNumber => routes.GoogleSearch.imageList(search, pageNumber))
+@imageList.items.map { image =>
+        <div id="image-@image" class="fileupload fileupload-new" data-provides="fileupload">
+            <div class="thumbnail" style="width: 90px; height: 90px;text-align:center;vertical-align:middle">
+            <img title="@image.width x @image.height"  src="@image.thumbnailUrl" data-src="@image.originalUr" />
+                </div>
+            <div>
+                <a href="@image.originalUr" target="_blank" class="btn" data-imageId="@image">Открыть</a>
+            </div>
+        </div>
+}
