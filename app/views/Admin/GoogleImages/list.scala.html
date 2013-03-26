@@ -1,7 +1,7 @@
 @(imageList: ListPage[ImageSearchItem], search: String)
 @import helpers.PagerHelper
 @import views.html.Shared.pager
-@pager(new PagerHelper(10, imageList.totalCount, imageList.number), pageNumber => routes.GoogleSearch.imageList(search, pageNumber))
+@pager(new PagerHelper(10, imageList.totalCount, imageList.number), pageNumber => controllers.admin.routes.ImageSearch.imageList(search, pageNumber))
 @imageList.items.map { image =>
     <div id="googleimage-@imageList.number@imageList.items.indexOf(image)" class="fileupload">
         <div class="thumbnail" style="width: 90px; height: 90px;text-align:center;vertical-align:middle">

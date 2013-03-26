@@ -10,6 +10,10 @@ import play.api.data.format.Formats._
 import play.api.i18n.Messages
 import models.{BrandEntity, ProductDetails}
 import play.api.mvc.Action
+import play.api.libs.ws.WS
+import java.net.URL
+import javax.imageio.ImageIO
+import java.io.File
 
 
 class Product @Inject()(implicit userRepository: UserRepository, brandRepository: BrandRepository, productRepository: ProductRepository, imageRepository: ImageRepository) extends ControllerBase with Secured {
@@ -45,6 +49,7 @@ class Product @Inject()(implicit userRepository: UserRepository, brandRepository
   }
 
   def save = withAdmin(parse.multipartFormData) {
+    import play.api.libs.concurrent.Execution.Implicits._
     implicit user =>
       implicit request =>
         productForm.bindFromRequest.fold(
@@ -64,6 +69,15 @@ class Product @Inject()(implicit userRepository: UserRepository, brandRepository
                           imageRepository.remove(i.id)
                           ImageHelper.deleteImage(i.path)
                       }
+                    }
+                  }
+                }
+                case (name, images) if name == "googleimage" => {
+                  images.map {
+                    imageUrl => {
+                      //TODO: Implement
+                      val imageId = ImageHelper.save(imageUrl)(img => imageRepository.create(img))
+                      //productRepository.insertImage(imageId, pId)
                     }
                   }
                 }

@@ -2,7 +2,7 @@ package helpers
 
 import java.awt.{Dimension}
 import java.awt.image.BufferedImage
-import java.io.{FileInputStream, File}
+import java.io.{ByteArrayInputStream, ByteArrayOutputStream, FileInputStream, File}
 import javax.imageio.{IIOImage, ImageWriteParam, ImageIO}
 import javax.imageio.stream.FileImageOutputStream
 import play.api.mvc.MultipartFormData.FilePart
@@ -11,16 +11,25 @@ import java.nio.file.Paths
 import models.ImageEntity
 import java.security.DigestInputStream
 import java.security.MessageDigest
+import java.net.URL
 
 object ImageHelper {
 
-  def getMd5(f: File) = {
-    val fis = new FileInputStream(f)
-    org.apache.commons.codec.digest.DigestUtils.md5Hex(fis)
-  }
+  def getMd5(f: File): String = getMd5(new FileInputStream(f))
+
+  def getMd5(fis: java.io.InputStream): String = org.apache.commons.codec.digest.DigestUtils.md5Hex(fis)
 
   def deleteImage(relativePath: String) = {
      Paths.get(DataStore.imageOriginalsPath, relativePath).toFile.delete()
+  }
+  //TODO: Implement
+  def save(imageUrl: String)(f: ImageEntity => Int): Int = {
+    val url = new URL(imageUrl)
+    val image = ImageIO.read(url)
+    val os = new ByteArrayOutputStream()
+    ImageIO.write(image,"png", os)
+    val md5 = getMd5(new ByteArrayInputStream(os.toByteArray()))
+    0
   }
 
   def save(picture: FilePart[TemporaryFile])(f: ImageEntity => Int): Int = {

@@ -14,7 +14,10 @@ function initEdit(imgServiceUrl) {
     loadGoogleImages(imgServiceUrl, $("#title").val(), 1);
 }
 function addGoogleImage(index) {
-    var clonedImage = $("#googleimage-" + index).clone(true);
+    var serviceImageSource = $("#googleimage-" + index);
+    var clonedImage = serviceImageSource.clone(true);
+    serviceImageSource.addClass("disabled");
+    var addImageButton = $(".add-image", serviceImageSource).addClass("hidden");
     clonedImage.attr("id", "clonedimage-" + index);
     $(".google-buttons", clonedImage).empty();
     var removeButton = $("#remove-googleImage-" + index, clonedImage).css({display: "inline-block"});
@@ -22,6 +25,8 @@ function addGoogleImage(index) {
     $(".fileupload").first().before(clonedImage);
     removeButton.click(function () {
         var imageIndex = $(this).attr("data-imageIndex");
+        addImageButton.removeClass("hidden");
+        serviceImageSource.removeClass("disabled");
         $("#clonedimage-" + imageIndex).remove();
     });
 }

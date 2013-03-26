@@ -22,7 +22,7 @@ GET     /admin/product/:productId/edit                                          
 POST    /admin/product/save                                                     @controllers.admin.Product.save
 
 #Google images
-GET     /admin/google/images/list                                               @controllers.GoogleSearch.imageList(search: String ?= "", pageNumber:Int ?= 1)
+GET     /admin/google/images/list                                                 @controllers.admin.ImageSearch.imageList(search: String ?= "", pageNumber:Int ?= 1)
 # Home page
 GET     /                                                                         @controllers.Application.index
 GET     /about                                                                    @controllers.Application.about

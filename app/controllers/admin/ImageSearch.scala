@@ -1,13 +1,12 @@
-package controllers
+package controllers.admin
 
 import controllers.common.ControllerBase
 import com.google.inject.Inject
 import dao.common.UserRepository
 import helpers.Secured
-import webServices.common.ImageSearch
 
 
-class GoogleSearch @Inject()(implicit userRepository: UserRepository, imageSearch: ImageSearch) extends ControllerBase with Secured {
+class ImageSearch @Inject()(implicit userRepository: UserRepository, imageSearch: webServices.common.ImageSearch) extends ControllerBase with Secured {
 
   def imageList(search: String, pageNumber: Int) = withAdmin {
     user => request => Async {
