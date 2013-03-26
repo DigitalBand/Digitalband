@@ -6,57 +6,11 @@
 @scripts = {
     <script src="@routes.Assets.at("javascripts/ckeditor/ckeditor.js")" type="text/javascript"></script>
     <script src="@routes.Assets.at("javascripts/bootstrap-fileupload/bootstrap-fileupload.js")" type="text/javascript"></script>
+    <script src="@routes.Assets.at("javascripts/edit.js")" type="text/javascript"></script>
     <script>
             $(document).ready(function() {
-                CKEDITOR.replace("description");
-                $(".existent-image").click(function(){
-                    var id = $(this).attr("data-imageId");
-                    $("#image-" + id).after(' <input type="hidden" name="deletedImage" value="' + id + '"/> ');
-                    $("#image-" + id).remove();
-                    return false;
-                });
-
-                $("#title").change(function(){
-                   var val = $(this).val();
-                   loadGoogleImages(val, 1);
-                });
-                loadGoogleImages($("#title").val(), 1);
+               initEdit('@routes.GoogleSearch.imageList()');
             });
-            function addGoogleImage(index){
-                var clonedImage = $("#googleimage-"+index).clone(true);
-                clonedImage.attr("id", "clonedimage-"+index);
-                $(".google-buttons", clonedImage).empty()
-                    .append($('<a href="#" class="btn remove-googleImage" data-imageIndex="'+index+'"><i class="icon-remove"></i></a>'));
-                $("input", clonedImage).attr("name", "googleimage");
-                $(".fileupload").first().before(clonedImage);
-                $(".remove-googleImage").click(function(){
-                   var imageIndex = $(this).attr("data-imageIndex");
-                   $("#clonedimage-"+index).remove();
-                });
-            }
-            function loadGoogleImages(val, pageNumber){
-                if (val.trim() !== "") {
-                    $.get('@routes.GoogleSearch.imageList()',
-                        { search: val, pageNumber: pageNumber},
-                        function(data){
-                            setData(data);
-                        });
-                }
-            }
-            function setData(data){
-                $(".google.images").html(data);
-                $(".google.images .pagination a").click(function(){
-                    $.get($(this).attr("href"), function(data){
-                        setData(data);
-                    });
-                    return false;
-                });
-                $(".add-image").click(function() {
-                    var imageIndex = $(this).attr("data-imageIndex");
-                    addGoogleImage(imageIndex);
-                    return false;
-                });
-            }
     </script>
 }
 @views.html.Admin.main("Администрирование", "index", scripts = scripts, styles = styles) {

@@ -3,14 +3,17 @@
 @import views.html.Shared.pager
 @pager(new PagerHelper(10, imageList.totalCount, imageList.number), pageNumber => routes.GoogleSearch.imageList(search, pageNumber))
 @imageList.items.map { image =>
-        <div id="googleimage-@imageList.number@imageList.items.indexOf(image)" class="fileupload">
-            <div class="thumbnail" style="width: 90px; height: 90px;text-align:center;vertical-align:middle">
-                <img title="@image.width x @image.height"  src="@image.thumbnailUrl" data-src="@image.originalUr" />
-                <input type="hidden" value="@image.originalUr" id="googlehidden-@imageList.number@imageList.items.indexOf(image)" />
-            </div>
-            <div class="google-buttons">
-                <a href="@image.originalUr" target="_blank" class="btn" data-imageId="@image"><i class="icon-link"></i> </a>
-                <a href="#" class="btn add-image" data-imageIndex="@imageList.number@imageList.items.indexOf(image)"><i class="icon-plus"></i></a>
-            </div>
+    <div id="googleimage-@imageList.number@imageList.items.indexOf(image)" class="fileupload">
+        <div class="thumbnail" style="width: 90px; height: 90px;text-align:center;vertical-align:middle">
+            <img title="@image.width x @image.height"  src="@image.thumbnailUrl" data-src="@image.originalUr" />
+            <input type="hidden" value="@image.originalUr" id="googlehidden-@imageList.number@imageList.items.indexOf(image)" />
         </div>
+        <div class="google-buttons">
+            <a href="@image.originalUr" target="_blank" class="btn" data-imageId="@image"><i class="icon-link"></i> </a>
+            <a href="#" class="btn add-image" data-imageIndex="@imageList.number@imageList.items.indexOf(image)"><i class="icon-plus"></i></a>
+        </div>
+        <a id="remove-googleImage-@imageList.number@imageList.items.indexOf(image)" style="display: none" class="btn" data-imageIndex="@imageList.number@imageList.items.indexOf(image)">
+            <i class="icon-remove"></i>
+        </a>
+    </div>
 }
