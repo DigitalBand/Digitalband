@@ -1,4 +1,4 @@
-@(imageList: ListPage[GoogleImage], search: String)
+@(imageList: ListPage[ImageSearchItem], search: String)
 @import helpers.PagerHelper
 @import views.html.Shared.pager
 @pager(new PagerHelper(10, imageList.totalCount, imageList.number), pageNumber => routes.GoogleSearch.imageList(search, pageNumber))

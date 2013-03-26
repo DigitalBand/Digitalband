@@ -6,6 +6,7 @@ import dao.impl.orm.slick._
 import helpers.EmailHelper
 import play.api._
 import play.api.Play.current
+import webServices.{FakeImageSearch}
 
 object Global extends GlobalSettings {
   private lazy val injector = Guice.createInjector(new InjectionModule)
@@ -40,6 +41,7 @@ class InjectionModule extends ScalaModule {
     bind[dao.common.UserRepository].toInstance(new UserRepository)
     bind[dao.common.CartRepository].toInstance(new CartRepository)
     bind[dao.common.OrderRepository].toInstance(new OrderRepository)
+    bind[webServices.common.ImageSearch].toInstance(new FakeImageSearch)
   }
 }
 
