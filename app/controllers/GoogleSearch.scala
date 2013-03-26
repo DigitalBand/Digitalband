@@ -8,7 +8,6 @@ import play.api.libs.ws.WS
 import play.api.libs.concurrent.Execution.Implicits._
 import models.{ListPage, GoogleImage}
 import play.api.libs.json.JsArray
-import com.ning.http.client.Realm
 
 
 class GoogleSearch @Inject()(implicit userRepository: UserRepository) extends ControllerBase with Secured {
