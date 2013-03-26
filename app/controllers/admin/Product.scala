@@ -59,7 +59,6 @@ class Product @Inject()(implicit userRepository: UserRepository, brandRepository
                 case (name, images) if name == "deletedImage" => {
                   images.map {
                     image => {
-
                       productRepository.removeImage(image.toInt, pId) { imageId =>
                           val i = imageRepository.get(imageId)
                           imageRepository.remove(i.id)
