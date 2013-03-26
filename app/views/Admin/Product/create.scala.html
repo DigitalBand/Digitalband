@@ -15,12 +15,25 @@
                     $("#image-" + id).remove();
                     return false;
                 });
+
                 $("#title").change(function(){
                    var val = $(this).val();
                    loadGoogleImages(val, 1);
                 });
                 loadGoogleImages($("#title").val(), 1);
             });
+            function addGoogleImage(index){
+                var clonedImage = $("#googleimage-"+index).clone(true);
+                clonedImage.attr("id", "clonedimage-"+index);
+                $(".google-buttons", clonedImage).empty()
+                    .append($('<a href="#" class="btn remove-googleImage" data-imageIndex="'+index+'"><i class="icon-remove"></i></a>'));
+                $("input", clonedImage).attr("name", "googleimage");
+                $(".fileupload").first().before(clonedImage);
+                $(".remove-googleImage").click(function(){
+                   var imageIndex = $(this).attr("data-imageIndex");
+                   $("#clonedimage-"+index).remove();
+                });
+            }
             function loadGoogleImages(val, pageNumber){
                 if (val.trim() !== "") {
                     $.get('@routes.GoogleSearch.imageList()',
@@ -35,8 +48,12 @@
                 $(".google.images .pagination a").click(function(){
                     $.get($(this).attr("href"), function(data){
                         setData(data);
-
                     });
+                    return false;
+                });
+                $(".add-image").click(function() {
+                    var imageIndex = $(this).attr("data-imageIndex");
+                    addGoogleImage(imageIndex);
                     return false;
                 });
             }
@@ -76,7 +93,7 @@
                     </label>
                     <div class="controls images">
                         @images.map { image =>
-                            <div id="image- @image" class="fileupload fileupload-new" data-provides="fileupload">
+                            <div id="image-@image" class="fileupload" data-provides="fileupload">
                                 <img class="thumbnail" src="@routes.Image.get(image + ".jpg", 90, "90x90", "full")"/>
                                 <div>
                                     <a href="#" class="btn existent-image" data-imageId="@image"> <i class="icon-remove"></i> </a>
