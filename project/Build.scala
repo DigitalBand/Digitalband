@@ -17,6 +17,7 @@ object ApplicationBuild extends Build {
     "com.typesafe.slick" %% "slick" % "1.0.0",
     "org.ocpsoft.prettytime" % "prettytime" % "2.1.3.Final",
     "commons-codec" % "commons-codec" % "1.7",
+    "commons-io" % "commons-io" % "2.4",
     "ch.qos.logback" % "logback-classic" % "1.0.9"
   )
 

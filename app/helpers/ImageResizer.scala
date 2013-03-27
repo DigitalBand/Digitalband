@@ -21,6 +21,7 @@ object ImageResizer {
       if (preserveAlpha) canvas.setComposite(AlphaComposite.Src)
       canvas.setPaint(Color.white)
       canvas.fillRect(0, 0, outputSize.width, outputSize.height)
+      canvas.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
       canvas.drawImage(scaledImage, scaledRectangle.x, scaledRectangle.y, scaledRectangle.width, scaledRectangle.height, null)
       outputImage
     }

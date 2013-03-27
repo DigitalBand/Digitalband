@@ -1,7 +1,7 @@
 package helpers
 
-import java.awt.Dimension
-import java.awt.image.BufferedImage
+import java.awt.{Toolkit, Color, Image, Dimension}
+import java.awt.image.{FilteredImageSource, ImageProducer, RGBImageFilter, BufferedImage}
 import java.io._
 import javax.imageio.{IIOImage, ImageWriteParam, ImageIO}
 import javax.imageio.stream.FileImageOutputStream
@@ -20,28 +20,48 @@ object ImageHelper {
   def deleteImage(relativePath: String) = {
     Paths.get(DataStore.imageOriginalsPath, relativePath).toFile.delete()
   }
-
+  def imageType(image: BufferedImage) = ImageIO.getWriterFormatNames()(image.getType)
   //TODO: Implement
   def save(imageUrl: String)(insertImage: ImageEntity => Int): Int = {
     val url = new URL(imageUrl)
     val image = ImageIO.read(url)
-    val imageType = image.getType
-    val formats = ImageIO.getWriterFormatNames
+
     val md5 = closable(new ByteArrayOutputStream()) {
       os =>
-        ImageIO.write(image, formats(imageType), os)
+        ImageIO.write(image, imageType(image), os)
         closable(new ByteArrayInputStream(os.toByteArray()))(bais => getMd5(bais))
     }
-    val name = md5 + s".${formats(imageType)}"
+    val name = md5 + s".${imageType(image)}"
     val relativePath = Paths.get("productimages", name).toString
     val fileName = Paths.get(DataStore.imageOriginalsPath, relativePath).toString
     closable(new FileImageOutputStream(new File(fileName))) {
       fileStream =>
-        ImageIO.write(image, formats(imageType), fileStream)
+        ImageIO.write(image, imageType(image), fileStream)
     }
     insertImage(new ImageEntity(relativePath, md5))
   }
-
+  def imageToBufferedImage(image:Image):BufferedImage= {
+    val bufferedImage = new BufferedImage(image.getWidth(null), image.getHeight(null), BufferedImage.TYPE_INT_ARGB)
+    disposable(bufferedImage.createGraphics()){ g2=>
+      g2.drawImage(image, 0, 0, null)
+      bufferedImage
+    }
+  }
+  def makeColorTransparent(im: BufferedImage, color: Color): Image = {
+      val filter = new RGBImageFilter() {
+      // the color we are looking for... Alpha bits are set to opaque
+      val markerRGB = /*color.getRGB() | */0xFF000000
+      def filterRGB(x: Int, y: Int, rgb: Int): Int = {
+        if ((rgb | 0xFF000000) == markerRGB) {
+          return 0x00FFFFFF & rgb
+        } else {
+          rgb
+        }
+      }
+    }
+    val ip = new FilteredImageSource(im.getSource(), filter)
+    Toolkit.getDefaultToolkit().createImage(ip)
+  }
   def save(picture: FilePart[TemporaryFile])(insertImage: ImageEntity => Int): Int = {
     if (!picture.filename.isEmpty) {
       val md5 = getMd5(picture.ref.file)
@@ -81,18 +101,24 @@ object ImageHelper {
   }
 
   def write(image: BufferedImage, outputFile: File, quality: Float): File = {
-    disposable(ImageIO.getImageWritersByFormatName("jpeg").next()) {
-      jpegWriter =>
-        val param: ImageWriteParam = jpegWriter.getDefaultWriteParam()
-        param.setCompressionMode(ImageWriteParam.MODE_EXPLICIT)
-        param.setCompressionQuality(quality)
-        closable(new FileImageOutputStream(outputFile)) {
-          out =>
-            jpegWriter.setOutput(
-              out)
-            jpegWriter.write(null, new IIOImage(image, null, null), param)
-            outputFile
-        }
+    if (imageType(image).toLowerCase() == "png" || imageType(image).toLowerCase() == "bmp"){
+      val img = makeColorTransparent(image, new Color(image.getRGB(0,0)))
+      ImageIO.write(imageToBufferedImage(img), "png", outputFile)
+      outputFile
+    }
+    else {
+      disposable(ImageIO.getImageWritersByFormatName("jpeg").next()) {
+        jpegWriter =>
+          val param: ImageWriteParam = jpegWriter.getDefaultWriteParam()
+          param.setCompressionMode(ImageWriteParam.MODE_EXPLICIT)
+          param.setCompressionQuality(quality)
+          closable(new FileImageOutputStream(outputFile)) {
+            out =>
+              jpegWriter.setOutput(out)
+              jpegWriter.write(null, new IIOImage(image, null, null), param)
+              outputFile
+          }
+      }
     }
   }
 }
