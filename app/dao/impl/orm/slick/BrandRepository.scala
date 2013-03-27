@@ -73,9 +73,11 @@ class BrandRepository extends RepositoryBase with dao.common.BrandRepository {
 
   def getBrandId(name: String): Int = database withSession {
     sql"select brandId from brands where title = ${name} limit 1;".as[Int].firstOption match {
-      case Some(id) => id
+      case Some(id) => {
+        id
+      }
       case _ => {
-        sqlu"insert into brands(title) values($name)"
+        sqlu"insert into brands(title) values($name)".execute
         sql"select last_insert_id();".as[Int].first
       }
     }

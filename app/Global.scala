@@ -41,7 +41,7 @@ class InjectionModule extends ScalaModule {
     bind[dao.common.UserRepository].toInstance(new UserRepository)
     bind[dao.common.CartRepository].toInstance(new CartRepository)
     bind[dao.common.OrderRepository].toInstance(new OrderRepository)
-    bind[webServices.common.ImageSearch].toInstance(new FakeImageSearch)
+    bind[webServices.common.ImageSearch].toInstance(new GoogleImageSearch)
   }
 }
 
