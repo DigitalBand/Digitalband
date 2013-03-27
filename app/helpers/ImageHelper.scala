@@ -1,6 +1,6 @@
 package helpers
 
-import java.awt.{Toolkit, Color, Image, Dimension}
+import java.awt.{Toolkit, Image, Dimension}
 import java.awt.image.{FilteredImageSource, RGBImageFilter, BufferedImage}
 import java.io._
 import javax.imageio.{IIOImage, ImageWriteParam, ImageIO}
@@ -10,36 +10,36 @@ import java.nio.file.Paths
 import models.ImageEntity
 import java.net.URL
 import play.api.mvc.MultipartFormData.FilePart
+import org.apache.commons.codec.digest.DigestUtils.md5Hex
 
 object ImageHelper {
-
-  def getMd5(f: File): String = getMd5(new FileInputStream(f))
-
-  def getMd5(fis: java.io.InputStream): String = org.apache.commons.codec.digest.DigestUtils.md5Hex(fis)
 
   def deleteImage(relativePath: String) = {
     Paths.get(DataStore.imageOriginalsPath, relativePath).toFile.delete()
   }
-  def imageType(image: BufferedImage) = ImageIO.getWriterFormatNames()(image.getType)
-  //TODO: Implement
+  def imageType(image: BufferedImage) = {
+    ImageIO.getWriterFormatNames()(image.getType) match {
+      case x if x.toLowerCase() == "jpeg" || x.toLowerCase == "jpg" => "jpg"
+      case _ => "png"
+    }
+  }
+
   def save(imageUrl: String)(insertImage: ImageEntity => Int): Int = {
-    val url = new URL(imageUrl)
-    val image = ImageIO.read(url)
-
+    val image = ImageIO.read(new URL(imageUrl))
     val os = new ByteArrayOutputStream()
-    val bais = new ByteArrayInputStream(os.toByteArray())
-    val md5 = getMd5(bais)
     ImageIO.write(image, imageType(image), os)
-
-
-    val name = md5 + s".${imageType(image)}"
-    val relativePath = Paths.get("productimages", name).toString
-    val fileName = Paths.get(DataStore.imageOriginalsPath, relativePath).toString
+    val imageEntity = getImageEntity(md5Hex(new ByteArrayInputStream(os.toByteArray)), imageType(image))
+    val fileName = Paths.get(DataStore.imageOriginalsPath, imageEntity.path).toString
     closable(new FileImageOutputStream(new File(fileName))) {
       fileStream =>
         ImageIO.write(image, imageType(image), fileStream)
     }
-    insertImage(new ImageEntity(relativePath, md5))
+    insertImage(imageEntity)
+  }
+  def getImageEntity(md5: String, imageExtension: String) = {
+    val name = md5 + s".${imageExtension}"
+    val relativePath = Paths.get("productimages", name).toString
+    new ImageEntity(relativePath, md5)
   }
   def imageToBufferedImage(image:Image):BufferedImage= {
     val bufferedImage = new BufferedImage(image.getWidth(null), image.getHeight(null), BufferedImage.TYPE_INT_ARGB)
@@ -48,10 +48,9 @@ object ImageHelper {
       bufferedImage
     }
   }
-  def makeColorTransparent(im: BufferedImage, color: Color): Image = {
+  def makeColorTransparent(im: BufferedImage): Image = {
       val filter = new RGBImageFilter() {
-      // the color we are looking for... Alpha bits are set to opaque
-      val markerRGB = /*color.getRGB() | */0xFF000000
+      val markerRGB = 0xFF000000
       def filterRGB(x: Int, y: Int, rgb: Int): Int = {
         if ((rgb | 0xFF000000) == markerRGB) {
           return 0x00FFFFFF & rgb
@@ -65,12 +64,10 @@ object ImageHelper {
   }
   def save(picture: FilePart[TemporaryFile])(insertImage: ImageEntity => Int): Int = {
     if (!picture.filename.isEmpty) {
-      val md5 = getMd5(picture.ref.file)
-      val name = md5 + ".jpg"
-      val relativePath = Paths.get("productimages", name).toString
-      val fileName = Paths.get(DataStore.imageOriginalsPath, relativePath).toString
+      val imageEntity = getImageEntity(md5Hex(new FileInputStream(picture.ref.file)), "jpg")
+      val fileName = Paths.get(DataStore.imageOriginalsPath, imageEntity.path).toString
       picture.ref.moveTo(new File(fileName), true)
-      insertImage(new ImageEntity(relativePath, md5))
+      insertImage(imageEntity)
     } else {
       0
     }
@@ -101,10 +98,14 @@ object ImageHelper {
     imageNumber.split("[\\.]")(0).toInt
   }
 
+  def makeTransparent(image: BufferedImage): BufferedImage = {
+    val img = makeColorTransparent(image)
+    imageToBufferedImage(img)
+  }
+
   def write(image: BufferedImage, outputFile: File, quality: Float): File = {
     if (imageType(image).toLowerCase() == "png" || imageType(image).toLowerCase() == "bmp"){
-      val img = makeColorTransparent(image, new Color(image.getRGB(0,0)))
-      ImageIO.write(imageToBufferedImage(img), "png", outputFile)
+      ImageIO.write(makeTransparent(image), "png", outputFile)
       outputFile
     }
     else {

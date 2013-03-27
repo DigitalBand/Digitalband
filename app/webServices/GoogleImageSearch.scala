@@ -11,8 +11,8 @@ class GoogleImageSearch extends ImageSearch {
   def getList[S](search: String, pageNumber: Int)(f: ListPage[ImageSearchItem] => S): Future[S] = {
     val num = 10
     val offset = (pageNumber - 1) * num + 1
-    val key = "AIzaSyAHyhiLNqUOfhcf362AoEEPl6s65UhzbMg"//"AIzaSyDByv-9nh9XS9RpLSMUgqj7z6iUejzG8nY"
-    val cx = "009346898408990037447:evnb2u_eytw"//"006243113112137199630:y3v5ecyacm8"
+    val key = Vector("AIzaSyAHyhiLNqUOfhcf362AoEEPl6s65UhzbMg", "AIzaSyDByv-9nh9XS9RpLSMUgqj7z6iUejzG8nY")(1)
+    val cx = Vector("009346898408990037447:evnb2u_eytw", "006243113112137199630:y3v5ecyacm8")(1)
     val searchEncoded = java.net.URLEncoder.encode(search, "UTF-8")
     val params = s"key=$key&cx=$cx&q=$searchEncoded&searchType=image&start=$offset&num=$num"
     val url = s"https://www.googleapis.com/customsearch/v1?$params"
