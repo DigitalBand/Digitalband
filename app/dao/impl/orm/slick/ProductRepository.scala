@@ -148,6 +148,11 @@ class ProductRepository extends RepositoryBase with dao.common.ProductRepository
     sqlu"""
       delete from product_images where productId = $productId and imageId = $imageId;
     """.execute
+    sqlu"""
+      update products
+      set defaultImageId = null
+      where productId = ${productId} and (select count(*) from product_images where productId = ${productId}) = 0
+    """.execute
     val count = sql"""
       select count(*) from product_images where imageId = $imageId
      """.as[Int].first()

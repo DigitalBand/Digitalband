@@ -11,12 +11,14 @@ import models.ImageEntity
 import java.net.URL
 import play.api.mvc.MultipartFormData.FilePart
 import org.apache.commons.codec.digest.DigestUtils.md5Hex
+import play.api.Logger
 
 object ImageHelper {
 
   def deleteImage(relativePath: String) = {
     Paths.get(DataStore.imageOriginalsPath, relativePath).toFile.delete()
   }
+
   def imageType(image: BufferedImage) = {
     ImageIO.getWriterFormatNames()(image.getType) match {
       case x if x.toLowerCase() == "jpeg" || x.toLowerCase == "jpg" => "jpg"
@@ -24,33 +26,44 @@ object ImageHelper {
     }
   }
 
-  def save(imageUrl: String)(insertImage: ImageEntity => Int): Int = {
-    val image = ImageIO.read(new URL(imageUrl))
-    val os = new ByteArrayOutputStream()
-    ImageIO.write(image, imageType(image), os)
-    val imageEntity = getImageEntity(md5Hex(new ByteArrayInputStream(os.toByteArray)), imageType(image))
-    val fileName = Paths.get(DataStore.imageOriginalsPath, imageEntity.path).toString
-    closable(new FileImageOutputStream(new File(fileName))) {
-      fileStream =>
-        ImageIO.write(image, imageType(image), fileStream)
+  def save(imageUrl: String)(insertImage: ImageEntity => Unit) = {
+    try{
+      val image = ImageIO.read(new URL(imageUrl))
+      val imageEntity = closable(new ByteArrayOutputStream()) {
+        os =>
+          ImageIO.write(image, imageType(image), os)
+          getImageEntity(md5Hex(new ByteArrayInputStream(os.toByteArray)), imageType(image))
+      }
+      val fileName = Paths.get(DataStore.imageOriginalsPath, imageEntity.path).toString
+      closable(new FileImageOutputStream(new File(fileName))) {
+        fileStream =>
+          ImageIO.write(image, imageType(image), fileStream)
+      }
+      insertImage(imageEntity)
+    } catch {
+      case e:IOException => Logger.error(s"Cannon save the image from url: $imageUrl", e)
     }
-    insertImage(imageEntity)
   }
+
   def getImageEntity(md5: String, imageExtension: String) = {
     val name = md5 + s".${imageExtension}"
     val relativePath = Paths.get("productimages", name).toString
     new ImageEntity(relativePath, md5)
   }
-  def imageToBufferedImage(image:Image):BufferedImage= {
+
+  def imageToBufferedImage(image: Image): BufferedImage = {
     val bufferedImage = new BufferedImage(image.getWidth(null), image.getHeight(null), BufferedImage.TYPE_INT_ARGB)
-    disposable(bufferedImage.createGraphics()){ g2=>
-      g2.drawImage(image, 0, 0, null)
-      bufferedImage
+    disposable(bufferedImage.createGraphics()) {
+      g2 =>
+        g2.drawImage(image, 0, 0, null)
+        bufferedImage
     }
   }
+
   def makeColorTransparent(im: BufferedImage): Image = {
-      val filter = new RGBImageFilter() {
+    val filter = new RGBImageFilter() {
       val markerRGB = 0xFF000000
+
       def filterRGB(x: Int, y: Int, rgb: Int): Int = {
         if ((rgb | 0xFF000000) == markerRGB) {
           return 0x00FFFFFF & rgb
@@ -62,7 +75,8 @@ object ImageHelper {
     val ip = new FilteredImageSource(im.getSource(), filter)
     Toolkit.getDefaultToolkit().createImage(ip)
   }
-  def save(picture: FilePart[TemporaryFile])(insertImage: ImageEntity => Int): Int = {
+
+  def save(picture: FilePart[TemporaryFile])(insertImage: ImageEntity => Unit) = {
     if (!picture.filename.isEmpty) {
       val imageEntity = getImageEntity(md5Hex(new FileInputStream(picture.ref.file)), "jpg")
       val fileName = Paths.get(DataStore.imageOriginalsPath, imageEntity.path).toString
@@ -104,7 +118,7 @@ object ImageHelper {
   }
 
   def write(image: BufferedImage, outputFile: File, quality: Float): File = {
-    if (imageType(image).toLowerCase() == "png" || imageType(image).toLowerCase() == "bmp"){
+    if (imageType(image).toLowerCase() == "png" || imageType(image).toLowerCase() == "bmp") {
       ImageIO.write(makeTransparent(image), "png", outputFile)
       outputFile
     }

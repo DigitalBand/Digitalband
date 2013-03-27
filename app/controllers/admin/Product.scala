@@ -74,8 +74,12 @@ class Product @Inject()(implicit userRepository: UserRepository, brandRepository
                 case (name, images) if name == "googleimage" => {
                   images.map {
                     imageUrl => {
-                      val imageId = ImageHelper.save(imageUrl)(img => imageRepository.create(img))
-                      productRepository.insertImage(imageId, pId)
+                      ImageHelper.save(imageUrl){img =>
+                        val imageId = imageRepository.create(img)
+                        productRepository.insertImage(imageId, pId)
+                        //TODO: Implement clean cache for certain images
+                        //ImageHelper.clearCache()
+                      }
                     }
                   }
                 }
@@ -83,8 +87,10 @@ class Product @Inject()(implicit userRepository: UserRepository, brandRepository
               }
               request.body.files.map {
                 file => {
-                  val imageId = ImageHelper.save(file)(img => imageRepository.create(img))
-                  productRepository.insertImage(imageId, pId)
+                  ImageHelper.save(file) { img =>
+                    val imageId = imageRepository.create(img)
+                    productRepository.insertImage(imageId, pId)
+                  }
                 }
               }
             }
