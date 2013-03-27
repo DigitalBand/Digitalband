@@ -25,17 +25,19 @@ object ImageHelper {
   def save(imageUrl: String)(insertImage: ImageEntity => Int): Int = {
     val url = new URL(imageUrl)
     val image = ImageIO.read(url)
+    val imageType = image.getType
+    val formats = ImageIO.getWriterFormatNames
     val md5 = closable(new ByteArrayOutputStream()) {
       os =>
-        ImageIO.write(image, "jpg", os)
-        getMd5(new ByteArrayInputStream(os.toByteArray()))
+        ImageIO.write(image, formats(imageType), os)
+        closable(new ByteArrayInputStream(os.toByteArray()))(bais => getMd5(bais))
     }
-    val name = md5 + ".jpg"
+    val name = md5 + s".${formats(imageType)}"
     val relativePath = Paths.get("productimages", name).toString
     val fileName = Paths.get(DataStore.imageOriginalsPath, relativePath).toString
     closable(new FileImageOutputStream(new File(fileName))) {
       fileStream =>
-        ImageIO.write(image, "jpg", fileStream)
+        ImageIO.write(image, formats(imageType), fileStream)
     }
     insertImage(new ImageEntity(relativePath, md5))
   }
