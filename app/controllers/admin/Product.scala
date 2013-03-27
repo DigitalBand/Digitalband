@@ -49,7 +49,6 @@ class Product @Inject()(implicit userRepository: UserRepository, brandRepository
   }
 
   def save = withAdmin(parse.multipartFormData) {
-    import play.api.libs.concurrent.Execution.Implicits._
     implicit user =>
       implicit request =>
         productForm.bindFromRequest.fold(
@@ -75,9 +74,8 @@ class Product @Inject()(implicit userRepository: UserRepository, brandRepository
                 case (name, images) if name == "googleimage" => {
                   images.map {
                     imageUrl => {
-                      //TODO: Implement
                       val imageId = ImageHelper.save(imageUrl)(img => imageRepository.create(img))
-                      //productRepository.insertImage(imageId, pId)
+                      productRepository.insertImage(imageId, pId)
                     }
                   }
                 }

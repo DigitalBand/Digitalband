@@ -6,7 +6,7 @@ import dao.impl.orm.slick._
 import helpers.EmailHelper
 import play.api._
 import play.api.Play.current
-import webServices.{FakeImageSearch}
+import webServices.{GoogleImageSearch, FakeImageSearch}
 
 object Global extends GlobalSettings {
   private lazy val injector = Guice.createInjector(new InjectionModule)

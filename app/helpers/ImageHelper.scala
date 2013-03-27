@@ -1,17 +1,15 @@
 package helpers
 
-import java.awt.{Dimension}
+import java.awt.Dimension
 import java.awt.image.BufferedImage
-import java.io.{ByteArrayInputStream, ByteArrayOutputStream, FileInputStream, File}
+import java.io._
 import javax.imageio.{IIOImage, ImageWriteParam, ImageIO}
 import javax.imageio.stream.FileImageOutputStream
-import play.api.mvc.MultipartFormData.FilePart
 import play.api.libs.Files.TemporaryFile
 import java.nio.file.Paths
 import models.ImageEntity
-import java.security.DigestInputStream
-import java.security.MessageDigest
 import java.net.URL
+import play.api.mvc.MultipartFormData.FilePart
 
 object ImageHelper {
 
@@ -20,26 +18,36 @@ object ImageHelper {
   def getMd5(fis: java.io.InputStream): String = org.apache.commons.codec.digest.DigestUtils.md5Hex(fis)
 
   def deleteImage(relativePath: String) = {
-     Paths.get(DataStore.imageOriginalsPath, relativePath).toFile.delete()
-  }
-  //TODO: Implement
-  def save(imageUrl: String)(f: ImageEntity => Int): Int = {
-    val url = new URL(imageUrl)
-    val image = ImageIO.read(url)
-    val os = new ByteArrayOutputStream()
-    ImageIO.write(image,"png", os)
-    val md5 = getMd5(new ByteArrayInputStream(os.toByteArray()))
-    0
+    Paths.get(DataStore.imageOriginalsPath, relativePath).toFile.delete()
   }
 
-  def save(picture: FilePart[TemporaryFile])(f: ImageEntity => Int): Int = {
+  //TODO: Implement
+  def save(imageUrl: String)(insertImage: ImageEntity => Int): Int = {
+    val url = new URL(imageUrl)
+    val image = ImageIO.read(url)
+    val md5 = closable(new ByteArrayOutputStream()) {
+      os =>
+        ImageIO.write(image, "jpg", os)
+        getMd5(new ByteArrayInputStream(os.toByteArray()))
+    }
+    val name = md5 + ".jpg"
+    val relativePath = Paths.get("productimages", name).toString
+    val fileName = Paths.get(DataStore.imageOriginalsPath, relativePath).toString
+    closable(new FileImageOutputStream(new File(fileName))) {
+      fileStream =>
+        ImageIO.write(image, "jpg", fileStream)
+    }
+    insertImage(new ImageEntity(relativePath, md5))
+  }
+
+  def save(picture: FilePart[TemporaryFile])(insertImage: ImageEntity => Int): Int = {
     if (!picture.filename.isEmpty) {
       val md5 = getMd5(picture.ref.file)
       val name = md5 + ".jpg"
       val relativePath = Paths.get("productimages", name).toString
       val fileName = Paths.get(DataStore.imageOriginalsPath, relativePath).toString
       picture.ref.moveTo(new File(fileName), true)
-      f(new ImageEntity(relativePath, md5))
+      insertImage(new ImageEntity(relativePath, md5))
     } else {
       0
     }
