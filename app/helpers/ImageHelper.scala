@@ -12,6 +12,7 @@ import java.net.URL
 import play.api.mvc.MultipartFormData.FilePart
 import org.apache.commons.codec.digest.DigestUtils.md5Hex
 import play.api.Logger
+import java.util.UUID
 
 object ImageHelper {
 
@@ -25,20 +26,17 @@ object ImageHelper {
       case _ => "png"
     }
   }
-
+  def saveToTempFolder(imageUrl: String) = {
+    val file = Paths.get(DataStore.imagesPath, "temp", UUID.randomUUID().toString).toFile
+    org.apache.commons.io.FileUtils.copyURLToFile(new URL(imageUrl), file)
+    file
+  }
   def save(imageUrl: String)(insertImage: ImageEntity => Unit) = {
-    try{
-      val image = ImageIO.read(new URL(imageUrl))
-      val imageEntity = closable(new ByteArrayOutputStream()) {
-        os =>
-          ImageIO.write(image, imageType(image), os)
-          getImageEntity(md5Hex(new ByteArrayInputStream(os.toByteArray)), imageType(image))
-      }
+    try {
+      val file = saveToTempFolder(imageUrl)
+      val imageEntity = getImageEntity(md5Hex(new FileInputStream(file)), "png")
       val fileName = Paths.get(DataStore.imageOriginalsPath, imageEntity.path).toString
-      closable(new FileImageOutputStream(new File(fileName))) {
-        fileStream =>
-          ImageIO.write(image, imageType(image), fileStream)
-      }
+      org.apache.commons.io.FileUtils.moveFile(file, new File(fileName))
       insertImage(imageEntity)
     } catch {
       case e:IOException => Logger.error(s"Cannon save the image from url: $imageUrl", e)
@@ -118,23 +116,18 @@ object ImageHelper {
   }
 
   def write(image: BufferedImage, outputFile: File, quality: Float): File = {
-    if (imageType(image).toLowerCase() == "png" || imageType(image).toLowerCase() == "bmp") {
-      ImageIO.write(makeTransparent(image), "png", outputFile)
-      outputFile
-    }
-    else {
-      disposable(ImageIO.getImageWritersByFormatName("jpeg").next()) {
-        jpegWriter =>
-          val param: ImageWriteParam = jpegWriter.getDefaultWriteParam()
-          param.setCompressionMode(ImageWriteParam.MODE_EXPLICIT)
-          param.setCompressionQuality(quality)
-          closable(new FileImageOutputStream(outputFile)) {
-            out =>
-              jpegWriter.setOutput(out)
-              jpegWriter.write(null, new IIOImage(image, null, null), param)
-              outputFile
-          }
-      }
+    //TODO: Fix the problem with black background instead of transparent
+    disposable(ImageIO.getImageWritersByFormatName("jpeg").next()) {
+      jpegWriter =>
+        val param: ImageWriteParam = jpegWriter.getDefaultWriteParam()
+        param.setCompressionMode(ImageWriteParam.MODE_EXPLICIT)
+        param.setCompressionQuality(quality)
+        closable(new FileImageOutputStream(outputFile)) {
+          out =>
+            jpegWriter.setOutput(out)
+            jpegWriter.write(null, new IIOImage(image, null, null), param)
+            outputFile
+        }
     }
   }
 }

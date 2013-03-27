@@ -77,8 +77,7 @@ class Product @Inject()(implicit userRepository: UserRepository, brandRepository
                       ImageHelper.save(imageUrl){img =>
                         val imageId = imageRepository.create(img)
                         productRepository.insertImage(imageId, pId)
-                        //TODO: Implement clean cache for certain images
-                        //ImageHelper.clearCache()
+                        //TODO: Implement clean cache
                       }
                     }
                   }
