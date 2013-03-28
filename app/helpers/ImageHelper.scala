@@ -4,7 +4,7 @@ import java.awt.{Toolkit, Image, Dimension}
 import java.awt.image.{FilteredImageSource, RGBImageFilter, BufferedImage}
 import java.io._
 import javax.imageio.{IIOImage, ImageWriteParam, ImageIO}
-import javax.imageio.stream.{ImageOutputStream}
+import javax.imageio.stream.ImageOutputStream
 import play.api.libs.Files.TemporaryFile
 import java.nio.file.Paths
 import models.ImageEntity
@@ -12,6 +12,7 @@ import java.net.URL
 import play.api.mvc.MultipartFormData.FilePart
 import org.apache.commons.codec.digest.DigestUtils.md5Hex
 import java.util.UUID
+import play.api.Play
 
 object ImageHelper {
 
@@ -19,6 +20,15 @@ object ImageHelper {
     Paths.get(DataStore.imageOriginalsPath, relativePath).toFile.delete()
   }
 
+  def move(source: File, destination: File) = {
+    Play.current.configuration.getString("file.movingmethod") match {
+      case Some(x) if x == "move" => org.apache.commons.io.FileUtils.moveFile(source, destination)
+      case _ => {
+        org.apache.commons.io.FileUtils.copyFile(source, destination)
+        source.delete()
+      }
+    }
+  }
 
   def imageType(file: File) = {
     ImageIO.getImageReaders(ImageIO.createImageInputStream(file)).next.getFormatName
@@ -35,7 +45,7 @@ object ImageHelper {
       val file = saveToTempFolder(imageUrl)
       val imageEntity = getImageEntity(md5Hex(new FileInputStream(file)), imageType(file).toLowerCase)
       val fileName = Paths.get(DataStore.imageOriginalsPath, imageEntity.path).toString
-      org.apache.commons.io.FileUtils.copyFile(file, new File(fileName))
+      move(file, new File(fileName))
       Some(imageEntity)
     } catch {
       case e: IOException => None
