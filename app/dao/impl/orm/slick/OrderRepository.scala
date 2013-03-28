@@ -51,7 +51,7 @@ class OrderRepository extends dao.common.OrderRepository {
           o.orderId,
           o.productId,
           p.title,
-          (select imageId from product_images where productId = o.productId) as imageId,
+          (select imageId from product_images where productId = o.productId limit 1) as imageId,
           o.quantity,
           o.unitPrice
         from
