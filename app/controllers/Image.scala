@@ -18,11 +18,9 @@ class Image @Inject()(val imageRepository: ImageRepository) extends Controller {
       val sourceFile = new File(Paths.get(imagesPath, "originals", picture.path).toString)
       ImageResizer.resize(sourceFile, getDimension(imageSize), true, isCropped(fill))
     }.withHeaders(
-      CONTENT_TYPE -> "image/png",
+      CONTENT_TYPE -> "image/jpg",
       CONTENT_DISPOSITION -> "inline",
       CACHE_CONTROL -> "public, max-age=86400"
     )
   }
-
-
 }

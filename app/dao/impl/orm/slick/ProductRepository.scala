@@ -161,10 +161,23 @@ class ProductRepository extends RepositoryBase with dao.common.ProductRepository
     }
   }
 
-  def delete(productId: Int)(cleanOtherResources: () => Unit) = {
-    removeAllImages()
-    removeFromCategory()
-    removeProduct()
-    cleanOtherResources()
+  def imageList(productId: Int) = database withSession {
+    implicit val getImg = GetResult(r => new ImageEntity(r.<<, r.<<, r.<<))
+    sql"""
+      select i.filePath, i.md5, i.imageId from product_images pi
+      inner join images i on i.imageId = pi.imageId
+      where productId = $productId
+     """.as[ImageEntity].list
+  }
+  def delete(productId: Int)(cleanOtherResources: ImageEntity => Unit) = database withSession  {
+    val images: Seq[ImageEntity] = imageList(productId)
+    images.map { image =>
+      removeImage(image.id, productId) { imageId =>
+        cleanOtherResources(image)
+      }
+    }
+    sqlu"delete from products_categories where productId = $productId".execute
+    sqlu"delete from products where productId = $productId".execute
+
   }
 }

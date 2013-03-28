@@ -56,4 +56,8 @@ class ProductRepository extends dao.common.ProductRepository {
   def create(details: ProductDetails, getBrandId: (String) => Int, userId: Int)(after: (Int) => Unit) = ???
 
   def removeImage(imageId: Int, productId: Int)(after: (Int) => Unit) = ???
+
+  def delete(productId: Int)(cleanOtherResources: ImageEntity => Unit) = {
+    cleanOtherResources(new ImageEntity("", ""))
+  }
 }

@@ -35,16 +35,18 @@ class Product @Inject()(implicit userRepository: UserRepository, brandRepository
   }
 
   def deleteConfirmation(productId: Int) = withAdmin {
-    user =>
-      request =>
+   implicit user =>
+     implicit request =>
         val product = productRepository.get(productId)
         Ok(views.html.Admin.Product.deleteConfirmation(product))
   }
 
   def delete(productId: Int) = withAdmin {
     user => request =>
-      productRepository.delete(productId)
-      Ok(Redirect(controllers.routes.Product.list()))
+      productRepository.delete(productId) { image =>
+        ImageHelper.deleteImage(image.path)
+      }
+      Redirect(controllers.routes.Product.list())
   }
 
   def edit(productId: Int) = withAdmin {
