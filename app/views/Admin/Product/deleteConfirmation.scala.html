@@ -1,0 +1,9 @@
+@(product: models.ProductDetails)
+@views.html.Admin.main("Администрирование", "index") {
+    <div class="alert alert-danger">Вы действительно хотите удалить товар?</div>
+    <form method="POST">
+        <div class="form-actions">
+            <button class="btn btn-danger"><i class="icon-trash"></i>Удалить</button>
+        </div>
+    </form>
+}

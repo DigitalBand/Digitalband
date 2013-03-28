@@ -20,7 +20,8 @@ POST    /admin/order/:orderId/delete                                            
 GET     /admin/category/:categoryId/product/create                              @controllers.admin.Product.create(categoryId: Int, brandId: Int ?= 0)
 GET     /admin/product/:productId/edit                                          @controllers.admin.Product.edit(productId: Int)
 POST    /admin/product/save                                                     @controllers.admin.Product.save
-
+GET     /admin/product/:productId/delete                                        @controllers.admin.Product.deleteConfirmation(productId: Int)
+POST    /admin/product/:productId/delete                                        @controllers.admin.Product.delete(productId: Int)
 #Google images
 GET     /admin/google/images/list                                                 @controllers.admin.ImageSearch.imageList(search: String ?= "", pageNumber:Int ?= 1)
 # Home page

@@ -156,8 +156,15 @@ class ProductRepository extends RepositoryBase with dao.common.ProductRepository
     val count = sql"""
       select count(*) from product_images where imageId = $imageId
      """.as[Int].first()
-    if (count == 0){
-       after(imageId)
+    if (count == 0) {
+      after(imageId)
     }
+  }
+
+  def delete(productId: Int)(cleanOtherResources: () => Unit) = {
+    removeAllImages()
+    removeFromCategory()
+    removeProduct()
+    cleanOtherResources()
   }
 }

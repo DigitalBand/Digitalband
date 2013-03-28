@@ -40,6 +40,12 @@ categoryId = categoryId, brandId = brandId, subnav = subnav) {
                     Редактировать
             </a>
         </li>
+        <li>
+            <a href="@controllers.admin.routes.Product.deleteConfirmation(product.id)">
+                <i class="icon-trash"></i>
+                Удалить
+            </a>
+        </li>
     }
 <h4>@product.title</h4>
 <div class="row">

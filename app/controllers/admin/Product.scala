@@ -7,13 +7,7 @@ import helpers.{ImageHelper, Secured}
 import play.api.data.Form
 import play.api.data.Forms._
 import play.api.data.format.Formats._
-import play.api.i18n.Messages
 import models.{BrandEntity, ProductDetails}
-import play.api.mvc.Action
-import play.api.libs.ws.WS
-import java.net.URL
-import javax.imageio.ImageIO
-import java.io.File
 
 
 class Product @Inject()(implicit userRepository: UserRepository, brandRepository: BrandRepository, productRepository: ProductRepository, imageRepository: ImageRepository) extends ControllerBase with Secured {
@@ -40,6 +34,19 @@ class Product @Inject()(implicit userRepository: UserRepository, brandRepository
         Ok(views.html.Admin.Product.create(productForm.fill(new ProductDetails(categoryId, brand)), List(), 0))
   }
 
+  def deleteConfirmation(productId: Int) = withAdmin {
+    user =>
+      request =>
+        val product = productRepository.get(productId)
+        Ok(views.html.Admin.Product.deleteConfirmation(product))
+  }
+
+  def delete(productId: Int) = withAdmin {
+    user => request =>
+      productRepository.delete(productId)
+      Ok(Redirect(controllers.routes.Product.list()))
+  }
+
   def edit(productId: Int) = withAdmin {
     implicit user =>
       implicit request =>
@@ -63,7 +70,8 @@ class Product @Inject()(implicit userRepository: UserRepository, brandRepository
                 case (name, images) if name == "deletedImage" => {
                   images.map {
                     image => {
-                      productRepository.removeImage(image.toInt, pId) { imageId =>
+                      productRepository.removeImage(image.toInt, pId) {
+                        imageId =>
                           val i = imageRepository.get(imageId)
                           imageRepository.remove(i.id)
                           ImageHelper.deleteImage(i.path)
@@ -74,10 +82,11 @@ class Product @Inject()(implicit userRepository: UserRepository, brandRepository
                 case (name, images) if name == "googleimage" => {
                   images.map {
                     imageUrl => {
-                      ImageHelper.save(imageUrl).map {img =>
-                        val imageId = imageRepository.create(img)
-                        productRepository.insertImage(imageId, pId)
-                        "success"
+                      ImageHelper.save(imageUrl).map {
+                        img =>
+                          val imageId = imageRepository.create(img)
+                          productRepository.insertImage(imageId, pId)
+                          "success"
                       }.getOrElse(s"error: $imageUrl")
                     }
                   }
@@ -86,9 +95,10 @@ class Product @Inject()(implicit userRepository: UserRepository, brandRepository
               }
               request.body.files.map {
                 file => {
-                  ImageHelper.save(file) { img =>
-                    val imageId = imageRepository.create(img)
-                    productRepository.insertImage(imageId, pId)
+                  ImageHelper.save(file) {
+                    img =>
+                      val imageId = imageRepository.create(img)
+                      productRepository.insertImage(imageId, pId)
                   }
                 }
               }

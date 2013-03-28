@@ -6,6 +6,8 @@ import models.ProductDetails
 import models.BrandEntity
 
 trait ProductRepository {
+  def delete(productId: Int)(cleanOtherResources: () => Unit)
+
   def removeImage(imageId: Int, productId: Int)(after: Int => Unit)
 
   def insertImage(imageId: Int, productId: Int)
