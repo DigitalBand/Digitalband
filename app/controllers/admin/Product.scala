@@ -74,11 +74,11 @@ class Product @Inject()(implicit userRepository: UserRepository, brandRepository
                 case (name, images) if name == "googleimage" => {
                   images.map {
                     imageUrl => {
-                      ImageHelper.save(imageUrl){img =>
+                      ImageHelper.save(imageUrl).map {img =>
                         val imageId = imageRepository.create(img)
                         productRepository.insertImage(imageId, pId)
-                        //TODO: Implement clean cache
-                      }
+                        "success"
+                      }.getOrElse(s"error: $imageUrl")
                     }
                   }
                 }

@@ -41,7 +41,10 @@ class InjectionModule extends ScalaModule {
     bind[dao.common.UserRepository].toInstance(new UserRepository)
     bind[dao.common.CartRepository].toInstance(new CartRepository)
     bind[dao.common.OrderRepository].toInstance(new OrderRepository)
-    bind[webServices.common.ImageSearch].toInstance(new GoogleImageSearch)
+    Play.current.configuration.getString("webservices.imageSearch") match {
+      case Some(config) if config == "google" => bind[webServices.common.ImageSearch].toInstance(new GoogleImageSearch)
+      case _ => bind[webServices.common.ImageSearch].toInstance(new FakeImageSearch)
+    }
   }
 }
 

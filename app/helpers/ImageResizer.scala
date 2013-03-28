@@ -4,9 +4,12 @@ import java.awt._
 import java.awt.image.BufferedImage
 import javax.imageio.{IIOException, ImageIO}
 import java.io.File
+import java.nio.file.Paths
+import helpers.DataStore._
 
 object ImageResizer {
-  def resize(originalImageFile: File, errorFile: File, outputSize: Dimension, preserveAlpha: Boolean, crop: Boolean): BufferedImage = {
+  def resize(originalImageFile: File, outputSize: Dimension, preserveAlpha: Boolean, crop: Boolean): BufferedImage = {
+    val errorFile = new File(Paths.get(imagesPath, "originals", "default", "error.jpg").toString)
     val originalImage: BufferedImage = try ImageIO.read(originalImageFile) catch {
       case e:IIOException => ImageIO.read(errorFile)
     }

@@ -1,17 +1,17 @@
 package helpers
 
-import java.io.File
+import java.io._
 import java.awt.image.BufferedImage
 import java.nio.file._
 import java.awt.Dimension
-import play.api.Play
 import play.api.mvc.Results
-import models.PictureEntity
-import play.api.Play.current
 import DataStore._
+import play.api.libs.iteratee.Enumerator
+import javax.imageio.ImageIO
+import javax.imageio.stream.{ImageOutputStream, FileImageOutputStream}
 
 object DataStore {
-  val appPath = System.getProperty("user.home")//Play.application.path.toString
+  val appPath = System.getProperty("user.home")
   val dataPath = Paths.get(appPath, "data").toString
   val imagesPath = Paths.get(dataPath, "images").toString
   val imageOriginalsPath = Paths.get(imagesPath, "originals").toString
@@ -21,30 +21,51 @@ object DataStore {
 object ImageCacher {
 
 
-  def sendCachedImage(imageId: Int, outputDimension: Dimension, compressQuality: Float, crop: Boolean, preserveAlpha: Boolean = true)(picture: => PictureEntity) = {
-    Results.Ok.sendFile(getImage(imageId, picture, outputDimension, crop, preserveAlpha, compressQuality))
-  }
-  def getImage(imageId: Int, picture: => PictureEntity, outputDimension: Dimension, crop: Boolean = false, preserveAlpha: Boolean = true, compressQuality: Float): File = {
-    val fill = crop match {case true => "cropped" case false => "full"}
-    val quality = (compressQuality * 100).toInt.toString
-    val cachePath = Paths.get(imagesPath, "cache", outputDimension.width + "x" + outputDimension.height, quality, fill, imageId + ".jpg")
-    if (Files.exists(cachePath)) {
-      new File(cachePath.toString)
-    } else {
-      val resizedImage: BufferedImage = ImageResizer.resize(
-        new File(Paths.get(imagesPath, "originals", picture.path).toString),
-        new File(Paths.get(imagesPath, "originals", "default", "error.jpg").toString),
-        outputDimension,
-        preserveAlpha,
-        crop)
-      cache(resizedImage, cachePath.toString, compressQuality)
+  def cachedImage(imageId: Int, outputDimension: Dimension, compressQuality: Float, crop: Boolean, preserveAlpha: Boolean = true, cacheDisabled: Boolean = false)(resize: => BufferedImage) = {
+    if (cacheDisabled) readImage(imageId, outputDimension, compressQuality, crop, preserveAlpha)(resize)
+    else {
+      val fill = crop match {
+        case true => "cropped"
+        case false => "full"
+      }
+      val quality = (compressQuality * 100).toInt.toString
+      val cachePath = Paths.get(imagesPath, "cache", outputDimension.width + "x" + outputDimension.height, quality, fill, imageId + ".jpg")
+      if (Files.exists(cachePath)) {
+        val content = Enumerator.fromStream(new FileInputStream(new File(cachePath.toString)))
+        Results.Ok.stream(content)
+      } else {
+        readImage(imageId, outputDimension, compressQuality, crop, preserveAlpha)(resize)
+      }
     }
   }
 
-  private def cache(image: BufferedImage, cachePath: String, quality: Float): File = {
+  private def readImage(imageId: Int, outputDimension: Dimension, compressQuality: Float, crop: Boolean, preserveAlpha: Boolean = true)(resize: => BufferedImage) = {
+    val fill = crop match {
+      case true => "cropped"
+      case false => "full"
+    }
+    val quality = (compressQuality * 100).toInt.toString
+    val cachePath = Paths.get(imagesPath, "cache", outputDimension.width + "x" + outputDimension.height, quality, fill, imageId + ".jpg")
+    val resizedImage: BufferedImage = resize
+    cache(resizedImage, cachePath.toString, compressQuality)
+    val content = Enumerator.fromFile(cachePath.toFile)
+    Results.Ok.stream(content)
+  }
+
+  def getStream(bi: BufferedImage) = {
+    val baos = new ByteArrayOutputStream()
+    ImageIO.write(bi, "png", baos)
+    new ByteArrayInputStream(baos.toByteArray())
+  }
+
+  def convert(stream1: ImageOutputStream): InputStream = {
+    new ByteArrayInputStream(stream1.asInstanceOf[ByteArrayOutputStream].toByteArray())
+  }
+
+  private def cache(image: BufferedImage, cachePath: String, quality: Float): ImageOutputStream = {
     val outputFile = new File(cachePath)
     if (!outputFile.getParentFile.exists)
       outputFile.getParentFile.mkdirs
-    ImageHelper.write(image, outputFile, quality)
+    ImageHelper.write(image, new FileImageOutputStream(outputFile), quality)
   }
 }

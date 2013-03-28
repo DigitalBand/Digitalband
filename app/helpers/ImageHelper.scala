@@ -4,14 +4,13 @@ import java.awt.{Toolkit, Image, Dimension}
 import java.awt.image.{FilteredImageSource, RGBImageFilter, BufferedImage}
 import java.io._
 import javax.imageio.{IIOImage, ImageWriteParam, ImageIO}
-import javax.imageio.stream.FileImageOutputStream
+import javax.imageio.stream.{ImageOutputStream}
 import play.api.libs.Files.TemporaryFile
 import java.nio.file.Paths
 import models.ImageEntity
 import java.net.URL
 import play.api.mvc.MultipartFormData.FilePart
 import org.apache.commons.codec.digest.DigestUtils.md5Hex
-import play.api.Logger
 import java.util.UUID
 
 object ImageHelper {
@@ -20,26 +19,26 @@ object ImageHelper {
     Paths.get(DataStore.imageOriginalsPath, relativePath).toFile.delete()
   }
 
-  def imageType(image: BufferedImage) = {
-    ImageIO.getWriterFormatNames()(image.getType) match {
-      case x if x.toLowerCase() == "jpeg" || x.toLowerCase == "jpg" => "jpg"
-      case _ => "png"
-    }
+
+  def imageType(file: File) = {
+    ImageIO.getImageReaders(ImageIO.createImageInputStream(file)).next.getFormatName
   }
+
   def saveToTempFolder(imageUrl: String) = {
-    val file = Paths.get(DataStore.imagesPath, "temp", UUID.randomUUID().toString).toFile
+    val file = Paths.get(DataStore.imagesPath, "temp", UUID.randomUUID().toString + ".jpg").toFile
     org.apache.commons.io.FileUtils.copyURLToFile(new URL(imageUrl), file)
     file
   }
-  def save(imageUrl: String)(insertImage: ImageEntity => Unit) = {
+
+  def save(imageUrl: String): Option[ImageEntity] = {
     try {
       val file = saveToTempFolder(imageUrl)
-      val imageEntity = getImageEntity(md5Hex(new FileInputStream(file)), "png")
+      val imageEntity = getImageEntity(md5Hex(new FileInputStream(file)), imageType(file).toLowerCase)
       val fileName = Paths.get(DataStore.imageOriginalsPath, imageEntity.path).toString
-      org.apache.commons.io.FileUtils.moveFile(file, new File(fileName))
-      insertImage(imageEntity)
+      org.apache.commons.io.FileUtils.copyFile(file, new File(fileName))
+      Some(imageEntity)
     } catch {
-      case e:IOException => Logger.error(s"Cannon save the image from url: $imageUrl", e)
+      case e: IOException => None
     }
   }
 
@@ -76,7 +75,7 @@ object ImageHelper {
 
   def save(picture: FilePart[TemporaryFile])(insertImage: ImageEntity => Unit) = {
     if (!picture.filename.isEmpty) {
-      val imageEntity = getImageEntity(md5Hex(new FileInputStream(picture.ref.file)), "jpg")
+      val imageEntity = getImageEntity(md5Hex(new FileInputStream(picture.ref.file)), imageType(picture.ref.file))
       val fileName = Paths.get(DataStore.imageOriginalsPath, imageEntity.path).toString
       picture.ref.moveTo(new File(fileName), true)
       insertImage(imageEntity)
@@ -115,14 +114,14 @@ object ImageHelper {
     imageToBufferedImage(img)
   }
 
-  def write(image: BufferedImage, outputFile: File, quality: Float): File = {
+  def write(image: BufferedImage, outputFile: ImageOutputStream, quality: Float): ImageOutputStream = {
     //TODO: Fix the problem with black background instead of transparent
     disposable(ImageIO.getImageWritersByFormatName("jpeg").next()) {
       jpegWriter =>
         val param: ImageWriteParam = jpegWriter.getDefaultWriteParam()
         param.setCompressionMode(ImageWriteParam.MODE_EXPLICIT)
         param.setCompressionQuality(quality)
-        closable(new FileImageOutputStream(outputFile)) {
+        closable(outputFile) {
           out =>
             jpegWriter.setOutput(out)
             jpegWriter.write(null, new IIOImage(image, null, null), param)
