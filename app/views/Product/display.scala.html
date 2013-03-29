@@ -58,10 +58,8 @@ categoryId = categoryId, brandId = brandId, subnav = subnav) {
         <ul class="thumbnails">
             @imageIds.map { imageId =>
             <li class="span1">
-                <a href="#" class="thumbnail">
-                    <a href="@routes.Image.get(imageId + ".jpg", 90, "200x200", "full")" target="_blank">
+                <a rel="lightbox[plants]" href="@routes.Image.get(imageId + ".jpg", 90, "400x400", "full")" target="_blank" class="thumbnail">
                     <img src="@routes.Image.get(imageId + ".jpg", 90, "50x50", "full")" alt="">
-                    </a>
                 </a>
             </li>
             }
