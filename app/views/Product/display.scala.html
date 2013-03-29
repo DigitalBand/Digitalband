@@ -59,7 +59,9 @@ categoryId = categoryId, brandId = brandId, subnav = subnav) {
             @imageIds.map { imageId =>
             <li class="span1">
                 <a href="#" class="thumbnail">
+                    <a href="@routes.Image.get(imageId + ".jpg", 90, "200x200", "full")" target="_blank">
                     <img src="@routes.Image.get(imageId + ".jpg", 90, "50x50", "full")" alt="">
+                    </a>
                 </a>
             </li>
             }
