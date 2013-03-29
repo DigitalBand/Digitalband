@@ -58,7 +58,7 @@ categoryId = categoryId, brandId = brandId, subnav = subnav) {
         <ul class="thumbnails">
             @imageIds.map { imageId =>
             <li class="span1">
-                <a rel="lightbox[plants]" href="@routes.Image.get(imageId + ".jpg", 90, "400x400", "full")" target="_blank" class="thumbnail">
+                <a rel="lightbox[plants]" href="@routes.Image.get(imageId + ".jpg", 90, "600x600", "full")" target="_blank" class="thumbnail fresco" data-fresco-group="mixed">
                     <img src="@routes.Image.get(imageId + ".jpg", 90, "50x50", "full")" alt="">
                 </a>
             </li>
