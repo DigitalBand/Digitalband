@@ -3,6 +3,7 @@ brands:ListPage[BrandEntity], categoryId: Int, brandId: Int, breadcrumbItems: Se
 pageNumber:Int, search: String)(implicit user:Option[models.UserEntity],request: play.api.mvc.Request[Any])
 @import Shared._
 @import views.html.Product.adminToolbar
+@import views.html.Shared.alert
 @subnav = {
     <div id="highlighted">
         <div class="container">
@@ -33,6 +34,7 @@ pageNumber:Int, search: String)(implicit user:Option[models.UserEntity],request:
 }
 @withsidebar(product.title, "catalogue", search = search, brands = brands, categories = categories,
 categoryId = categoryId, brandId = brandId, subnav = subnav) {
+    @alert()
     @adminToolbar(user) {
         <li>
             <a href="@controllers.admin.routes.Product.edit(product.id)">
@@ -47,6 +49,8 @@ categoryId = categoryId, brandId = brandId, subnav = subnav) {
             </a>
         </li>
     }
+
+
 <h4>@product.title</h4>
 <div class="row">
     <div class="span4 product-photos">
@@ -76,7 +80,7 @@ categoryId = categoryId, brandId = brandId, subnav = subnav) {
                     <a href="@routes.Product.filteredList(product.category.id, 1)">@product.category.title</a></span><br/>
                 <strong>Артикул:</strong> <span>@product.id</span> <br/>
 
-                <strong>Наличие:</strong> <span><a href="#">@Messages("product.display.requestAvailability")</a></span> <br/>
+                <strong>Наличие:</strong> <span><a href="@routes.Product.availability(product.id, request.uri)">@Messages("product.display.requestAvailability")</a></span> <br/>
             </address>
         </div>
         <h3>

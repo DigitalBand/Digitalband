@@ -1,6 +1,6 @@
 package helpers
 
-import models.{OrderInfo, ContactEntity}
+import models.{ProductDetails, OrderInfo, ContactEntity}
 import com.typesafe.plugin._
 import play.api.Play.current
 import dao.common.UserRepository
@@ -10,12 +10,30 @@ import play.api.mvc.Request
 
 class EmailHelper(implicit userRepository: UserRepository) {
 
+
   def systemEmail = userRepository.getSystemEmail
 
   def adminEmails = userRepository.getAdminEmails
+  def createMailer = use[MailerPlugin].email
+
+  def newQuestion(product: ProductDetails, email: String, questionType: String)(implicit request: Request[Any]) = Akka.future {
+    adminEmails.map {
+      adminEmail =>
+        val mail = use[MailerPlugin].email
+        mail.setSubject("Запрос информации о наличии товара")
+        mail.addFrom(systemEmail)
+        mail.addRecipient(adminEmail)
+        mail.sendHtml(views.html.emails.questions.availability(product, email).body)
+    }
+    val mail = createMailer
+    mail.addFrom(systemEmail)
+    mail.addRecipient(email)
+    mail.setSubject("Запрос информации о наличии товара")
+    mail.sendHtml(views.html.emails.questions.availabilityClient(product).body)
+  }
 
   def orderConfirmed(comment: String, order: OrderInfo)(implicit request: play.api.mvc.Request[Any]) = Akka.future {
-    val mail = use[MailerPlugin].email
+    val mail = createMailer
     mail.setSubject(s"Подтверждение заказа №${order.id}")
     mail.addFrom(systemEmail)
     mail.addRecipient(order.deliveryInfo.email)
@@ -23,14 +41,16 @@ class EmailHelper(implicit userRepository: UserRepository) {
   }
 
   def sendUnconfirmedOrdersExist(count: Int) = {
-    adminEmails.map { email =>
-      val mail = use[MailerPlugin].email
-      mail.setSubject("Digitalband - eсть неподтвержденные заказы!")
-      mail.addFrom(systemEmail)
-      mail.addRecipient(email)
-      mail.sendHtml(views.html.emails.order.unconfirmedExist(count).body)
+    adminEmails.map {
+      email =>
+        val mail = use[MailerPlugin].email
+        mail.setSubject("Digitalband - eсть неподтвержденные заказы!")
+        mail.addFrom(systemEmail)
+        mail.addRecipient(email)
+        mail.sendHtml(views.html.emails.order.unconfirmedExist(count).body)
     }
   }
+
   def orderCanceled(comment: String, order: OrderInfo)(implicit request: Request[Any]) = Akka.future {
     val mail = use[MailerPlugin].email
     mail.setSubject(s"Информация по заказу №${order.id}")

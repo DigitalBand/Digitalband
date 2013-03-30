@@ -34,7 +34,8 @@ POST    /sendFeedback                                                           
 GET     /category/list                                                            @controllers.Product.list
 GET     /category/:categoryId/products/:pageNumber                                @controllers.Product.filteredList(categoryId:Int, pageNumber:Int, brandId:Int ?= 0, brandPage:Int ?= 1, productId:Int ?= 0, pageSize:Int ?= 10, s:String ?= "")
 GET     /product/:id                                                              @controllers.Product.display(id:Int)
-
+GET     /product/:id/availability                                                 @controllers.Product.availability(id: Int, returnUrl ?= "")
+POST    /product/:id/availability                                                 @controllers.Product.requestAvailability(id: Int, returnUrl ?= "")
 # Cart
 POST    /cart/add                                                                 @controllers.Cart.add
 POST    /cart/delete/:productId                                                   @controllers.Cart.delete(productId: Int, returnUrl: String ?= "")

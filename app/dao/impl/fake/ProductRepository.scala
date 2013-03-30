@@ -60,4 +60,6 @@ class ProductRepository extends dao.common.ProductRepository {
   def delete(productId: Int)(cleanOtherResources: ImageEntity => Unit) = {
     cleanOtherResources(new ImageEntity("", ""))
   }
+
+  def requestAvailability(productId: Int, email: String) = ???
 }

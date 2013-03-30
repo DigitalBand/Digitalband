@@ -1,0 +1,6 @@
+@()(implicit request: Request[Any])
+@request.flash.data.map {
+    case (className, message) => {
+        <div class="alert  @className"> @message </div>
+    }
+}

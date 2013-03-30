@@ -169,15 +169,37 @@ class ProductRepository extends RepositoryBase with dao.common.ProductRepository
       where productId = $productId
      """.as[ImageEntity].list
   }
-  def delete(productId: Int)(cleanOtherResources: ImageEntity => Unit) = database withSession  {
+
+  def delete(productId: Int)(cleanOtherResources: ImageEntity => Unit) = database withSession {
     val images: Seq[ImageEntity] = imageList(productId)
-    images.map { image =>
-      removeImage(image.id, productId) { imageId =>
-        cleanOtherResources(image)
-      }
+    images.map {
+      image =>
+        removeImage(image.id, productId) {
+          imageId =>
+            cleanOtherResources(image)
+        }
     }
     sqlu"delete from products_categories where productId = $productId".execute
     sqlu"delete from products where productId = $productId".execute
 
+  }
+
+  def requestAvailability(productId: Int, email: String):Boolean = database withSession {
+    val questionType = "availability"
+    val unansweredStatus = "unanswered"
+    val count = sql"""
+      select count(*) from questions
+      where
+        productId = $productId and
+        email = $email and
+        type = $questionType and
+        status = $unansweredStatus
+    """.as[Int].first()
+    if (count > 0)
+      false
+    else {
+      sqlu"insert into questions(productId, email, type) values($productId, $email, $questionType)".execute
+      true
+    }
   }
 }

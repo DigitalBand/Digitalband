@@ -1,12 +1,8 @@
 @(form: Form[models.ContactEntity], recaptcha: helpers.RecaptchaChallenge)(implicit user:Option[models.UserEntity],request: play.api.mvc.Request[Any])
 @import views.html.common.bootstrap._
-
+@import views.html.Shared.alert
 @main(Messages("contacts.title"), "contacts") {
-    @request.flash.data.map {
-        case (className, message) => {
-            <div class="alert  @className"> @message </div>
-        }
-    }
+    @alert()
     <form class="form-inline" action="@routes.Application.sendFeedback()" method="POST">
         <div class="row">
 

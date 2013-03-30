@@ -20,4 +20,6 @@ class ControllerBase(implicit val userRepository: UserRepository) extends Contro
       case None => 0
     }
   }
+  //TOD: Implement this
+  def isAjax = false
 }
