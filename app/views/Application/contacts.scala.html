@@ -17,7 +17,7 @@
                 <div>
                     @helper.inputText(form("name"), 'placeholder -> "Введите Ваше имя", '_label -> Messages("contacts.form.namelabel"), 'class -> "span6")
                     @helper.inputText(form("email"), 'placeholder -> "Введите Ваш email", '_label -> Messages("contacts.form.emaillabel"), 'class -> "span6")
-                    @helper.inputText(form("productName"), 'placeholder -> "Введите название товара", '_label -> Messages("contacts.form.productnamelabel"), 'class -> "span6")
+                    @helper.inputText(form("productName"), 'placeholder -> "Введите тему сообщения", '_label -> Messages("contacts.form.productnamelabel"), 'class -> "span6")
                     @helper.textarea(form("message"), 'placeholder -> "Введите сообщение", '_label -> Messages("contacts.form.messagelabel"), 'class -> "span6")
                     <div class="control-group">
                         <input name="recaptcha_challenge_field" type="hidden" value="@recaptcha.challenge">
