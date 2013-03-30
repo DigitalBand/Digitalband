@@ -211,12 +211,14 @@ footer {
     border-top: 3px solid #f9854e;
   }
 }
+
 .recaptcha-input {
   background-position: right;
   background-repeat: no-repeat;
   background-size: 45px;
   background-image: url(../../images/recaptcha.png);
 }
+
 .fileupload {
   float: left;
   margin-right: 5px;
@@ -224,6 +226,21 @@ footer {
     opacity: 0.3;
   }
 }
+
 .navbar-fixed-top .navbar-inner, .navbar-static-top .navbar-inner {
-  border-color: #e1e1e1;border-width: 0 0 1px;
+  border-color: #e1e1e1;
+  border-width: 0 0 1px;
+}
+
+.product-photos {
+  text-align: center;
+  .thumbnails {
+    display: inline-block;
+    margin-left: 0;
+    text-align: center;
+    li {
+      margin-left: 2px;
+      margin-right: 2px;
+    }
+  }
 }

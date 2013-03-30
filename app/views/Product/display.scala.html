@@ -49,22 +49,24 @@ categoryId = categoryId, brandId = brandId, subnav = subnav) {
     }
 <h4>@product.title</h4>
 <div class="row">
-    <div class="span4">
+    <div class="span4 product-photos">
         @if(imageIds.length == 0){
         <img alt="" src="@routes.Image.get(product.defaultImageId + ".jpg", 90, "330x250", "full")">
         }else{
             <img alt="" src="@routes.Image.get(imageIds.head + ".jpg", 90, "330x250", "full")">
         }
+        @if(imageIds.length > 0){
+        <hr/>
         <ul class="thumbnails">
             @imageIds.map { imageId =>
-            <li class="span1">
+            <li>
                 <a rel="lightbox[gallery]" href="@routes.Image.get(imageId + ".jpg", 90, "600x600", "full")" target="_blank" class="thumbnail fresco" data-fresco-group-options="thumbnails:false" data-fresco-group="mixed">
                     <img src="@routes.Image.get(imageId + ".jpg", 90, "50x50", "full")" alt="">
                 </a>
             </li>
             }
         </ul>
-
+            }
     </div>
     <div class="span5">
         <div>
