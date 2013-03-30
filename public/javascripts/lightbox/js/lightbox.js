@@ -52,8 +52,8 @@ lightbox = new Lightbox options
       this.fileCloseImage = '../assets/javascripts/lightbox/images/close.png';
       this.resizeDuration = 700;
       this.fadeDuration = 500;
-      this.labelImage = "Image";
-      this.labelOf = "of";
+      this.labelImage = "Фото";
+      this.labelOf = "из";
     }
 
     return LightboxOptions;
