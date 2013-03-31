@@ -14,13 +14,13 @@ import scala.concurrent.duration._
 class EmailHelper(implicit userRepository: UserRepository) {
 
 
-
   def systemEmail = userRepository.getSystemEmail
 
   def adminEmails = userRepository.getAdminEmails
+
   def createMailer = use[MailerPlugin].email
 
-  def answerAvailability(subject: String, comment: String, email: String) = Akka.system.scheduler.scheduleOnce(1.second){
+  def answerAvailability(subject: String, comment: String, email: String) = Akka.system.scheduler.scheduleOnce(1.second) {
     val mail = use[MailerPlugin].email
     mail.addFrom(systemEmail)
     mail.addRecipient(email)
@@ -28,20 +28,24 @@ class EmailHelper(implicit userRepository: UserRepository) {
     mail.sendHtml(comment)
   }
 
-  def newQuestion(question: Question)(implicit request: Request[Any]) = Akka.system.scheduler.scheduleOnce(1.second) {
-    adminEmails.map {
-      adminEmail =>
-        val mail = use[MailerPlugin].email
-        mail.setSubject("Запрос информации о наличии товара")
-        mail.addFrom(systemEmail)
-        mail.addRecipient(adminEmail)
-        mail.sendHtml(views.html.emails.questions.availability(question).body)
+  def newQuestion(question: Question)(implicit request: Request[Any]) = {
+    Akka.system.scheduler.scheduleOnce(1.second) {
+      adminEmails.map {
+        adminEmail =>
+          val mail = use[MailerPlugin].email
+          mail.setSubject("Запрос информации о наличии товара")
+          mail.addFrom(systemEmail)
+          mail.addRecipient(adminEmail)
+          mail.sendHtml(views.html.emails.questions.availability(question).body)
+      }
     }
-    val mail = use[MailerPlugin].email
-    mail.addFrom(systemEmail)
-    mail.addRecipient(question.email)
-    mail.setSubject("Запрос информации о наличии товара")
-    mail.sendHtml(views.html.emails.questions.availabilityClient(question).body)
+    Akka.system.scheduler.scheduleOnce(1.second) {
+      val mail = use[MailerPlugin].email
+      mail.addFrom(systemEmail)
+      mail.addRecipient(question.email)
+      mail.setSubject("Запрос информации о наличии товара")
+      mail.sendHtml(views.html.emails.questions.availabilityClient(question).body)
+    }
   }
 
   def orderConfirmed(comment: String, order: OrderInfo)(implicit request: play.api.mvc.Request[Any]) = Akka.system.scheduler.scheduleOnce(1.second) {
