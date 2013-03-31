@@ -1,12 +1,15 @@
 package helpers
 
-import models.{Question, ProductDetails, OrderInfo, ContactEntity}
+import models.{Question, OrderInfo, ContactEntity}
 import com.typesafe.plugin._
 import play.api.Play.current
 import dao.common.UserRepository
 import play.api.i18n.Messages
+import play.api.mvc.{Request}
+
 import play.api.libs.concurrent.Akka
-import play.api.mvc.{Result, Request}
+import play.api.libs.concurrent.Execution.Implicits._
+import scala.concurrent.duration._
 
 class EmailHelper(implicit userRepository: UserRepository) {
 
@@ -17,7 +20,7 @@ class EmailHelper(implicit userRepository: UserRepository) {
   def adminEmails = userRepository.getAdminEmails
   def createMailer = use[MailerPlugin].email
 
-  def answerAvailability(subject: String, comment: String, email: String) = {
+  def answerAvailability(subject: String, comment: String, email: String) = Akka.system.scheduler.scheduleOnce(1.second){
     val mail = use[MailerPlugin].email
     mail.addFrom(systemEmail)
     mail.addRecipient(email)
@@ -25,7 +28,7 @@ class EmailHelper(implicit userRepository: UserRepository) {
     mail.sendHtml(comment)
   }
 
-  def newQuestion(question: Question)(implicit request: Request[Any]) = {
+  def newQuestion(question: Question)(implicit request: Request[Any]) = Akka.system.scheduler.scheduleOnce(1.second) {
     adminEmails.map {
       adminEmail =>
         val mail = use[MailerPlugin].email
@@ -41,7 +44,7 @@ class EmailHelper(implicit userRepository: UserRepository) {
     mail.sendHtml(views.html.emails.questions.availabilityClient(question).body)
   }
 
-  def orderConfirmed(comment: String, order: OrderInfo)(implicit request: play.api.mvc.Request[Any]) = Akka.future {
+  def orderConfirmed(comment: String, order: OrderInfo)(implicit request: play.api.mvc.Request[Any]) = Akka.system.scheduler.scheduleOnce(1.second) {
     val mail = use[MailerPlugin].email
     mail.setSubject(s"Подтверждение заказа №${order.id}")
     mail.addFrom(systemEmail)
@@ -60,7 +63,7 @@ class EmailHelper(implicit userRepository: UserRepository) {
     }
   }
 
-  def orderCanceled(comment: String, order: OrderInfo)(implicit request: Request[Any]) = Akka.future {
+  def orderCanceled(comment: String, order: OrderInfo)(implicit request: Request[Any]) = Akka.system.scheduler.scheduleOnce(1.second) {
     val mail = use[MailerPlugin].email
     mail.setSubject(s"Информация по заказу №${order.id}")
     mail.addFrom(systemEmail)
@@ -68,7 +71,7 @@ class EmailHelper(implicit userRepository: UserRepository) {
     mail.sendHtml(comment)
   }
 
-  def sendFeedback(message: ContactEntity)(implicit request: Request[Any]) = Akka.future {
+  def sendFeedback(message: ContactEntity)(implicit request: Request[Any]) = Akka.system.scheduler.scheduleOnce(1.second) {
     adminEmails.map(email => send(message, email))
     def send(mess: ContactEntity, adminEmail: String) = {
       val mail: MailerAPI = use[MailerPlugin].email
@@ -80,7 +83,7 @@ class EmailHelper(implicit userRepository: UserRepository) {
     }
   }
 
-  def orderConfirmation(order: OrderInfo)(implicit request: Request[Any]) = Akka.future {
+  def orderConfirmation(order: OrderInfo)(implicit request: Request[Any]) = Akka.system.scheduler.scheduleOnce(1.second) {
     val deliveryInfo = order.deliveryInfo
     sendToClient(systemEmail, deliveryInfo.email)
     adminEmails.map(email => sendToAdmins(email, deliveryInfo.email, systemEmail))
