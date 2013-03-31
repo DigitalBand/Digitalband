@@ -9,19 +9,21 @@ import play.api.libs.concurrent.Akka
 import play.api.mvc.{Result, Request}
 
 class EmailHelper(implicit userRepository: UserRepository) {
-  def answerAvailability(subject: String, comment: String, email: String) = Akka.future {
-    val mail = createMailer
-    mail.addFrom(systemEmail)
-    mail.addRecipient(email)
-    mail.setSubject(subject)
-    mail.sendHtml(comment)
-  }
+
 
 
   def systemEmail = userRepository.getSystemEmail
 
   def adminEmails = userRepository.getAdminEmails
   def createMailer = use[MailerPlugin].email
+
+  def answerAvailability(subject: String, comment: String, email: String) = Akka.future {
+    val mail = use[MailerPlugin].email
+    mail.addFrom(systemEmail)
+    mail.addRecipient(email)
+    mail.setSubject(subject)
+    mail.sendHtml(comment)
+  }
 
   def newQuestion(question: Question)(implicit request: Request[Any]) = Akka.future {
     adminEmails.map {
@@ -32,7 +34,7 @@ class EmailHelper(implicit userRepository: UserRepository) {
         mail.addRecipient(adminEmail)
         mail.sendHtml(views.html.emails.questions.availability(question).body)
     }
-    val mail = createMailer
+    val mail = use[MailerPlugin].email
     mail.addFrom(systemEmail)
     mail.addRecipient(question.email)
     mail.setSubject("Запрос информации о наличии товара")
@@ -40,7 +42,7 @@ class EmailHelper(implicit userRepository: UserRepository) {
   }
 
   def orderConfirmed(comment: String, order: OrderInfo)(implicit request: play.api.mvc.Request[Any]) = Akka.future {
-    val mail = createMailer
+    val mail = use[MailerPlugin].email
     mail.setSubject(s"Подтверждение заказа №${order.id}")
     mail.addFrom(systemEmail)
     mail.addRecipient(order.deliveryInfo.email)
