@@ -22,6 +22,11 @@ GET     /admin/product/:productId/edit                                          
 POST    /admin/product/save                                                     @controllers.admin.Product.save
 GET     /admin/product/:productId/delete                                        @controllers.admin.Product.deleteConfirmation(productId: Int)
 POST    /admin/product/:productId/delete                                        @controllers.admin.Product.delete(productId: Int)
+#Admin questions
+GET     /admin/question/:questionId/available                                   @controllers.admin.Question.available(questionId: Int)
+POST    /admin/question/:questionId/available                                   @controllers.admin.Question.setAvailable(questionId: Int)
+GET     /admin/question/:questionId/unavailable                                 @controllers.admin.Question.unavailable(questionId: Int)
+POST    /admin/question/:questionId/unavailable                                 @controllers.admin.Question.setUnavailable(questionId: Int)
 #Google images
 GET     /admin/google/images/list                                                 @controllers.admin.ImageSearch.imageList(search: String ?= "", pageNumber:Int ?= 1)
 # Home page

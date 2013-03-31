@@ -62,7 +62,7 @@ class Product @Inject()(implicit userRepository: UserRepository, brandRepository
       implicit request =>
         productForm.bindFromRequest.fold(
           formWithErrors => {
-            val productId = Int.unbox(formWithErrors("id").value)
+            val productId = formWithErrors("id").value.get.toInt
             val images = imageRepository.listByProductId(productId)
             BadRequest(views.html.Admin.Product.create(formWithErrors, images, productId))
           },

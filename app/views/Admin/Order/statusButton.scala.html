@@ -1,9 +1,7 @@
 @(status: String, orderId: Int)
 @import controllers.admin.routes.Order
 <div class="btn-group">
-<a data-toggle="dropdown" class="dropdown-toggle btn   @{
-    "btn-" + Messages("order.list.ui.button." + status)
-}">
+<a data-toggle="dropdown" class="dropdown-toggle btn @{"btn-" + Messages("order.list.ui.button." + status)}">
 @Messages("order.list.ui.button." + status + ".text")
 <span class="caret"></span>
 </a>

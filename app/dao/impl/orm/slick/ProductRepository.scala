@@ -2,13 +2,14 @@ package dao.impl.orm.slick
 
 import common._
 import models._
-import Profile.driver.simple._
-import Database.threadLocalSession
+
 import models.CategoryEntity
 import models.ProductDetails
 import tables.{ProductsTable, ProductsCategoriesTable, CategoriesTable}
 import slick.jdbc.{StaticQuery => Q, GetResult}
 import Q.interpolation
+import Profile.driver.simple._
+import Database.threadLocalSession
 import play.api.i18n.Messages
 
 class ProductRepository extends RepositoryBase with dao.common.ProductRepository {
@@ -181,25 +182,7 @@ class ProductRepository extends RepositoryBase with dao.common.ProductRepository
     }
     sqlu"delete from products_categories where productId = $productId".execute
     sqlu"delete from products where productId = $productId".execute
-
   }
 
-  def requestAvailability(productId: Int, email: String):Boolean = database withSession {
-    val questionType = "availability"
-    val unansweredStatus = "unanswered"
-    val count = sql"""
-      select count(*) from questions
-      where
-        productId = $productId and
-        email = $email and
-        type = $questionType and
-        status = $unansweredStatus
-    """.as[Int].first()
-    if (count > 0)
-      false
-    else {
-      sqlu"insert into questions(productId, email, type) values($productId, $email, $questionType)".execute
-      true
-    }
-  }
+
 }

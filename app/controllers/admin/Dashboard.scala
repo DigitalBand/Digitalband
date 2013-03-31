@@ -1,17 +1,18 @@
 package controllers.admin
 
 import com.google.inject.Inject
-import dao.common.{OrderRepository, UserRepository}
+import dao.common.{QuestionRepository, ProductRepository, OrderRepository, UserRepository}
 import controllers.common.ControllerBase
 import helpers.Secured
 import play.api.libs.json.Json
 import play.api.i18n.Messages
 
-class Dashboard @Inject()(implicit userRepository: UserRepository, orderRepository: OrderRepository) extends ControllerBase with Secured {
+class Dashboard @Inject()(implicit userRepository: UserRepository, orderRepository: OrderRepository, productRepository: ProductRepository, questionRepository: QuestionRepository) extends ControllerBase with Secured {
   def index = withAdmin {
     implicit user =>
       implicit request =>
         val counters = orderRepository.getCounters
+        val questions = questionRepository.listUnanswered()
         val countersJs = Json.toJson(
           counters.map {
             counter =>
@@ -21,6 +22,6 @@ class Dashboard @Inject()(implicit userRepository: UserRepository, orderReposito
                 "color" -> Messages("order.statuses.colors." + counter._1)
               )
           })
-        Ok(views.html.Admin.index(countersJs))
+        Ok(views.html.Admin.index(countersJs, questions))
   }
 }

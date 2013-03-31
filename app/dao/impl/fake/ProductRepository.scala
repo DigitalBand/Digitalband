@@ -62,4 +62,6 @@ class ProductRepository extends dao.common.ProductRepository {
   }
 
   def requestAvailability(productId: Int, email: String) = ???
+
+  def getUnansweredQuestions() = ???
 }

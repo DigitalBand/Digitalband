@@ -6,7 +6,7 @@ import models.ProductDetails
 import models.BrandEntity
 
 trait ProductRepository {
-  def requestAvailability(productId: Int, email: String): Boolean
+
 
   def delete(productId: Int)(cleanOtherResources: ImageEntity => Unit)
 

@@ -16,7 +16,8 @@ import helpers.EmailHelper
 class Product @Inject()(implicit ur: UserRepository, productRepository: ProductRepository,
                         categoryRepository: CategoryRepository,
                         imageRepository: ImageRepository,
-                        brandRepository: BrandRepository) extends ControllerBase {
+                        brandRepository: BrandRepository,
+                        questionRepository: QuestionRepository) extends ControllerBase {
   val availabilityForm = Form("email" -> nonEmptyText)
 
   def list = filteredList(1)
@@ -36,15 +37,16 @@ class Product @Inject()(implicit ur: UserRepository, productRepository: ProductR
           BadRequest(views.html.Product.availability(product, formWithErrors, isAjax, returnUrl))
         },
         email => {
-          if (productRepository.requestAvailability(product.id, email)) {
+          questionRepository.insertQuestion(product.id, email).map { questionId =>
+            val question = questionRepository.get(questionId)
             val emailHelper = new EmailHelper()
-            emailHelper.newQuestion(product, email, "availability")
+            emailHelper.newQuestion(question)
             if (!isAjax) {
               redirectToReturnUrlOrProduct(returnUrl, product.id).flashing("alert-success" -> "Запрос успешно отправлен")
             } else {
               Ok("success")
             }
-          } else {
+          }.getOrElse{
             redirectToReturnUrlOrProduct(returnUrl, product.id)
               .flashing("alert-warning" -> "Вы уже отправили запрос по этому товару. Ожидайте ответа")
           }

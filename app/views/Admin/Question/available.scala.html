@@ -1,0 +1,17 @@
+@(question: models.Question)(implicit user: Option[models.UserEntity], request: play.api.mvc.Request[Any])
+@views.html.Admin.Question.availabilityLayout(
+    "Эта форма используется для ответа покупателю в том случае, если товар доступен. Текст письма можно изменить",
+    "Товар есть в наличии"
+){
+    <h3>Уважаемый покупатель!</h3>
+    <p>
+        <a href="@routes.Product.display(question.productId).absoluteURL()">@question.productTitle</a> есть в наличии и доступен для заказа.
+    </p>
+    <p>
+        <a href="@routes.Product.display(question.productId).absoluteURL()">Заказать @question.productTitle</a>
+    </p>
+
+    <p>
+            С уважением, интернет-магазин Digitalband!
+    </p>
+}

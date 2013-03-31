@@ -1,14 +1,21 @@
 package helpers
 
-import models.{ProductDetails, OrderInfo, ContactEntity}
+import models.{Question, ProductDetails, OrderInfo, ContactEntity}
 import com.typesafe.plugin._
 import play.api.Play.current
 import dao.common.UserRepository
 import play.api.i18n.Messages
 import play.api.libs.concurrent.Akka
-import play.api.mvc.Request
+import play.api.mvc.{Result, Request}
 
 class EmailHelper(implicit userRepository: UserRepository) {
+  def answerAvailability(subject: String, comment: String, email: String) = Akka.future {
+    val mail = createMailer
+    mail.addFrom(systemEmail)
+    mail.addRecipient(email)
+    mail.setSubject(subject)
+    mail.sendHtml(comment)
+  }
 
 
   def systemEmail = userRepository.getSystemEmail
@@ -16,20 +23,20 @@ class EmailHelper(implicit userRepository: UserRepository) {
   def adminEmails = userRepository.getAdminEmails
   def createMailer = use[MailerPlugin].email
 
-  def newQuestion(product: ProductDetails, email: String, questionType: String)(implicit request: Request[Any]) = Akka.future {
+  def newQuestion(question: Question)(implicit request: Request[Any]) = Akka.future {
     adminEmails.map {
       adminEmail =>
         val mail = use[MailerPlugin].email
         mail.setSubject("Запрос информации о наличии товара")
         mail.addFrom(systemEmail)
         mail.addRecipient(adminEmail)
-        mail.sendHtml(views.html.emails.questions.availability(product, email).body)
+        mail.sendHtml(views.html.emails.questions.availability(question).body)
     }
     val mail = createMailer
     mail.addFrom(systemEmail)
-    mail.addRecipient(email)
+    mail.addRecipient(question.email)
     mail.setSubject("Запрос информации о наличии товара")
-    mail.sendHtml(views.html.emails.questions.availabilityClient(product).body)
+    mail.sendHtml(views.html.emails.questions.availabilityClient(question).body)
   }
 
   def orderConfirmed(comment: String, order: OrderInfo)(implicit request: play.api.mvc.Request[Any]) = Akka.future {
