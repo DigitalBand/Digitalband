@@ -33,8 +33,8 @@ class Question @Inject()(implicit userRepository: UserRepository, productReposit
       val question = questionRepository.get(questionId)
       Akka.system.scheduler.scheduleOnce(1.second) {
         emailHelper.answerAvailability(s"${question.productTitle} нет в наличии", comment, question.email)
+        questionRepository.setAnswered(questionId)
       }
-      questionRepository.setAnswered(questionId)
       Redirect(controllers.admin.routes.Dashboard.index())
   }
 
@@ -44,8 +44,8 @@ class Question @Inject()(implicit userRepository: UserRepository, productReposit
       val question = questionRepository.get(questionId)
       Akka.system.scheduler.scheduleOnce(1.second) {
         emailHelper.answerAvailability(s"${question.productTitle} есть в наличии", comment, question.email)
+        questionRepository.setAnswered(questionId)
       }
-      questionRepository.setAnswered(questionId)
       Redirect(controllers.admin.routes.Dashboard.index())
   }
 }
