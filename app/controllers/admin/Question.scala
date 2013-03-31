@@ -10,6 +10,7 @@ import play.api.libs.concurrent.Akka
 import play.api.libs.concurrent.Execution.Implicits._
 import scala.concurrent.duration._
 import play.api.Play.current
+import play.api.Logger
 
 class Question @Inject()(implicit userRepository: UserRepository, productRepository: ProductRepository, questionRepository: QuestionRepository) extends ControllerBase with Secured {
   val commentForm = Form("comment" -> text)
@@ -32,8 +33,12 @@ class Question @Inject()(implicit userRepository: UserRepository, productReposit
       val comment = commentForm.bindFromRequest.get
       val question = questionRepository.get(questionId)
       Akka.system.scheduler.scheduleOnce(1.second) {
-        emailHelper.answerAvailability(s"${question.productTitle} нет в наличии", comment, question.email)
-        questionRepository.setAnswered(questionId)
+        try {
+          emailHelper.answerAvailability(s"${question.productTitle} нет в наличии", comment, question.email)
+          questionRepository.setAnswered(questionId)
+        } catch {
+          case e => Logger.error("send email error", e)
+        }
       }
       Redirect(controllers.admin.routes.Dashboard.index())
   }
@@ -43,8 +48,12 @@ class Question @Inject()(implicit userRepository: UserRepository, productReposit
       val comment = commentForm.bindFromRequest.get
       val question = questionRepository.get(questionId)
       Akka.system.scheduler.scheduleOnce(1.second) {
+        try {
         emailHelper.answerAvailability(s"${question.productTitle} есть в наличии", comment, question.email)
         questionRepository.setAnswered(questionId)
+        } catch {
+          case e => Logger.error("send email error", e)
+        }
       }
       Redirect(controllers.admin.routes.Dashboard.index())
   }
