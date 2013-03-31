@@ -17,7 +17,7 @@ class EmailHelper(implicit userRepository: UserRepository) {
   def adminEmails = userRepository.getAdminEmails
   def createMailer = use[MailerPlugin].email
 
-  def answerAvailability(subject: String, comment: String, email: String) = Akka.future {
+  def answerAvailability(subject: String, comment: String, email: String) = {
     val mail = use[MailerPlugin].email
     mail.addFrom(systemEmail)
     mail.addRecipient(email)
@@ -25,7 +25,7 @@ class EmailHelper(implicit userRepository: UserRepository) {
     mail.sendHtml(comment)
   }
 
-  def newQuestion(question: Question)(implicit request: Request[Any]) = Akka.future {
+  def newQuestion(question: Question)(implicit request: Request[Any]) = {
     adminEmails.map {
       adminEmail =>
         val mail = use[MailerPlugin].email
