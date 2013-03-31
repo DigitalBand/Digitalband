@@ -18,6 +18,7 @@ class Product @Inject()(implicit ur: UserRepository, productRepository: ProductR
                         imageRepository: ImageRepository,
                         brandRepository: BrandRepository,
                         questionRepository: QuestionRepository) extends ControllerBase {
+  val emailHelper = new EmailHelper()
   val availabilityForm = Form("email" -> nonEmptyText)
 
   def list = filteredList(1)
@@ -39,7 +40,7 @@ class Product @Inject()(implicit ur: UserRepository, productRepository: ProductR
         email => {
           questionRepository.insertQuestion(product.id, email).map { questionId =>
             val question = questionRepository.get(questionId)
-            val emailHelper = new EmailHelper()
+
             emailHelper.newQuestion(question)
             if (!isAjax) {
               redirectToReturnUrlOrProduct(returnUrl, product.id).flashing("alert-success" -> "Запрос успешно отправлен")

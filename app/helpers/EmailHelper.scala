@@ -20,7 +20,7 @@ class EmailHelper(implicit userRepository: UserRepository) {
 
   def createMailer = use[MailerPlugin].email
 
-  def answerAvailability(subject: String, comment: String, email: String) = Akka.system.scheduler.scheduleOnce(1.second) {
+  def answerAvailability(subject: String, comment: String, email: String) = {
     val mail = use[MailerPlugin].email
     mail.addFrom(systemEmail)
     mail.addRecipient(email)
