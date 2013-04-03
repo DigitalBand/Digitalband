@@ -14,6 +14,7 @@ import scala.concurrent.duration._
 class EmailHelper(implicit userRepository: UserRepository) {
 
 
+
   def systemEmail = userRepository.getSystemEmail
 
   def adminEmails = userRepository.getAdminEmails
@@ -67,6 +68,16 @@ class EmailHelper(implicit userRepository: UserRepository) {
     }
   }
 
+  def sendUnansweredQuestionsExist(count: Int) = {
+    adminEmails.map {
+      email =>
+        val mail = use[MailerPlugin].email
+        mail.setSubject("Digitalband - eсть неотвеченные вопросы!")
+        mail.addFrom(systemEmail)
+        mail.addRecipient(email)
+        mail.sendHtml(views.html.emails.questions.unanswered(count).body)
+    }
+  }
   def orderCanceled(comment: String, order: OrderInfo)(implicit request: Request[Any]) = Akka.system.scheduler.scheduleOnce(1.second) {
     val mail = use[MailerPlugin].email
     mail.setSubject(s"Информация по заказу №${order.id}")

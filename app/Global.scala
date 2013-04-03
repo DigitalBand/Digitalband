@@ -3,7 +3,7 @@ import com.google.inject.Guice
 import com.tzavellas.sse.guice.ScalaModule
 import dao.impl.orm.slick._
 
-import helpers.EmailHelper
+import helpers.{NotificationsHelper, EmailHelper}
 import play.api._
 import play.api.Play.current
 import webServices.{GoogleImageSearch, FakeImageSearch}
@@ -19,15 +19,10 @@ object Global extends GlobalSettings {
     import play.api.libs.concurrent.Akka
     import play.api.libs.concurrent.Execution.Implicits._
     import scala.concurrent.duration._
-
+    val notificationsHelper = new NotificationsHelper(new OrderRepository, new QuestionRepository, new UserRepository)
     Akka.system.scheduler.schedule(0.seconds, 2.hours) {
-      val or: dao.common.OrderRepository = new OrderRepository()
-      val unconfirmedCount: Int = or.countUnconfirmed
-      if (unconfirmedCount > 0) {
-        implicit val ur = new UserRepository
-        val emailHelper = new EmailHelper()
-        emailHelper.sendUnconfirmedOrdersExist(unconfirmedCount)
-      }
+      notificationsHelper.unconfirmedOrders()
+      notificationsHelper.unansweredQuestions()
     }
   }
 }
