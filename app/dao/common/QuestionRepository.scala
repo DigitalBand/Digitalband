@@ -11,4 +11,5 @@ trait QuestionRepository {
 
   def insertQuestion(productId: Int, email: String): Option[Int]
 
+  def listWithAnswers(pageNumber:Int, pageSize: Int = 20): Seq[Question]
 }

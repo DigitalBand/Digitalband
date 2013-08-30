@@ -15,7 +15,11 @@ import play.api.Logger
 class Question @Inject()(implicit userRepository: UserRepository, productRepository: ProductRepository, questionRepository: QuestionRepository) extends ControllerBase with Secured {
   val commentForm = Form("comment" -> text)
   val emailHelper = new EmailHelper()
-
+  def listWithAnswers(pageNumber: Int, pageSize: Int = 20) = withAdmin {
+    implicit user => implicit request =>
+      val questions = questionRepository.listWithAnswers(pageNumber, pageSize)
+      Ok(views.html.Admin.Question.listWithAnswers(questions))
+  }
   def available(questionId: Int) = withAdmin {
     implicit user => implicit request =>
       val question = questionRepository.get(questionId)

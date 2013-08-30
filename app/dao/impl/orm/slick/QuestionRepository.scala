@@ -56,4 +56,6 @@ class QuestionRepository extends RepositoryBase with dao.common.QuestionReposito
       where status = 'unanswered';
     """.as[Question].list
   }
+
+  def listWithAnswers(pageNumber: Int, pageSize: Int) = ???
 }
