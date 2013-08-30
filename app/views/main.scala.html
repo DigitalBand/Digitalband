@@ -10,7 +10,7 @@ search: String = "")(content: Html)(implicit user: Option[models.UserEntity], re
     <title> @title </title>
     <meta name="description" content="Музыкальные инструменты от DigitalBand.  Интернет магазин музыкальных инструментов. Широкий ассортимент, продажа музыкальных инструментов известных марок"/>
     <meta name="keywords" content="музыкальные инструменты, музыкальный магазин, гитары, фортепиано, рояли, световое оборудование, шоу оборудование, купить гитару, купить гитару в ростове, купить гитару в москве, купить колонки, купить фортепиано в москве, купить рояль, купить фортепиано, продажа музыкальных инструментов, магазины музыкальных инструментов, интернет-магазин музыкальных инструментов"/>
-    <link rel="stylesheet" media="screen" href="@routes.Assets.at("stylesheets/bootstrap/main.min.css")">
+    <link rel="stylesheet" media="screen" href="@routes.Assets.at("stylesheets/main.css")">
     <link rel="shortcut icon" type="image/png" href="@routes.Assets.at("images/favicon.png")">
     <link rel="stylesheet" media="screen" href="@routes.Assets.at("javascripts/lightbox/css/lightbox.css")">
 
@@ -23,56 +23,56 @@ search: String = "")(content: Html)(implicit user: Option[models.UserEntity], re
     </noscript>
 </head>
 <body>
-    <div class="navbar navbar-fixed-top">
-        <div class="navbar-inner">
-            <div class="container">
-                <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+    <nav class="navbar navbar-fixed-top navbar-inverse" role="navigation">
+        <div class="container">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-ex1-collapse">
+                    <span class="sr-only">Toggle navigation</span>
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
-                </a>
-                <div class="nav-collapse collapse">
-                    <ul class="nav">
-                        <li class="@{if(menuItem.equals("index")) "active" else ""}">
-                            <a href="@routes.Application.index">
-                                <i class="icon-home"></i>
-                            </a>
-                        </li>
-                        <li class="@{
-                            if(menuItem.equals("catalogue")) "active" else ""
-                        }">
-                            <a href="@routes.Product.list"> @Messages("main.nav.catalogue") </a>
-                        </li>
-                        <li class="@{
-                            if(menuItem.equals("cart")) "active" else ""
-                        }">
-                            <a href="@routes.Cart.display()">
-                                <i class="icon-shopping-cart"></i>
-                            </a>
-                        </li>
-                        @user match {
-                            case Some(u) => {
-                                @if(u.isAdmin) {
-                                    <li class="@{if(menuItem.equals("admin")) "active" else ""}">
-                                        <a href="@controllers.admin.routes.Dashboard.index"><i class="icon-wrench"></i></a>
-                                    </li>
-                                }
+                </button>
+            </div>
+
+            <div class="collapse navbar-collapse navbar-ex1-collapse">
+                <ul class="nav navbar-nav">
+                    <li class="@{if(menuItem.equals("index")) "active" else ""}">
+                        <a href="@routes.Application.index">
+                            <i class="icon-home"></i>
+                        </a>
+                    </li>
+                    <li class="@{
+                        if(menuItem.equals("catalogue")) "active" else ""
+                    }">
+                        <a href="@routes.Product.list"> @Messages("main.nav.catalogue") </a>
+                    </li>
+                    <li class="@{
+                        if(menuItem.equals("cart")) "active" else ""
+                    }">
+                        <a href="@routes.Cart.display()">
+                            <i class="icon-shopping-cart"></i>
+                        </a>
+                    </li>
+                    @user match {
+                        case Some(u) => {
+                            @if(u.isAdmin) {
+                                <li class="@{if(menuItem.equals("admin")) "active" else ""}">
+                                    <a href="@controllers.admin.routes.Dashboard.index"><i class="icon-wrench"></i></a>
+                                </li>
                             }
-                            case None => {}
                         }
-                    </ul>
+                        case None => {}
+                    }
+                </ul>
+                <div class="nav navbar-right">
+                    <form class="navbar-form" action="@routes.Product.filteredList(1, 1)">
+                        <div class="form-group">
+                            <input type="text" class="form-control search-query" name="s" value="@search">
 
-                    <ul class="nav pull-right">
-                        <li>
-                            <form class="navbar-form form-search pull-right" action="@routes.Product.filteredList(1, 1)">
-                                <div class="input-append">
-                                    <input type="text" class="span2 search-query" name="s" value="@search">
-                                    <button type="submit" class="btn btn-primary"> @Messages("main.nav.searchbutton") </button>
-                                        &nbsp;
-                                </div>
-                            </form>
-
-                        </li>
+                        </div>
+                        <button type="submit" class="btn btn-primary"> @Messages("main.nav.searchbutton") </button>
+                    </form>
+                    <ul class="nav navbar-nav">
                         <li class="@{
                             if(menuItem.equals("security")) "active" else ""
                         }">
@@ -82,9 +82,11 @@ search: String = "")(content: Html)(implicit user: Option[models.UserEntity], re
                         </li>
                     </ul>
                 </div>
+
+
             </div>
         </div>
-    </div>
+    </nav>
     @subnav
     <div class="container">
 
