@@ -1,6 +1,6 @@
 package dao.common
 
-import models.Question
+import models.{ListPage, Question}
 
 trait QuestionRepository {
   def setAnswered(questionId: Int)
@@ -11,5 +11,5 @@ trait QuestionRepository {
 
   def insertQuestion(productId: Int, email: String): Option[Int]
 
-  def listWithAnswers(pageNumber:Int, pageSize: Int = 20): Seq[Question]
+  def listWithAnswers(pageNumber:Int, pageSize: Int = 20): ListPage[Question]
 }

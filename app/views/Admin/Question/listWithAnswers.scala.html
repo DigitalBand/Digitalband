@@ -1,1 +1,8 @@
-@(questions: Seq[Question])
+@(questionList: ListPage[Question])(implicit user: Option[models.UserEntity], request: play.api.mvc.Request[Any])
+@views.html.Admin.main("Администрирование", "questions"){
+   <ul>
+       @questionList.items.map { question =>
+           <li>@question.email</li>
+       }
+   </ul>
+}

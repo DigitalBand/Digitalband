@@ -35,7 +35,7 @@ search: String = "")(content: Html)(implicit user: Option[models.UserEntity], re
                             <a href="@Dashboard.index"> <i class="icon-home"></i>  </a>
                         </li>
                         <li class="@{if(menuItem.equals("orders")) "active" else ""}"> <a href="@controllers.admin.routes.Order.list(1)"> <i class="icon-shopping-cart"></i> Заказы </a> </li>
-                        <li class="@{if(menuItem.equals("answers")) "active" else ""}"> <a href="@controllers.admin.routes.Question.listWithAnswers(1)"> <i class="icon-question-sign"></i> Вопросы </a> </li>
+                        <li class="@{if(menuItem.equals("questions")) "active" else ""}"> <a href="@controllers.admin.routes.Question.listWithAnswers(1)"> <i class="icon-question-sign"></i> Вопросы </a> </li>
                     </ul>
                     <ul class="nav pull-right">
                         <li> <a href="@routes.Application.index()"><i class="icon-globe"></i> На сайт</a> </li>

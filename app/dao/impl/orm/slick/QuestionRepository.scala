@@ -5,7 +5,7 @@ import common.RepositoryBase
 import Database.threadLocalSession
 import slick.jdbc.{StaticQuery => Q, GetResult}
 import Q.interpolation
-import models.Question
+import models.{ListPage, Question}
 
 
 class QuestionRepository extends RepositoryBase with dao.common.QuestionRepository {
@@ -57,5 +57,17 @@ class QuestionRepository extends RepositoryBase with dao.common.QuestionReposito
     """.as[Question].list
   }
 
-  def listWithAnswers(pageNumber: Int, pageSize: Int) = ???
+  def listWithAnswers(pageNumber: Int, pageSize: Int) = database withSession {
+    implicit val getQuestion = GetResult(r => new Question(r.<<, r.<<, r.<<, r.<<, r.<<))
+    val items = sql"""
+      select
+        q.questionId, q.productId, p.title, q.email, q.type
+      from
+        questions q
+      inner join products p on p.productId = q.productId
+      limit ${pageSize * (pageNumber - 1)}, ${pageSize};
+    """.as[Question].list
+    val totalCount = sql"select count(q.questionId) from questions q".as[Int].first()
+    new ListPage(pageNumber, items, totalCount)
+  }
 }
