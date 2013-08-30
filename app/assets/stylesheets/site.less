@@ -21,11 +21,13 @@
 }
 
 .carousel-caption {
-  h3 {
+  h3 a {
     color: white;
   }
 }
-
+#myCarousel {
+  margin-bottom: 10px;
+}
 .page-header {
   .thumbnail {
     display: inline-block;
@@ -44,8 +46,8 @@
 .navbar {
   .nav {
     >li >a {
-      border-right: 1px solid #221A17;
-      border-left: 1px solid #3F302B;
+      border-right: 1px solid darken(@navbar-inverse-bg, 4%);
+      border-left: 1px solid lighten(@navbar-inverse-bg, 2%);
     }
   }
 }
@@ -87,7 +89,11 @@
   }
 
 }
-
+.thumbnails {
+  .thumbnail {
+    margin-bottom: 10px;
+  }
+}
 .thumbnail.sidenav-image {
   display: inline;
   padding: 0;
@@ -243,4 +249,7 @@ footer {
       margin-right: 2px;
     }
   }
+}
+.navbar-collapse .navbar-nav.navbar-right:last-child {
+  margin-right: 0;
 }
