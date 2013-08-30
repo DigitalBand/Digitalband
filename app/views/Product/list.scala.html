@@ -9,7 +9,7 @@ searchQuery: String)(implicit user:Option[models.UserEntity],request: play.api.m
 @subnav = {
     <div id="highlighted">
         <div class="container">
-            <div class="row-fluid header">
+            <div class="header">
                 @if(!brand.isEmpty) {
                     <div class="pull-right">
                         @if(brand.get.imageId > 0) {
@@ -55,28 +55,28 @@ searchQuery: String)(implicit user:Option[models.UserEntity],request: play.api.m
     <div class="product-list">
         @productListPage.items.map { product =>
             <div class="row">
-                <div class="span2">
+                <div class="col-md-2">
                     <a href="@routes.Product.filteredList(currentCategory.id, pageNumber, brandId(brand),
-                        productId = product.id, s = searchQuery)">
-                        <img class="thumbnail lazy" width="160" height="160" src="@routes.Assets.at("images/empty.gif")" data-original="@routes.Image.get(product.defaultImageId + ".jpg", 90, "340x340", "full")">
+                        productId = product.id, s = searchQuery)" class="thumbnail">
+                        <img class="lazy" width="160" height="160" src="@routes.Assets.at("images/empty.gif")" data-original="@routes.Image.get(product.defaultImageId + ".jpg", 90, "340x340", "full")">
                         <noscript>
-                            <img class="thumbnail" width="160" height="160" src="@routes.Image.get(product.defaultImageId + ".jpg", 90, "340x300", "full")">
+                            <img width="160" height="160" src="@routes.Image.get(product.defaultImageId + ".jpg", 90, "340x300", "full")">
                         </noscript>
                     </a>
                 </div>
-                <div class="span5">
+                <div class="col-md-5">
                     <a href="@routes.Product.filteredList(currentCategory.id, pageNumber, brandId(brand),
                         productId = product.id, s = searchQuery)">
                         <h5> @product.title </h5>
                     </a>
                     <p> @product.description &nbsp; </p>
                 </div>
-                <div class="span2">
+                <div class="col-md-2">
                     <h4>
                         @priceTag(product.price)
                     </h4>
                 </div>
-                <div class="span2">
+                <div class="col-md-2">
                     <form action="@routes.Cart.add" method="POST">
                         <input type="hidden" name="returnUrl"
                         value="@routes.Product.filteredList(currentCategory.id, pageNumber, brandId(brand), 1, s = searchQuery)"/>
