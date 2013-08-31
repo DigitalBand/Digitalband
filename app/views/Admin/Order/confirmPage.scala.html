@@ -1,17 +1,20 @@
 @(order: OrderInfo)(implicit user: Option[models.UserEntity], request: play.api.mvc.Request[Any])
 @views.html.Admin.main("Администрирование", "orders") {
-    <div class="alert alert-info"> Вы действительно хотите подтвердить заказ? </div>
-    <form method="POST" action="@controllers.admin.routes.Order.confirm(order.id)">
-        <div class="control-group">
-            <label for="comment" class="control-label">
-                Комментарий
+    <div class="col-md-12 page-block">
+        <div class="alert alert-info"> Вы действительно хотите подтвердить заказ? </div>
+        <form method="POST" class="well" action="@controllers.admin.routes.Order.confirm(order.id)">
+            <div class="control-group">
+                <label for="comment" class="control-label">
+                    Комментарий
                 </label>
-            <div class="controls">
-                <textarea rows="10" class="input-xlarge" name="comment" id="comment">Здравствуйте, @order.deliveryInfo.name! Спасибо за ваш заказ в нашем интернет-магазине! @order.items.map(item => item.title).reduce((a, b) => a + ", " + b) есть в наличии. Для уточнения способа оплаты и доставки мы свяжемся с Вами в течение 3 рабочих дней</textarea>
+                <div class="controls">
+                    <textarea rows="10" class="form-control" name="comment" id="comment">
+                        Здравствуйте, @order.deliveryInfo.name! Спасибо за ваш заказ в нашем интернет-магазине! @order.items.map(item => item.title).reduce((a, b) => a + ", " + b) есть в наличии. Для уточнения способа оплаты и доставки мы свяжемся с Вами в течение 3 рабочих дней</textarea>
+                </div>
             </div>
-        </div>
-        <div class="form-actions">
-            <button class="btn btn-primary"> Подтвердить </button>
-        </div>
-    </form>
+            <div class="form-actions">
+                <button class="btn btn-primary"> Подтвердить </button>
+            </div>
+        </form>
+    </div>
 }

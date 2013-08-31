@@ -1,7 +1,9 @@
 @(orderId: Int)(implicit user: Option[models.UserEntity], request: play.api.mvc.Request[Any])
-@views.html.Admin.main("Администрирование", "orders"){
-    <div class="alert alert-info">Вы действительно хотите удалить заказ?</div>
-    <form method="POST" action="@controllers.admin.routes.Order.delete(orderId)">
-        <button class="btn btn-primary">Удалить</button>
-    </form>
+@views.html.Admin.main("Администрирование", "orders") {
+    <div class="col-md-12 page-block">
+        <div class="alert alert-info">Вы действительно хотите удалить заказ?</div>
+        <form method="POST" class="well" action="@controllers.admin.routes.Order.delete(orderId)">
+            <button class="btn btn-danger">Удалить</button>
+        </form>
+    </div>
 }

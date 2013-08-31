@@ -1,17 +1,22 @@
 @(order: OrderInfo)(implicit user: Option[models.UserEntity], request: play.api.mvc.Request[Any])
-@views.html.Admin.main("Администрирование", "orders"){
-     <div class="alert alert-info">
-         Вы действительно хотите отменить заказ?
-     </div>
-    <form method="POST" action="@controllers.admin.routes.Order.cancel(order.id)">
-        <div class="control-group">
-            <label for="comment" class="control-label">
-                    Комментарий
-            </label>
-            <div class="controls">
-                <textarea rows="10" class="input-xlarge" name="comment" id="comment">Здравствуйте, @order.deliveryInfo.name! Спасибо за ваш заказ в нашем интернет-магазине! К сожалению, @order.items.map(item => item.title).reduce((a, b) => a + ", " + b) нет в наличии.</textarea>
-            </div>
+@views.html.Admin.main("Администрирование", "orders") {
+    <div class="col-md-12 page-block">
+        <div class="alert alert-info">
+            Вы действительно хотите отменить заказ?
         </div>
-        <button class="btn btn-primary">Отменить</button>
-    </form>
+        <form method="POST" class="well" action="@controllers.admin.routes.Order.cancel(order.id)">
+            <div class="control-group">
+                <label for="comment" class="control-label">
+                    Комментарий
+                </label>
+                <div class="controls">
+                    <textarea rows="10" class="form-control" name="comment" id="comment">
+                        Здравствуйте, @order.deliveryInfo.name! Спасибо за ваш заказ в нашем интернет-магазине! К сожалению, @order.items.map(item => item.title).reduce((a, b) => a + ", " + b) нет в наличии.</textarea>
+                </div>
+            </div>
+            <div class="form-actions">
+            <button class="btn btn-primary">Отменить</button>
+            </div>
+        </form>
+    </div>
 }

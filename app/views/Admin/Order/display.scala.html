@@ -2,29 +2,32 @@
 @import Cart.shoppingList
 @import views.html.Admin.Order.statusButton
 @views.html.Admin.main("Просмотр заказа", "orders") {
-    <h4> Заказ № @order.id </h4>
-    @statusButton(order.status, order.id)
-    <div class="row">
-        <dl class="span6">
-            <dt> Имя: </dt>
-            <dd>
+
+    <div class="col-md-12 page-block">
+        <h4> Заказ № @order.id </h4>
+        @statusButton(order.status, order.id)
+        <div class="row">
+            <dl class="col-md-6">
+                <dt> Имя: </dt>
+                <dd>
                 @order.deliveryInfo.name
-            </dd>
+                </dd>
 
-            <dt> email: </dt>
-            <dd>
-                <a href="mailto:  @order.deliveryInfo.email"> @order.deliveryInfo.email </a>
-            </dd>
+                <dt> email: </dt>
+                <dd>
+                    <a href="mailto:  @order.deliveryInfo.email"> @order.deliveryInfo.email </a>
+                </dd>
 
-        </dl>
-        <dl class="span6">
-            <dt>Телефон:</dt>
-            <dd><a href="callto:@order.deliveryInfo.phone">@order.deliveryInfo.phone</a></dd>
-            <dt>Адрес:</dt>
-            <dd>@order.deliveryInfo.address</dd>
-        </dl>
+            </dl>
+            <dl class="col-md-6">
+                <dt>Телефон:</dt>
+                <dd><a href="callto:@order.deliveryInfo.phone">@order.deliveryInfo.phone</a></dd>
+                <dt>Адрес:</dt>
+                <dd>@order.deliveryInfo.address</dd>
+            </dl>
+        </div>
+
+
+        @shoppingList(order.items, "", false)
     </div>
-
-
-    @shoppingList(order.items, "", false)
 }
