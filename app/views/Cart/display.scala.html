@@ -2,30 +2,32 @@
 @import Cart.shoppingList
 @import Shared.wizard
 @main(menuItem = "cart") {
-    <div class="page-header">
-    <h3> @Messages("cart.title") </h3>
-        @if(!returnUrl.isEmpty){
-    <a href="@returnUrl">@Messages("cart.links.continueshopping")&nbsp;<i class="icon-forward"></i></a>
-            }
-    </div>
-    @if(items.length == 0) {
-        <div class="alert alert-info">
-            @Messages("cart.alerts.empty")
-        </div>
-    } else {
-        <form method="POST" action="@routes.Cart.update()">
-            @shoppingList(items, returnUrl)
-            <div class="form-actions">
-                <button class="btn btn-primary"> <i class="icon-refresh"></i> @Messages("cart.form.buttons.update") </button>
-                @user match {
-                    case None => {
-                        <a class="pull-right btn btn-success" href="@routes.Cart.checkout()"> @Messages("cart.links.makeorder")</a>
-                    }
-                    case Some(u) => {
-                        <a class="pull-right btn btn-success" href="@routes.Order.fill()"> @Messages("cart.links.makeorder")</a>
-                    }
+    <div class="col-lg-12 page-block">
+        <div class="page-header">
+            <h3>@Messages("cart.title")</h3>
+                @if(!returnUrl.isEmpty) {
+                    <a href="@returnUrl">@Messages("cart.links.continueshopping")&nbsp;<i class="icon-forward"></i></a>
                 }
+        </div>
+        @if(items.length == 0) {
+            <div class="alert alert-info">
+                @Messages("cart.alerts.empty")
             </div>
-        </form>
-    }
+        } else {
+            <form method="POST" action="@routes.Cart.update()">
+                @shoppingList(items, returnUrl)
+                <div class="form-actions">
+                    <button class="btn btn-primary"> <i class="icon-refresh"></i> @Messages("cart.form.buttons.update") </button>
+                    @user match {
+                        case None => {
+                            <a class="pull-right btn btn-success" href="@routes.Cart.checkout()"> @Messages("cart.links.makeorder")</a>
+                        }
+                        case Some(u) => {
+                            <a class="pull-right btn btn-success" href="@routes.Order.fill()"> @Messages("cart.links.makeorder")</a>
+                        }
+                    }
+                </div>
+            </form>
+        }
+    </div>
 }

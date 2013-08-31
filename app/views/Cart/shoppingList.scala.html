@@ -26,11 +26,11 @@
                     <img class="thumbnail pull-left" src="@routes.Image.get(cartItem.imageId + ".jpg", 90, "40x40", "full")" />
                 </a>
                 <a class="thumbnail-title" href="@routes.Product.display(cartItem.productId)"> @cartItem.title </a> </td>
-            <td class="center-text">
-                @if(editable){
-                <input type="hidden" name="cartItem[@{items.indexOf(cartItem) + 1}]" value="@cartItem.productId" />
-                <input type="text" maxlength="2" name="cartItem[@{items.indexOf(cartItem) + 1}]" placeholder="1" class="input-mini right-text" value="@cartItem.count">
-                    }else{
+            <td class="center-text narrow-col">
+                @if(editable) {
+                    <input type="hidden" name="cartItem[@{items.indexOf(cartItem) + 1}]" value="@cartItem.productId" />
+                    <input type="text" maxlength="2" name="cartItem[@{items.indexOf(cartItem) + 1}]" placeholder="1" class="right-text form-control" value="@cartItem.count">
+                } else {
                    <span>@cartItem.count</span>
                 }
             </td>
