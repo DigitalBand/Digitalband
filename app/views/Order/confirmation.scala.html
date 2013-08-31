@@ -2,6 +2,7 @@
 @import Cart.shoppingList
 @import Shared.wizard
 @main() {
+    <div class="col-md-12 page-block">
     @wizard(3)
     <div class="page-header">
         <h3> @Messages("order.confirmation.title") </h3>
@@ -13,4 +14,5 @@
         <h4> @Messages("order.confirmation.details.title") </h4>
     </div>
     @shoppingList(items, "", false)
+    </div>
 }

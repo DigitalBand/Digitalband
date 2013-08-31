@@ -1,24 +1,36 @@
-@(product: models.ProductDetails, form: Form[String], isAjax: Boolean, returnUrl: String = "")(implicit user:Option[models.UserEntity],request: play.api.mvc.Request[Any])
+@(product: models.ProductDetails, form: Form[String], isAjax: Boolean, returnUrl: String = "")(implicit user: Option[models.UserEntity], request: play.api.mvc.Request[Any])
 @import views.html.common.bootstrap._
-@content = {
-<h4>Запросить информацию о наличии товара: <a href="@returnUrl">@product.title</a></h4>
-<div class="alert alert-info">
-    В данный момент на нашем сайте о наличии товара можно узнать, только через форму запроса.
-    Введите свой email и нажмите кнопку "@Messages("product.availability.sendButton")".
-    Мы вам ответим в ближайшее время.
-</div>
+    @content = {
+        <div class="row">
+            <div class="col-md-12">
+                <h4>Запросить информацию о наличии товара: <a href="@returnUrl">@product.title</a></h4>
+                <div class="alert alert-info">
+                    В данный момент на нашем сайте о наличии товара можно узнать, только через форму запроса.
+                    Введите свой email и нажмите кнопку "@Messages("product.availability.sendButton")".
+                    Мы вам ответим в ближайшее время.
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-3"></div>
+            <div class="col-md-6">
+                <form method="POST" class="form-horizontal well">
+                    @helper.inputText(form("email"), 'type -> "email", 'class -> "form-control")
+                    <div class="form-actions">
+                        <button class="btn btn-primary">@Messages("product.availability.sendButton")</button>
+                    </div>
+                </form>
+            </div>
+            <div class="col-md-3"></div>
+        </div>
 
-<form method="POST" class="form-horizontal">
-     @helper.inputText(form("email"), 'type -> "email")
-    <div class="form-actions">
-        <button class="btn btn-primary">@Messages("product.availability.sendButton")</button>
-    </div>
-</form>
-}
-@if(isAjax){
+    }
+@if(isAjax) {
     @content
-}else{
-    @main("Узнать наличие", "catalogue"){
+} else {
+    @main("Узнать наличие", "catalogue") {
+        <div class="col-md-12 page-block">
         @content
+        </div>
     }
 }
