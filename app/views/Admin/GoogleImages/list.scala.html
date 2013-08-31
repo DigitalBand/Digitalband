@@ -1,11 +1,13 @@
 @(imageList: ListPage[ImageSearchItem], search: String)
 @import helpers.PagerHelper
 @import views.html.Shared.pager
+<div>
 @pager(new PagerHelper(10, imageList.totalCount, imageList.number), pageNumber => controllers.admin.routes.ImageSearch.imageList(search, pageNumber))
+</div>
 @imageList.items.map { image =>
     <div id="googleimage-@imageList.number@imageList.items.indexOf(image)" class="fileupload">
         <div class="thumbnail" style="width: 90px; height: 90px;text-align:center;vertical-align:middle">
-            <img title="@image.width x @image.height"  src="@image.thumbnailUrl" data-src="@image.originalUr" />
+            <img title="@image.width x @image.height" src="@image.thumbnailUrl" data-src="@image.originalUr" />
             <input type="hidden" value="@image.originalUr" id="googlehidden-@imageList.number@imageList.items.indexOf(image)" />
         </div>
         <div class="google-buttons">
