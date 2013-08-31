@@ -4,7 +4,7 @@ brandId: Int)(content:Html)(implicit user:Option[models.UserEntity],request: pla
 @import Shared._
 
 @main(title, menuItem, scripts, subnav = subnav, search = search) {
-    <div class="row product-list-container">
+    <div class="product-list-container">
         <div class="col-md-3">
             <div class="sidebar block" id="collapsable-sidebar">
                 @sidenav(Messages("product.list.sidebar.categories"),
