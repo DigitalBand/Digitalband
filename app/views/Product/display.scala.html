@@ -53,7 +53,7 @@ categoryId = categoryId, brandId = brandId, subnav = subnav) {
 
 <h4>@product.title</h4>
 <div class="row">
-    <div class="span4 product-photos">
+    <div class="col-md-5 product-photos">
         @if(imageIds.length == 0){
         <img alt="" src="@routes.Image.get(product.defaultImageId + ".jpg", 90, "330x250", "full")">
         }else{
@@ -61,18 +61,18 @@ categoryId = categoryId, brandId = brandId, subnav = subnav) {
         }
         @if(imageIds.length > 0){
         <hr/>
-        <ul class="thumbnails">
+        <div class="row">
             @imageIds.map { imageId =>
-            <li>
+            <div class="col-sm-6 col-md-4 col-lg-3">
                 <a rel="lightbox[gallery]" href="@routes.Image.get(imageId + ".jpg", 90, "600x600", "full")" target="_blank" class="thumbnail fresco" data-fresco-group-options="thumbnails:false" data-fresco-group="mixed">
                     <img src="@routes.Image.get(imageId + ".jpg", 90, "50x50", "full")" alt="">
                 </a>
-            </li>
+            </div>
             }
-        </ul>
+        </div>
             }
     </div>
-    <div class="span5">
+    <div class="col-md-7">
         <div>
             <address>
                 <strong>Бренд:</strong> <span>@product.brand.title</span> <br/>
@@ -93,23 +93,33 @@ categoryId = categoryId, brandId = brandId, subnav = subnav) {
         </h3>
         <hr/>
         <div>
-            <form class="form-inline" action="@routes.Cart.add()" method="POST">
+            <form action="@routes.Cart.add()"  method="POST">
+                <div class="row">
+                <div class="col-md-4">
                 <label>@Messages("product.display.countlabel")</label>
-                <input type="text" class="input-mini" placeholder="1" name="count" value="1">
+                <input type="text" class="form-control" placeholder="1" name="count" value="1">
                 <input type="hidden" name="productId" value="@product.id" />
+
                 <input type="hidden" name="returnUrl"
                     value="@routes.Product.filteredList(categoryId, pageNumber, brandId, productId = product.id, s = search)"/>
-                @addToCartButton(product.price)
+                </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-4 justified">
+                    @addToCartButton(product.price)
+                    </div>
+                </div>
             </form>
         </div>
     </div>
 </div>
 <div class="row">
-    <div class="span9">
+    <div class="col-md-9">
         <div class="tabbable">
             <ul class="nav nav-tabs">
                 <li class="active"><a href="#" data-toggle="tab">@Messages("product.display.navtab.descriptiontab")</a></li>
             </ul>
+
             <article>@Html(product.description)</article>
             <br/>
         </div>
