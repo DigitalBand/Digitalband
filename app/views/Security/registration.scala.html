@@ -1,22 +1,28 @@
-@(loginForm: Form[(String, String)], returnUrl: String)(implicit lang: Lang, request: play.api.mvc.Request[Any], user:Option[models.UserEntity])
+@(loginForm: Form[(String, String)], returnUrl: String)(implicit lang: Lang, request: play.api.mvc.Request[Any], user: Option[models.UserEntity])
 @import views.html.common.bootstrap._
 @main(menuItem = "security") {
-    @loginForm.globalError.map { error =>
-        <div class="alert alert-error">
-            @error.message
+    <div class="col-md-3"></div>
+    <div class="col-md-6">
+        <div class="page-block">
+            @loginForm.globalError.map { error =>
+                <div class="alert alert-error">
+                    @error.message
+                </div>
+            }
+            <form class="form-horizontal well" action="@routes.Security.signUp(returnUrl)" method="POST">
+                <fieldset>
+                    <legend>
+                        <i class="icon-key"></i>
+                        @Messages("security.registration.form.legend")
+                    </legend>
+                    @helper.inputText(loginForm("email"), args = 'type -> "email", 'class -> "form-control")
+                    @helper.inputPassword(loginForm("password"), args = 'class -> "form-control")
+                    <div class="form-actions">
+                        <button class="btn btn-primary">@Messages("security.registration.form.submit")</button>&nbsp;
+                    </div>
+                </fieldset>
+            </form>
         </div>
-    }
-    <form class="form-horizontal" action="@routes.Security.signUp(returnUrl)" method="POST">
-        <fieldset>
-            <legend>
-                <i class="icon-key"></i>
-                @Messages("security.registration.form.legend")
-            </legend>
-            @helper.inputText(loginForm("email"), args = 'type -> "email", 'class -> "form-control")
-            @helper.inputPassword(loginForm("password"), args = 'class -> "form-control")
-            <div class="form-actions">
-                <button class="btn btn-primary">@Messages("security.registration.form.submit")</button>&nbsp;
-            </div>
-        </fieldset>
-    </form>
+    </div>
+    <div class="col-md-3"></div>
 }
