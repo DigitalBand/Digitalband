@@ -12,8 +12,8 @@
                 <i class="icon-key"></i>
                 @Messages("security.registration.form.legend")
             </legend>
-            @helper.inputText(loginForm("email"), args = 'type -> "email")
-            @helper.inputPassword(loginForm("password"))
+            @helper.inputText(loginForm("email"), args = 'type -> "email", 'class -> "form-control")
+            @helper.inputPassword(loginForm("password"), args = 'class -> "form-control")
             <div class="form-actions">
                 <button class="btn btn-primary">@Messages("security.registration.form.submit")</button>&nbsp;
             </div>

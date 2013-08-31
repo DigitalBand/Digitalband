@@ -63,7 +63,7 @@ GET     /admin/email/orderConfirmation/:orderId                                 
 GET     /login                                                                    @controllers.Security.login(returnUrl: String ?= "")
 GET     /registration                                                             @controllers.Security.registration(returnUrl: String ?= "")
 GET     /signOff                                                                  @controllers.Security.signOff(returnUrl: String ?= "")
-POST    /signIn                                                                   @controllers.Security.signIn(returnUrl: String ?= "")
+POST    /login                                                                    @controllers.Security.signIn(returnUrl: String ?= "")
 POST    /signUp                                                                   @controllers.Security.signUp(returnUrl: String ?= "")
 GET     /forgotPassword                                                           @controllers.Security.forgotPassword
 POST    /sendPassword                                                             @controllers.Security.sendPassword

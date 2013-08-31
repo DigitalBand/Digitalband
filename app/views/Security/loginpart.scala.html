@@ -1,22 +1,23 @@
 @(loginForm: Form[(String, String)], returnUrl: String = "")(implicit lang: Lang)
 @import views.html.common.bootstrap._
-
-@loginForm.globalError.map { error =>
-    <div class="alert alert-error">
-        @error.message
-    </div>
-}
-<form class="form-horizontal" action="@routes.Security.signIn(returnUrl)" method="POST">
-    <fieldset>
-        <legend>
-            <i class="icon-key"></i>
-            @Messages("security.login.form.legend")
-        </legend>
-        @helper.inputText(loginForm("email"), args = 'type -> "email")
-        @helper.inputPassword(loginForm("password"))
-        <div class="form-actions">
-            <button class="btn btn-primary">Войти</button>&nbsp;
-            <a href="@routes.Security.forgotPassword">@Messages("security.login.form.forgotpassword")</a>
+<div class="page-block">
+    @loginForm.globalError.map { error =>
+        <div class="alert alert-danger">
+            @error.message
         </div>
-    </fieldset>
-</form>
+    }
+    <form class="form-horizontal" action="@routes.Security.signIn(returnUrl)" method="POST">
+        <fieldset>
+            <legend>
+                <i class="icon-key"></i>
+                @Messages("security.login.form.legend")
+            </legend>
+            @helper.inputText(loginForm("email"), args = 'type -> "email", 'class -> "form-control")
+            @helper.inputPassword(loginForm("password"), args = 'class -> "form-control")
+            <div class="form-actions">
+                <button class="btn btn-primary">Войти</button>&nbsp;
+                <a href="@routes.Security.forgotPassword">@Messages("security.login.form.forgotpassword")</a>
+            </div>
+        </fieldset>
+    </form>
+</div>
