@@ -10,7 +10,7 @@ case class PagerHelper(val pageSize: Int, val totalCount: Int, val number: Int) 
 
   def localPageCount: Int = {
     val pageCount = totalPageCount
-    val startNumberCount = 6
+    val startNumberCount = 4
     if (pageCount <= startNumberCount) pageCount
     if (number > 0) {
       val numberCount = (startNumberCount + number - 1)

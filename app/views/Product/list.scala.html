@@ -54,29 +54,28 @@ searchQuery: String)(implicit user:Option[models.UserEntity],request: play.api.m
         pn => routes.Product.filteredList(currentCategory.id, pn, brandId(brand), s = searchQuery))
     <div class="product-list">
         @productListPage.items.map { product =>
-            <div class="row">
+            <div class="row product-item">
                 <div class="col-md-2">
                     <a href="@routes.Product.filteredList(currentCategory.id, pageNumber, brandId(brand),
                         productId = product.id, s = searchQuery)" class="thumbnail">
-                        <img class="lazy" width="160" height="160" src="@routes.Assets.at("images/empty.gif")" data-original="@routes.Image.get(product.defaultImageId + ".jpg", 90, "340x340", "full")">
+                        <img class="lazy" src="@routes.Assets.at("images/empty.gif")" data-original="@routes.Image.get(product.defaultImageId + ".jpg", 90, "340x340", "full")">
                         <noscript>
-                            <img width="160" height="160" src="@routes.Image.get(product.defaultImageId + ".jpg", 90, "340x300", "full")">
+                            <img src="@routes.Image.get(product.defaultImageId + ".jpg", 90, "340x300", "full")">
                         </noscript>
                     </a>
                 </div>
-                <div class="col-md-5">
+                <div class="col-md-8">
                     <a href="@routes.Product.filteredList(currentCategory.id, pageNumber, brandId(brand),
                         productId = product.id, s = searchQuery)">
                         <h5> @product.title </h5>
                     </a>
                     <p> @product.description &nbsp; </p>
                 </div>
+
                 <div class="col-md-2">
                     <h4>
-                        @priceTag(product.price)
+                    @priceTag(product.price)
                     </h4>
-                </div>
-                <div class="col-md-2">
                     <form action="@routes.Cart.add" method="POST">
                         <input type="hidden" name="returnUrl"
                         value="@routes.Product.filteredList(currentCategory.id, pageNumber, brandId(brand), 1, s = searchQuery)"/>
@@ -86,10 +85,11 @@ searchQuery: String)(implicit user:Option[models.UserEntity],request: play.api.m
                     </form>
                 </div>
             </div>
-            <hr />
+            <hr class="hr">
         }
-        @pager(helpers.PagerHelper(pageSize, productListPage.totalCount, productListPage.number),
-            pn => routes.Product.filteredList(currentCategory.id, pn, brandId(brand)))
+
     </div>
+    @pager(helpers.PagerHelper(pageSize, productListPage.totalCount, productListPage.number),
+        pn => routes.Product.filteredList(currentCategory.id, pn, brandId(brand)))
 
 }

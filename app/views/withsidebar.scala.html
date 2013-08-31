@@ -6,19 +6,19 @@ brandId: Int)(content:Html)(implicit user:Option[models.UserEntity],request: pla
 @main(title, menuItem, scripts, subnav = subnav, search = search) {
     <div class="row product-list-container">
         <div class="col-md-3">
-            <div class="sidebar block">
+            <div class="sidebar block" id="collapsable-sidebar">
                 @sidenav(Messages("product.list.sidebar.categories"),
                     Messages("product.list.categories.linkTitle"),
                     categories.map {
                         case c => SidebarItem(c.title, c.id, 0,  c.productCount)
                     },
-                    id => routes.Product.filteredList(id, 1, brandId, s = search))
+                    id => routes.Product.filteredList(id, 1, brandId, s = search), "categories-collapse")
                 @sidenav(Messages("product.list.sidebar.brands"),
                     "",
                     brands.items.map {
                         case b => SidebarItem(b.title, b.id, b.imageId,  b.productCount)
                     },
-                    id => routes.Product.filteredList(categoryId, 1, id, s = search))
+                    id => routes.Product.filteredList(categoryId, 1, id, s = search), "brands-collapse")
             </div>
         </div>
         <div class="col-md-9">
