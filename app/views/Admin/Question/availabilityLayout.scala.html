@@ -1,31 +1,33 @@
 @(info: String, title: String)(content: Html)(implicit user: Option[models.UserEntity], request: play.api.mvc.Request[Any])
 @import views.html.common.bootstrap._
-@scripts = {
-    <script src="@routes.Assets.at("javascripts/ckeditor/ckeditor.js")" type="text/javascript"></script>
-    <script>
+    @scripts = {
+        <script src="@routes.Assets.at("javascripts/ckeditor/ckeditor.js")" type="text/javascript"></script>
+        <script>
             $(function(){
-                CKEDITOR.replace("comment");
+            CKEDITOR.replace("comment");
             });
-    </script>
-}
+        </script>
+    }
 @views.html.Admin.main("Администрирование", "index", scripts = scripts) {
-    <div class="page-header">
-        <h4>@title</h4>
-    </div>
-    <div class="alert alert-info">@info</div>
-    <form method="POST">
-        <div class="control-group">
-            <label class="control-label">
+    <div class="col-md-12 page-block">
+        <div class="page-header">
+            <h4>@title</h4>
+        </div>
+        <div class="alert alert-info">@info</div>
+        <form class="well" method="POST">
+            <div class="control-group">
+                <label class="control-label">
                     Комментарий
-            </label>
-            <div class="controls">
-                <textarea name="comment">
+                </label>
+                <div class="controls">
+                    <textarea name="comment">
                     @content
-                </textarea>
+                    </textarea>
+                </div>
             </div>
-        </div>
-        <div class="form-actions">
-            <button class="btn btn-primary">Отправить</button>
-        </div>
-    </form>
+            <div class="form-actions">
+                <button class="btn btn-primary">Отправить</button>
+            </div>
+        </form>
+    </div>
 }
