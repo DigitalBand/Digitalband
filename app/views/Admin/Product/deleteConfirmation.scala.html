@@ -1,9 +1,11 @@
 @(product: models.ProductDetails)(implicit user: Option[models.UserEntity], request: play.api.mvc.Request[Any])
 @views.html.Admin.main("Администрирование", "index") {
-    <div class="alert alert-danger">Вы действительно хотите удалить товар?</div>
-    <form method="POST">
-        <div class="form-actions">
-            <button class="btn btn-danger"><i class="icon-trash"></i>Удалить</button>
-        </div>
-    </form>
+    <div class="col-md-12 page-block">
+        <div class="alert alert-danger">Вы действительно хотите удалить товар?</div>
+        <form method="POST" class="well">
+            <div class="form-actions">
+                <button class="btn btn-danger"><i class="icon-trash"></i>Удалить</button>
+            </div>
+        </form>
+    </div>
 }
