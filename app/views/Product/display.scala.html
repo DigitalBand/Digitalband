@@ -12,7 +12,7 @@ pageNumber:Int, search: String)(implicit user:Option[models.UserEntity],request:
                     @breadcrumbItem(breadcrumbItems, categoryId => routes.Product.filteredList(categoryId, 1, brandId, s = search))
                     @if(!search.isEmpty){
                         <li>
-                            <span class="divider">/</span>
+
                             <a href="@routes.Product.filteredList(categoryId, 1, brandId, s = search)">
                                 @Messages("product.display.breadcrumb.search", search)
                             </a>
@@ -20,7 +20,7 @@ pageNumber:Int, search: String)(implicit user:Option[models.UserEntity],request:
                     }
                     @if(pageNumber > 1) {
                         <li>
-                            <span class="divider"><i class="icon-angle-right"></i></span>
+
                             <a href="@routes.Product.filteredList(categoryId, pageNumber, brandId, s = search)">
                                 @Messages("product.display.breadcrumb.pagenumber", pageNumber)
                             </a>
