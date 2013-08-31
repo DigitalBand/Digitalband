@@ -1,36 +1,43 @@
-@(items: Seq[models.CartItem], deliveryInfo: Form[DeliveryInfo])(implicit user: Option[models.UserEntity],request: play.api.mvc.Request[Any])
+@(items: Seq[models.CartItem], deliveryInfo: Form[DeliveryInfo])(implicit user: Option[models.UserEntity], request: play.api.mvc.Request[Any])
 @import Cart.shoppingList
 @import Shared.wizard
 @import views.html.common.bootstrap._
 @import views.html.Security.loginpart
 
 @main(menuItem = "cart") {
-    @wizard(2)
-    <div class="page-header">
-        <h3> @Messages("order.deliveryinfo.title") </h3>
-            &nbsp;<a href="@routes.Cart.display()"> <i class="icon-edit"></i> @Messages("order.deliveryinfo.editbutton") </a>
-    </div>
-    @shoppingList(items, "", false)
-    <form method="post" action="@routes.Order.create" class="form-inline">
-        <fieldset>
-            <legend> @Messages("order.deliveryinfo.form.legend")</legend>
-            <div class="row">
-                <div class="span6">
-
-                    @helper.inputText(deliveryInfo("name"), 'class -> "input-xlarge")
-                    @helper.inputText(deliveryInfo("email"), 'class -> "input-xlarge")
-
-                    @helper.inputText(deliveryInfo("phone"), 'class -> "input-xlarge")
-                </div>
-                <div class="span6">
-                    @helper.textarea(deliveryInfo("address"), 'rows -> 7, 'class -> "input-xlarge")
-                </div>
-            </div>
-        </fieldset>
-        <div class="form-actions">
-            <button class="btn btn-success"> <i class="icon-ok"></i> &nbsp; @Messages("order.fill.form.buttons.placeorder") </button>
+    <div class="page-block">
+        <div class="col-md-12">
+        @wizard(2)
         </div>
-    </form>
+
+        <div class="col-md-12">
+            <div class="page-header">
+                <h3> @Messages("order.deliveryinfo.title") </h3>
+                    &nbsp;<a href="@routes.Cart.display()"> <i class="icon-edit"></i> @Messages("order.deliveryinfo.editbutton") </a>
+            </div>
+            @shoppingList(items, "", false)
+            <form method="post" action="@routes.Order.create">
+                <fieldset>
+                    <legend> @Messages("order.deliveryinfo.form.legend")</legend>
+                    <div class="row">
+                    <div class="col-md-6">
+
+                        @helper.inputText(deliveryInfo("name"), 'class -> "form-control")
+                        @helper.inputText(deliveryInfo("email"), 'class -> "form-control")
+
+                        @helper.inputText(deliveryInfo("phone"), 'class -> "form-control")
+                    </div>
+                    <div class="col-md-6">
+                    @helper.textarea(deliveryInfo("address"), 'rows -> 7, 'class -> "form-control")
+                    </div>
+                    </div>
+                    <br>
+                    <button class="btn btn-primary"> <i class="icon-ok"></i> &nbsp; @Messages("order.fill.form.buttons.placeorder") </button>
+                </fieldset>
 
 
+            </form>
+        </div>
+
+    </div>
 }
