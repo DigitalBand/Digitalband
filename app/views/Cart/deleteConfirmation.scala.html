@@ -1,15 +1,16 @@
 @(product: models.ProductDetails, returnUrl: String)(implicit user:Option[models.UserEntity],request: play.api.mvc.Request[Any])
 @import Shared._
 @main(menuItem = "cart") {
-    <form action="@routes.Cart.delete(product.id, returnUrl)" method="POST">
-        <div class="alert alert-block">
+
+    <form action="@routes.Cart.delete(product.id, returnUrl)" method="POST" class="col-md-12 page-block">
+        <div class="alert alert-warning">
             @withMessage("cart.delete.confirmation.alert"){
-                <a href="@routes.Product.display(product.id)"> @product.title</a>
+                <a href="@routes.Product.display(product.id)" class="alert-link"> @product.title</a>
             }
         </div>
         <div class="form-actions">
             <button class="btn btn-danger">@Messages("cart.delete.confirmation.form.buttons.delete")</button>
-                &nbsp;<a href="@routes.Cart.display(returnUrl)">
+                &nbsp;<a href="@routes.Cart.display(returnUrl)" class="btn btn-default">
                 @Messages("cart.delete.confirmation.form.buttons.back")</a>
         </div>
     </form>
