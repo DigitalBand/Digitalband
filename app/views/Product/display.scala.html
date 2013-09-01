@@ -35,10 +35,31 @@ pageNumber:Int, search: String)(implicit user:Option[models.UserEntity],request:
 @scripts = {
     @if(user.get.isAdmin){
         <script src="@routes.Assets.at("javascripts/ckeditor/ckeditor.js")" type="text/javascript"></script>
+        <script src="http://code.angularjs.org/1.2.0rc1/angular.min.js"></script>
         <script>
-            $(function(){
-               //$("#description").attr("contenteditable", "true");
+            'use strict';
+            angular.module('directive', []).directive('contenteditable', function() {
+                return {
+                    require: 'ngModel',
+                    link: function(scope, elm, attrs, ctrl) {
+                                elm.on('blur', function() {
+                                    scope.$apply(function() {
+                                    ctrl.$setViewValue(elm.html());
+                                });
+                            });
+                            ctrl.$render = function(value) {
+                            elm.html(value);
+                        };
+                        ctrl.$setViewValue(elm.html());
+                    }
+                };
             });
+            function ProductCtrl($scope) {
+                $scope.product = {
+                    title: "Test",
+                    description: "test"
+                };
+            }
         </script>
     }
 }
@@ -60,8 +81,8 @@ categoryId = categoryId, brandId = brandId, subnav = subnav, scripts = scripts) 
         </li>
     }
 
-
-<h4>@product.title</h4>
+<div ng-app="productEdit">
+<h4>@product.title <small>{{ product.title }}</small></h4>
 <div class="row">
     <div class="col-md-5 product-photos">
         @if(imageIds.length == 0){
@@ -135,5 +156,5 @@ categoryId = categoryId, brandId = brandId, subnav = subnav, scripts = scripts) 
         </div>
     </div>
 </div>
-
+</div>
 }
