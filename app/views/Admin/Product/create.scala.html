@@ -4,12 +4,17 @@
         <link rel="stylesheet" media="screen" href="@routes.Assets.at("stylesheets/bootstrap/fileupload.min.css")"/>
     }
     @scripts = {
+
         <script src="@routes.Assets.at("javascripts/ckeditor/ckeditor.js")" type="text/javascript"></script>
+
         <script src="@routes.Assets.at("javascripts/bootstrap-fileupload/bootstrap-fileupload.js")" type="text/javascript"></script>
         <script src="@routes.Assets.at("javascripts/edit.js")" type="text/javascript"></script>
         <script>
             $(document).ready(function() {
-            initEdit('@controllers.admin.routes.ImageSearch.imageList()');
+                initEdit('@controllers.admin.routes.ImageSearch.imageList()');
+                $("form").submit(function(){
+                    $("#descriptionValue").val($("#description").html());
+                });
             });
         </script>
     }
@@ -38,7 +43,15 @@
                     @helper.inputText(product("title"), '_label -> "Название", 'class -> "form-control")
                     @helper.inputText(product("price"), '_label -> "Цена", 'type -> "number", 'class -> "form-control")
                     @helper.textarea(product("shortDescription"), '_label -> "Краткое описание", 'class -> "form-control")
-                    @helper.textarea(product("description"), '_label -> "Описание", 'rows -> "10", 'class -> "form-control")
+                    <div class="form-group" id="descriptionGroup">
+                        <label>Описание</label>
+
+                        <div id="description" contenteditable="true" class="editable form-control">
+                            @Html(product("description").value.getOrElse(""))
+                        </div>
+                        <input type="hidden" name="description" value="@product("description").value.getOrElse("")" id="descriptionValue">
+                    </div>
+
                 </div>
                 <div class="col-md-6">
                     @helper.inputText(product("brand"), '_label -> "Бренд", 'class -> "form-control")

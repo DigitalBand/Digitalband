@@ -32,8 +32,18 @@ pageNumber:Int, search: String)(implicit user:Option[models.UserEntity],request:
         </div>
     </div>
 }
+@scripts = {
+    @if(user.get.isAdmin){
+        <script src="@routes.Assets.at("javascripts/ckeditor/ckeditor.js")" type="text/javascript"></script>
+        <script>
+            $(function(){
+               //$("#description").attr("contenteditable", "true");
+            });
+        </script>
+    }
+}
 @withsidebar(product.title, "catalogue", search = search, brands = brands, categories = categories,
-categoryId = categoryId, brandId = brandId, subnav = subnav) {
+categoryId = categoryId, brandId = brandId, subnav = subnav, scripts = scripts) {
     @alert()
     @adminToolbar(user) {
         <li>
@@ -114,13 +124,13 @@ categoryId = categoryId, brandId = brandId, subnav = subnav) {
     </div>
 </div>
 <div class="row">
-    <div class="col-md-9">
+    <div class="col-md-12">
         <div class="tabbable">
             <ul class="nav nav-tabs">
                 <li class="active"><a href="#" data-toggle="tab">@Messages("product.display.navtab.descriptiontab")</a></li>
             </ul>
 
-            <article>@Html(product.description)</article>
+            <article id="description" @Html(if(user.get.isAdmin) "contenteditable=\"true\"" else "")>@Html(product.description)</article>
             <br/>
         </div>
     </div>

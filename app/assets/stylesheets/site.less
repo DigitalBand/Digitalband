@@ -1,3 +1,11 @@
+.editable {
+  overflow:scroll;
+  height:300px;
+  max-height: 300px;
+  &.form-control {
+
+  }
+}
 article {
   margin: 20px 0;
 }
@@ -112,8 +120,8 @@ article {
 .navbar {
   .nav {
     >li >a {
-      border-right: 1px solid darken(@navbar-inverse-bg, 4%);
-      border-left: 1px solid lighten(@navbar-inverse-bg, 2%);
+      border-right: 1px solid lighten(@navbar-inverse-bg, 12%);
+      border-left: 1px solid darken(@navbar-inverse-bg, 2%);
     }
   }
 }

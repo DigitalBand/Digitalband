@@ -1,5 +1,8 @@
 function initEdit(imgServiceUrl) {
-    CKEDITOR.replace("description");
+    //CKEDITOR.replace("description");
+    //CKEDITOR.disableAutoInline = true;
+    //CKEDITOR.inline( 'editable' );
+    //$("#description").wysiwyg();
     $(".existent-image").click(function () {
         var id = $(this).attr("data-imageId");
         $("#image-" + id).after('<input type="hidden" name="deletedImage" value="' + id + '"/> ');
