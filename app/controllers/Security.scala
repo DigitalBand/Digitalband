@@ -10,9 +10,10 @@ import play.api.i18n.Messages
 import forms.{registrationForm, loginForm}
 import play.api.cache.Cache
 import play.api.Play.current
+import helpers.Secured
 
 
-class Security @Inject()(implicit ur: UserRepository, val cartRepository: CartRepository) extends ControllerBase {
+class Security @Inject()(implicit ur: UserRepository, val cartRepository: CartRepository) extends ControllerBase with Secured {
 
   val forgotPasswordForm = Form("email" -> nonEmptyText.verifying(Messages("security.forgotpassword.notregistered"),
     result => result match {

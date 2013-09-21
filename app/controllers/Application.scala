@@ -9,12 +9,12 @@ import data.Forms._
 import i18n.Messages
 import play.api.mvc._
 import play.api.Play.current
-import helpers.{ReCaptchaHelper, EmailHelper}
+import helpers.{Secured, ReCaptchaHelper, EmailHelper}
 import com.google.inject.Inject
 import dao.common.{UserRepository, ProductRepository, CategoryRepository}
 
 class Application @Inject()(implicit ur:UserRepository, val categoryRepository: CategoryRepository,
-                            val productRepository: ProductRepository) extends ControllerBase  {
+                            val productRepository: ProductRepository) extends ControllerBase with Secured  {
   val oneDayDuration = 86400
   val emailHelper = new EmailHelper()
   def contactsForm(implicit request: Request[Any]) = {

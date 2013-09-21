@@ -8,9 +8,9 @@ import dao.common.{UserRepository, CartRepository, OrderRepository}
 import play.api._
 import data.Form
 import data.Forms._
-import helpers.EmailHelper
+import helpers.{Secured, EmailHelper}
 
-class Order @Inject()(implicit ur: UserRepository, orderRepository: OrderRepository, cartRepository: CartRepository) extends ControllerBase {
+class Order @Inject()(implicit ur: UserRepository, orderRepository: OrderRepository, cartRepository: CartRepository) extends ControllerBase with Secured {
   val deliveryForm = Form(mapping(
     "name" -> nonEmptyText(minLength = 2, maxLength = 50),
     "email" -> email,

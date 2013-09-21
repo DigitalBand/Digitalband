@@ -9,6 +9,7 @@ object ApplicationBuild extends Build {
 
   val appDependencies = Seq(
     jdbc,
+    cache,
     "com.typesafe.slick" %% "slick" % "1.0.1",
     "mysql" % "mysql-connector-java" % "5.1.25",
     "org.jsoup" % "jsoup" % "1.7.2",

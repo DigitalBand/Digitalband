@@ -1,47 +1,58 @@
 package helpers
 
-import dao.common.UserRepository
 import play.api.mvc._
-
+import play.api.mvc.Results._
+import play.api.mvc.SimpleResult
+import scala.concurrent.Future
+import dao.common.UserRepository
 import models.UserEntity
+import play.api.mvc.BodyParsers.parse
 import play.api.Play
-import play.api.mvc.BodyParsers._
-import forms.loginForm
-import controllers.routes
-object Security {
-  import play.api.mvc.Results._
-  import play.api.libs.iteratee._
-  def Authenticated[A](userinfo: RequestHeader => Option[A],
-                        onUnauthorized: RequestHeader => Result)(action: A => EssentialAction): EssentialAction = {
-    EssentialAction { request =>
-      userinfo(request).map { user =>
-        action(user)(request)
-      }.getOrElse {
-        Done(onUnauthorized(request), Input.Empty)
-      }
-    }
 
-  }
+
+class AuthenticatedRequest[A](val username: String, request: Request[A]) extends WrappedRequest[A](request)
+
+object Authenticated extends ActionBuilder[AuthenticatedRequest] {
   lazy val username: String = Play.maybeApplication.flatMap(_.configuration.getString("session.username")) getOrElse ("username")
-  def Authenticated(action: String => EssentialAction): EssentialAction = Authenticated(
-    req => req.session.get(username),
-    request => Results.Redirect(routes.Security.login(request.uri)))(action)
-
-}
-trait Secured {
-  import Security._
-  def withAdmin[A](bp: BodyParser[A])(f: Option[UserEntity] => Request[A] => Result)(implicit userRepository: UserRepository) = Authenticated {
-    username => Action(bp) {
-      implicit request =>
-        userRepository.get(username).map { user =>
-          if(user.isAdmin)
-            f(Some(user))(request)
-          else
-            Results.Redirect(routes.Security.login(request.uri)).flashing("alert-error" -> "security.alerts.admin.auth.denied")
-        }.getOrElse(Results.Redirect(routes.Security.login(request.uri)))
+  def invokeBlock[A](request: Request[A], block: (AuthenticatedRequest[A]) => Future[SimpleResult]) = {
+    request.session.get(username).map {
+      username =>
+        block(new AuthenticatedRequest(username, request))
+    } getOrElse {
+      Future.successful(Forbidden)
     }
   }
+}
 
-  def withAdmin(f: Option[UserEntity] => Request[AnyContent] => Result)(implicit userRepository: UserRepository): EssentialAction =
-    withAdmin(parse.anyContent)(f)
+
+object Security {
+  def currentUser = Authenticated {
+    request =>
+      Ok("The current user is " + request.username)
+  }
+}
+
+trait Secured {
+  def withAdmin(f: Option[UserEntity] => AuthenticatedRequest[AnyContent] => Result)(implicit userRepository: UserRepository):EssentialAction = withAdmin(parse.anyContent)(f)
+
+  def withAdmin[A](bp: BodyParser[A])(f: Option[UserEntity] => AuthenticatedRequest[A] => Result)(implicit userRepository: UserRepository) = Authenticated(bp) {
+    request =>
+      userRepository.get(request.username) match {
+        case Some(user) =>
+          if (user.isAdmin) {
+            f(Option(user))(request)
+          }
+          else {
+            Forbidden
+          }
+        case none => Forbidden
+      }
+  }
+  def withUser[A](bp: BodyParser[A])(f: Option[UserEntity] => Request[A] => Result)(implicit userRepository: UserRepository) = Action(bp) {
+    implicit request =>
+      f(userRepository.get(request.session.get(SessionHelper.username).getOrElse("")))(request)
+  }
+
+  def withUser(f: Option[UserEntity] => Request[AnyContent] => SimpleResult)(implicit userRepository: UserRepository): EssentialAction =
+    withUser(parse.anyContent)(f)
 }

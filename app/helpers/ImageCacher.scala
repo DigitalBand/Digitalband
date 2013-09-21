@@ -9,6 +9,7 @@ import DataStore._
 import play.api.libs.iteratee.Enumerator
 import javax.imageio.ImageIO
 import javax.imageio.stream.{ImageOutputStream, FileImageOutputStream}
+import play.api.libs.concurrent.Execution.Implicits._
 
 object DataStore {
   val appPath = System.getProperty("user.home")

@@ -1,7 +1,7 @@
 package controllers
 
 import common.ControllerBase
-import play.api.mvc.{Request, AnyContent, Action}
+import play.api.mvc._
 import com.google.inject.Inject
 import models.UserEntity
 import dao.common._
@@ -10,14 +10,14 @@ import data.Form
 import data.Forms._
 import play.api.Play.current
 import play.api.cache.Cached
-import helpers.EmailHelper
+import helpers.{Secured, EmailHelper}
 
 
 class Product @Inject()(implicit ur: UserRepository, productRepository: ProductRepository,
                         categoryRepository: CategoryRepository,
                         imageRepository: ImageRepository,
                         brandRepository: BrandRepository,
-                        questionRepository: QuestionRepository) extends ControllerBase {
+                        questionRepository: QuestionRepository) extends ControllerBase with Secured {
   val emailHelper = new EmailHelper()
   val availabilityForm = Form("email" -> nonEmptyText)
 
@@ -94,8 +94,8 @@ class Product @Inject()(implicit ur: UserRepository, productRepository: ProductR
     }
 
   //}
-
-  def display(id: Int): Action[AnyContent] =
+  def isAdmin(userO: Option[UserEntity]) = userO match {case Some(user) => user.isAdmin; case None => false}
+  def display(id: Int): EssentialAction =
   //Cached(req => req.toString, 82000) {
     withUser {
       implicit user =>
@@ -113,7 +113,7 @@ class Product @Inject()(implicit ur: UserRepository, productRepository: ProductR
       categoryRepository.list(categoryId, brandId, search),
       brandRepository.list(categoryRepository.get(categoryId), brandPage, pageSize = 24, search),
       categoryId, brandId,
-      categoryRepository.getBreadcrumbs(categoryId, id, ""), pageNumber, search))
+      categoryRepository.getBreadcrumbs(categoryId, id, ""), pageNumber, search, isAdmin(user)))
   }
 }
 

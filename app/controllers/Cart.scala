@@ -8,9 +8,10 @@ import models.{CItem, CartItem}
 import play.api.data.Form
 import play.api.data.Forms._
 import forms.loginForm
+import helpers.Secured
 
 
-class Cart @Inject()(implicit ur: UserRepository, val cartRepository: CartRepository, productRepository: ProductRepository) extends ControllerBase {
+class Cart @Inject()(implicit ur: UserRepository, val cartRepository: CartRepository, productRepository: ProductRepository) extends ControllerBase with Secured {
   val addToCartForm = Form(
     mapping(
       "productId" -> number,
