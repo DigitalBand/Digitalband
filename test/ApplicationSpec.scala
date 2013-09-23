@@ -14,13 +14,13 @@ class ApplicationSpec extends Specification {
   
   "Application" should {
     
-    "send 404 on a bad request" in {
+    "send 404 on a bad request" in = {
       running(FakeApplication()) {
         route(FakeRequest(GET, "/boum")) must beNone        
       }
     }
     
-    "render the index page" in {
+    "render the index page" in = {
       running(FakeApplication()) {
         val home = route(FakeRequest(GET, "/")).get
         
@@ -30,7 +30,7 @@ class ApplicationSpec extends Specification {
       }
     }
 
-    "return list of products" in {
+    "return list of products" in = {
       running(FakeApplication()) {
         //val products: List[models.ProductUnit] = ProductRepository.getList()
 

@@ -14,7 +14,6 @@ import scala.concurrent.duration._
 class EmailHelper(implicit userRepository: UserRepository) {
 
 
-
   def systemEmail = userRepository.getSystemEmail
 
   def adminEmails = userRepository.getAdminEmails
@@ -78,6 +77,7 @@ class EmailHelper(implicit userRepository: UserRepository) {
         mail.sendHtml(views.html.emails.questions.unanswered(count).body)
     }
   }
+
   def orderCanceled(comment: String, order: OrderInfo)(implicit request: Request[Any]) = Akka.system.scheduler.scheduleOnce(1.second) {
     val mail = use[MailerPlugin].email
     mail.setSubject(s"Информация по заказу №${order.id}")
@@ -95,6 +95,19 @@ class EmailHelper(implicit userRepository: UserRepository) {
       mail.addFrom(systemEmail)
       mail.setReplyTo(message.email)
       mail.sendHtml(views.html.emails.plain.contact.feedback(message).body)
+    }
+  }
+
+  def sendPassword(email: String) = Akka.system.scheduler.scheduleOnce(1.second) {
+    userRepository.getPassword(email) match {
+      case Some(password) => {
+        val mail = use[MailerPlugin].email
+        mail.setSubject("Пароль к сайту Digitalband.ru")
+        mail.addFrom(systemEmail)
+        mail.addRecipient(email)
+        mail.send(s"Ваш пароль: $password")
+      }
+      case None => {}
     }
   }
 

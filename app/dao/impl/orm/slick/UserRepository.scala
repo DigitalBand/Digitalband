@@ -20,6 +20,7 @@ class UserRepository extends dao.common.UserRepository {
       """.as[Int].first
   }
 
+
   def authenticate(login: String, password: String): Option[UserEntity] = database withSession {
     implicit val getUserResult = GetResult(r => new UserEntity(r.<<, r.<<))
     sql"""
@@ -96,4 +97,13 @@ class UserRepository extends dao.common.UserRepository {
 
   def getSystemEmail: String = Play.current.configuration.getString("email.system").getOrElse(defaultEmail)
 
+  def getPassword(email: String) = database withSession {
+    sql"""
+      select p.password
+      from
+        user_profiles p
+      where
+        p.email = $email;
+    """.as[String].firstOption
+  }
 }

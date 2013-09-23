@@ -10,17 +10,22 @@ import play.api.i18n.Messages
 import forms.{registrationForm, loginForm}
 import play.api.cache.Cache
 import play.api.Play.current
-import helpers.Secured
+import helpers.{EmailHelper, Secured}
+import java.lang.ProcessBuilder
 
 
 class Security @Inject()(implicit ur: UserRepository, val cartRepository: CartRepository) extends ControllerBase with Secured {
 
-  val forgotPasswordForm = Form("email" -> nonEmptyText.verifying(Messages("security.forgotpassword.notregistered"),
-    result => result match {
-      case email =>
-        userRepository.get(email).isDefined
-    }))
-
+  val forgotPasswordForm = Form(
+    "email" -> nonEmptyText.verifying(
+      Messages("security.forgotpassword.notregistered"),
+      result => result match {
+        case email =>
+          userRepository.get(email).isDefined
+      }
+    )
+  )
+  val emailHelper = new EmailHelper()
   //POST
   def signIn(redirectUrl: String) = withUser { implicit user =>
     implicit request =>
@@ -102,6 +107,14 @@ class Security @Inject()(implicit ur: UserRepository, val cartRepository: CartRe
   //POST
   def sendPassword = withUser { implicit user =>
     implicit request =>
-      NotImplemented
+      forgotPasswordForm.bindFromRequest.fold(
+        withErrors => BadRequest(views.html.Security.forgotpassword(withErrors)),
+        email => {
+          emailHelper.sendPassword(email)
+          Redirect(routes.Security.forgotPassword()).flashing(
+            "alert" -> "Пароль был выслан на указанный email"
+          )
+        }
+      )
   }
 }

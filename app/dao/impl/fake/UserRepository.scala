@@ -24,4 +24,6 @@ class UserRepository extends dao.common.UserRepository {
   def getAdminEmails = ???
 
   def getSystemEmail = ???
+
+  def getPassword(email: String) = ???
 }

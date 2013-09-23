@@ -15,6 +15,8 @@ trait UserRepository {
 
   def remove(userId: Int)
 
+  def getPassword(email: String): Option[String]
+
   def register(email:String, password:String): Int
 
   def createUser(name: String): Int
