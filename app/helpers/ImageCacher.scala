@@ -10,13 +10,17 @@ import play.api.libs.iteratee.Enumerator
 import javax.imageio.ImageIO
 import javax.imageio.stream.{ImageOutputStream, FileImageOutputStream}
 import play.api.libs.concurrent.Execution.Implicits._
+import play.api.Play
 
 object DataStore {
-  val appPath = System.getProperty("user.home")
+  def appPath = {
+    Play.maybeApplication.flatMap(_.configuration.getString("data.root")) getOrElse (System.getProperty("user.home"))
+  }
   val dataPath = Paths.get(appPath, "data").toString
   val imagesPath = Paths.get(dataPath, "images").toString
   val imageOriginalsPath = Paths.get(imagesPath, "originals").toString
   val productOriginalImagePath = Paths.get(imageOriginalsPath, "productimages").toString
+
 }
 
 object ImageCacher {
