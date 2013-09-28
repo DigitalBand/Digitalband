@@ -33,7 +33,7 @@ object ImageCacher {
       val cachePath = Paths.get(imagesPath, "cache", outputDimension.width + "x" + outputDimension.height, quality, fill, imageId + ".jpg")
       if (Files.exists(cachePath)) {
         val content = Enumerator.fromStream(new FileInputStream(new File(cachePath.toString)))
-        Results.Ok.stream(content)
+        Results.Ok.chunked(content)
       } else {
         readImage(imageId, outputDimension, compressQuality, crop, preserveAlpha)(resize)
       }
@@ -50,7 +50,7 @@ object ImageCacher {
     val resizedImage: BufferedImage = resize
     cache(resizedImage, cachePath.toString, compressQuality)
     val content = Enumerator.fromFile(cachePath.toFile)
-    Results.Ok.stream(content)
+    Results.Ok.chunked(content)
   }
 
   def getStream(bi: BufferedImage) = {
