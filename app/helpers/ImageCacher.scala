@@ -11,6 +11,7 @@ import javax.imageio.ImageIO
 import javax.imageio.stream.{ImageOutputStream, FileImageOutputStream}
 import play.api.libs.concurrent.Execution.Implicits._
 import play.api.Play
+import helpers.closable
 
 object DataStore {
   def appPath = {
@@ -37,7 +38,7 @@ object ImageCacher {
       val cachePath = Paths.get(imagesPath, "cache", outputDimension.width + "x" + outputDimension.height, quality, fill, imageId + ".jpg")
       if (Files.exists(cachePath)) {
         val content = Enumerator.fromStream(new FileInputStream(new File(cachePath.toString)))
-        Results.Ok.chunked(content)
+        Results.Ok(toByteArr(cachePath.toFile))
       } else {
         readImage(imageId, outputDimension, compressQuality, crop, preserveAlpha)(resize)
       }
@@ -54,9 +55,14 @@ object ImageCacher {
     val resizedImage: BufferedImage = resize
     cache(resizedImage, cachePath.toString, compressQuality)
     val content = Enumerator.fromFile(cachePath.toFile)
-    Results.Ok.chunked(content)
+    Results.Ok(toByteArr(cachePath.toFile))
   }
 
+  def toByteArr(file: File) = {
+    closable(scala.io.Source.fromFile(file)(scala.io.Codec.ISO8859)) { source =>
+      source.map(_.toByte).toArray
+    }
+  }
   def getStream(bi: BufferedImage) = {
     val baos = new ByteArrayOutputStream()
     ImageIO.write(bi, "png", baos)
