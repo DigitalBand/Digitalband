@@ -4,6 +4,7 @@ import models._
 import models.BrandEntity
 import models.CategoryEntity
 import models.{ProductDetails => ProductEntity}
+import wt.common.image.ImageEntity
 
 class ProductRepository extends dao.common.ProductRepository {
 

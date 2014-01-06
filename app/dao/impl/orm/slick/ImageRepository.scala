@@ -1,12 +1,13 @@
 package dao.impl.orm.slick
 
 import common.RepositoryBase
-import models.{ImageEntity, PictureEntity}
+
 import common.Profile.driver.simple._
 import Database.threadLocalSession
 import slick.jdbc.{StaticQuery => Q, GetResult}
 import Q.interpolation
 import tables.{ProductImagesTable, ImagesTable}
+import wt.common.image.{ImageEntity, PictureEntity}
 
 class ImageRepository extends RepositoryBase with dao.common.ImageRepository {
 
@@ -14,7 +15,7 @@ class ImageRepository extends RepositoryBase with dao.common.ImageRepository {
 
   def errorImage = new PictureEntity(0, "/default/error.jpg", "jpg")
 
-  def get(imageId: Int): models.PictureEntity = {
+  def get(imageId: Int): PictureEntity = {
     if (imageId > 0) {
       database withSession {
         val imageQuery = for {

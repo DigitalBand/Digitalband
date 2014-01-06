@@ -6,8 +6,10 @@ import scala.Some
 import helpers.SessionHelper
 import play.api.Play
 import models.UserEntity
+import wt.common.DataStore
 
 class ControllerBase(implicit val userRepository: UserRepository) extends Controller {
+
   def getUserId(implicit session: Session): Int = SessionHelper.getUserId(userRepository.createUser, userRepository.getUserId)
 
 

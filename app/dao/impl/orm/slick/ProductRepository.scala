@@ -11,6 +11,7 @@ import Q.interpolation
 import Profile.driver.simple._
 import Database.threadLocalSession
 import play.api.i18n.Messages
+import wt.common.image.ImageEntity
 
 class ProductRepository extends RepositoryBase with dao.common.ProductRepository {
   def listMostVisited(count: Int) = database withSession {

@@ -4,6 +4,7 @@ import models._
 import models.CategoryEntity
 import models.ProductDetails
 import models.BrandEntity
+import wt.common.image.ImageEntity
 
 trait ProductRepository {
 

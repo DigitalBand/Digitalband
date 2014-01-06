@@ -1,6 +1,7 @@
 package dao.common
 
-import models.{ImageEntity, PictureEntity}
+
+import wt.common.image.{ImageEntity, PictureEntity}
 
 trait ImageRepository {
   def remove(imageId: Int)

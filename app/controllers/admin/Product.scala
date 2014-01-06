@@ -3,15 +3,19 @@ package controllers.admin
 import com.google.inject.Inject
 import controllers.common.ControllerBase
 import dao.common.{ImageRepository, ProductRepository, BrandRepository, UserRepository}
-import helpers.{ImageHelper, Secured}
+
 import play.api.data.Form
 import play.api.data.Forms._
 import play.api.data.format.Formats._
 import models.{BrandEntity, ProductDetails}
+import wt.common.image.ImageHelper
+import helpers.Secured
+import wt.common.DataStore
+import play.api.Play
 
 
 class Product @Inject()(implicit userRepository: UserRepository, brandRepository: BrandRepository, productRepository: ProductRepository, imageRepository: ImageRepository) extends ControllerBase with Secured {
-
+  lazy val dataStore = new DataStore(Play.maybeApplication.flatMap(_.configuration.getString("data.root")) getOrElse (System.getProperty("user.home")))
   val productForm = Form(
     mapping(
       "id" -> optional(number),
@@ -44,7 +48,7 @@ class Product @Inject()(implicit userRepository: UserRepository, brandRepository
   def delete(productId: Int) = withAdmin {
     user => request =>
       productRepository.delete(productId) { image =>
-        ImageHelper.deleteImage(image.path)
+        ImageHelper(dataStore).deleteImage(image.path)
       }
       Redirect(controllers.routes.Product.list())
   }
@@ -76,7 +80,7 @@ class Product @Inject()(implicit userRepository: UserRepository, brandRepository
                         imageId =>
                           val i = imageRepository.get(imageId)
                           imageRepository.remove(i.id)
-                          ImageHelper.deleteImage(i.path)
+                          ImageHelper(dataStore).deleteImage(i.path)
                       }
                     }
                   }
@@ -84,7 +88,7 @@ class Product @Inject()(implicit userRepository: UserRepository, brandRepository
                 case (name, images) if name == "googleimage" => {
                   images.map {
                     imageUrl => {
-                      ImageHelper.save(imageUrl).map {
+                      ImageHelper(dataStore).save(imageUrl).map {
                         img =>
                           val imageId = imageRepository.create(img)
                           productRepository.insertImage(imageId, pId)
@@ -97,10 +101,11 @@ class Product @Inject()(implicit userRepository: UserRepository, brandRepository
               }
               request.body.files.map {
                 file => {
-                  ImageHelper.save(file) {
+                  ImageHelper(dataStore).save(file.ref.file) {
                     img =>
                       val imageId = imageRepository.create(img)
                       productRepository.insertImage(imageId, pId)
+                      img
                   }
                 }
               }
