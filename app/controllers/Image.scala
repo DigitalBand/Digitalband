@@ -30,6 +30,7 @@ class Image @Inject()(val imageRepository: ImageRepository) extends Controller {
       )
   }
 
+
   def _getImageId(imgNumber: String) = {
     imgNumber.split('.').head.toInt
   }
