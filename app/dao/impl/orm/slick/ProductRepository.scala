@@ -107,13 +107,14 @@ class ProductRepository extends RepositoryBase with dao.common.ProductRepository
     val brandId = getBrandId(details.brand.title)
     sqlu"""
       insert into
-        products(title, description, shortDescription, price, brandId, createdByUser)
+        products(title, description, shortDescription, price, brandId, createdByUser, isAvailable)
         values(${details.title},
           ${details.description},
           ${details.shortDescription},
           ${details.price},
           ${brandId},
-          ${userId})
+          ${userId},
+          ${details.isAvailable})
     """.execute()
     val productId = sql"select last_insert_id();".as[Int].first
     sqlu"insert into products_categories(productId, categoryId) values($productId, ${details.category.id})".execute
@@ -142,7 +143,8 @@ class ProductRepository extends RepositoryBase with dao.common.ProductRepository
         description = ${product.description},
         shortDescription = ${product.shortDescription},
         price = ${product.price},
-        brandId = ${getBrandId(product.brand.title)}
+        brandId = ${getBrandId(product.brand.title)},
+        isAvailable = ${product.isAvailable}
       where productId = ${product.id}
     """.execute
     after

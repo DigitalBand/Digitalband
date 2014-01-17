@@ -33,10 +33,10 @@ class ProductDetails(
 }
 
 object ProductDetails {
-  def apply(id: Option[Int], title:String, description:String, shortDescription:String, price:Double, brandName:String, categoryId: Int) =
-    new ProductDetails(title, description, shortDescription, price, id.getOrElse(0), 0, new BrandEntity(brandName), new CategoryEntity(categoryId))
+  def apply(id: Option[Int], title:String, description:String, shortDescription:String, price:Double, brandName:String, categoryId: Int, isAvailable: Boolean) =
+    new ProductDetails(title, description, shortDescription, price, id.getOrElse(0), 0, new BrandEntity(brandName), new CategoryEntity(categoryId), isAvailable)
   def unapply(d: ProductDetails) = {
-    Some(Tuple7(Some(d.id), d.title, d.description, d.shortDescription, d.price, d.brand.title, d.category.id))
+    Some(Tuple8(Some(d.id), d.title, d.description, d.shortDescription, d.price, d.brand.title, d.category.id, d.isAvailable))
   }
 }
 

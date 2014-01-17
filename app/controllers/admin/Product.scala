@@ -24,7 +24,8 @@ class Product @Inject()(implicit userRepository: UserRepository, brandRepository
       "shortDescription" -> nonEmptyText,
       "price" -> of[Double],
       "brand" -> nonEmptyText,
-      "categoryId" -> number
+      "categoryId" -> number,
+      "isAvailable" -> boolean
     )(ProductDetails.apply)(ProductDetails.unapply)
   )
 

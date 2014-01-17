@@ -54,6 +54,7 @@
 
                 </div>
                 <div class="col-md-6">
+                    @helper.checkbox(product("isAvailable"), '_label -> "Наличие", 'class -> "checkbox")
                     @helper.inputText(product("brand"), '_label -> "Бренд", 'class -> "form-control")
                     <div>
                         <label class="control-label" for="image">
