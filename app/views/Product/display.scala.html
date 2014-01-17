@@ -111,7 +111,11 @@ categoryId = categoryId, brandId = brandId, subnav = subnav, scripts = scripts) 
                     <a href="@routes.Product.filteredList(product.category.id, 1)">@product.category.title</a></span><br/>
                 <strong>Артикул:</strong> <span>@product.id</span> <br/>
 
-                <strong>Наличие:</strong> <span><a href="@routes.Product.availability(product.id, request.uri)">@Messages("product.display.requestAvailability")</a></span> <br/>
+                <strong>Наличие:</strong>
+                <span>
+                    @(if (product.isAvailable) "Есть в наличии" else "Нет в наличии")
+                </span>
+                <br/>
             </address>
         </div>
         <h3>

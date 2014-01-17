@@ -1,8 +1,21 @@
 package models
 
-class ProductDetails(val title: String, val description: String, val shortDescription: String,
-                          val price: Double, val id: Int, val defaultImageId: Int,
-                          val brand: BrandEntity, val category: CategoryEntity) {
+class ProductDetails(
+   val title: String,
+   val description: String,
+   val shortDescription: String,
+   val price: Double,
+   val id: Int,
+   val defaultImageId: Int,
+   val brand: BrandEntity,
+   val category: CategoryEntity,
+   val isAvailable: Boolean) {
+
+  def this(title: String, description: String, shortDescription: String,
+  price: Double, id: Int, defaultImageId: Int,
+  brand: BrandEntity, category: CategoryEntity) =
+    this(title, description, shortDescription, price, id, defaultImageId, brand, category, false)
+
   def this(categoryId: Int, brandName: String) =
     this("", "", "", 0.0, 0, 0, new BrandEntity(brandName), new CategoryEntity(categoryId, ""))
 

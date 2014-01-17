@@ -68,8 +68,10 @@ class ProductRepository extends RepositoryBase with dao.common.ProductRepository
         r.nextDouble,
         r.nextInt,
         r.nextIntOption.getOrElse(0),
+        new BrandEntity(r.nextIntOption.getOrElse(0), r.nextStringOption.getOrElse(Messages("brand.unknown"))),
         new CategoryEntity(r.nextIntOption.getOrElse(0), r.nextStringOption.getOrElse(Messages("category.unknown"))),
-        new BrandEntity(r.nextIntOption.getOrElse(0), r.nextStringOption.getOrElse(Messages("brand.unknown")))))
+        r.nextBoolean
+      ))
     sql"""
       select
         p.title,
@@ -78,10 +80,11 @@ class ProductRepository extends RepositoryBase with dao.common.ProductRepository
         p.price,
         p.productId,
         p.defaultImageId,
+        b.brandId,
+        b.title as brandTitle,
         pc.categoryId,
         c.title,
-        b.brandId,
-        b.title as brandTitle
+        p.isAvailable
       from
         products p
       left join products_categories pc on pc.productId = p.productId
