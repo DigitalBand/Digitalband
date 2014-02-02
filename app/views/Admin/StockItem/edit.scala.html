@@ -1,0 +1,10 @@
+@()(implicit user: Option[UserEntity], request: play.api.mvc.Request[Any])
+@scripts = {
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.10/angular.js"></script>
+    <script src="@routes.Assets.at("javascripts/modules/stock-item/stock-item.js")"></script>
+}
+@main(scripts = scripts) {
+    <div ng-app="stockItem">
+        <div ng-controller="StockItemController"></div>
+    </div>
+}
