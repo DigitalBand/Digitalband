@@ -2,9 +2,19 @@
 @scripts = {
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.10/angular.js"></script>
     <script src="@routes.Assets.at("javascripts/modules/stock-item/stock-item.js")"></script>
+    <script src="@routes.Assets.at("javascripts/modules/stock-item/controllers/StockItemController.js")"></script>
+    <script src="@routes.Assets.at("javascripts/modules/stock-item/controllers/DealerController.js")"></script>
+    <script src="@routes.Assets.at("javascripts/modules/stock-item/services/StockItemService.js")"></script>
+    <script src="@routes.Assets.at("javascripts/modules/stock-item/services/DealerService.js")"></script>
 }
 @main(scripts = scripts) {
     <div ng-app="stockItem">
-        <div ng-controller="StockItemController"></div>
+        <div ng-controller="StockItemController">
+            <ul class="list-group">
+                <li class="list-group-item" ng-repeat="item in vm.items">
+
+                </li>
+            </ul>
+        </div>
     </div>
 }
