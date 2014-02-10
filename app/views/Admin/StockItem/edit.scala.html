@@ -1,43 +1,41 @@
-@()(implicit user: Option[UserEntity], request: play.api.mvc.Request[Any])
+@(productId: Int)(implicit user: Option[UserEntity], request: play.api.mvc.Request[Any])
     @scripts = {
         <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.10/angular.js"></script>
+        <script src="@routes.Assets.at("javascripts/lodash.js")"></script>
         <script src="@routes.Assets.at("javascripts/modules/stock-item/stock-item.js")"></script>
+        <script>
+            stockItem.productId = @productId
+        </script>
         <script src="@routes.Assets.at("javascripts/modules/stock-item/controllers/StockItemController.js")"></script>
         <script src="@routes.Assets.at("javascripts/modules/stock-item/controllers/DealerController.js")"></script>
         <script src="@routes.Assets.at("javascripts/modules/stock-item/services/StockItemService.js")"></script>
         <script src="@routes.Assets.at("javascripts/modules/stock-item/services/DealerService.js")"></script>
+
+
     }
 @main(scripts = scripts) {
     <div ng-app="stockItem">
         <div ng-controller="StockItemController">
-            <table>
+            <table class="table table-condensed">
                 <thead>
                     <tr>
-                        <th>Товар</th>
+                        <th></th>
                         <th>Количество</th>
+                        <th>Поставщик</th>
                         <th>Цена поставщика</th>
                     </tr>
                 </thead>
-
+                <tbody>
+                    <tr ng-repeat="item in vm.items">
+                        <td><div ng-click="vm.remove(item.id)">Удалить</div></td>
+                        <td>{{item.quantity}}</td>
+                        <td>{{item.dealerName}}</td>
+                        <td>{{item.dealerPrice}}</td>
+                    </tr>
+                </tbody>
 
             </table>
-            <ul class="list-group">
-                <li class="list-group-item" ng-repeat="item in vm.items">
-                    <div class="form-inline">
-                        <div class="form-group">
-                            <label>Цена поставщика</label>
-                            <input class="form-control" type="number" ng-model="item.dealerPrice" />
-                        </div>
-                        <div class="form-group">
-                            <label>Количество</label>
-                            <input class="form-control" type="number" ng-model="item.quantity"/>
-                        </div>
-                        <div class="form-group">
-                            <label>Товар</label>
-                        </div>
-                    </div>
-                </li>
-            </ul>
+
         </div>
     </div>
 }

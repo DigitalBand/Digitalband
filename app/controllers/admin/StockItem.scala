@@ -8,6 +8,6 @@ class StockItem @Inject()(implicit userRepository: dao.common.UserRepository) ex
   def edit(productId: Int) = withAdmin {
     implicit user =>
       implicit request =>
-      Ok(views.html.Admin.StockItem.edit())
+      Ok(views.html.Admin.StockItem.edit(productId))
   }
 }
