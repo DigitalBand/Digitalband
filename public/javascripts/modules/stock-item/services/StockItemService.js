@@ -6,19 +6,18 @@
     }
 
     StockItemService.prototype = {
-        withDeferred: function(f){
+        withDeferred: function (f) {
             var deferred = this.$q.defer();
             var items = f.call(this);
             deferred.resolve(items);
             return deferred.promise;
         },
         list: function (productId) {
-            return this.withDeferred(function(){
+            return this.withDeferred(function () {
 
                 var items = [], i;
                 for (i = 0; i < 10; i++) {
                     items.push({
-                        productId: productId,
                         id: i + productId,
                         dealerName: 'Музторг',
                         dealerId: 1,
@@ -30,8 +29,19 @@
             });
         },
         remove: function (itemId) {
-            return this.withDeferred(function (){
+            return this.withDeferred(function () {
 
+            });
+        },
+        update: function (item) {
+            return this.withDeferred(function () {
+                return item;
+            });
+        },
+        create: function (item) {
+            return this.withDeferred(function () {
+                item.id = Math.floor(Math.random() * 100) + 1;
+                return item;
             });
         }
     }

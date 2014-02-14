@@ -7,6 +7,7 @@
         $scope.vm = this;
         this.getDealers();
         this.list(productId);
+        this.stockItem = {};
     }
 
     StockItemController.prototype = {
@@ -33,10 +34,30 @@
             }
         },
         edit: function (item) {
-            this.stockItem = item;
+            this.stockItem = angular.copy(item);
         },
-        add: function () {
-
+        save: function () {
+            if (this.stockItem.id) {
+                this.update();
+            } else {
+                this.create();
+            }
+        },
+        update: function(){
+            var that = this;
+            var itm = angular.copy(this.stockItem);
+            this.stockItemService.update(itm).then(function(){
+                var index = _.findIndex(that.items, function(item){return item.id === that.stockItem.id});
+                that.items[index] = itm;
+                that.stockItem = {};
+            });
+        },
+        create: function () {
+            var that = this;
+            this.stockItemService.create(angular.copy(this.stockItem)).then(function(item){
+                that.items.push(item);
+                that.stockItem = {};
+            });
         }
     };
     app.controller('StockItemController', StockItemController);
