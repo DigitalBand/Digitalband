@@ -14,7 +14,7 @@
         },
         list: function (productId) {
             return this.withDeferred(function(){
-                console.log('productId ' + productId);
+
                 var items = [], i;
                 for (i = 0; i < 10; i++) {
                     items.push({

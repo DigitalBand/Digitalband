@@ -1,14 +1,21 @@
 (function StockItemController(app, productId) {
     "use strict";
-    StockItemController.$inject = ['$scope', 'StockItemService'];
-    function StockItemController($scope, stockItemService) {
+    StockItemController.$inject = ['$scope', 'StockItemService', 'DealerService'];
+    function StockItemController($scope, stockItemService, dealerService) {
+        this.dealerService = dealerService;
         this.stockItemService = stockItemService;
         $scope.vm = this;
-
+        this.getDealers();
         this.list(productId);
     }
 
     StockItemController.prototype = {
+        getDealers: function () {
+            var that = this;
+            this.dealerService.list().then(function (dealers) {
+                that.dealers = dealers;
+            });
+        },
         list: function (productId) {
             var that = this;
             this.stockItemService.list(productId).then(function (items) {
@@ -17,12 +24,16 @@
         },
         remove: function (itemId) {
             var that = this;
-            console.log('remove ' + itemId);
-            this.stockItemService.remove(itemId).then(function () {
-                _.remove(that.items, function (item) {
-                    return item.id === itemId
+            if (confirm('Вы действительно хотите удалить эту запись?')) {
+                this.stockItemService.remove(itemId).then(function () {
+                    _.remove(that.items, function (item) {
+                        return item.id === itemId
+                    });
                 });
-            });
+            }
+        },
+        edit: function (item) {
+            this.stockItem = item;
         },
         add: function () {
 
