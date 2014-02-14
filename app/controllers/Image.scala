@@ -8,10 +8,12 @@ import java.io.File
 import java.nio.file.Paths
 import wt.common.DataStore
 import play.api.Play
+import play.api.Play.current
 
 
 class Image @Inject()(val imageRepository: ImageRepository) extends Controller {
-  lazy val dataStore = new DataStore(Play.maybeApplication.flatMap(_.configuration.getString("data.root")) getOrElse (System.getProperty("user.home")))
+  //Paths.get(System.getProperty("user.home"), f.configuration.getString("data.root"))
+  lazy val dataStore = new DataStore(Paths.get(System.getProperty("user.home"), Play.application.configuration.getString("data.root").get).toString)
   val imageCacher = ImageCacher(dataStore, None)
   val imageHelper = ImageHelper(dataStore)
   val imageResizer = ImageResizer(None)
