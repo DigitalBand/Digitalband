@@ -63,7 +63,9 @@
                         <div class="controls images">
                             @images.map { image =>
                                 <div id="image-@image" class="fileupload" data-provides="fileupload">
-                                    <img class="thumbnail" src="@routes.Image.get(image + ".jpg", 90, "90x90", "full")"/>
+                                    <div class="thumbnail" style="width: 90px;height: 90px">
+                                        <img src="@routes.Image.get(image + ".jpg", 90, "90x90", "full")"/>
+                                    </div>
                                     <div>
                                         <a href="#" class="btn existent-image" data-imageId="@image"> <i class="icon-remove"></i> </a>
                                     </div>
@@ -72,12 +74,10 @@
                             <div class="fileupload fileupload-new" data-provides="fileupload">
                                 <div class="fileupload-preview thumbnail" style="width: 90px; height: 90px;"></div>
                                 <div>
-                                    <span class="btn btn-file">
-                                        <span class="fileupload-new"> <i class="icon-plus"></i> </span>
-                                        <span class="fileupload-exists"> <i class="icon-edit"></i> </span>
+
                                         <input type="file" name="image" id="image" />
-                                    </span>
-                                    <a href="#" class="btn fileupload-exists" data-dismiss="fileupload"> <i class="icon-remove"></i> </a>
+
+
                                 </div>
                             </div>
                         </div>
