@@ -23,7 +23,8 @@ libraryDependencies ++= Seq(
   "commons-codec" % "commons-codec" % "1.7",
   "commons-io" % "commons-io" % "2.4",
   "wt.common" %% "wassertim-common" % "0.1-SNAPSHOT",
-  "ch.qos.logback" % "logback-classic" % "1.0.9"
+  "ch.qos.logback" % "logback-classic" % "1.0.9",
+  "com.yuvimasory" % "jerkson_2.10" % "0.6.1"
 )
 
 def customLessEntryPoints(base: File): PathFinder = (base / "app" / "assets" / "stylesheets" ** "main.less")

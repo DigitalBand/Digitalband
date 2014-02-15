@@ -1,7 +1,8 @@
 (function StockItemService(app) {
     "use strict";
-    StockItemService.$inject = ['$q'];
-    function StockItemService($q) {
+    StockItemService.$inject = ['$q', '$http'];
+    function StockItemService($q, $http) {
+        this.$http = $http;
         this.$q = $q;
     }
 
@@ -13,7 +14,10 @@
             return deferred.promise;
         },
         list: function (productId) {
-            return this.withDeferred(function () {
+            return this.$http(jsRoutes.controllers.admin.StockItem.list(productId)).then(function(response){
+               return response.data;
+            });
+            /*return this.withDeferred(function () {
 
                 var items = [], i;
                 for (i = 0; i < 10; i++) {
@@ -26,7 +30,7 @@
                     });
                 }
                 return items;
-            });
+            });*/
         },
         remove: function (itemId) {
             return this.withDeferred(function () {

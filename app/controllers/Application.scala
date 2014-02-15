@@ -69,4 +69,6 @@ class Application @Inject()(implicit ur:UserRepository, val categoryRepository: 
         }
       )
   }
+
+
 }
