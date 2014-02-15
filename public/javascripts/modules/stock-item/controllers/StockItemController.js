@@ -54,7 +54,7 @@
         },
         create: function () {
             var that = this;
-            this.stockItemService.create(angular.copy(this.stockItem)).then(function(item){
+            this.stockItemService.create(productId, angular.copy(this.stockItem)).then(function(item){
                 that.items.push(item);
                 that.stockItem = {};
             });

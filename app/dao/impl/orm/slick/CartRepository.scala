@@ -1,7 +1,7 @@
 package dao.impl.orm.slick
 
 import common.Profile
-import models.{CItem, CartItem}
+
 import Profile.database
 import Profile.driver.simple._
 import Database.threadLocalSession
@@ -9,6 +9,8 @@ import slick.jdbc.{StaticQuery => Q, GetResult}
 import Q.interpolation
 
 import slick.jdbc.{StaticQuery => Q, GetResult}
+
+import models.{CItem, CartItem}
 
 class CartRepository extends dao.common.CartRepository {
   def list(userId: Int): Seq[CartItem] = {

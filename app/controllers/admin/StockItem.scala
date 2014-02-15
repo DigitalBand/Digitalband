@@ -7,26 +7,36 @@ import com.codahale.jerkson.Json
 import play.api.Routes
 import play.api.mvc.Action
 
-case class StockItemInfo(quantity: Int, dealerName: String, dealerPrice: Double)
+case class StockItemInfo(id: Int, quantity: Int, dealerName: String, dealerPrice: Double)
 
-class StockItem @Inject()(implicit userRepository: dao.common.UserRepository) extends ControllerBase with Secured {
+class StockItem @Inject()(implicit userRepository: dao.common.UserRepository, stockItemRepository: dao.common.StockItemRepository) extends ControllerBase with Secured {
   def edit(productId: Int) = withAdmin {
     implicit user =>
       implicit request =>
-      Ok(views.html.Admin.StockItem.edit(productId))
+        Ok(views.html.Admin.StockItem.edit(productId))
   }
 
   def list(productId: Int) = withAdmin {
     implicit user =>
       implicit request =>
-      Ok(Json.generate(List(StockItemInfo(1, "Музторг", 4500),StockItemInfo(1, "Слами", 56000)))).withHeaders(CONTENT_TYPE -> "application/json")
+        Ok(Json.generate(stockItemRepository.list(productId))).withHeaders(CONTENT_TYPE -> "application/json")
+  }
+
+  def create(productId: Int) = withAdmin(parse.json) {
+    implicit user =>
+      implicit request =>
+        val body = request.body;
+        val stockItem = Json.parse[StockItemInfo](body.toString)
+        val id = stockItemRepository.create(productId, stockItem)
+        Ok(Json.generate(id))
   }
 
   def javascriptRoutes = Action {
     implicit request =>
       Ok(
         Routes.javascriptRouter("jsRoutes")(
-          controllers.admin.routes.javascript.StockItem.list
+          controllers.admin.routes.javascript.StockItem.list,
+          controllers.admin.routes.javascript.StockItem.create
         )
       ).as("text/javascript")
   }

@@ -14,23 +14,9 @@
             return deferred.promise;
         },
         list: function (productId) {
-            return this.$http(jsRoutes.controllers.admin.StockItem.list(productId)).then(function(response){
-               return response.data;
+            return this.$http(jsRoutes.controllers.admin.StockItem.list(productId)).then(function (response) {
+                return response.data;
             });
-            /*return this.withDeferred(function () {
-
-                var items = [], i;
-                for (i = 0; i < 10; i++) {
-                    items.push({
-                        id: i + productId,
-                        dealerName: 'Музторг',
-                        dealerId: 1,
-                        quantity: 10,
-                        dealerPrice: 1000
-                    });
-                }
-                return items;
-            });*/
         },
         remove: function (itemId) {
             return this.withDeferred(function () {
@@ -42,11 +28,22 @@
                 return item;
             });
         },
-        create: function (item) {
-            return this.withDeferred(function () {
-                item.id = Math.floor(Math.random() * 100) + 1;
+        create: function (productId, item) {
+            item.id = 0;
+            return this.$http(
+                {
+                    url:jsRoutes.controllers.admin.StockItem.create(productId).url,
+                    method:'POST',
+                    data:item,
+                    dataType:'json',
+                    headers: {
+                        "Content-Type": "application/json"
+                    }
+                }).then(function(response){
+                item.id = response.data;
                 return item;
             });
+
         }
     }
     app.service('StockItemService', StockItemService);

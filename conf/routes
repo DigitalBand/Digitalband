@@ -25,7 +25,8 @@ GET         /admin/product/:productId/delete        @controllers.admin.Product.d
 POST        /admin/product/:productId/delete        @controllers.admin.Product.delete(productId: Int)
 GET         /admin/product/:productId/stocks        @controllers.admin.StockItem.edit(productId: Int)
 GET         /admin/product/:productId/stocks/list        @controllers.admin.StockItem.list(productId: Int)
-GET         /admin/product/stocks/jsroutes              @controllers.admin.StockItem.javascriptRoutes()
+GET         /admin/product/stocks/jsroutes        @controllers.admin.StockItem.javascriptRoutes()
+POST        /admin/product/:productId/stock-create  @controllers.admin.StockItem.create(productId: Int)
 #Admin questions
 GET         /admin/question/:questionId/available        @controllers.admin.Question.available(questionId: Int)
 POST        /admin/question/:questionId/available        @controllers.admin.Question.setAvailable(questionId: Int)
