@@ -19,30 +19,38 @@
             });
         },
         remove: function (itemId) {
-            return this.withDeferred(function () {
-
-            });
+            return this.$http(jsRoutes.controllers.admin.StockItem.remove(itemId));
         },
         update: function (item) {
-            return this.withDeferred(function () {
-                return item;
-            });
+            return this.$http(
+                {
+                    url: jsRoutes.controllers.admin.StockItem.update(item.id).url,
+                    method: 'PUT',
+                    data: item,
+                    dataType: 'json',
+                    headers: {
+                        "Content-Type": "application/json"
+                    }
+                }
+            ).then(function (response) {
+                    return item;
+                });
         },
         create: function (productId, item) {
             item.id = 0;
             return this.$http(
                 {
-                    url:jsRoutes.controllers.admin.StockItem.create(productId).url,
-                    method:'POST',
-                    data:item,
-                    dataType:'json',
+                    url: jsRoutes.controllers.admin.StockItem.create(productId).url,
+                    method: 'POST',
+                    data: item,
+                    dataType: 'json',
                     headers: {
                         "Content-Type": "application/json"
                     }
-                }).then(function(response){
-                item.id = response.data;
-                return item;
-            });
+                }).then(function (response) {
+                    item.id = response.data;
+                    return item;
+                });
 
         }
     }

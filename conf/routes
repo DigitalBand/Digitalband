@@ -4,77 +4,79 @@
 
 
 ###Admin
-GET         /admin        @controllers.admin.Dashboard.index
-GET         /admin/order/list/:pageNumber        @controllers.admin.Order.list(pageNumber: Int, pageSize: Int ?= 10)
-GET         /admin/order/:orderId        @controllers.admin.Order.display(orderId: Int)
-GET         /admin/order/:orderId/confirm        @controllers.admin.Order.confirmPage(orderId: Int)
-GET         /admin/order/:orderId/cancel        @controllers.admin.Order.cancelPage(orderId: Int)
-GET         /admin/order/:orderId/complete        @controllers.admin.Order.completePage(orderId: Int)
-GET         /admin/order/:orderId/delete        @controllers.admin.Order.deletePage(orderId: Int)
-POST        /admin/order/:orderId/confirm        @controllers.admin.Order.confirm(orderId: Int)
-POST        /admin/order/:orderId/cancel        @controllers.admin.Order.cancel(orderId:Int)
-POST        /admin/order/:orderId/complete        @controllers.admin.Order.complete(orderId:Int)
-POST        /admin/order/:orderId/delete        @controllers.admin.Order.delete(orderId:Int)
+GET           /admin        @controllers.admin.Dashboard.index
+GET           /admin/order/list/:pageNumber        @controllers.admin.Order.list(pageNumber: Int, pageSize: Int ?= 10)
+GET           /admin/order/:orderId        @controllers.admin.Order.display(orderId: Int)
+GET           /admin/order/:orderId/confirm        @controllers.admin.Order.confirmPage(orderId: Int)
+GET           /admin/order/:orderId/cancel        @controllers.admin.Order.cancelPage(orderId: Int)
+GET           /admin/order/:orderId/complete        @controllers.admin.Order.completePage(orderId: Int)
+GET           /admin/order/:orderId/delete        @controllers.admin.Order.deletePage(orderId: Int)
+POST          /admin/order/:orderId/confirm        @controllers.admin.Order.confirm(orderId: Int)
+POST          /admin/order/:orderId/cancel        @controllers.admin.Order.cancel(orderId:Int)
+POST          /admin/order/:orderId/complete        @controllers.admin.Order.complete(orderId:Int)
+POST          /admin/order/:orderId/delete        @controllers.admin.Order.delete(orderId:Int)
 
 
 #Admin product
-GET         /admin/category/:categoryId/product/create        @controllers.admin.Product.create(categoryId: Int, brandId: Int ?= 0)
-GET         /admin/product/:productId/edit        @controllers.admin.Product.edit(productId: Int)
-POST        /admin/product/save        @controllers.admin.Product.save
-GET         /admin/product/:productId/delete        @controllers.admin.Product.deleteConfirmation(productId: Int)
-POST        /admin/product/:productId/delete        @controllers.admin.Product.delete(productId: Int)
-GET         /admin/product/:productId/stocks        @controllers.admin.StockItem.edit(productId: Int)
-GET         /admin/product/:productId/stocks/list        @controllers.admin.StockItem.list(productId: Int)
-GET         /admin/product/stocks/jsroutes        @controllers.admin.StockItem.javascriptRoutes()
-POST        /admin/product/:productId/stock-create  @controllers.admin.StockItem.create(productId: Int)
+GET           /admin/category/:categoryId/product/create        @controllers.admin.Product.create(categoryId: Int, brandId: Int ?= 0)
+GET           /admin/product/:productId/edit        @controllers.admin.Product.edit(productId: Int)
+POST          /admin/product/save        @controllers.admin.Product.save
+GET           /admin/product/:productId/delete        @controllers.admin.Product.deleteConfirmation(productId: Int)
+POST          /admin/product/:productId/delete        @controllers.admin.Product.delete(productId: Int)
+GET           /admin/product/:productId/stocks        @controllers.admin.StockItem.edit(productId: Int)
+GET           /admin/product/:productId/stocks/list        @controllers.admin.StockItem.list(productId: Int)
+GET           /admin/product/stocks/jsroutes        @controllers.admin.StockItem.javascriptRoutes()
+POST          /admin/product/:productId/stock-create        @controllers.admin.StockItem.create(productId: Int)
+DELETE        /admin/stock/:id        @controllers.admin.StockItem.remove(id: Int)
+PUT           /admin/stock/:id        @controllers.admin.StockItem.update(id: Int)
 #Admin questions
-GET         /admin/question/:questionId/available        @controllers.admin.Question.available(questionId: Int)
-POST        /admin/question/:questionId/available        @controllers.admin.Question.setAvailable(questionId: Int)
-GET         /admin/question/:questionId/unavailable        @controllers.admin.Question.unavailable(questionId: Int)
-POST        /admin/question/:questionId/unavailable        @controllers.admin.Question.setUnavailable(questionId: Int)
-GET         /admin/question/list-with-answers/:pageNumber        @controllers.admin.Question.listWithAnswers(pageNumber: Int, pageSize: Int ?= 20)
+GET           /admin/question/:questionId/available        @controllers.admin.Question.available(questionId: Int)
+POST          /admin/question/:questionId/available        @controllers.admin.Question.setAvailable(questionId: Int)
+GET           /admin/question/:questionId/unavailable        @controllers.admin.Question.unavailable(questionId: Int)
+POST          /admin/question/:questionId/unavailable        @controllers.admin.Question.setUnavailable(questionId: Int)
+GET           /admin/question/list-with-answers/:pageNumber        @controllers.admin.Question.listWithAnswers(pageNumber: Int, pageSize: Int ?= 20)
 #Google images
-GET         /admin/google/images/list        @controllers.admin.ImageSearch.imageList(search: String ?= "", pageNumber:Int ?= 1)
+GET           /admin/google/images/list        @controllers.admin.ImageSearch.imageList(search: String ?= "", pageNumber:Int ?= 1)
 # Home page
-GET         /        @controllers.Application.index
-GET         /about        @controllers.Application.about
-GET         /contacts        @controllers.Application.contacts
-POST        /sendFeedback        @controllers.Application.sendFeedback
+GET           /        @controllers.Application.index
+GET           /about        @controllers.Application.about
+GET           /contacts        @controllers.Application.contacts
+POST          /sendFeedback        @controllers.Application.sendFeedback
 
 # Product
-GET         /category/list        @controllers.Product.list
-GET         /category/:categoryId/products/:pageNumber        @controllers.Product.filteredList(categoryId:Int, pageNumber:Int, brandId:Int ?= 0, brandPage:Int ?= 1, productId:Int ?= 0, pageSize:Int ?= 10, s:String ?= "")
-GET         /product/:id        @controllers.Product.display(id:Int)
-GET         /product/:id/availability        @controllers.Product.availability(id: Int, returnUrl ?= "")
-POST        /product/:id/availability        @controllers.Product.requestAvailability(id: Int, returnUrl ?= "")
+GET           /category/list        @controllers.Product.list
+GET           /category/:categoryId/products/:pageNumber        @controllers.Product.filteredList(categoryId:Int, pageNumber:Int, brandId:Int ?= 0, brandPage:Int ?= 1, productId:Int ?= 0, pageSize:Int ?= 10, s:String ?= "")
+GET           /product/:id        @controllers.Product.display(id:Int)
+GET           /product/:id/availability        @controllers.Product.availability(id: Int, returnUrl ?= "")
+POST          /product/:id/availability        @controllers.Product.requestAvailability(id: Int, returnUrl ?= "")
 # Cart
-POST        /cart/add        @controllers.Cart.add
-POST        /cart/delete/:productId        @controllers.Cart.delete(productId: Int, returnUrl: String ?= "")
-GET         /cart/confirm-delete/:productId        @controllers.Cart.deleteConfirmation(productId: Int, returnUrl: String ?= "")
-POST        /cart/update        @controllers.Cart.update(returnUrl: String ?= "")
-GET         /cart        @controllers.Cart.display(returnUrl: String ?= "")
-GET         /checkout        @controllers.Cart.checkout
+POST          /cart/add        @controllers.Cart.add
+POST          /cart/delete/:productId        @controllers.Cart.delete(productId: Int, returnUrl: String ?= "")
+GET           /cart/confirm-delete/:productId        @controllers.Cart.deleteConfirmation(productId: Int, returnUrl: String ?= "")
+POST          /cart/update        @controllers.Cart.update(returnUrl: String ?= "")
+GET           /cart        @controllers.Cart.display(returnUrl: String ?= "")
+GET           /checkout        @controllers.Cart.checkout
 # Order
-GET         /order        @controllers.Order.fill
-POST        /order/place        @controllers.Order.create
-GET         /order/:orderId/display        @controllers.Order.display(orderId: Int)
-GET         /order/:orderId/confirmation        @controllers.Order.confirmation(orderId: Int)
+GET           /order        @controllers.Order.fill
+POST          /order/place        @controllers.Order.create
+GET           /order/:orderId/display        @controllers.Order.display(orderId: Int)
+GET           /order/:orderId/confirmation        @controllers.Order.confirmation(orderId: Int)
 
 # Emails
-GET         /email/orderConfirmation/:orderId        @controllers.Emails.orderConfirmation(orderId: Int)
-GET         /admin/email/orderConfirmation/:orderId        @controllers.Emails.orderAdminConfirmation(orderId: Int)
+GET           /email/orderConfirmation/:orderId        @controllers.Emails.orderConfirmation(orderId: Int)
+GET           /admin/email/orderConfirmation/:orderId        @controllers.Emails.orderAdminConfirmation(orderId: Int)
 
 #Security
-GET         /login        @controllers.Security.login(returnUrl: String ?= "")
-GET         /registration        @controllers.Security.registration(returnUrl: String ?= "")
-GET         /signOff        @controllers.Security.signOff(returnUrl: String ?= "")
-POST        /login        @controllers.Security.signIn(returnUrl: String ?= "")
-POST        /signUp        @controllers.Security.signUp(returnUrl: String ?= "")
-GET         /forgotPassword        @controllers.Security.forgotPassword
-POST        /sendPassword        @controllers.Security.sendPassword
+GET           /login        @controllers.Security.login(returnUrl: String ?= "")
+GET           /registration        @controllers.Security.registration(returnUrl: String ?= "")
+GET           /signOff        @controllers.Security.signOff(returnUrl: String ?= "")
+POST          /login        @controllers.Security.signIn(returnUrl: String ?= "")
+POST          /signUp        @controllers.Security.signUp(returnUrl: String ?= "")
+GET           /forgotPassword        @controllers.Security.forgotPassword
+POST          /sendPassword        @controllers.Security.sendPassword
 #Images
-GET         /images/:size/:quality/:fill/:imageNumber        @controllers.Image.get(imageNumber: String, quality: Int, size: String, fill: String)
+GET           /images/:size/:quality/:fill/:imageNumber        @controllers.Image.get(imageNumber: String, quality: Int, size: String, fill: String)
 # Map static resources from the /public folder to the /assets URL path
-GET         /assets/*file        controllers.Assets.at(path="/public", file)
+GET           /assets/*file        controllers.Assets.at(path="/public", file)
 
 

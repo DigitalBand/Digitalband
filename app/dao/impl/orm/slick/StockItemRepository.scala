@@ -33,4 +33,23 @@ class StockItemRepository extends dao.common.StockItemRepository {
         s.product_id = ${productId};
     """.as[StockItemInfo].list
   }
+
+  def remove(stockItemId: Int) = withSession {
+    sqlu"""
+      delete from stock_items where id = ${stockItemId};
+    """.execute()
+  }
+
+  def update(stockItem: StockItemInfo): Unit = withSession {
+    sqlu"""
+      update
+        stock_items
+      set
+        quantity = ${stockItem.quantity},
+        dealer_price = ${stockItem.dealerPrice},
+        dealer_id = (select id from dealers where title = ${stockItem.dealerName})
+      where
+        id = ${stockItem.id}
+    """.execute()
+  }
 }

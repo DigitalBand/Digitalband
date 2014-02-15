@@ -31,12 +31,30 @@ class StockItem @Inject()(implicit userRepository: dao.common.UserRepository, st
         Ok(Json.generate(id))
   }
 
+  def remove(id: Int) = withAdmin {
+    implicit user =>
+      implicit request =>
+      stockItemRepository.remove(id)
+      Ok("ok")
+  }
+
+  def update(id: Int) = withAdmin(parse.json) {
+    implicit user =>
+      implicit request =>
+        val body = request.body;
+        val stockItem = Json.parse[StockItemInfo](body.toString)
+        stockItemRepository.update(stockItem)
+        Ok("Ok")
+  }
+
   def javascriptRoutes = Action {
     implicit request =>
       Ok(
         Routes.javascriptRouter("jsRoutes")(
           controllers.admin.routes.javascript.StockItem.list,
-          controllers.admin.routes.javascript.StockItem.create
+          controllers.admin.routes.javascript.StockItem.create,
+          controllers.admin.routes.javascript.StockItem.remove,
+          controllers.admin.routes.javascript.StockItem.update
         )
       ).as("text/javascript")
   }
