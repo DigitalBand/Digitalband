@@ -6,14 +6,18 @@ import helpers.Secured
 import com.codahale.jerkson.Json
 import play.api.Routes
 import play.api.mvc.Action
+import models.StockItemInfo
 
-case class StockItemInfo(id: Int, quantity: Int, dealerName: String, dealerPrice: Double)
 
-class StockItem @Inject()(implicit userRepository: dao.common.UserRepository, stockItemRepository: dao.common.StockItemRepository) extends ControllerBase with Secured {
+class StockItem @Inject()(
+                           implicit userRepository: dao.common.UserRepository,
+                           stockItemRepository: dao.common.StockItemRepository,
+                           productRepository: dao.common.ProductRepository) extends ControllerBase with Secured {
   def edit(productId: Int) = withAdmin {
     implicit user =>
       implicit request =>
-        Ok(views.html.Admin.StockItem.edit(productId))
+        var product = productRepository.get(productId)
+        Ok(views.html.Admin.StockItem.edit(product))
   }
 
   def list(productId: Int) = withAdmin {
@@ -34,8 +38,8 @@ class StockItem @Inject()(implicit userRepository: dao.common.UserRepository, st
   def remove(id: Int) = withAdmin {
     implicit user =>
       implicit request =>
-      stockItemRepository.remove(id)
-      Ok("ok")
+        stockItemRepository.remove(id)
+        Ok("ok")
   }
 
   def update(id: Int) = withAdmin(parse.json) {

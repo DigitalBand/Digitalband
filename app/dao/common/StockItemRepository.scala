@@ -1,6 +1,6 @@
 package dao.common
 
-import controllers.admin.StockItemInfo
+import models.StockItemInfo
 
 trait StockItemRepository {
   def create(productId: Int, stockItem: StockItemInfo): Int

@@ -1,6 +1,5 @@
 package dao.impl.orm.slick
 
-import controllers.admin.StockItemInfo
 import dao.impl.orm.slick.common.Profile
 import Profile.database._
 import Profile.driver.simple._
@@ -9,6 +8,7 @@ import slick.jdbc.{StaticQuery => Q, GetResult}
 import Q.interpolation
 
 import slick.jdbc.{StaticQuery => Q, GetResult}
+import models.StockItemInfo
 
 class StockItemRepository extends dao.common.StockItemRepository {
   def create(productId: Int, stockItem: StockItemInfo): Int = withSession {

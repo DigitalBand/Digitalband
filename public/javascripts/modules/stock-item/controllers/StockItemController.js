@@ -11,6 +11,14 @@
     }
 
     StockItemController.prototype = {
+        updateTotals: function() {
+            this.items.totalCount = _.reduce(this.items, function(acc, item2){
+                return acc + parseInt(item2.quantity);
+            }, 0);
+            this.items.totalValue = _.reduce(this.items, function(acc, item2){
+                return acc + parseInt(item2.dealerPrice);
+            }, 0);
+        },
         getDealers: function () {
             var that = this;
             this.dealerService.list().then(function (dealers) {
@@ -21,6 +29,7 @@
             var that = this;
             this.stockItemService.list(productId).then(function (items) {
                 that.items = items;
+                that.updateTotals();
             });
         },
         remove: function (itemId) {
@@ -30,6 +39,7 @@
                     _.remove(that.items, function (item) {
                         return item.id === itemId
                     });
+                    that.updateTotals()
                 });
             }
         },
@@ -50,6 +60,7 @@
                 var index = _.findIndex(that.items, function(item){return item.id === that.stockItem.id});
                 that.items[index] = itm;
                 that.stockItem = {};
+                that.updateTotals();
             });
         },
         create: function () {
@@ -57,6 +68,7 @@
             this.stockItemService.create(productId, angular.copy(this.stockItem)).then(function(item){
                 that.items.push(item);
                 that.stockItem = {};
+                that.updateTotals();
             });
         }
     };
