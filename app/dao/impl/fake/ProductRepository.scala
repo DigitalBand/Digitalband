@@ -42,6 +42,8 @@ class ProductRepository extends dao.common.ProductRepository {
 
   }
 
+  override def getAvailability(productId: Int): Int = ???
+
   def get(id: Int): ProductEntity = ???
 
   def get(productId: Int, getBrand: (Int) => Option[BrandEntity]): ProductDetails = ???

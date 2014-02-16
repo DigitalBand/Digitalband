@@ -24,6 +24,12 @@ class ProductRepository extends RepositoryBase with dao.common.ProductRepository
     }
   }
 
+  override def getAvailability(productId: Int): Int = database withSession {
+    sql"""
+      select sum(quantity) from stock_items where product_id = ${productId};
+    """.as[Int].first
+  }
+
 
   def getList(getCategory: => CategoryEntity, brandId: Int, pageNumber: Int, pageSize: Int, search: String): ListPage[ProductDetails] = database withSession {
     val category = getCategory

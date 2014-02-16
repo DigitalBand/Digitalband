@@ -23,4 +23,5 @@ trait ProductRepository {
   def getList(getCategory: => CategoryEntity): ListPage[ProductDetails] = getList(getCategory, brandId = 0, pageNumber = 1, pageSize = 10, search = "")
   def getList(getCategory: => CategoryEntity, brandId: Int, pageNumber: Int, pageSize: Int, search: String): ListPage[ProductDetails]
   def listMostVisited(count: Int): Seq[ProductDetails]
+  def getAvailability(productId: Int): Int
 }
