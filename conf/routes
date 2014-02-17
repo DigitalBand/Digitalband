@@ -29,6 +29,9 @@ GET           /admin/product/stocks/jsroutes        @controllers.admin.StockItem
 POST          /admin/product/:productId/stock-create        @controllers.admin.StockItem.create(productId: Int)
 DELETE        /admin/stock/:id        @controllers.admin.StockItem.remove(id: Int)
 PUT           /admin/stock/:id        @controllers.admin.StockItem.update(id: Int)
+
+#Admin dealers
+GET         /admin/dealer/list      @controllers.admin.Dealer.list()
 #Admin questions
 GET           /admin/question/:questionId/available        @controllers.admin.Question.available(questionId: Int)
 POST          /admin/question/:questionId/available        @controllers.admin.Question.setAvailable(questionId: Int)

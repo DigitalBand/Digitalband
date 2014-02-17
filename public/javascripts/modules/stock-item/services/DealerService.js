@@ -1,21 +1,15 @@
 (function DealerService(app) {
     "use strict";
-    DealerService.$inject = ['$q'];
-    function DealerService($q) {
+    DealerService.$inject = ['$q', '$http'];
+    function DealerService($q, $http) {
         this.$q = $q;
+        this.$http = $http;
     }
 
     DealerService.prototype = {
-        withDeferred: function(f){
-            var deferred = this.$q.defer();
-            var items = f.call(this);
-            deferred.resolve(items);
-            return deferred.promise;
-        },
         list: function () {
-            return this.withDeferred(function(){
-                var dealers = ['Музторг','Слами'];
-                return dealers;
+            return this.$http(jsRoutes.controllers.admin.Dealer.list()).then(function(response){
+                return response.data;
             });
         },
         add: function () {

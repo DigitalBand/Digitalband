@@ -58,7 +58,8 @@ class StockItem @Inject()(
           controllers.admin.routes.javascript.StockItem.list,
           controllers.admin.routes.javascript.StockItem.create,
           controllers.admin.routes.javascript.StockItem.remove,
-          controllers.admin.routes.javascript.StockItem.update
+          controllers.admin.routes.javascript.StockItem.update,
+          controllers.admin.routes.javascript.Dealer.list
         )
       ).as("text/javascript")
   }
