@@ -73,6 +73,8 @@ class Product @Inject()(implicit ur: UserRepository, productRepository: ProductR
     withUser {
       implicit user =>
         implicit request =>
+          val inStock = request.queryString.get("inStock").flatMap(seq => Some(seq.head == "true")) getOrElse false
+
           if (productId > 0)
             display(productId, categoryId, brandId, brandPage, pageNumber, search)
           else {
