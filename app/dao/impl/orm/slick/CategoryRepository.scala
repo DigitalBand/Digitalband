@@ -5,7 +5,10 @@ import common.{Profile, RepositoryBase}
 import Profile.driver.simple._
 import Database.threadLocalSession
 import models.{CategoryListItem, CategoryEntity}
-import tables.{ProductsCategoriesTable, ProductsTable, CategoryImagesTable, CategoriesTable}
+
+import tables.{CategoryImagesTable, CategoriesTable}
+import slick.jdbc.{StaticQuery => Q, GetResult}
+import Q.interpolation
 
 class CategoryRepository extends RepositoryBase with dao.common.CategoryRepository {
 
@@ -32,27 +35,32 @@ class CategoryRepository extends RepositoryBase with dao.common.CategoryReposito
     }
   }
 
-  def list(categoryId: Int, brandId: Int, search: String): Seq[CategoryListItem] = {
-    database withSession {
-      def productCount(cat: CategoriesTable.type) = (for {
-        pc <- ProductsCategoriesTable
-        p <- ProductsTable
-        c <- CategoriesTable
-        if c.id === pc.categoryId &&
-          p.id === pc.productId &&
-          c.leftValue >= cat.leftValue &&
-          c.rightValue <= cat.rightValue &&
-          {if (brandId > 0) p.brandId.get === brandId else ConstColumn.TRUE === ConstColumn.TRUE} &&
-          {if (!search.isEmpty) p.title.like(s"%$search%") else ConstColumn.TRUE === ConstColumn.TRUE }
-      } yield (p.id.count))
-      val categoryListQuery = for {
-        c <- CategoriesTable
-        if (c.parentId === categoryId)
-      } yield (c.id, c.title, productCount(c) as "pc")
-      categoryListQuery.list.map {
-        case (a: Int, b: String, c: Int) => new CategoryListItem(a, b, c)
-      }.filter(p => p.productCount > 0)
-    }
+  def list(categoryId: Int, brandId: Int, search: String): Seq[CategoryListItem] = database withSession {
+    implicit val getres = GetResult(r => CategoryListItem(r.<<, r.<<, r.<<))
+    sql"""
+      select
+        scat.`categoryId`,
+        scat.`title`,
+        (
+          select
+            count(prod.`productId`)
+          from
+            `products_categories` prod_cat,
+            `products` prod,
+            `categories` cat
+          where
+            (cat.`categoryId` = prod_cat.`categoryId`) and
+            (prod.`productId` = prod_cat.`productId`) and
+            (cat.`leftValue` >= scat.`leftValue`) and
+            (cat.`rightValue` <= scat.`rightValue`) and
+            ((${brandId} = 0) or (prod.brandId = ${brandId})) and
+            ((${search} = '') or (prod.title like ${'%'+search+'%'}))
+        ) as productCount
+      from
+        `categories` scat
+      where
+        scat.`parentCategoryId` = ${categoryId}
+    """.as[CategoryListItem].list.filter(p => p.productCount > 0)
   }
 
   def getBreadcrumbs(categoryId: Int, productId: Int, search: String): Seq[(Int, String)] = {
