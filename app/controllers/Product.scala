@@ -78,15 +78,15 @@ class Product @Inject()(implicit ur: UserRepository, productRepository: ProductR
           if (productId > 0)
             display(productId, categoryId, brandId, brandPage, pageNumber, search)
           else {
-            val products = productRepository.getList(categoryRepository.get(categoryId), brandId, pageNumber, pageSize, search)
+            val products = productRepository.getList(categoryRepository.get(categoryId), brandId, pageNumber, pageSize, search, inStock)
             if (categoryId == 1 && !search.isEmpty && products.totalCount == 1)
               Redirect(routes.Product.display(products.items.head.id))
             else
               Ok(views.html.Product.list(
                 products,
                 categoryRepository.get(categoryId),
-                categoryRepository.list(categoryId, brandId, search),
-                brandRepository.list(categoryRepository.get(categoryId), brandPage, pageSize = 24, search),
+                categoryRepository.list(categoryId, brandId, search, inStock),
+                brandRepository.list(categoryRepository.get(categoryId), brandPage, pageSize = 24, search, inStock),
                 brandRepository.get(brandId),
                 pageNumber,
                 pageSize,
@@ -110,11 +110,12 @@ class Product @Inject()(implicit ur: UserRepository, productRepository: ProductR
   //TODO: Make async
   def display(id: Int, categoryId: Int, brandId: Int, brandPage: Int, pageNumber: Int, search: String)(implicit request: Request[AnyContent], user: Option[UserEntity]) = {
     val product = productRepository.get(id, brandRepository.get).copy(isAvailable = productRepository.getAvailability(id) > 0)
+    val inStock = request.queryString.get("inStock").flatMap(seq => Some(seq.head == "true")) getOrElse false
     Ok(views.html.Product.display(
       product,
       imageRepository.listByProductId(id),
-      categoryRepository.list(categoryId, brandId, search),
-      brandRepository.list(categoryRepository.get(categoryId), brandPage, pageSize = 24, search),
+      categoryRepository.list(categoryId, brandId, search, inStock),
+      brandRepository.list(categoryRepository.get(categoryId), brandPage, pageSize = 24, search, inStock),
       categoryId, brandId,
       categoryRepository.getBreadcrumbs(categoryId, id, ""), pageNumber, search, isAdmin(user)))
   }

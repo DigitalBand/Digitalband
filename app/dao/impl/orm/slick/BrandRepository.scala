@@ -22,7 +22,7 @@ class BrandRepository extends RepositoryBase with dao.common.BrandRepository {
     }
   }
 
-  def list(getCategory: => CategoryEntity, pageNumber: Int, pageSize: Int, search: String): ListPage[BrandEntity] = {
+  def list(getCategory: => CategoryEntity, pageNumber: Int, pageSize: Int, search: String, inStock:Boolean = false): ListPage[BrandEntity] = {
     database withSession {
       val category = getCategory
       val drop = pageSize * (pageNumber - 1)
@@ -43,6 +43,7 @@ class BrandRepository extends RepositoryBase with dao.common.BrandRepository {
              c.LeftValue >= ${category.leftValue} and
              c.rightValue <= ${category.rightValue} and
              b.brandId = p.brandId and
+             ((${inStock} = FALSE) or p.isAvailable = ${inStock}) and
              ${if (search.isEmpty) "1=1" else "p.title like '%" + search + "%'"}
           group by p.brandId order by productCount desc limit $drop, $pageSize;
         """)

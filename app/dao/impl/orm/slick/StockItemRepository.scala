@@ -17,9 +17,21 @@ class StockItemRepository extends dao.common.StockItemRepository {
         stock_items(product_id, dealer_id, dealer_price)
         values(${productId}, (select id from dealers where title = ${stockItem.dealerName}), ${stockItem.dealerPrice})
     """.execute()
-    sql"""select last_insert_id();""".as[Int].first
+    val result = sql"""select last_insert_id();""".as[Int].first
+    cacheStock(productId)
+    result
   }
 
+  def cacheStock(productId: Int) = withSession {
+    sqlu"""
+      update
+        products
+      set
+        isAvailable = ((select count(*) from stock_items where product_id = ${productId}) > 0)
+      where
+        productId = ${productId}
+    """.execute()
+  }
   def list(productId: Int) = withSession {
     implicit val res = GetResult(r => StockItemInfo(r.<<, r.<<, r.<<, r.<<))
     sql"""
@@ -40,6 +52,12 @@ class StockItemRepository extends dao.common.StockItemRepository {
     """.execute()
   }
 
+  def getProductIdByStock(stockItemId: Int) = withSession {
+    sql"""
+      select product_id from stock_items where id = ${stockItemId};
+    """.as[Int].first
+  }
+
   def update(stockItem: StockItemInfo): Unit = withSession {
     sqlu"""
       update
@@ -51,5 +69,7 @@ class StockItemRepository extends dao.common.StockItemRepository {
       where
         id = ${stockItem.id}
     """.execute()
+    val productId = getProductIdByStock(stockItem.id)
+    cacheStock(productId)
   }
 }

@@ -31,36 +31,48 @@ class ProductRepository extends RepositoryBase with dao.common.ProductRepository
   }
 
 
-  def getList(getCategory: => CategoryEntity, brandId: Int, pageNumber: Int, pageSize: Int, search: String): ListPage[ProductDetails] = database withSession {
+  def getList(getCategory: => CategoryEntity, brandId: Int, pageNumber: Int, pageSize: Int, search: String, inStock: Boolean): ListPage[ProductDetails] = database withSession {
+    implicit val getProducts = GetResult(r => new ProductDetails(r.<<, r.<<, r.<<, r.<<, r.<<))
     val category = getCategory
-    val productsQuery = for {
-      p <- ProductsTable
-      pc <- ProductsCategoriesTable if p.id === pc.productId && {
-      if (brandId == 0) ConstColumn.TRUE === ConstColumn.TRUE else p.brandId.get is brandId
-    }
-      c <- CategoriesTable
-      if pc.categoryId === c.id &&
-        c.leftValue >= category.leftValue &&
-        c.rightValue <= category.rightValue &&
-        (if (!search.isEmpty()) p.title like "%" + search + "%" else ConstColumn.TRUE === ConstColumn.TRUE)
-    } yield (p.title, p.shortDescription, p.price, p.id, p.defaultImageId)
-    val countQuery = for {
-      p <- ProductsTable
-      pc <- ProductsCategoriesTable if p.id === pc.productId && (if (brandId == 0) true else p.brandId.get === brandId)
-      c <- CategoriesTable if pc.categoryId === c.id && c.leftValue >= category.leftValue && c.rightValue <= category.rightValue &&
-      (if (!search.isEmpty()) p.title like "%" + search + "%" else true)
-    } yield (p.title.count)
-    val count = countQuery.firstOption.getOrElse(0)
-    val products = productsQuery.drop(pageSize * (pageNumber - 1)).take(pageSize).list.map {
-      case (title: String, Some(descr: String), price: Double, id: Int, Some(imageId: Int)) =>
-        new ProductDetails(title, descr, price, id, imageId)
-      case (title: String, Some(descr: String), price: Double, id: Int, None) =>
-        new ProductDetails(title, descr, price, id, 0)
-      case (title: String, None, price: Double, id: Int, None) =>
-        new ProductDetails(title, "", price, id, 0)
-      case (title: String, None, price: Double, id: Int, Some(imageId: Int)) =>
-        new ProductDetails(title, "", price, id, imageId)
-    }
+    val products = sql"""
+      select
+        prod.`title`,
+        prod.`shortDescription`,
+        prod.`price`,
+        prod.`productId`,
+        prod.`defaultImageId`
+      from
+        `products` prod,
+        `products_categories` prod_cat,
+        `categories` cat
+      where
+        (prod.`productId` = prod_cat.`productId`) and
+        (prod_cat.`categoryId` = cat.`categoryId`) and
+        (cat.`leftValue` >= ${category.leftValue}) and
+        (cat.`rightValue` <= ${category.rightValue}) and
+        ((${brandId} = 0) or (prod.brandId = ${brandId})) and
+        ((${search} = '') or (prod.title like ${'%'+search+'%'})) and
+        ((${inStock} = FALSE) or (prod.isAvailable = ${inStock}))
+      limit ${pageNumber - 1}, ${pageSize}
+    """.as[ProductDetails].list
+    val countQuery = sql"""
+      select
+        count(prod.`title`)
+      from
+        `products` prod,
+        `products_categories` prod_cat,
+        `categories` cat
+      where
+        (prod.`productId` = prod_cat.`productId`) and
+        (prod_cat.`categoryId` = cat.`categoryId`) and
+        (cat.`leftValue` >= ${category.leftValue}) and
+        (cat.`rightValue` <= ${category.rightValue}) and
+        ((${brandId} = 0) or (prod.brandId = ${brandId})) and
+        ((${search} = '') or (prod.title like ${'%'+search+'%'})) and
+        ((${inStock} = FALSE) or (prod.isAvailable = ${inStock}))
+    """
+
+    val count = countQuery.as[Int].first
     new ListPage(pageNumber, products, count)
   }
 

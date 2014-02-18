@@ -8,7 +8,7 @@ import wt.common.image.ImageEntity
 
 class ProductRepository extends dao.common.ProductRepository {
 
-  def getList(getCategory: => CategoryEntity, brandId: Int, pageNumber: Int, pageSize: Int, search: String): ListPage[ProductEntity] = {
+  def getList(getCategory: => CategoryEntity, brandId: Int, pageNumber: Int, pageSize: Int, search: String, inStock: Boolean): ListPage[ProductEntity] = {
     new ListPage(1, List(
       new ProductEntity(
         "IBANEZ GRX40 BLACK NIGHT",
