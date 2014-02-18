@@ -47,15 +47,25 @@ class StockItemRepository extends dao.common.StockItemRepository {
   }
 
   def remove(stockItemId: Int) = withSession {
+    val productId = getProductIdByStock(stockItemId)
     sqlu"""
       delete from stock_items where id = ${stockItemId};
     """.execute()
+    cacheStock(productId)
+
   }
 
   def getProductIdByStock(stockItemId: Int) = withSession {
+    val count = sql"""
+      select count(product_id) from stock_items where id = ${stockItemId};
+    """.as[Int].first
+    if (count > 0) {
     sql"""
       select product_id from stock_items where id = ${stockItemId};
     """.as[Int].first
+    } else {
+      0
+    }
   }
 
   def update(stockItem: StockItemInfo): Unit = withSession {
