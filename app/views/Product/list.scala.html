@@ -82,7 +82,9 @@ searchQuery: String, pagerHelper: helpers.PagerHelper, pagerUrl: Int => Call)(im
                         value="@routes.Product.filteredList(currentCategory.id, pageNumber, brandId(brand), 1, s = searchQuery)"/>
                         <input type="hidden" name="productId" value="@product.id" />
                         <input type="hidden" name="count" value="1" />
-                        @addToCartButton(product.price)
+                        @if(product.isAvailable){
+                            @addToCartButton(product.price)
+                        }
                     </form>
                 </div>
             </div>

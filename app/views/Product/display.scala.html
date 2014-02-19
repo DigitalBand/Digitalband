@@ -128,23 +128,27 @@ categoryId = categoryId, brandId = brandId, subnav = subnav, scripts = scripts) 
         </h3>
         <hr/>
         <div>
+            @if(product.isAvailable){
             <form action="@routes.Cart.add()"  method="POST">
                 <div class="row">
                 <div class="col-md-4">
                 <label>@Messages("product.display.countlabel")</label>
-                <input type="text" class="form-control" placeholder="1" name="count" value="1">
-                <input type="hidden" name="productId" value="@product.id" />
+                    <input type="text" class="form-control" placeholder="1" name="count" value="1">
+                    <input type="hidden" name="productId" value="@product.id" />
 
-                <input type="hidden" name="returnUrl"
-                    value="@routes.Product.filteredList(categoryId, pageNumber, brandId, productId = product.id, s = search)"/>
-                </div>
+                    <input type="hidden" name="returnUrl"
+                        value="@routes.Product.filteredList(categoryId, pageNumber, brandId, productId = product.id, s = search)"/>
+                    </div>
                 </div>
                 <div class="row">
                     <div class="col-md-4 justified">
-                    @addToCartButton(product.price)
+
+                            @addToCartButton(product.price)
+
                     </div>
                 </div>
             </form>
+            }
         </div>
     </div>
 </div>

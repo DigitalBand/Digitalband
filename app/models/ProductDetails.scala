@@ -31,6 +31,8 @@ class ProductDetails(
   def this(title: String, description: String, price: Double, id: Int, defaultImageId: Int) =
     this(title, description, "", price, id, defaultImageId, new BrandEntity(), new CategoryEntity(0))
 
+  def this(title: String, description: String, price: Double, id: Int, defaultImageId: Int, isAvailable: Boolean) =
+    this(title, description, "", price, id, defaultImageId, new BrandEntity(), new CategoryEntity(0), isAvailable)
   def copy(
             title: String = title,
             description: String = description,

@@ -32,7 +32,8 @@ class ProductRepository extends RepositoryBase with dao.common.ProductRepository
 
 
   def getList(getCategory: => CategoryEntity, brandId: Int, pageNumber: Int, pageSize: Int, search: String, inStock: Boolean): ListPage[ProductDetails] = database withSession {
-    implicit val getProducts = GetResult(r => new ProductDetails(r.<<, r.<<, r.<<, r.<<, r.<<))
+    implicit val getProducts = GetResult(
+      r => new ProductDetails(r.nextString, r.nextString, r.nextDouble, r.nextInt, r.nextInt, r.nextBoolean))
     val category = getCategory
     val products = sql"""
       select
@@ -40,7 +41,8 @@ class ProductRepository extends RepositoryBase with dao.common.ProductRepository
         prod.`shortDescription`,
         prod.`price`,
         prod.`productId`,
-        prod.`defaultImageId`
+        prod.`defaultImageId`,
+        prod.isAvailable
       from
         `products` prod,
         `products_categories` prod_cat,
