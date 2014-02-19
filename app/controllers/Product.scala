@@ -81,17 +81,22 @@ class Product @Inject()(implicit ur: UserRepository, productRepository: ProductR
             val products = productRepository.getList(categoryRepository.get(categoryId), brandId, pageNumber, pageSize, search, inStock)
             if (categoryId == 1 && !search.isEmpty && products.totalCount == 1)
               Redirect(routes.Product.display(products.items.head.id))
-            else
+            else {
+              val category = categoryRepository.get(categoryId)
+              val brand = brandRepository.get(brandId)
+              val helper = helpers.PagerHelper(pageSize, products.totalCount, products.number)
+              def url(pn: Int) = routes.Product.filteredList(category.id, pn, helpers.ViewHelper.brandId(brand), s = search)
               Ok(views.html.Product.list(
                 products,
-                categoryRepository.get(categoryId),
+                category,
                 categoryRepository.list(categoryId, brandId, search, inStock),
                 brandRepository.list(categoryRepository.get(categoryId), brandPage, pageSize = 24, search, inStock),
-                brandRepository.get(brandId),
+                brand,
                 pageNumber,
                 pageSize,
                 categoryRepository.getBreadcrumbs(categoryId, productId, search),
-                search))
+                search, helper, url))
+            }
           }
     }
 

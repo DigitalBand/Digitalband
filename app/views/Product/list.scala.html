@@ -2,7 +2,8 @@
 categories: Seq[models.CategoryListItem], brands: ListPage[models.BrandEntity], brand: Option[models.BrandEntity],
 pageNumber: Int, pageSize: Int,
 breadcrumbItems: Seq[(Int, String)] = List(),
-searchQuery: String)(implicit user:Option[models.UserEntity],request: play.api.mvc.Request[Any])
+searchQuery: String, pagerHelper: helpers.PagerHelper, pagerUrl: Int => Call)(implicit user:Option[models.UserEntity],request: play.api.mvc.Request[Any])
+
 @import helpers.ViewHelper._
 @import Shared._
 @import views.html.Product.adminToolbar
@@ -50,8 +51,8 @@ searchQuery: String)(implicit user:Option[models.UserEntity],request: play.api.m
             </a>
         </li>
     }
-    @pager(helpers.PagerHelper(pageSize, productListPage.totalCount, productListPage.number),
-        pn => routes.Product.filteredList(currentCategory.id, pn, brandId(brand), s = searchQuery))
+    @pager(pagerHelper, pagerUrl)
+
     <div class="product-list">
         @productListPage.items.map { product =>
             <div class="row product-item">
@@ -89,7 +90,6 @@ searchQuery: String)(implicit user:Option[models.UserEntity],request: play.api.m
         }
 
     </div>
-    @pager(helpers.PagerHelper(pageSize, productListPage.totalCount, productListPage.number),
-        pn => routes.Product.filteredList(currentCategory.id, pn, brandId(brand)))
+    @pager(pagerHelper, pagerUrl)
 
 }
