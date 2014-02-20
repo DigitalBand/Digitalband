@@ -55,7 +55,7 @@ class ProductRepository extends RepositoryBase with dao.common.ProductRepository
         ((${brandId} = 0) or (prod.brandId = ${brandId})) and
         ((${search} = '') or (prod.title like ${'%'+search+'%'})) and
         ((${inStock} = FALSE) or (prod.isAvailable = ${inStock}))
-      limit ${pageNumber - 1}, ${pageSize}
+      limit ${(pageNumber - 1)*pageSize}, ${pageSize}
     """.as[ProductDetails].list
     val countQuery = sql"""
       select
