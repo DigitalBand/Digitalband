@@ -49,6 +49,7 @@ class CategoryRepository extends RepositoryBase with dao.common.CategoryReposito
             `products` prod,
             `categories` cat
           where
+            prod.archived = false and
             (cat.`categoryId` = prod_cat.`categoryId`) and
             (prod.`productId` = prod_cat.`productId`) and
             (cat.`leftValue` >= scat.`leftValue`) and

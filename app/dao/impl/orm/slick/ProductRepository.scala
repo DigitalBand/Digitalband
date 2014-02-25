@@ -15,13 +15,22 @@ import wt.common.image.ImageEntity
 
 class ProductRepository extends RepositoryBase with dao.common.ProductRepository {
   def listMostVisited(count: Int) = database withSession {
-    val productsQuery = ProductsTable.filter(p =>
-      p.archived === false && p.price > 0.0
-    ).sortBy(_.visitCounter.desc).take(count).map(p => p.title ~ p.description ~ p.price ~ p.id ~ p.defaultImageId)
-    productsQuery.list.map {
-      case (title: String, descr: Option[String], price: Double, id: Int, imageId: Option[Int]) =>
-        new ProductDetails(title, descr.getOrElse(""), price, id, imageId.getOrElse(0))
-    }
+    implicit val res = GetResult(r => new ProductDetails(r.<<, r.<<, r.<<, r.<<, r.<<))
+    sql"""
+      select
+        p.title,
+        p.shortDescription,
+        p.price,
+        p.productId,
+        p.defaultImageId
+      from
+        products p
+      where
+        p.archived = false and
+        p.price > 0 and
+        p.isAvailable = true
+      limit ${count};
+    """.as[ProductDetails].list
   }
 
   override def getAvailability(productId: Int): Int = database withSession {
@@ -48,6 +57,7 @@ class ProductRepository extends RepositoryBase with dao.common.ProductRepository
         `products_categories` prod_cat,
         `categories` cat
       where
+        prod.archived = false and
         (prod.`productId` = prod_cat.`productId`) and
         (prod_cat.`categoryId` = cat.`categoryId`) and
         (cat.`leftValue` >= ${category.leftValue}) and
@@ -65,6 +75,7 @@ class ProductRepository extends RepositoryBase with dao.common.ProductRepository
         `products_categories` prod_cat,
         `categories` cat
       where
+        prod.archived = false and
         (prod.`productId` = prod_cat.`productId`) and
         (prod_cat.`categoryId` = cat.`categoryId`) and
         (cat.`leftValue` >= ${category.leftValue}) and
