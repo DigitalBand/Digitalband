@@ -2,7 +2,8 @@
         menuItem: String = "index",
         scripts: Html = Html(""),
         subnav: Html = Html(""),
-        search: String = "")(content: Html)(implicit user: Option[models.UserEntity], request: play.api.mvc.Request[Any])
+        search: String = "",
+        inStock: Int = 0)(content: Html)(implicit user: Option[models.UserEntity], request: play.api.mvc.Request[Any])
 
 <!DOCTYPE html>
 <html>
@@ -71,10 +72,10 @@
                         </ul>
                         <ul class="nav navbar-nav navbar-right">
                             <li>
-                                <form class="navbar-form" action="@routes.Product.filteredList(1, 1)">
+                                <form class="navbar-form" action="@routes.Product.filteredList(1, 1, is = inStock)">
                                     <div class="form-group">
                                         <input type="text" class="form-control search-query" name="s" value="@search">
-
+                                        <input type="hidden" name="is" value="@inStock" />
                                     </div>
                                     <button type="submit" class="btn btn-primary"> @Messages("main.nav.searchbutton") </button>
                                 </form>
@@ -91,6 +92,7 @@
                 </div>
             </nav>
             @subnav
+
             <div class="container">
 
             @content

@@ -86,6 +86,7 @@ class Product @Inject()(implicit ur: UserRepository, productRepository: ProductR
               val brand = brandRepository.get(brandId)
               val helper = helpers.PagerHelper(pageSize, products.totalCount, products.number)
               def url(pn: Int) = routes.Product.filteredList(category.id, pn, helpers.ViewHelper.brandId(brand), s = search, is = isAvailable)
+              def isInStock(inS: Int) = routes.Product.filteredList(category.id, pageNumber, helpers.ViewHelper.brandId(brand), s = search, is = inS)
               Ok(views.html.Product.list(
                 products,
                 category,
@@ -95,7 +96,7 @@ class Product @Inject()(implicit ur: UserRepository, productRepository: ProductR
                 pageNumber,
                 pageSize,
                 categoryRepository.getBreadcrumbs(categoryId, productId, search),
-                search, helper, url))
+                search, helper, url, isInStock, inStock = isAvailable))
             }
           }
     }

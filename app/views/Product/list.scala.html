@@ -2,7 +2,8 @@
 categories: Seq[models.CategoryListItem], brands: ListPage[models.BrandEntity], brand: Option[models.BrandEntity],
 pageNumber: Int, pageSize: Int,
 breadcrumbItems: Seq[(Int, String)] = List(),
-searchQuery: String, pagerHelper: helpers.PagerHelper, pagerUrl: Int => Call)(implicit user:Option[models.UserEntity],request: play.api.mvc.Request[Any])
+searchQuery: String, pagerHelper: helpers.PagerHelper, pagerUrl: Int => Call, showInStock: Int => Call,
+inStock: Int = 0)(implicit user:Option[models.UserEntity],request: play.api.mvc.Request[Any])
 
 @import helpers.ViewHelper._
 @import Shared._
@@ -31,7 +32,8 @@ searchQuery: String, pagerHelper: helpers.PagerHelper, pagerUrl: Int => Call)(im
     </div>
 }
 @withsidebar(Messages("product.list.title"), "catalogue", search = searchQuery, brandId = brandId(brand),
-    brands = brands, categories = categories, categoryId = currentCategory.id, subnav = subnav) {
+    brands = brands, categories = categories, categoryId = currentCategory.id, subnav = subnav, inStock = inStock) {
+
     <h4>
         @currentCategory.title <br/>
         <small>
@@ -51,8 +53,15 @@ searchQuery: String, pagerHelper: helpers.PagerHelper, pagerUrl: Int => Call)(im
             </a>
         </li>
     }
-    @pager(pagerHelper, pagerUrl)
-
+    <div style="clear: both;display: table;width:100%">
+        <div class="pull-right">
+            @pager(pagerHelper, pagerUrl)
+        </div>
+        <ul class="pagination pull-left">
+            <li class="@(if (inStock == 1) "active" else "")"><a href="@showInStock(1)">В наличии</a> </li>
+            <li class="@(if (inStock == 0) "active" else "")"><a href="@showInStock(0)">Все</a> </li>
+        </ul>
+    </div>
     <div class="product-list">
         @productListPage.items.map { product =>
             <div class="row product-item">
@@ -92,6 +101,8 @@ searchQuery: String, pagerHelper: helpers.PagerHelper, pagerUrl: Int => Call)(im
         }
 
     </div>
+    <div class="pull-right">
     @pager(pagerHelper, pagerUrl)
+    </div>
 
 }
