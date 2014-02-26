@@ -9,7 +9,7 @@ pageNumber:Int, search: String, isAdmin: Boolean, inStock: Int = 0)(implicit use
         <div class="container">
             <div class="row-fluid header">
                 <ul class="breadcrumb">
-                    @breadcrumbItem(breadcrumbItems, categoryId => routes.Product.filteredList(categoryId, 1, brandId, s = search))
+                    @breadcrumbItem(breadcrumbItems, categoryId => routes.Product.filteredList(categoryId, 1, brandId, s = search, is = inStock))
                     @if(!search.isEmpty){
                         <li>
 
