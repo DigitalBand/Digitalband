@@ -174,8 +174,7 @@ class ProductRepository extends RepositoryBase with dao.common.ProductRepository
         description = ${product.description},
         shortDescription = ${product.shortDescription},
         price = ${product.price},
-        brandId = ${getBrandId(product.brand.title)},
-        isAvailable = ${product.isAvailable}
+        brandId = ${getBrandId(product.brand.title)}
       where productId = ${product.id}
     """.execute
     after
