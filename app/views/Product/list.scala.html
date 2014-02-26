@@ -15,7 +15,7 @@ inStock: Int = 0)(implicit user:Option[models.UserEntity],request: play.api.mvc.
                 @if(!brand.isEmpty) {
                     <div class="pull-right">
                         @if(brand.get.imageId > 0) {
-                            <a class="img-link thumbnail" href="@routes.Product.filteredList(currentCategory.id, 1)">
+                            <a class="img-link thumbnail" href="@routes.Product.filteredList(currentCategory.id, 1, s = searchQuery, is = inStock)">
                                 <img alt="@brand.get.title" src="@routes.Image.get(brand.get.imageId + ".jpg", 100, "50x25", "full")" />
                             </a>
                         } else {
