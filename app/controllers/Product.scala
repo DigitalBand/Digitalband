@@ -124,7 +124,7 @@ class Product @Inject()(implicit ur: UserRepository, productRepository: ProductR
       categoryRepository.list(categoryId, brandId, search, inStock == 1),
       brandRepository.list(categoryRepository.get(categoryId), brandPage, pageSize = 24, search, inStock == 1),
       categoryId, brandId,
-      categoryRepository.getBreadcrumbs(categoryId, id, ""), pageNumber, search, isAdmin(user)))
+      categoryRepository.getBreadcrumbs(categoryId, id, ""), pageNumber, search, isAdmin(user), inStock))
   }
 }
 
