@@ -25,7 +25,7 @@ inStock: Int = 0)(implicit user:Option[models.UserEntity],request: play.api.mvc.
                         }
                     </div>
                 }
-                @breadcrumbs(breadcrumbItems, cId => routes.Product.filteredList(cId, 1, brandId(brand), s = searchQuery))
+                @breadcrumbs(breadcrumbItems, cId => routes.Product.filteredList(cId, 1, brandId(brand), s = searchQuery, is =inStock))
 
             </div>
         </div>
