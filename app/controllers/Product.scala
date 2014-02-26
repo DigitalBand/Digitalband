@@ -11,6 +11,7 @@ import data.Forms._
 import play.api.Play.current
 import play.api.cache.Cached
 import helpers.{Secured, EmailHelper}
+import sun.security.ssl.Krb5Helper
 
 
 class Product @Inject()(implicit ur: UserRepository, productRepository: ProductRepository,
@@ -76,7 +77,7 @@ class Product @Inject()(implicit ur: UserRepository, productRepository: ProductR
         implicit request =>
           val inStock = isAvailable > 0
           if (productId > 0)
-            display(productId, categoryId, brandId, brandPage, pageNumber, search)
+            display(productId, categoryId, brandId, brandPage, pageNumber, search, isAvailable)
           else {
             val products = productRepository.getList(categoryRepository.get(categoryId), brandId, pageNumber, pageSize, search, inStock)
             if (categoryId == 1 && !search.isEmpty && products.totalCount == 1)
@@ -114,14 +115,14 @@ class Product @Inject()(implicit ur: UserRepository, productRepository: ProductR
   //}
 
   //TODO: Make async
-  def display(id: Int, categoryId: Int, brandId: Int, brandPage: Int, pageNumber: Int, search: String)(implicit request: Request[AnyContent], user: Option[UserEntity]) = {
+  def display(id: Int, categoryId: Int, brandId: Int, brandPage: Int, pageNumber: Int, search: String, inStock: Int = 0)(implicit request: Request[AnyContent], user: Option[UserEntity]) = {
     val product = productRepository.get(id, brandRepository.get)
-    val inStock = request.queryString.get("inStock").flatMap(seq => Some(seq.head == "true")) getOrElse false
+
     Ok(views.html.Product.display(
       product,
       imageRepository.listByProductId(id),
-      categoryRepository.list(categoryId, brandId, search, inStock),
-      brandRepository.list(categoryRepository.get(categoryId), brandPage, pageSize = 24, search, inStock),
+      categoryRepository.list(categoryId, brandId, search, inStock == 1),
+      brandRepository.list(categoryRepository.get(categoryId), brandPage, pageSize = 24, search, inStock == 1),
       categoryId, brandId,
       categoryRepository.getBreadcrumbs(categoryId, id, ""), pageNumber, search, isAdmin(user)))
   }

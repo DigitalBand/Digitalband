@@ -67,7 +67,7 @@ inStock: Int = 0)(implicit user:Option[models.UserEntity],request: play.api.mvc.
             <div class="row product-item">
                 <div class="col-md-2">
                     <a href="@routes.Product.filteredList(currentCategory.id, pageNumber, brandId(brand),
-                        productId = product.id, s = searchQuery)" class="thumbnail">
+                        productId = product.id, s = searchQuery, is = inStock)" class="thumbnail">
                         <img class="lazy" src="@routes.Assets.at("images/empty.gif")" data-original="@routes.Image.get(product.defaultImageId + ".jpg", 90, "340x340", "full")">
                         <noscript>
                             <img src="@routes.Image.get(product.defaultImageId + ".jpg", 90, "340x300", "full")">
@@ -76,7 +76,7 @@ inStock: Int = 0)(implicit user:Option[models.UserEntity],request: play.api.mvc.
                 </div>
                 <div class="col-md-8">
                     <a href="@routes.Product.filteredList(currentCategory.id, pageNumber, brandId(brand),
-                        productId = product.id, s = searchQuery)">
+                        productId = product.id, s = searchQuery, is = inStock)">
                         <h5> @product.title </h5>
                     </a>
                     <p> @product.description &nbsp; </p>
@@ -88,7 +88,7 @@ inStock: Int = 0)(implicit user:Option[models.UserEntity],request: play.api.mvc.
                     </h4>
                     <form action="@routes.Cart.add" method="POST">
                         <input type="hidden" name="returnUrl"
-                        value="@routes.Product.filteredList(currentCategory.id, pageNumber, brandId(brand), 1, s = searchQuery)"/>
+                        value="@routes.Product.filteredList(currentCategory.id, pageNumber, brandId(brand), 1, s = searchQuery, is = inStock)"/>
                         <input type="hidden" name="productId" value="@product.id" />
                         <input type="hidden" name="count" value="1" />
                         @if(product.isAvailable){
