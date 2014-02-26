@@ -47,7 +47,7 @@
                             <li class="@{
                                 if(menuItem.equals("catalogue")) "active" else ""
                             }">
-                                <a href="@routes.Product.list"> @Messages("main.nav.catalogue") </a>
+                                <a href="@routes.Product.filteredList(1, 1, is = 1)"> @Messages("main.nav.catalogue") </a>
                             </li>
                             <li class="@{
                                 if(menuItem.equals("cart")) "active" else ""

@@ -68,13 +68,13 @@ class Product @Inject()(implicit ur: UserRepository, productRepository: ProductR
                    brandPage: Int = 1,
                    productId: Int = 0,
                    pageSize: Int = 10,
-                   search: String = "") =
+                   search: String = "",
+                   isAvailable: Int = 0) =
   //Cached(req => req.uri, 82000) {
     withUser {
       implicit user =>
         implicit request =>
-          val inStock = request.queryString.get("inStock").flatMap(seq => Some(seq.head == "true")) getOrElse false
-
+          val inStock = isAvailable > 0
           if (productId > 0)
             display(productId, categoryId, brandId, brandPage, pageNumber, search)
           else {
@@ -85,7 +85,7 @@ class Product @Inject()(implicit ur: UserRepository, productRepository: ProductR
               val category = categoryRepository.get(categoryId)
               val brand = brandRepository.get(brandId)
               val helper = helpers.PagerHelper(pageSize, products.totalCount, products.number)
-              def url(pn: Int) = routes.Product.filteredList(category.id, pn, helpers.ViewHelper.brandId(brand), s = search)
+              def url(pn: Int) = routes.Product.filteredList(category.id, pn, helpers.ViewHelper.brandId(brand), s = search, is = isAvailable)
               Ok(views.html.Product.list(
                 products,
                 category,
