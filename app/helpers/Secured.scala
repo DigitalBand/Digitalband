@@ -30,6 +30,7 @@ object Security {
     request =>
       Ok("The current user is " + request.username)
   }
+
 }
 
 trait Secured {
@@ -48,11 +49,11 @@ trait Secured {
         case none => Forbidden
       }
   }
-  def withUser[A](bp: BodyParser[A])(f: Option[UserEntity] => Request[A] => Result)(implicit userRepository: UserRepository) = Action(bp) {
+  def withUser[A](bp: BodyParser[A])(f: Option[UserEntity] => Request[A] => Future[SimpleResult])(implicit userRepository: UserRepository) = Action.async(bp) {
     implicit request =>
       f(userRepository.get(request.session.get(SessionHelper.username).getOrElse("")))(request)
   }
 
-  def withUser(f: Option[UserEntity] => Request[AnyContent] => SimpleResult)(implicit userRepository: UserRepository): EssentialAction =
+  def withUser(f: Option[UserEntity] => Request[AnyContent] => Future[SimpleResult])(implicit userRepository: UserRepository): EssentialAction =
     withUser(parse.anyContent)(f)
 }

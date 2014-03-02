@@ -9,6 +9,8 @@ import play.api._
 import data.Form
 import data.Forms._
 import helpers.{Secured, EmailHelper}
+import scala.concurrent.{ExecutionContext, Future}
+import ExecutionContext.Implicits.global
 
 class Order @Inject()(implicit ur: UserRepository, orderRepository: OrderRepository, cartRepository: CartRepository) extends ControllerBase with Secured {
   val deliveryForm = Form(mapping(
@@ -21,7 +23,7 @@ class Order @Inject()(implicit ur: UserRepository, orderRepository: OrderReposit
 
   def fill = withUser {
     implicit user =>
-      implicit request =>
+      implicit request => Future {
         val itemsList = cartRepository.list(getUserId)
         if (!itemsList.isEmpty)
           Ok {
@@ -31,12 +33,13 @@ class Order @Inject()(implicit ur: UserRepository, orderRepository: OrderReposit
           }.withHeaders(CACHE_CONTROL -> "no-cache, max-age=0, must-revalidate, no-store")
         else
           Redirect(routes.Cart.display())
+      }
   }
 
   //TODO: rename to "create"
   def create = withUser {
     implicit user =>
-      implicit request =>
+      implicit request => Future {
         deliveryForm.bindFromRequest.fold(
           formWithErrors => {
             BadRequest(views.html.Order.fill(cartRepository.list(getUserId), formWithErrors))
@@ -48,17 +51,20 @@ class Order @Inject()(implicit ur: UserRepository, orderRepository: OrderReposit
             Redirect(routes.Order.confirmation(orderId))
           }
         )
+      }
   }
 
   def confirmation(orderId: Int) = withUser {
     implicit user =>
-      implicit request =>
+      implicit request => Future {
         Ok(views.html.Order.confirmation(orderRepository.getItems(orderId), orderId))
+      }
   }
 
   def display(orderId: Int) = withUser {
     implicit user =>
-      implicit request =>
+      implicit request => Future {
         NotImplemented
+      }
   }
 }
