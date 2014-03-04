@@ -6,7 +6,7 @@
 
 
         <ul class="list-group panel-collapse collapse in" id="@id">
-        @items.map { item =>
+        @items.sortWith((i1, i2) => i1.imageId > i2.imageId).map { item =>
             <li class="list-group-item @{if(item.imageId > 0) "with-image" else ""} @{if(item.id == selectedId) "active" else ""}">
                 @if(item.imageId > 0) {
                     <a href="@{if(item.id == selectedId) url(0) else url(item.id)}" title="@{s"$linkTitle ${item.tooltip}"}" class="thumbnail">
