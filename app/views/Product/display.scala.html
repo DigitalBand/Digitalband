@@ -86,9 +86,9 @@ categoryId = categoryId, brandId = brandId, subnav = subnav, scripts = scripts, 
 <div class="row">
     <div class="col-md-5 product-photos">
         @if(imageIds.length == 0){
-        <img alt="" src="@routes.Image.get(product.defaultImageId + ".jpg", 90, "330x250", "full")">
+            <img alt="" style="width:330px;height: 250px" src="@routes.Image.get(product.defaultImageId + ".jpg", 90, "660x500", "full")">
         }else{
-            <img alt="" src="@routes.Image.get(imageIds.head + ".jpg", 90, "330x250", "full")">
+            <img alt="" style="width:330px;height: 250px" src="@routes.Image.get(imageIds.head + ".jpg", 90, "660x500", "full")">
         }
         @if(imageIds.length > 0){
         <hr/>
@@ -96,7 +96,7 @@ categoryId = categoryId, brandId = brandId, subnav = subnav, scripts = scripts, 
             @imageIds.map { imageId =>
             <div class="col-sm-6 col-md-4 col-lg-3">
                 <a rel="lightbox[gallery]" href="@routes.Image.get(imageId + ".jpg", 90, "600x600", "full")" target="_blank" class="thumbnail fresco" data-fresco-group-options="thumbnails:false" data-fresco-group="mixed">
-                    <img src="@routes.Image.get(imageId + ".jpg", 90, "50x50", "full")" alt="">
+                    <img style="width:50px;height: 50px" src="@routes.Image.get(imageId + ".jpg", 90, "100x100", "full")" alt="">
                 </a>
             </div>
             }

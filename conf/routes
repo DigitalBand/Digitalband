@@ -15,8 +15,12 @@ POST          /admin/order/:orderId/confirm        @controllers.admin.Order.conf
 POST          /admin/order/:orderId/cancel        @controllers.admin.Order.cancel(orderId:Int)
 POST          /admin/order/:orderId/complete        @controllers.admin.Order.complete(orderId:Int)
 POST          /admin/order/:orderId/delete        @controllers.admin.Order.delete(orderId:Int)
-
-
+GET           /admin/shops        @controllers.admin.Shop.main()
+DELETE        /admin/shops/remove/:shopId        @controllers.admin.Shop.remove(shopId: Int)
+GET           /admin/shops/list        @controllers.admin.Shop.list
+PUT           /admin/shops/update        @controllers.admin.Shop.update
+POST          /admin/shops/add        @controllers.admin.Shop.add
+GET           /admin/shops/javaScriptRoutes   @controllers.admin.Shop.javascriptRoutes
 #Admin product
 GET           /admin/category/:categoryId/product/create        @controllers.admin.Product.create(categoryId: Int, brandId: Int ?= 0)
 GET           /admin/product/:productId/edit        @controllers.admin.Product.edit(productId: Int)
@@ -31,7 +35,7 @@ DELETE        /admin/stock/:id        @controllers.admin.StockItem.remove(id: In
 PUT           /admin/stock/:id        @controllers.admin.StockItem.update(id: Int)
 
 #Admin dealers
-GET         /admin/dealer/list      @controllers.admin.Dealer.list()
+GET           /admin/dealer/list        @controllers.admin.Dealer.list()
 #Admin questions
 GET           /admin/question/:questionId/available        @controllers.admin.Question.available(questionId: Int)
 POST          /admin/question/:questionId/available        @controllers.admin.Question.setAvailable(questionId: Int)

@@ -29,8 +29,8 @@ object Global extends GlobalSettings {
 
 class InjectionModule extends ScalaModule {
   def configure() {
-    bind[dao.common.ProductRepository].toInstance(new ProductRepository())
-    bind[dao.common.ImageRepository].toInstance(new ImageRepository())
+    bind[dao.common.ProductRepository].toInstance(new ProductRepository)
+    bind[dao.common.ImageRepository].toInstance(new ImageRepository)
     bind[dao.common.CategoryRepository].toInstance(new CategoryRepository)
     bind[dao.common.BrandRepository].toInstance(new BrandRepository)
     bind[dao.common.UserRepository].toInstance(new UserRepository)
@@ -39,6 +39,7 @@ class InjectionModule extends ScalaModule {
     bind[dao.common.QuestionRepository].toInstance(new QuestionRepository)
     bind[dao.common.StockItemRepository].toInstance(new StockItemRepository)
     bind[dao.common.DealerRepository].toInstance(new DealerRepository)
+    bind[dao.common.ShopRepository].toInstance(new ShopRepository)
     Play.current.configuration.getString("webservices.imageSearch") match {
       case Some(config) if config == "google" => bind[webServices.common.ImageSearch].toInstance(new GoogleImageSearch)
       case _ => bind[webServices.common.ImageSearch].toInstance(new FakeImageSearch)

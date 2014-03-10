@@ -1,81 +1,88 @@
 @(product: ProductDetails)(implicit user: Option[UserEntity], request: play.api.mvc.Request[Any])
-    @scripts = {
-        <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.10/angular.js"></script>
-        <script src="@routes.Assets.at("javascripts/lodash.js")"></script>
-        <script src="@routes.Assets.at("javascripts/modules/stock-item/stock-item.js")"></script>
-        <script src="@controllers.admin.routes.StockItem.javascriptRoutes"></script>
-        <script>
-        stockItem.productId = @product.id
-        </script>
-        <script src="@routes.Assets.at("javascripts/modules/stock-item/controllers/StockItemController.js")"></script>
-        <script src="@routes.Assets.at("javascripts/modules/stock-item/controllers/DealerController.js")"></script>
-        <script src="@routes.Assets.at("javascripts/modules/stock-item/services/StockItemService.js")"></script>
-        <script src="@routes.Assets.at("javascripts/modules/stock-item/services/DealerService.js")"></script>
+  @scripts = {
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.10/angular.js"></script>
+    <script src="@routes.Assets.at("javascripts/lodash.js")"></script>
+    <script src="@routes.Assets.at("javascripts/modules/stock-item/stock-item.js")"></script>
+    <script src="@controllers.admin.routes.StockItem.javascriptRoutes"></script>
+    <script>
+    stockItem.productId = @product.id
+    </script>
+    <script src="@routes.Assets.at("javascripts/modules/stock-item/controllers/StockItemController.js")"></script>
+    <script src="@routes.Assets.at("javascripts/modules/stock-item/controllers/DealerController.js")"></script>
+    <script src="@routes.Assets.at("javascripts/modules/stock-item/services/StockItemService.js")"></script>
+    <script src="@routes.Assets.at("javascripts/modules/stock-item/services/DealerService.js")"></script>
 
 
-    }
+  }
 @main(scripts = scripts) {
-    <div class="page-header">
-        <h4>Наличие на складе: <small><a href="@controllers.admin.routes.Product.edit(product.id)">@product.title</a></small></h4>
-    </div>
-    <div ng-app="stockItem">
-        <div ng-controller="StockItemController">
+  <div class="page-header">
+    <h4>
+      Наличие на складе: <small><a href="@controllers.admin.routes.Product.edit(product.id)">@product.title</a></small></h4>
+  </div>
+  <div ng-app="stockItem">
+    <div ng-controller="StockItemController">
 
-            <form class="form-inline" ng-submit="vm.save()">
-                <div class="form-group">
-                    <label>Поставщик</label>
-                    <select class="form-control" name="dealer" ng-model="vm.stockItem.dealerName" ng-options="d for d in vm.dealers">
-
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label>Количество</label>
-                    <input class="form-control" name="quantity" ng-model="vm.stockItem.quantity" />
-                </div>
-                <div class="form-group">
-                    <label>Цена поставщика</label>
-                    <input class="form-control" type="text" ng-model="vm.stockItem.dealerPrice" />
-                </div>
-                <div class="form-group">
-                    <label>&nbsp;</label>
-                    <div>
-                        <button class="btn btn-primary">Сохранить</button>
-                    </div>
-                </div>
-            </form>
-
-            <table class="table table-condensed">
-                <thead>
-                    <tr>
-                        <th></th>
-                        <th>Поставщик</th>
-                        <th>Количество</th>
-
-                        <th>Цена поставщика</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr ng-repeat="item in vm.items">
-                        <td style="width: 60px">
-                            <a href="#" ng-click="vm.remove(item.id)"><i class="icon-trash"></i></a>
-                            &nbsp;
-                            <a href="#" ng-click="vm.edit(item)"><i class="icon-edit"></i> </a>
-                        </td>
-                        <td>{{item.dealerName}}</td>
-                        <td>{{item.quantity}}</td>
-
-                        <td>{{item.dealerPrice}}</td>
-                    </tr>
-                </tbody>
-                <tfoot style="font-weight: bold">
-                    <tr>
-                        <td colspan="2"></td>
-                        <td>{{vm.items.totalCount}}</td>
-                        <td>{{vm.items.totalValue}}</td>
-                    </tr>
-                </tfoot>
-            </table>
-
+      <form class="form-inline" ng-submit="vm.save()">
+        <div class="form-group">
+          <label>Склад</label>
+          <select class="form-control" name="shop" ng-model="vm.stockItem.shopId" ng-options="s for s in vm.shops"></select>
         </div>
+        <div class="form-group">
+          <label>Поставщик</label>
+          <select class="form-control" name="dealer" ng-model="vm.stockItem.dealerName" ng-options="d for d in vm.dealers">
+
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Количество</label>
+          <input class="form-control" name="quantity" ng-model="vm.stockItem.quantity" />
+        </div>
+        <div class="form-group">
+          <label>Цена поставщика</label>
+          <input class="form-control" type="text" ng-model="vm.stockItem.dealerPrice" />
+        </div>
+        <div class="form-group">
+          <label>&nbsp;</label>
+          <div>
+            <button class="btn btn-primary">Сохранить</button>
+          </div>
+        </div>
+      </form>
+
+      <table class="table table-condensed">
+        <thead>
+          <tr>
+            <th></th>
+            <th>Склад</th>
+            <th>Поставщик</th>
+            <th>Количество</th>
+
+            <th>Цена поставщика</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr ng-repeat="item in vm.items">
+            <td style="width : 60 px">
+              <a href="#" ng-click="vm.remove(item.id)"><i class="icon-trash"></i></a>
+                &nbsp;
+              <a href="#" ng-click="vm.edit(item)"><i class="icon-edit"></i> </a>
+            </td>
+            <td>{{item.shopTitle}}</td>
+            <td>{{item.dealerName}}</td>
+            <td>{{item.quantity}}</td>
+
+            <td>{{item.dealerPrice}}</td>
+          </tr>
+        </tbody>
+        <tfoot style="font-weight : bold">
+          <tr>
+            <td colspan="2"></td>
+            <td>{{vm.items.totalCount}}</td>
+            <td>{{vm.items.totalValue}}</td>
+          </tr>
+        </tfoot>
+      </table>
+
     </div>
+  </div>
 }

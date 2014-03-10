@@ -7,7 +7,6 @@ import Database.threadLocalSession
 import slick.jdbc.{StaticQuery => Q, GetResult}
 import Q.interpolation
 
-import slick.jdbc.{StaticQuery => Q, GetResult}
 import models.StockItemInfo
 
 class StockItemRepository extends dao.common.StockItemRepository {

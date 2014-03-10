@@ -1,0 +1,20 @@
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th></th>
+            <th>Название</th>
+            <th>Город</th>
+            <th>Адрес</th>
+            <th>Телефоны</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr ng-repeat="shop in shops">
+            <td><a href="#" ng-click="remove(shop.id)"><i class="icon icon-trash"></i></a> </td>
+            <td>{{shop.title}}</td>
+            <td>{{shop.city}}</td>
+            <td>{{shop.address}}</td>
+            <td>{{shop.phones}}</td>
+        </tr>
+    </tbody>
+</table>
