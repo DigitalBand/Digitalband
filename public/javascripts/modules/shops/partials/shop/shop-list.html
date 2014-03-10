@@ -12,7 +12,7 @@
     <tbody>
     <tr ng-repeat="shop in shops">
       <td><a href="#" ng-click="remove(shop.id)"><i class="icon icon-trash"></i></a></td>
-      <td><a ng-href="{{href('shopEdit', {id: shop.Id})}}">{{shop.title}}</a></td>
+      <td><a ng-href="{{href('shopEdit', {shopId: shop.id})}}">{{shop.title}}</a></td>
       <td>{{shop.city}}</td>
       <td>{{shop.address}}</td>
     </tr>

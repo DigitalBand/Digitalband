@@ -16,6 +16,12 @@ class Shop @Inject()(implicit userRepository: UserRepository, shopRepository: Sh
         Ok(views.html.Admin.Shop.main())
   }
 
+  def get(shopId: Int) = withAdmin {
+    implicit user =>
+      implicit request =>
+        Ok(Json.generate(shopRepository.get(shopId))).withHeaders(CONTENT_TYPE -> "application/json")
+  }
+
   def remove(shopId: Int) = withAdmin {
     implicit user =>
       implicit request =>
@@ -54,7 +60,8 @@ class Shop @Inject()(implicit userRepository: UserRepository, shopRepository: Sh
             controllers.admin.routes.javascript.Shop.list,
             controllers.admin.routes.javascript.Shop.add,
             controllers.admin.routes.javascript.Shop.remove,
-            controllers.admin.routes.javascript.Shop.update
+            controllers.admin.routes.javascript.Shop.update,
+            controllers.admin.routes.javascript.Shop.get
           )
         ).as("text/javascript")
   }

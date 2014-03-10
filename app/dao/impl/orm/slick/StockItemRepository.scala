@@ -13,8 +13,8 @@ class StockItemRepository extends dao.common.StockItemRepository {
   def create(productId: Int, stockItem: StockItemInfo): Int = withSession {
     sqlu"""
       insert into
-        stock_items(product_id, dealer_id, dealer_price)
-        values(${productId}, (select id from dealers where title = ${stockItem.dealerName}), ${stockItem.dealerPrice})
+        stock_items(product_id, dealer_id, dealer_price, shop_id)
+        values(${productId}, (select id from dealers where title = ${stockItem.dealerName}), ${stockItem.dealerPrice}, ${stockItem.shopId})
     """.execute()
     val result = sql"""select last_insert_id();""".as[Int].first
     cacheStock(productId)
@@ -32,14 +32,17 @@ class StockItemRepository extends dao.common.StockItemRepository {
     """.execute()
   }
   def list(productId: Int) = withSession {
-    implicit val res = GetResult(r => StockItemInfo(r.<<, r.<<, r.<<, r.<<))
+    implicit val res = GetResult(r => StockItemInfo(r.<<, r.<<, r.<<, r.<<, r.<<, r.<<))
     sql"""
       select
         s.id,
         s.quantity,
         (select title from dealers where id = s.dealer_id) as dealerName,
-        s.dealer_price
+        s.dealer_price,
+        sh.id,
+        sh.title
       from stock_items s
+      inner join shop sh on sh.id = s.shop_id
       where
         s.product_id = ${productId};
     """.as[StockItemInfo].list
@@ -74,7 +77,8 @@ class StockItemRepository extends dao.common.StockItemRepository {
       set
         quantity = ${stockItem.quantity},
         dealer_price = ${stockItem.dealerPrice},
-        dealer_id = (select id from dealers where title = ${stockItem.dealerName})
+        dealer_id = (select id from dealers where title = ${stockItem.dealerName}),
+        shop_id = ${stockItem.shopId}
       where
         id = ${stockItem.id}
     """.execute()

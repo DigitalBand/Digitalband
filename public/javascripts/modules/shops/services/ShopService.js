@@ -6,6 +6,11 @@
   }
 
   ShopService.prototype = {
+    get: function(shopId) {
+      return this.$http(jsRoutes.controllers.admin.Shop.get(shopId)).then(function(response){
+        return response.data;
+      });
+    },
     list: function () {
       return this.$http(jsRoutes.controllers.admin.Shop.list()).then(function (response) {
         return response.data;
@@ -29,6 +34,7 @@
       if (shop.id) {
         return this.update(shop);
       } else {
+        shop.id = 0;
         return this.add(shop);
       }
     },

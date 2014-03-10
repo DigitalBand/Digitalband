@@ -7,4 +7,5 @@ trait ShopRepository {
   def add(shop: ShopInfo): Int
   def update(shop: ShopInfo)
   def list: Seq[ShopInfo]
+  def get(shopId: Int): ShopInfo
 }

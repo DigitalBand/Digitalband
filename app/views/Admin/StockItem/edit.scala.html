@@ -11,7 +11,7 @@
     <script src="@routes.Assets.at("javascripts/modules/stock-item/controllers/DealerController.js")"></script>
     <script src="@routes.Assets.at("javascripts/modules/stock-item/services/StockItemService.js")"></script>
     <script src="@routes.Assets.at("javascripts/modules/stock-item/services/DealerService.js")"></script>
-
+    <script src="@routes.Assets.at("javascripts/modules/stock-item/services/ShopService.js")"></script>
 
   }
 @main(scripts = scripts) {
@@ -25,7 +25,7 @@
       <form class="form-inline" ng-submit="vm.save()">
         <div class="form-group">
           <label>Склад</label>
-          <select class="form-control" name="shop" ng-model="vm.stockItem.shopId" ng-options="s for s in vm.shops"></select>
+          <select style="width: 200px" class="form-control" name="shop" ng-model="vm.stockItem.shopId" ng-options="s.id as s.title for s in vm.shops"></select>
         </div>
         <div class="form-group">
           <label>Поставщик</label>
@@ -35,11 +35,11 @@
         </div>
         <div class="form-group">
           <label>Количество</label>
-          <input class="form-control" name="quantity" ng-model="vm.stockItem.quantity" />
+          <input class="form-control" style="width: 150px" name="quantity" ng-model="vm.stockItem.quantity" />
         </div>
         <div class="form-group">
           <label>Цена поставщика</label>
-          <input class="form-control" type="text" ng-model="vm.stockItem.dealerPrice" />
+          <input class="form-control" style="width: 150px" type="text" ng-model="vm.stockItem.dealerPrice" />
         </div>
         <div class="form-group">
           <label>&nbsp;</label>
@@ -76,7 +76,7 @@
         </tbody>
         <tfoot style="font-weight : bold">
           <tr>
-            <td colspan="2"></td>
+            <td colspan="3"></td>
             <td>{{vm.items.totalCount}}</td>
             <td>{{vm.items.totalValue}}</td>
           </tr>

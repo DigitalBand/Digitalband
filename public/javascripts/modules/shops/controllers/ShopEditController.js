@@ -24,7 +24,7 @@
     save: function () {
       var that = this;
       this.shopService.save(this.shop).then(function () {
-        that.$state.go('home0');
+        that.$state.go('home1');
       });
     },
     addPhone: function(){
@@ -33,7 +33,7 @@
       this.shop.phone = "";
     },
     removePhone: function(phone) {
-      _.remove(this.shop.phones, function(item){
+      _.remove(this.shop.phoneNumbers, function(item){
         return item === phone;
       });
     }

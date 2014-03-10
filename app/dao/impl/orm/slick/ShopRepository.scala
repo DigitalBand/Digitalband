@@ -23,6 +23,21 @@ class ShopRepository extends dao.common.ShopRepository {
     """.as[ShopInfo].list
   }
 
+  override def get(shopId: Int): ShopInfo = withSession {
+    implicit val res = GetResult(r => ShopInfo(r.<<, r.<<, r.<<, r.<<, parsePhones(r.<<)))
+    sql"""
+      select
+        s.id,
+        s.title,
+        s.city,
+        s.address,
+        s.phones
+      from shop s
+      where
+        s.id = ${shopId};
+    """.as[ShopInfo].first
+  }
+
   def parsePhones(phones: Option[String]): Seq[String] = phones match {
     case Some(phones) => phones.split(";")
     case None => Nil

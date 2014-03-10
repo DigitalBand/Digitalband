@@ -14,7 +14,7 @@ shopsApp.config(['$stateProvider', function ($stateProvider) {
     controller: 'ShopListController',
     templateUrl: vw('/partials/shop/shop-list.html')
   }).state('shopEdit', {
-    url: '/edit?shopId',
+    url: '/edit/:shopId',
     controller: 'ShopEditController',
     templateUrl: vw('/partials/shop/shop-edit.html')
   }).state('shopNew', {
