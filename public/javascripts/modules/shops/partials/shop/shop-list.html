@@ -1,20 +1,21 @@
-<table class="table table-striped">
+<div class="col-lg-12">
+  <a class="btn btn-primary" ui-sref="shopNew"><i class="icon icon-plus"></i> Добавить склад</a>
+  <table class="table table-striped">
     <thead>
-        <tr>
-            <th></th>
-            <th>Название</th>
-            <th>Город</th>
-            <th>Адрес</th>
-            <th>Телефоны</th>
-        </tr>
+    <tr>
+      <th></th>
+      <th>Название</th>
+      <th>Город</th>
+      <th>Адрес</th>
+    </tr>
     </thead>
     <tbody>
-        <tr ng-repeat="shop in shops">
-            <td><a href="#" ng-click="remove(shop.id)"><i class="icon icon-trash"></i></a> </td>
-            <td>{{shop.title}}</td>
-            <td>{{shop.city}}</td>
-            <td>{{shop.address}}</td>
-            <td>{{shop.phones}}</td>
-        </tr>
+    <tr ng-repeat="shop in shops">
+      <td><a href="#" ng-click="remove(shop.id)"><i class="icon icon-trash"></i></a></td>
+      <td><a ng-href="{{href('shopEdit', {id: shop.Id})}}">{{shop.title}}</a></td>
+      <td>{{shop.city}}</td>
+      <td>{{shop.address}}</td>
+    </tr>
     </tbody>
-</table>
+  </table>
+</div>

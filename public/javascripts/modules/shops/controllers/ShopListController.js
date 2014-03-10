@@ -1,6 +1,6 @@
-shopsApp.controller('ShopListController', ['$scope', 'ShopService', function ($scope, shopService) {
+shopsApp.controller('ShopListController', ['$scope', 'ShopService', '$state', function ($scope, shopService, $state) {
   "use strict";
-  console.log('load');
+  $scope.href = $state.href;
   shopService.list().then(function(shops){
     $scope.shops = shops;
   });
@@ -11,5 +11,4 @@ shopsApp.controller('ShopListController', ['$scope', 'ShopService', function ($s
       });
     }
   };
-
 }]);

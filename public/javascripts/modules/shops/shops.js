@@ -13,9 +13,13 @@ shopsApp.config(['$stateProvider', function ($stateProvider) {
     url: '/',
     controller: 'ShopListController',
     templateUrl: vw('/partials/shop/shop-list.html')
-  }).state('edit', {
-    url: '/edit?id',
-    controller: 'ShopEditControoler',
+  }).state('shopEdit', {
+    url: '/edit?shopId',
+    controller: 'ShopEditController',
+    templateUrl: vw('/partials/shop/shop-edit.html')
+  }).state('shopNew', {
+    url: '/new',
+    controller: 'ShopEditController',
     templateUrl: vw('/partials/shop/shop-edit.html')
   });
 }]);

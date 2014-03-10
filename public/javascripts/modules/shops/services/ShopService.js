@@ -7,7 +7,7 @@
 
   ShopService.prototype = {
     list: function () {
-      return $http(jsRoutes.controllers.admin.Shop.list()).then(function (response) {
+      return this.$http(jsRoutes.controllers.admin.Shop.list()).then(function (response) {
         return response.data;
       });
     },
@@ -24,6 +24,13 @@
           "Content-Type": "application/json"
         }
       });
+    },
+    save: function (shop) {
+      if (shop.id) {
+        return this.update(shop);
+      } else {
+        return this.add(shop);
+      }
     },
     add: function (shop) {
       return this.$http({
