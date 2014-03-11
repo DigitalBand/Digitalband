@@ -93,11 +93,11 @@ class ProductRepository extends RepositoryBase with dao.common.ProductRepository
   def get(id: Int, getBrand: Int => Option[BrandEntity]): ProductDetails = database withSession {
     implicit val getProductDetails = GetResult(r =>
       new ProductDetails(
-        r.nextString,
+        r.<<,
         r.nextStringOption.getOrElse(""),
         r.nextStringOption.getOrElse(""),
-        r.nextDouble,
-        r.nextInt,
+        r.<<,
+        r.<<,
         r.nextIntOption.getOrElse(0),
         new BrandEntity(r.nextIntOption.getOrElse(0), r.nextStringOption.getOrElse(Messages("brand.unknown"))),
         new CategoryEntity(r.nextIntOption.getOrElse(0), r.nextStringOption.getOrElse(Messages("category.unknown"))),

@@ -11,6 +11,8 @@ import wt.common.image.{ImageEntity, PictureEntity}
 
 class ImageRepository extends RepositoryBase with dao.common.ImageRepository {
 
+  implicit val getImage = GetResult(r => PictureEntity(r.<<, r.<<, r.<<))
+
   def defaultImage = new PictureEntity(0, "/default/noimage.png", "jpg")
 
   def errorImage = new PictureEntity(0, "/default/error.jpg", "jpg")
@@ -18,11 +20,18 @@ class ImageRepository extends RepositoryBase with dao.common.ImageRepository {
   def get(imageId: Int): PictureEntity = {
     if (imageId > 0) {
       database withSession {
-        val imageQuery = for {
-          img <- ImagesTable if img.id === imageId
-        } yield (img.id, img.path)
-        imageQuery.firstOption match {
-          case Some(x) => PictureEntity(x._1, x._2, "jpg")
+
+        sql"""
+          select
+            img.imageId,
+            img.filePath,
+            img.md5
+          from
+            images img
+          where
+            img.imageId = ${imageId};
+        """.as[PictureEntity].firstOption match {
+          case Some(x) => PictureEntity(x.id, x.path, "jpg") //TODO: jpg always?
           case None => errorImage
         }
       }
@@ -39,7 +48,6 @@ class ImageRepository extends RepositoryBase with dao.common.ImageRepository {
   }
 
   def getByMd5(md5: String): Option[PictureEntity] = database withSession {
-    implicit val getImage = GetResult(r => new PictureEntity(r.nextInt, r.nextString, r.nextString))
     sql"select imageId, filePath, md5 from images where md5 = $md5".as[PictureEntity].firstOption
   }
 
