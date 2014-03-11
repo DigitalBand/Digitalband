@@ -6,33 +6,42 @@ import Profile.driver.simple._
 import Database.threadLocalSession
 import models.{CategoryListItem, CategoryEntity}
 
-import tables.{CategoryImagesTable, CategoriesTable}
 import slick.jdbc.{StaticQuery => Q, GetResult}
 import Q.interpolation
 
 class CategoryRepository extends RepositoryBase with dao.common.CategoryRepository {
 
 
-  def listWithPictures: Seq[CategoryEntity] = {
-    database withSession {
-      val categories = for {
-        c <- CategoriesTable
-        ci <- CategoryImagesTable if c.id === ci.categoryId
-      } yield (c.id, c.title, ci.imageId)
-      categories.list.map {
-        case (id: Int, title: String, imageId: Int) => CategoryEntity(id, title, imageId)
-      }
-    }
+  def listWithPictures: Seq[CategoryEntity] = database withSession {
+    implicit val getCategory = GetResult(r => CategoryEntity(r.<<, r.<<, r.<<))
+    sql"""
+      select
+        cat.CategoryId,
+        cat.title,
+        ci.imageId
+      from
+        categories cat
+      inner join category_images ci on ci.categoryId = cat.categoryid
+    """.as[CategoryEntity].list
   }
 
-  def get(id: Int): CategoryEntity = {
-    database withSession {
-      val categoryQuery = CategoriesTable.filter(_.id === id).map(c => c.id ~ c.title ~ c.leftValue ~ c.rightValue ~ c.parentId)
-      categoryQuery.list.map {
-        case (id: Int, title: String, leftValue: Int, rightValue: Int, parentCategoryId: Option[Int]) =>
-          CategoryEntity(id, title, 0, leftValue, rightValue, parentCategoryId.getOrElse(0))
-      }.head
-    }
+
+  def get(id: Int): CategoryEntity = database withSession {
+    implicit val getCategory = GetResult(r => CategoryEntity(r.<<, r.<<, r.<<, r.<<, r.<<, r.<<))
+    sql"""
+      select
+        cat.CategoryId,
+        cat.title,
+        0,
+        cat.leftvalue,
+        cat.rightvalue,
+        cat.parentcategoryid
+      from
+        categories cat
+      where
+        cat.categoryid = ${id};
+    """.as[CategoryEntity].first
+
   }
 
   def list(categoryId: Int, brandId: Int, search: String, inStock: Boolean): Seq[CategoryListItem] = database withSession {
@@ -55,7 +64,7 @@ class CategoryRepository extends RepositoryBase with dao.common.CategoryReposito
             (cat.`leftValue` >= scat.`leftValue`) and
             (cat.`rightValue` <= scat.`rightValue`) and
             ((${brandId} = 0) or (prod.brandId = ${brandId})) and
-            ((${search} = '') or (prod.title like ${'%'+search+'%'})) and
+            ((${search} = '') or (prod.title like ${'%' + search + '%'})) and
             ((${inStock} = FALSE) or (prod.isAvailable = ${inStock}))
         ) as productCount
       from
@@ -68,15 +77,16 @@ class CategoryRepository extends RepositoryBase with dao.common.CategoryReposito
   def getBreadcrumbs(categoryId: Int, productId: Int, search: String): Seq[(Int, String)] = {
     database withSession {
       val category = get(categoryId)
-      val breadCrumbsQuery = for {
-        c <- CategoriesTable
-        if {
-          if (productId > 0) c.leftValue <= category.leftValue else c.leftValue < category.leftValue
-        } && {
-          if (productId > 0) c.rightValue >= category.rightValue else c.rightValue > category.rightValue
-        }
-      } yield (c.id, c.title)
-      breadCrumbsQuery.list
+      sql"""
+        select
+          cat.CategoryId,
+          cat.title
+        from
+          categories cat
+        where
+          ((${productId} > 0 and cat.leftValue <= ${category.leftValue}) or (${productId} = 0 and cat.leftValue < ${category.leftValue})) and
+          ((${productId} > 0 and cat.rightValue >= ${category.rightValue}) or (${productId} = 0 and cat.rightValue > ${category.rightValue}))
+      """.as[(Int, String)].list
     }
   }
 }

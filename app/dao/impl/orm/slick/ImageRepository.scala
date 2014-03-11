@@ -6,7 +6,6 @@ import common.Profile.driver.simple._
 import Database.threadLocalSession
 import slick.jdbc.{StaticQuery => Q, GetResult}
 import Q.interpolation
-import tables.{ProductImagesTable, ImagesTable}
 import wt.common.image.{ImageEntity, PictureEntity}
 
 class ImageRepository extends RepositoryBase with dao.common.ImageRepository {
@@ -44,7 +43,14 @@ class ImageRepository extends RepositoryBase with dao.common.ImageRepository {
   def getProductImage(productId: Int, imageNumber: Int) = ???
 
   def listByProductId(productId: Int): Seq[Int] = database withSession {
-    ProductImagesTable.filter(i => i.productId === productId).map(_.imageId).list
+    sql"""
+      select
+        pi.imageId
+      from
+        product_images pi
+      where
+        pi.productId = ${productId};
+    """.as[Int].list
   }
 
   def getByMd5(md5: String): Option[PictureEntity] = database withSession {

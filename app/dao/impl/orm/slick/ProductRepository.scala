@@ -5,7 +5,6 @@ import models._
 
 import models.CategoryEntity
 import models.ProductDetails
-import tables.{ProductsTable, ProductsCategoriesTable, CategoriesTable}
 import slick.jdbc.{StaticQuery => Q, GetResult}
 import Q.interpolation
 import Profile.driver.simple._
@@ -126,11 +125,19 @@ class ProductRepository extends RepositoryBase with dao.common.ProductRepository
   }
 
   def get(id: Int): ProductDetails = database withSession {
-    val productQuery = ProductsTable.filter(p => p.id === id).map(p => p.title ~ p.description ~ p.price ~ p.defaultImageId ~ p.brandId)
-    productQuery.firstOption.map {
-      case (title: String, description: Option[String], price: Double, defaultImageId: Option[Int], brandId: Option[Int]) =>
-        new ProductDetails(title, description.getOrElse(""), price, id, defaultImageId.getOrElse(0))
-    }.get
+    implicit val getResult = GetResult(r => new ProductDetails(r.<<, r.nextStringOption.getOrElse(""), r.<<, r.<<, r.nextIntOption.getOrElse(0)))
+    sql"""
+      select
+        p.title,
+        p.description,
+        p.price,
+        p.defaultImageId,
+        p.brandId
+      from
+        products p
+      where
+        p.productId = id;
+    """.as[ProductDetails].first
   }
 
 
