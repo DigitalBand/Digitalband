@@ -2,19 +2,12 @@ package dao.impl.orm.slick
 
 import scala.slick.driver.JdbcDriver.backend.Database
 import Database.dynamicSession
-
-
 import slick.jdbc.{StaticQuery => Q, GetResult}
 import Q.interpolation
-
-
-
 import models.DealerInfo
 import dao.impl.orm.slick.common.RepositoryBase
 
-/**
- * Created by tim on 17/02/14.
- */
+
 class DealerRepository extends RepositoryBase with dao.common.DealerRepository {
 
   override def list: Seq[DealerInfo] = database withDynSession {

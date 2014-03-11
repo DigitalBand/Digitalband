@@ -111,7 +111,7 @@ class ProductRepository extends RepositoryBase with dao.common.ProductRepository
         p.price,
         p.productId,
         p.defaultImageId,
-        b.brandId,
+        b.id,
         b.title as brandTitle,
         pc.categoryId,
         c.title,
@@ -120,7 +120,7 @@ class ProductRepository extends RepositoryBase with dao.common.ProductRepository
         products p
       left join products_categories pc on pc.productId = p.productId
       left join categories c on c.CategoryId = pc.categoryId
-      left join brands b on b.brandId = p.brandId
+      left join brands b on b.id = p.brandId
       where p.productId = $id;
     """.as[ProductDetails].first()
   }

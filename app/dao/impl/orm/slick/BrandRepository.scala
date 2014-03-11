@@ -17,15 +17,15 @@ class BrandRepository extends RepositoryBase with dao.common.BrandRepository {
       //implicit val getBrand = GetResult(r => new BrandEntity(r.<<, r.<<, r.<<, r.<<))
       sql"""
         select
-          b.brandId,
+          b.id,
           b.title,
           0,
           bi.imageId
         from
           brands b
-        inner join brand_images bi on b.brandId = b.brandId
+        inner join brand_images bi on bi.brandId = b.id
         where
-          b.brandId = ${id};
+          b.id = ${id};
       """.as[BrandEntity].firstOption
     }
   }
@@ -36,7 +36,7 @@ class BrandRepository extends RepositoryBase with dao.common.BrandRepository {
       val drop = pageSize * (pageNumber - 1)
       val brands = Q.queryNA[BrandEntity]( s"""
           select
-            b.brandId,
+            b.id,
             b.title,
             count(p.brandId) productCount,
             (select imageId from brand_images where brandId = p.brandId limit 1) as imageId
@@ -50,7 +50,7 @@ class BrandRepository extends RepositoryBase with dao.common.BrandRepository {
              c.CategoryId = pc.categoryId and
              c.LeftValue >= ${category.leftValue} and
              c.rightValue <= ${category.rightValue} and
-             b.brandId = p.brandId and
+             b.id = p.brandId and
              ((${inStock} = FALSE) or p.isAvailable = ${inStock}) and
              ${if (search.isEmpty) "1=1" else "p.title like '%" + search + "%'"}
           group by p.brandId order by productCount desc limit $drop, $pageSize;
@@ -81,7 +81,7 @@ class BrandRepository extends RepositoryBase with dao.common.BrandRepository {
   }
 
   def getBrandId(name: String): Int = database withDynSession {
-    sql"select brandId from brands where title = ${name} limit 1;".as[Int].firstOption match {
+    sql"select brand.id from brands brand where brand.title = ${name} limit 1;".as[Int].firstOption match {
       case Some(id) => {
         id
       }
