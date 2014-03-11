@@ -6,19 +6,25 @@ import Database.threadLocalSession
 import slick.jdbc.{GetResult, StaticQuery => Q}
 import Q.interpolation
 import models.{ListPage, CategoryEntity, BrandEntity}
-import tables.{BrandImagesTable, BrandsTable}
 
 class BrandRepository extends RepositoryBase with dao.common.BrandRepository {
   implicit val getBrandEntityResult = GetResult(r => new BrandEntity(r.<<, r.<<, r.<<, r.<<))
 
   def get(id: Int): Option[BrandEntity] = {
     database withSession {
-      val query = for {
-        (b, bi) <- BrandsTable leftJoin BrandImagesTable on (_.id === _.brandId) if b.id === id
-      } yield (b.id, b.title, 0, bi.imageId.?)
-      query.firstOption.map {
-        case (id: Int, title: String, productCount: Int, imageId: Option[Int]) => new BrandEntity(id, title, productCount, imageId.getOrElse(0))
-      }
+      //implicit val getBrand = GetResult(r => new BrandEntity(r.<<, r.<<, r.<<, r.<<))
+      sql"""
+        select
+          b.brandId,
+          b.title,
+          0,
+          bi.imageId
+        from
+          brands b
+        inner join brand_images bi on b.brandId = b.brandId
+        where
+          b.brandId = ${id};
+      """.as[BrandEntity].firstOption
     }
   }
 
