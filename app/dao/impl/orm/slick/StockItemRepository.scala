@@ -1,16 +1,15 @@
 package dao.impl.orm.slick
 
-import dao.impl.orm.slick.common.Profile
-import Profile.database._
-import Profile.driver.simple._
-import Database.threadLocalSession
+import dao.impl.orm.slick.common.{RepositoryBase}
+import scala.slick.driver.JdbcDriver.simple._
+import Database.dynamicSession
 import slick.jdbc.{StaticQuery => Q, GetResult}
 import Q.interpolation
 
 import models.StockItemInfo
 
-class StockItemRepository extends dao.common.StockItemRepository {
-  def create(productId: Int, stockItem: StockItemInfo): Int = withSession {
+class StockItemRepository extends RepositoryBase with dao.common.StockItemRepository {
+  def create(productId: Int, stockItem: StockItemInfo): Int = database withDynSession {
     sqlu"""
       insert into
         stock_items(product_id, dealer_id, dealer_price, shop_id)
@@ -21,7 +20,7 @@ class StockItemRepository extends dao.common.StockItemRepository {
     result
   }
 
-  def cacheStock(productId: Int) = withSession {
+  def cacheStock(productId: Int) = database withDynSession {
     sqlu"""
       update
         products
@@ -31,7 +30,7 @@ class StockItemRepository extends dao.common.StockItemRepository {
         productId = ${productId}
     """.execute()
   }
-  def list(productId: Int) = withSession {
+  def list(productId: Int) = database withDynSession {
     implicit val res = GetResult(r => StockItemInfo(r.<<, r.<<, r.<<, r.<<, r.<<, r.<<))
     sql"""
       select
@@ -48,7 +47,7 @@ class StockItemRepository extends dao.common.StockItemRepository {
     """.as[StockItemInfo].list
   }
 
-  def remove(stockItemId: Int) = withSession {
+  def remove(stockItemId: Int) = database withDynSession {
     val productId = getProductIdByStock(stockItemId)
     sqlu"""
       delete from stock_items where id = ${stockItemId};
@@ -57,7 +56,7 @@ class StockItemRepository extends dao.common.StockItemRepository {
 
   }
 
-  def getProductIdByStock(stockItemId: Int) = withSession {
+  def getProductIdByStock(stockItemId: Int) = database withDynSession {
     val count = sql"""
       select count(product_id) from stock_items where id = ${stockItemId};
     """.as[Int].first
@@ -70,7 +69,7 @@ class StockItemRepository extends dao.common.StockItemRepository {
     }
   }
 
-  def update(stockItem: StockItemInfo): Unit = withSession {
+  def update(stockItem: StockItemInfo): Unit = database withDynSession {
     sqlu"""
       update
         stock_items

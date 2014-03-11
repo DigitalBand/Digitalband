@@ -1,19 +1,18 @@
 package dao.impl.orm.slick
 
 import models._
-import common.Profile
-import Profile.database
-import Profile.driver.simple._
-import Database.threadLocalSession
+import scala.slick.driver.JdbcDriver.backend.Database
+import Database.dynamicSession
+
 import slick.jdbc.{StaticQuery => Q, GetResult}
 import Q.interpolation
 import java.sql.Timestamp
+import dao.impl.orm.slick.common.RepositoryBase
 
-class OrderRepository extends dao.common.OrderRepository {
+class OrderRepository extends RepositoryBase with dao.common.OrderRepository {
 
 
-  def create(deliveryInfo: DeliveryInfo, userId: Int): Int = {
-    database withSession {
+  def create(deliveryInfo: DeliveryInfo, userId: Int): Int = database withDynSession {
       sqlu"""
         insert into orders (userId, placeDate, name, email, phone, address)
         values(
@@ -42,9 +41,9 @@ class OrderRepository extends dao.common.OrderRepository {
        """.execute()
       orderId
     }
-  }
 
-  def getItems(orderId: Int): Seq[CartItem] = database withSession {
+
+  def getItems(orderId: Int): Seq[CartItem] = database withDynSession {
     implicit val getCartItem = GetResult(r => new CartItem(r.<<, r.<<, r.<<, r.<<, r.<<, r.<<))
     sql"""
         select
@@ -62,7 +61,7 @@ class OrderRepository extends dao.common.OrderRepository {
     """.as[CartItem].list
   }
 
-  def getDeliveryInfo(orderId: Int) = database withSession {
+  def getDeliveryInfo(orderId: Int) = database withDynSession {
     implicit val getDeliveryInfo = GetResult(r => new DeliveryInfo(r.<<, r.<<, r.<<, r.<<))
     sql"""
       select
@@ -77,20 +76,20 @@ class OrderRepository extends dao.common.OrderRepository {
     """.as[DeliveryInfo].first
   }
 
-  override def get(orderId: Int): OrderInfo = database withSession {
+  override def get(orderId: Int): OrderInfo = database withDynSession {
     implicit val getOrderInfo = GetResult(r => new OrderInfo(r.<<, r.<<, r.<<, new DeliveryInfo(r.<<, r.<<, r.<<, r.<<)))
     val query = sql"select orderId, placeDate, status, name, email, phone, address from orders where orderId = $orderId"
     val order = query.as[OrderInfo].first()
     new OrderInfo(order, getItems(orderId))
   }
 
-  def exists(orderId: Int) = database withSession {
+  def exists(orderId: Int) = database withDynSession {
     sql"""
       select count(orderId) from order_items where orderId = $orderId;
     """.as[Int].first > 0
   }
 
-  def listAll(pageNumber: Int, pageSize: Int): ListPage[OrderInfo] = database withSession {
+  def listAll(pageNumber: Int, pageSize: Int): ListPage[OrderInfo] = database withDynSession {
     implicit val getOrderInfo = GetResult(r => new OrderInfo(r.<<, r.<<, r.<<, new DeliveryInfo(r.<<, r.<<, r.<<, r.<<)))
     val items = sql"""
       select
@@ -103,20 +102,20 @@ class OrderRepository extends dao.common.OrderRepository {
     new ListPage[OrderInfo](pageNumber, items, totalCount)
   }
 
-  def changeStatus(orderId: Int, status: String) = database withSession {
+  def changeStatus(orderId: Int, status: String) = database withDynSession {
     sqlu"update orders set status = $status where orderId = $orderId".execute()
   }
 
-  def delete(orderId: Int) = database withSession {
+  def delete(orderId: Int) = database withDynSession {
     sqlu"delete from orders where orderId = $orderId; delete from order_items where orderId = $orderId".execute()
   }
 
-  def getCounters: Seq[(String, Int)] = database withSession {
+  def getCounters: Seq[(String, Int)] = database withDynSession {
     val query = sql"select status, count(status) as orderCount from orders group by status;"
     query.as[(String, Int)].list
   }
 
-  def countUnconfirmed: Int = database withSession {
+  def countUnconfirmed: Int = database withDynSession {
     sql"select count(*) from orders where status = 'unconfirmed'".as[Int].first
   }
 

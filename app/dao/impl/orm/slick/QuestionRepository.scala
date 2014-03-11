@@ -1,8 +1,9 @@
 package dao.impl.orm.slick
 
-import common.Profile.driver.simple._
+
 import common.RepositoryBase
-import Database.threadLocalSession
+import scala.slick.driver.JdbcDriver.backend.Database
+import Database.dynamicSession
 import slick.jdbc.{StaticQuery => Q, GetResult}
 import Q.interpolation
 import models.{ListPage, Question}
@@ -10,7 +11,7 @@ import models.{ListPage, Question}
 
 class QuestionRepository extends RepositoryBase with dao.common.QuestionRepository {
 
-  def get(id: Int):Question = database withSession {
+  def get(id: Int):Question = database withDynSession {
     implicit val getQuestion = GetResult(r => new Question(r.<<, r.<<, r.<<, r.<<, r.<<))
     sql"""
       select
@@ -22,11 +23,11 @@ class QuestionRepository extends RepositoryBase with dao.common.QuestionReposito
     """.as[Question].first
   }
 
-  def setAnswered(questionId: Int) = database withSession {
+  def setAnswered(questionId: Int) = database withDynSession {
      sqlu"update questions set status = 'answered' where questionId = $questionId;".execute
   }
 
-  def insertQuestion(productId: Int, email: String): Option[Int] = database withSession {
+  def insertQuestion(productId: Int, email: String): Option[Int] = database withDynSession {
     val questionType = "availability"
     val unansweredStatus = "unanswered"
     val count = sql"""
@@ -45,7 +46,7 @@ class QuestionRepository extends RepositoryBase with dao.common.QuestionReposito
     }
   }
 
-  def listUnanswered(): Seq[Question] = database withSession {
+  def listUnanswered(): Seq[Question] = database withDynSession {
     implicit val getQuestion = GetResult(r => new Question(r.<<, r.<<, r.<<, r.<<, r.<<))
     sql"""
       select
@@ -57,7 +58,7 @@ class QuestionRepository extends RepositoryBase with dao.common.QuestionReposito
     """.as[Question].list
   }
 
-  def listWithAnswers(pageNumber: Int, pageSize: Int) = database withSession {
+  def listWithAnswers(pageNumber: Int, pageSize: Int) = database withDynSession {
     implicit val getQuestion = GetResult(r => new Question(r.<<, r.<<, r.<<, r.<<, r.<<))
     val items = sql"""
       select

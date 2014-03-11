@@ -1,9 +1,8 @@
 package dao.impl.orm.slick
 
-import common.{Profile, RepositoryBase}
-
-import Profile.driver.simple._
-import Database.threadLocalSession
+import common.RepositoryBase
+import scala.slick.driver.JdbcDriver.backend.Database
+import Database.dynamicSession
 import models.{CategoryListItem, CategoryEntity}
 
 import slick.jdbc.{StaticQuery => Q, GetResult}
@@ -12,7 +11,7 @@ import Q.interpolation
 class CategoryRepository extends RepositoryBase with dao.common.CategoryRepository {
 
 
-  def listWithPictures: Seq[CategoryEntity] = database withSession {
+  def listWithPictures: Seq[CategoryEntity] = database withDynSession {
     implicit val getCategory = GetResult(r => CategoryEntity(r.<<, r.<<, r.<<))
     sql"""
       select
@@ -26,7 +25,7 @@ class CategoryRepository extends RepositoryBase with dao.common.CategoryReposito
   }
 
 
-  def get(id: Int): CategoryEntity = database withSession {
+  def get(id: Int): CategoryEntity = database withDynSession {
     implicit val getCategory = GetResult(r => CategoryEntity(r.<<, r.<<, r.<<, r.<<, r.<<, r.<<))
     sql"""
       select
@@ -44,7 +43,7 @@ class CategoryRepository extends RepositoryBase with dao.common.CategoryReposito
 
   }
 
-  def list(categoryId: Int, brandId: Int, search: String, inStock: Boolean): Seq[CategoryListItem] = database withSession {
+  def list(categoryId: Int, brandId: Int, search: String, inStock: Boolean): Seq[CategoryListItem] = database withDynSession {
     implicit val getres = GetResult(r => CategoryListItem(r.<<, r.<<, r.<<))
     sql"""
       select
@@ -75,7 +74,7 @@ class CategoryRepository extends RepositoryBase with dao.common.CategoryReposito
   }
 
   def getBreadcrumbs(categoryId: Int, productId: Int, search: String): Seq[(Int, String)] = {
-    database withSession {
+    database withDynSession {
       val category = get(categoryId)
       sql"""
         select

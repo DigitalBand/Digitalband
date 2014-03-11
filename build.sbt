@@ -14,7 +14,7 @@ resolvers += Resolver.file("Local repo", file(Paths.get(System.getProperty("user
 libraryDependencies ++= Seq(
   jdbc,
   cache,
-  "com.typesafe.slick" %% "slick" % "1.0.1",
+  "com.typesafe.slick" % "slick_2.10" % "2.0.1-RC1",
   "mysql" % "mysql-connector-java" % "5.1.25",
   "org.jsoup" % "jsoup" % "1.7.2",
   "com.typesafe" %% "play-plugins-mailer" % "2.1.0",

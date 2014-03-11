@@ -1,21 +1,23 @@
 package dao.impl.orm.slick
 
-import dao.impl.orm.slick.common.Profile
-import Profile.database._
-import Profile.driver.simple._
-import Database.threadLocalSession
+import scala.slick.driver.JdbcDriver.backend.Database
+import Database.dynamicSession
+
+
 import slick.jdbc.{StaticQuery => Q, GetResult}
 import Q.interpolation
 
-import slick.jdbc.{StaticQuery => Q, GetResult}
+
 
 import models.DealerInfo
+import dao.impl.orm.slick.common.RepositoryBase
 
 /**
  * Created by tim on 17/02/14.
  */
-class DealerRepository extends dao.common.DealerRepository {
-  override def list: Seq[DealerInfo] = withSession {
+class DealerRepository extends RepositoryBase with dao.common.DealerRepository {
+
+  override def list: Seq[DealerInfo] = database withDynSession {
     implicit val getDealers = GetResult(r => DealerInfo(r.<<, r.<<))
     sql"""
       select id, title from dealers;

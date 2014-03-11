@@ -2,18 +2,19 @@ package dao.impl.orm.slick
 
 import common._
 import models._
-
+import scala.slick.driver.JdbcDriver.backend.Database
+import Database.dynamicSession
 import models.CategoryEntity
 import models.ProductDetails
 import slick.jdbc.{StaticQuery => Q, GetResult}
 import Q.interpolation
-import Profile.driver.simple._
-import Database.threadLocalSession
+
+
 import play.api.i18n.Messages
 import wt.common.image.ImageEntity
 
 class ProductRepository extends RepositoryBase with dao.common.ProductRepository {
-  def listMostVisited(count: Int) = database withSession {
+  def listMostVisited(count: Int) = database withDynSession {
     implicit val res = GetResult(r => new ProductDetails(r.<<, r.<<, r.<<, r.<<, r.<<))
     sql"""
       select
@@ -32,14 +33,14 @@ class ProductRepository extends RepositoryBase with dao.common.ProductRepository
     """.as[ProductDetails].list
   }
 
-  override def getAvailability(productId: Int): Int = database withSession {
+  override def getAvailability(productId: Int): Int = database withDynSession {
     sql"""
       select sum(quantity) from stock_items where product_id = ${productId};
     """.as[Int].first
   }
 
 
-  def getList(getCategory: => CategoryEntity, brandId: Int, pageNumber: Int, pageSize: Int, search: String, inStock: Boolean): ListPage[ProductDetails] = database withSession {
+  def getList(getCategory: => CategoryEntity, brandId: Int, pageNumber: Int, pageSize: Int, search: String, inStock: Boolean): ListPage[ProductDetails] = database withDynSession {
     implicit val getProducts = GetResult(
       r => new ProductDetails(r.nextString, r.nextString, r.nextDouble, r.nextInt, r.nextInt, r.nextBoolean))
     val category = getCategory
@@ -89,7 +90,7 @@ class ProductRepository extends RepositoryBase with dao.common.ProductRepository
   }
 
 
-  def get(id: Int, getBrand: Int => Option[BrandEntity]): ProductDetails = database withSession {
+  def get(id: Int, getBrand: Int => Option[BrandEntity]): ProductDetails = database withDynSession {
     implicit val getProductDetails = GetResult(r =>
       new ProductDetails(
         r.<<,
@@ -124,7 +125,7 @@ class ProductRepository extends RepositoryBase with dao.common.ProductRepository
     """.as[ProductDetails].first()
   }
 
-  def get(id: Int): ProductDetails = database withSession {
+  def get(id: Int): ProductDetails = database withDynSession {
     implicit val getResult = GetResult(r => new ProductDetails(r.<<, r.nextStringOption.getOrElse(""), r.<<, r.<<, r.nextIntOption.getOrElse(0)))
     sql"""
       select
@@ -141,7 +142,7 @@ class ProductRepository extends RepositoryBase with dao.common.ProductRepository
   }
 
 
-  def create(details: ProductDetails, getBrandId: String => Int, userId: Int)(after: Int => Unit): Int = database withSession {
+  def create(details: ProductDetails, getBrandId: String => Int, userId: Int)(after: Int => Unit): Int = database withDynSession {
     val brandId = getBrandId(details.brand.title)
     sqlu"""
       insert into
@@ -160,7 +161,7 @@ class ProductRepository extends RepositoryBase with dao.common.ProductRepository
     productId
   }
 
-  def insertImage(imageId: Int, productId: Int) = database withSession {
+  def insertImage(imageId: Int, productId: Int) = database withDynSession {
     if (imageId > 0) {
       sqlu"""
         insert into product_images(productId, imageId) values($productId, $imageId);
@@ -173,7 +174,7 @@ class ProductRepository extends RepositoryBase with dao.common.ProductRepository
     }
   }
 
-  def update(product: ProductDetails, getBrandId: String => Int, userId: Int)(after: => Unit): Int = database withSession {
+  def update(product: ProductDetails, getBrandId: String => Int, userId: Int)(after: => Unit): Int = database withDynSession {
     sqlu"""
       update products
       set
@@ -188,7 +189,7 @@ class ProductRepository extends RepositoryBase with dao.common.ProductRepository
     product.id
   }
 
-  def removeImage(imageId: Int, productId: Int)(after: Int => Unit) = database withSession {
+  def removeImage(imageId: Int, productId: Int)(after: Int => Unit) = database withDynSession {
     sqlu"""
       delete from product_images where productId = $productId and imageId = $imageId;
     """.execute
@@ -205,7 +206,7 @@ class ProductRepository extends RepositoryBase with dao.common.ProductRepository
     }
   }
 
-  def imageList(productId: Int) = database withSession {
+  def imageList(productId: Int) = database withDynSession {
     implicit val getImg = GetResult(r => new ImageEntity(r.<<, r.<<, r.<<))
     sql"""
       select i.filePath, i.md5, i.imageId from product_images pi
@@ -214,7 +215,7 @@ class ProductRepository extends RepositoryBase with dao.common.ProductRepository
      """.as[ImageEntity].list
   }
 
-  def delete(productId: Int)(cleanOtherResources: ImageEntity => Unit) = database withSession {
+  def delete(productId: Int)(cleanOtherResources: ImageEntity => Unit) = database withDynSession {
     val images: Seq[ImageEntity] = imageList(productId)
     images.map {
       image =>

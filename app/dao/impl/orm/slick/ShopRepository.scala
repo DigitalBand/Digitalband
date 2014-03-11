@@ -1,16 +1,15 @@
 package dao.impl.orm.slick
 
-import dao.impl.orm.slick.common.Profile
-import Profile.database._
-import Profile.driver.simple._
-import Database.threadLocalSession
+import scala.slick.driver.JdbcDriver.backend.Database
+import Database.dynamicSession
 import slick.jdbc.{StaticQuery => Q, GetResult}
 import Q.interpolation
 
 import models.ShopInfo
+import dao.impl.orm.slick.common.RepositoryBase
 
-class ShopRepository extends dao.common.ShopRepository {
-  def list: Seq[ShopInfo] = withSession {
+class ShopRepository extends RepositoryBase with dao.common.ShopRepository {
+  def list: Seq[ShopInfo] = database withDynSession {
     implicit val res = GetResult(r => ShopInfo(r.<<, r.<<, r.<<, r.<<, parsePhones(r.<<)))
     sql"""
       select
@@ -23,7 +22,7 @@ class ShopRepository extends dao.common.ShopRepository {
     """.as[ShopInfo].list
   }
 
-  override def get(shopId: Int): ShopInfo = withSession {
+  override def get(shopId: Int): ShopInfo = database withDynSession {
     implicit val res = GetResult(r => ShopInfo(r.<<, r.<<, r.<<, r.<<, parsePhones(r.<<)))
     sql"""
       select
@@ -43,7 +42,7 @@ class ShopRepository extends dao.common.ShopRepository {
     case None => Nil
   }
 
-  def update(shop: ShopInfo) = withSession {
+  def update(shop: ShopInfo) = database withDynSession {
     sqlu"""
       UPDATE shop
       SET
@@ -56,7 +55,7 @@ class ShopRepository extends dao.common.ShopRepository {
     """.execute
   }
 
-  def add(shop: ShopInfo): Int = withSession {
+  def add(shop: ShopInfo): Int = database withDynSession {
     sqlu"""
       insert into
         shop(title, city, address, phones)
@@ -65,7 +64,7 @@ class ShopRepository extends dao.common.ShopRepository {
     sql"""select last_insert_id();""".as[Int].first
   }
 
-  def remove(shopId: Int) = withSession {
+  def remove(shopId: Int) = database withDynSession {
     sqlu"""
       delete from shop where id = ${shopId};
     """.execute

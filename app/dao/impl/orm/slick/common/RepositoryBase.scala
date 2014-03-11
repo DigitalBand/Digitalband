@@ -1,7 +1,9 @@
 package dao.impl.orm.slick.common
 
 import play.api.db.DB
-import slick.session.Database
+
+import scala.slick.driver.MySQLDriver.simple._
+
 import play.api.Play.current
 
 

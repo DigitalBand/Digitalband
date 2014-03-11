@@ -1,17 +1,17 @@
 package dao.impl.orm.slick
 
 import models.{DeliveryInfo, UserEntity}
-import common.Profile
-import Profile.database
-import Profile.driver.simple._
-import Database.threadLocalSession
+
+import scala.slick.driver.JdbcDriver.backend.Database
+import Database.dynamicSession
 import slick.jdbc.{StaticQuery => Q, GetResult}
 import Q.interpolation
 import play.api.Play
+import dao.impl.orm.slick.common.RepositoryBase
 
-class UserRepository extends dao.common.UserRepository {
+class UserRepository extends RepositoryBase with dao.common.UserRepository {
   def defaultEmail = Play.current.configuration.getString("email.default").get
-  def createUser(name: String): Int = database withSession {
+  def createUser(name: String): Int = database withDynSession {
     sql"""
          insert into users(sessionId) values('');
         set @userId := (select last_insert_id());
@@ -21,7 +21,7 @@ class UserRepository extends dao.common.UserRepository {
   }
 
 
-  def authenticate(login: String, password: String): Option[UserEntity] = database withSession {
+  def authenticate(login: String, password: String): Option[UserEntity] = database withDynSession {
     implicit val getUserResult = GetResult(r => new UserEntity(r.<<, r.<<))
     sql"""
       select
@@ -32,7 +32,7 @@ class UserRepository extends dao.common.UserRepository {
     """.as[UserEntity].firstOption
   }
 
-  def get(email: String): Option[UserEntity] = database withSession {
+  def get(email: String): Option[UserEntity] = database withDynSession {
     implicit val getUserResult = GetResult(r => new UserEntity(r.<<, r.<<, r.<<))
     sql"""
       select p.email, p.userId, ifnull(ur.roleId, 0) roleId
@@ -44,19 +44,19 @@ class UserRepository extends dao.common.UserRepository {
     """.as[UserEntity].firstOption
   }
 
-  def createUser = database withSession {
+  def createUser = database withDynSession {
     sqlu" insert into users(sessionId) values('');".execute
     sql" select last_insert_id();".as[Int].first
   }
 
-  def remove(userId: Int) = database withSession {
+  def remove(userId: Int) = database withDynSession {
     sqlu"""
       delete from users where userId = $userId;
       delete from user_profiles where userId = $userId;
     """.execute()
   }
 
-  def register(email: String, password: String): Int = database withSession {
+  def register(email: String, password: String): Int = database withDynSession {
     val userId = createUser
     sqlu"""
         insert into user_profiles (email, password, userId) values($email, $password, $userId);
@@ -64,7 +64,7 @@ class UserRepository extends dao.common.UserRepository {
     userId
   }
 
-  def updateDeliveryInfo(info: DeliveryInfo, userId: Int) = database withSession {
+  def updateDeliveryInfo(info: DeliveryInfo, userId: Int) = database withDynSession {
     sqlu"""
       update
         user_profiles
@@ -78,7 +78,7 @@ class UserRepository extends dao.common.UserRepository {
     """.execute()
   }
 
-  def getDeliveryInfo(userId: Int) = database withSession {
+  def getDeliveryInfo(userId: Int) = database withDynSession {
     implicit val deliveryResult = GetResult(r =>
       new DeliveryInfo(
         r.nextStringOption().getOrElse(""),
@@ -97,7 +97,7 @@ class UserRepository extends dao.common.UserRepository {
 
   def getSystemEmail: String = Play.current.configuration.getString("email.system").getOrElse(defaultEmail)
 
-  def getPassword(email: String) = database withSession {
+  def getPassword(email: String) = database withDynSession {
     sql"""
       select p.password
       from

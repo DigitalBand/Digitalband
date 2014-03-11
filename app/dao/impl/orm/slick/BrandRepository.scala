@@ -1,8 +1,10 @@
 package dao.impl.orm.slick
 
-import common.{Profile, RepositoryBase}
-import Profile.driver.simple._
-import Database.threadLocalSession
+import common.RepositoryBase
+
+import scala.slick.driver.JdbcDriver.simple._
+import Database.dynamicSession
+
 import slick.jdbc.{GetResult, StaticQuery => Q}
 import Q.interpolation
 import models.{ListPage, CategoryEntity, BrandEntity}
@@ -11,7 +13,7 @@ class BrandRepository extends RepositoryBase with dao.common.BrandRepository {
   implicit val getBrandEntityResult = GetResult(r => new BrandEntity(r.<<, r.<<, r.<<, r.<<))
 
   def get(id: Int): Option[BrandEntity] = {
-    database withSession {
+    database withDynSession  {
       //implicit val getBrand = GetResult(r => new BrandEntity(r.<<, r.<<, r.<<, r.<<))
       sql"""
         select
@@ -29,7 +31,7 @@ class BrandRepository extends RepositoryBase with dao.common.BrandRepository {
   }
 
   def list(getCategory: => CategoryEntity, pageNumber: Int, pageSize: Int, search: String, inStock:Boolean = false): ListPage[BrandEntity] = {
-    database withSession {
+    database withDynSession {
       val category = getCategory
       val drop = pageSize * (pageNumber - 1)
       val brands = Q.queryNA[BrandEntity]( s"""
@@ -78,7 +80,7 @@ class BrandRepository extends RepositoryBase with dao.common.BrandRepository {
     }
   }
 
-  def getBrandId(name: String): Int = database withSession {
+  def getBrandId(name: String): Int = database withDynSession {
     sql"select brandId from brands where title = ${name} limit 1;".as[Int].firstOption match {
       case Some(id) => {
         id

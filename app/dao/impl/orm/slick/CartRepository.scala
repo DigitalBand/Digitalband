@@ -1,20 +1,18 @@
 package dao.impl.orm.slick
 
-import common.Profile
+import scala.slick.driver.JdbcDriver.backend.Database
+import Database.dynamicSession
 
-import Profile.database
-import Profile.driver.simple._
-import Database.threadLocalSession
+
 import slick.jdbc.{StaticQuery => Q, GetResult}
 import Q.interpolation
 
-import slick.jdbc.{StaticQuery => Q, GetResult}
-
 import models.{CItem, CartItem}
+import dao.impl.orm.slick.common.RepositoryBase
 
-class CartRepository extends dao.common.CartRepository {
+class CartRepository extends RepositoryBase with dao.common.CartRepository {
   def list(userId: Int): Seq[CartItem] = {
-    database withSession {
+    database withDynSession {
       implicit val getCartItem = GetResult(r => new CartItem(r.<<, r.<<, r.<<, r.<<, r.<<, r.<<))
       sql"""
          select
@@ -34,7 +32,7 @@ class CartRepository extends dao.common.CartRepository {
   }
 
   def add(item: CartItem): Int = {
-    database withSession {
+    database withDynSession {
       sqlu"""
       insert into shopping_items(productId, userId, quantity, unitPrice)
         select ${item.productId}, ${item.userId}, 0,
@@ -53,13 +51,13 @@ class CartRepository extends dao.common.CartRepository {
     }
   }
 
-  def deleteItem(userId: Int, productId: Int) = database withSession {
+  def deleteItem(userId: Int, productId: Int) = database withDynSession {
     sqlu"delete from shopping_items where userId = $userId and productId = $productId".execute()
   }
 
 
   def updateItems(userId: Int, items: Seq[CItem]) = {
-    database withSession {
+    database withDynSession {
       def update(citem: Seq[CItem], query: String = ""): String = {
         val item = citem.head
         val mainQuery = s"""
@@ -77,7 +75,7 @@ class CartRepository extends dao.common.CartRepository {
     }
   }
 
-  def mergeShoppingCarts(authenticatedUserId: Int, anonymousUserId: Int) = database withSession {
+  def mergeShoppingCarts(authenticatedUserId: Int, anonymousUserId: Int) = database withDynSession {
     sqlu"""
       update shopping_items set userId = ${authenticatedUserId} where userId = ${anonymousUserId};
     """.execute()

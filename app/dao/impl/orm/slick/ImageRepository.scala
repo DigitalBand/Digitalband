@@ -1,9 +1,8 @@
 package dao.impl.orm.slick
 
 import common.RepositoryBase
-
-import common.Profile.driver.simple._
-import Database.threadLocalSession
+import scala.slick.driver.JdbcDriver.backend.Database
+import Database.dynamicSession
 import slick.jdbc.{StaticQuery => Q, GetResult}
 import Q.interpolation
 import wt.common.image.{ImageEntity, PictureEntity}
@@ -18,7 +17,7 @@ class ImageRepository extends RepositoryBase with dao.common.ImageRepository {
 
   def get(imageId: Int): PictureEntity = {
     if (imageId > 0) {
-      database withSession {
+      database withDynSession {
 
         sql"""
           select
@@ -42,7 +41,7 @@ class ImageRepository extends RepositoryBase with dao.common.ImageRepository {
 
   def getProductImage(productId: Int, imageNumber: Int) = ???
 
-  def listByProductId(productId: Int): Seq[Int] = database withSession {
+  def listByProductId(productId: Int): Seq[Int] = database withDynSession {
     sql"""
       select
         pi.imageId
@@ -53,11 +52,11 @@ class ImageRepository extends RepositoryBase with dao.common.ImageRepository {
     """.as[Int].list
   }
 
-  def getByMd5(md5: String): Option[PictureEntity] = database withSession {
+  def getByMd5(md5: String): Option[PictureEntity] = database withDynSession {
     sql"select imageId, filePath, md5 from images where md5 = $md5".as[PictureEntity].firstOption
   }
 
-  def create(img: ImageEntity): Int = database withSession {
+  def create(img: ImageEntity): Int = database withDynSession {
     getByMd5(img.md5) match {
       case Some(i) => i.id
       case _ => {
@@ -67,7 +66,7 @@ class ImageRepository extends RepositoryBase with dao.common.ImageRepository {
     }
   }
 
-  def remove(imageId: Int) = database withSession {
+  def remove(imageId: Int) = database withDynSession  {
     sqlu"delete from images where imageId = $imageId".execute
   }
 }
