@@ -38,8 +38,8 @@ class BrandRepository extends RepositoryBase with dao.common.BrandRepository {
           select
             b.id,
             b.title,
-            count(p.brandId) productCount,
-            (select imageId from brand_images where brandId = p.brandId limit 1) as imageId
+            count(p.brand_id) productCount,
+            (select imageId from brand_images where brandId = p.brand_id limit 1) as imageId
           from
              products p,
              products_categories pc,
@@ -50,17 +50,17 @@ class BrandRepository extends RepositoryBase with dao.common.BrandRepository {
              c.CategoryId = pc.categoryId and
              c.LeftValue >= ${category.leftValue} and
              c.rightValue <= ${category.rightValue} and
-             b.id = p.brandId and
+             b.id = p.brand_id and
              ((${inStock} = FALSE) or p.isAvailable = ${inStock}) and
              ${if (search.isEmpty) "1=1" else "p.title like '%" + search + "%'"}
-          group by p.brandId order by productCount desc limit $drop, $pageSize;
+          group by p.brand_id order by productCount desc limit $drop, $pageSize;
         """)
       val brandsCount = Q.queryNA[Int]( s"""
         select
-          count(t.brandId)
+          count(t.brand_id)
         from (
               select
-                p.brandId
+                p.brand_id
               from
                 products p,
                 products_categories pc,
@@ -70,10 +70,10 @@ class BrandRepository extends RepositoryBase with dao.common.BrandRepository {
                 c.CategoryId = pc.categoryId and
                 c.LeftValue >= ${category.leftValue} and
                 c.rightValue <= ${category.rightValue} and
-                p.brandId is not null and
+                p.brand_id is not null and
                 ${if (search.isEmpty) "1=1" else "p.title like '%" + search + "%'"}
               group by
-                p.brandId
+                p.brand_id
               ) t
       """)
       new ListPage(pageNumber, brands.list, brandsCount.first())

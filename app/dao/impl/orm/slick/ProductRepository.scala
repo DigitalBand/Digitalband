@@ -62,7 +62,7 @@ class ProductRepository extends RepositoryBase with dao.common.ProductRepository
         (prod_cat.`categoryId` = cat.`categoryId`) and
         (cat.`leftValue` >= ${category.leftValue}) and
         (cat.`rightValue` <= ${category.rightValue}) and
-        ((${brandId} = 0) or (prod.brandId = ${brandId})) and
+        ((${brandId} = 0) or (prod.brand_id = ${brandId})) and
         ((${search} = '') or (prod.title like ${'%'+search+'%'})) and
         ((${inStock} = FALSE) or (prod.isAvailable = ${inStock}))
       limit ${(pageNumber - 1)*pageSize}, ${pageSize}
@@ -80,7 +80,7 @@ class ProductRepository extends RepositoryBase with dao.common.ProductRepository
         (prod_cat.`categoryId` = cat.`categoryId`) and
         (cat.`leftValue` >= ${category.leftValue}) and
         (cat.`rightValue` <= ${category.rightValue}) and
-        ((${brandId} = 0) or (prod.brandId = ${brandId})) and
+        ((${brandId} = 0) or (prod.brand_id = ${brandId})) and
         ((${search} = '') or (prod.title like ${'%'+search+'%'})) and
         ((${inStock} = FALSE) or (prod.isAvailable = ${inStock}))
     """
@@ -120,7 +120,7 @@ class ProductRepository extends RepositoryBase with dao.common.ProductRepository
         products p
       left join products_categories pc on pc.productId = p.productId
       left join categories c on c.CategoryId = pc.categoryId
-      left join brands b on b.id = p.brandId
+      left join brands b on b.id = p.brand_id
       where p.productId = $id;
     """.as[ProductDetails].first()
   }
@@ -133,7 +133,7 @@ class ProductRepository extends RepositoryBase with dao.common.ProductRepository
         p.description,
         p.price,
         p.defaultImageId,
-        p.brandId
+        p.brand_id
       from
         products p
       where
@@ -146,7 +146,7 @@ class ProductRepository extends RepositoryBase with dao.common.ProductRepository
     val brandId = getBrandId(details.brand.title)
     sqlu"""
       insert into
-        products(title, description, shortDescription, price, brandId, createdByUser, isAvailable)
+        products(title, description, shortDescription, price, brand_id, createdByUser, isAvailable)
         values(${details.title},
           ${details.description},
           ${details.shortDescription},
@@ -182,7 +182,7 @@ class ProductRepository extends RepositoryBase with dao.common.ProductRepository
         description = ${product.description},
         shortDescription = ${product.shortDescription},
         price = ${product.price},
-        brandId = ${getBrandId(product.brand.title)}
+        brand_id = ${getBrandId(product.brand.title)}
       where productId = ${product.id}
     """.execute
     after

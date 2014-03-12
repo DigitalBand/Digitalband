@@ -62,7 +62,7 @@ class CategoryRepository extends RepositoryBase with dao.common.CategoryReposito
             (prod.`productId` = prod_cat.`productId`) and
             (cat.`leftValue` >= scat.`leftValue`) and
             (cat.`rightValue` <= scat.`rightValue`) and
-            ((${brandId} = 0) or (prod.brandId = ${brandId})) and
+            ((${brandId} = 0) or (prod.brand_id = ${brandId})) and
             ((${search} = '') or (prod.title like ${'%' + search + '%'})) and
             ((${inStock} = FALSE) or (prod.isAvailable = ${inStock}))
         ) as productCount
