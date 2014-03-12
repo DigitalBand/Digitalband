@@ -20,10 +20,10 @@ class BrandRepository extends RepositoryBase with dao.common.BrandRepository {
           b.id,
           b.title,
           0,
-          bi.imageId
+          bi.image_id
         from
           brands b
-        inner join brand_images bi on bi.brandId = b.id
+        inner join brand_images bi on bi.brand_id = b.id
         where
           b.id = ${id};
       """.as[BrandEntity].firstOption
@@ -39,7 +39,7 @@ class BrandRepository extends RepositoryBase with dao.common.BrandRepository {
             b.id,
             b.title,
             count(p.brand_id) productCount,
-            (select imageId from brand_images where brandId = p.brand_id limit 1) as imageId
+            (select image_id from brand_images where brandId = p.brand_id limit 1) as image_id
           from
              products p,
              products_categories pc,
