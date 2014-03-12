@@ -25,7 +25,7 @@ class StockItemRepository extends RepositoryBase with dao.common.StockItemReposi
       update
         products
       set
-        isAvailable = ((select count(*) from stock_items where product_id = ${productId}) > 0)
+        isAvailable = ((select sum(quantity) from stock_items where product_id = ${productId}) > 0)
       where
         productId = ${productId}
     """.execute()
