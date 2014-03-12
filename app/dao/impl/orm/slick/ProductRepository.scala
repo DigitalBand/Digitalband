@@ -46,22 +46,22 @@ class ProductRepository extends RepositoryBase with dao.common.ProductRepository
     val category = getCategory
     val products = sql"""
       select
-        prod.`title`,
-        prod.`shortDescription`,
-        prod.`price`,
-        prod.`productId`,
-        prod.`defaultImageId`,
+        prod.title,
+        prod.shortDescription,
+        prod.price,
+        prod.productId,
+        prod.defaultImageId,
         prod.isAvailable
       from
-        `products` prod,
-        `products_categories` prod_cat,
-        `categories` cat
+        products prod,
+        products_categories prod_cat,
+        categories cat
       where
         prod.archived = false and
-        (prod.`productId` = prod_cat.`productId`) and
-        (prod_cat.`categoryId` = cat.`categoryId`) and
-        (cat.`leftValue` >= ${category.leftValue}) and
-        (cat.`rightValue` <= ${category.rightValue}) and
+        (prod.productId = prod_cat.productId) and
+        (prod_cat.categoryId = cat.category_id) and
+        (cat.left_value >= ${category.leftValue}) and
+        (cat.right_value <= ${category.rightValue}) and
         ((${brandId} = 0) or (prod.brand_id = ${brandId})) and
         ((${search} = '') or (prod.title like ${'%'+search+'%'})) and
         ((${inStock} = FALSE) or (prod.isAvailable = ${inStock}))
@@ -77,9 +77,9 @@ class ProductRepository extends RepositoryBase with dao.common.ProductRepository
       where
         prod.archived = false and
         (prod.`productId` = prod_cat.`productId`) and
-        (prod_cat.`categoryId` = cat.`categoryId`) and
-        (cat.`leftValue` >= ${category.leftValue}) and
-        (cat.`rightValue` <= ${category.rightValue}) and
+        (prod_cat.`categoryId` = cat.`category_id`) and
+        (cat.`left_value` >= ${category.leftValue}) and
+        (cat.`right_value` <= ${category.rightValue}) and
         ((${brandId} = 0) or (prod.brand_id = ${brandId})) and
         ((${search} = '') or (prod.title like ${'%'+search+'%'})) and
         ((${inStock} = FALSE) or (prod.isAvailable = ${inStock}))
@@ -119,7 +119,7 @@ class ProductRepository extends RepositoryBase with dao.common.ProductRepository
       from
         products p
       left join products_categories pc on pc.productId = p.productId
-      left join categories c on c.CategoryId = pc.categoryId
+      left join categories c on c.category_id = pc.categoryId
       left join brands b on b.id = p.brand_id
       where p.productId = $id;
     """.as[ProductDetails].first()
@@ -137,7 +137,7 @@ class ProductRepository extends RepositoryBase with dao.common.ProductRepository
       from
         products p
       where
-        p.productId = id;
+        p.productId = ${id};
     """.as[ProductDetails].first
   }
 

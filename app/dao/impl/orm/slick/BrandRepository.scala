@@ -39,7 +39,7 @@ class BrandRepository extends RepositoryBase with dao.common.BrandRepository {
             b.id,
             b.title,
             count(p.brand_id) productCount,
-            (select image_id from brand_images where brandId = p.brand_id limit 1) as image_id
+            (select image_id from brand_images where brand_id = p.brand_id limit 1) as image_id
           from
              products p,
              products_categories pc,
@@ -47,9 +47,9 @@ class BrandRepository extends RepositoryBase with dao.common.BrandRepository {
              brands b
           where
              p.productId = pc.productId and
-             c.CategoryId = pc.categoryId and
-             c.LeftValue >= ${category.leftValue} and
-             c.rightValue <= ${category.rightValue} and
+             c.category_id = pc.categoryId and
+             c.left_value >= ${category.leftValue} and
+             c.right_value <= ${category.rightValue} and
              b.id = p.brand_id and
              ((${inStock} = FALSE) or p.isAvailable = ${inStock}) and
              ${if (search.isEmpty) "1=1" else "p.title like '%" + search + "%'"}
@@ -67,9 +67,9 @@ class BrandRepository extends RepositoryBase with dao.common.BrandRepository {
                 categories c
               where
                 p.productId = pc.productId and
-                c.CategoryId = pc.categoryId and
-                c.LeftValue >= ${category.leftValue} and
-                c.rightValue <= ${category.rightValue} and
+                c.category_id = pc.categoryId and
+                c.left_value >= ${category.leftValue} and
+                c.right_value <= ${category.rightValue} and
                 p.brand_id is not null and
                 ${if (search.isEmpty) "1=1" else "p.title like '%" + search + "%'"}
               group by

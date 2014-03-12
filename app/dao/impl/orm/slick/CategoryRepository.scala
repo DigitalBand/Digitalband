@@ -15,12 +15,12 @@ class CategoryRepository extends RepositoryBase with dao.common.CategoryReposito
     implicit val getCategory = GetResult(r => CategoryEntity(r.<<, r.<<, r.<<))
     sql"""
       select
-        cat.CategoryId,
+        cat.category_id,
         cat.title,
         ci.imageId
       from
         categories cat
-      inner join category_images ci on ci.categoryId = cat.categoryid
+      inner join category_images ci on ci.categoryId = cat.category_id
     """.as[CategoryEntity].list
   }
 
@@ -29,16 +29,16 @@ class CategoryRepository extends RepositoryBase with dao.common.CategoryReposito
     implicit val getCategory = GetResult(r => CategoryEntity(r.<<, r.<<, r.<<, r.<<, r.<<, r.<<))
     sql"""
       select
-        cat.CategoryId,
+        cat.category_id,
         cat.title,
         0,
-        cat.leftvalue,
-        cat.rightvalue,
-        cat.parentcategoryid
+        cat.left_value,
+        cat.right_value,
+        cat.category_id
       from
         categories cat
       where
-        cat.categoryid = ${id};
+        cat.category_id = ${id};
     """.as[CategoryEntity].first
 
   }
@@ -47,7 +47,7 @@ class CategoryRepository extends RepositoryBase with dao.common.CategoryReposito
     implicit val getres = GetResult(r => CategoryListItem(r.<<, r.<<, r.<<))
     sql"""
       select
-        scat.`categoryId`,
+        scat.`category_id`,
         scat.`title`,
         (
           select
@@ -58,10 +58,10 @@ class CategoryRepository extends RepositoryBase with dao.common.CategoryReposito
             `categories` cat
           where
             prod.archived = false and
-            (cat.`categoryId` = prod_cat.`categoryId`) and
+            (cat.`category_id` = prod_cat.`categoryId`) and
             (prod.`productId` = prod_cat.`productId`) and
-            (cat.`leftValue` >= scat.`leftValue`) and
-            (cat.`rightValue` <= scat.`rightValue`) and
+            (cat.`left_value` >= scat.`left_value`) and
+            (cat.`right_value` <= scat.`right_value`) and
             ((${brandId} = 0) or (prod.brand_id = ${brandId})) and
             ((${search} = '') or (prod.title like ${'%' + search + '%'})) and
             ((${inStock} = FALSE) or (prod.isAvailable = ${inStock}))
@@ -78,13 +78,13 @@ class CategoryRepository extends RepositoryBase with dao.common.CategoryReposito
       val category = get(categoryId)
       sql"""
         select
-          cat.CategoryId,
+          cat.category_id,
           cat.title
         from
           categories cat
         where
-          ((${productId} > 0 and cat.leftValue <= ${category.leftValue}) or (${productId} = 0 and cat.leftValue < ${category.leftValue})) and
-          ((${productId} > 0 and cat.rightValue >= ${category.rightValue}) or (${productId} = 0 and cat.rightValue > ${category.rightValue}))
+          ((${productId} > 0 and cat.left_value <= ${category.leftValue}) or (${productId} = 0 and cat.left_value < ${category.leftValue})) and
+          ((${productId} > 0 and cat.right_value >= ${category.rightValue}) or (${productId} = 0 and cat.right_value > ${category.rightValue}))
       """.as[(Int, String)].list
     }
   }
