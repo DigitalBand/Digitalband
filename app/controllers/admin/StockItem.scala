@@ -16,7 +16,7 @@ class StockItem @Inject()(
   def edit(productId: Int) = withAdmin {
     implicit user =>
       implicit request =>
-        var product = productRepository.get(productId)
+        val product = productRepository.get(productId)
         Ok(views.html.Admin.StockItem.edit(product))
   }
 

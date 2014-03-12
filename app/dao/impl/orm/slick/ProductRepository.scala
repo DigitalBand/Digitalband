@@ -132,6 +132,7 @@ class ProductRepository extends RepositoryBase with dao.common.ProductRepository
         p.title,
         p.description,
         p.price,
+        p.productId,
         p.defaultImageId,
         p.brand_id
       from
