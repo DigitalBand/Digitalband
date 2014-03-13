@@ -50,7 +50,7 @@ class ProductRepository extends RepositoryBase with dao.common.ProductRepository
         prod.short_description,
         prod.price,
         prod.id,
-        prod.defaultImageId,
+        prod.default_image_id,
         prod.is_available
       from
         products prod,
