@@ -1,3 +1,16 @@
 ALTER TABLE dbs.categories CHANGE ParentCategoryId parent_category_id INT;
 ALTER TABLE dbs.category_images CHANGE categoryId category_id INT;
 ALTER TABLE dbs.category_images CHANGE imageId image_id INT;
+DROP TABLE dbs.content_source_urls;
+DROP TABLE dbs.category_aliases;
+drop table dbs.category_icons;
+DROP TABLE dbs.content_sources;
+DROP TABLE dbs.crawler_session_actions;
+DROP TABLE dbs.crawler_session_warnings;
+DROP TABLE dbs.crawler_sessions;
+DROP TABLE dbs.crawlers;
+DROP TABLE dbs.distributor_categories;
+DROP TABLE dbs.distributor_products;
+DROP TABLE dbs.image_duplicates;
+DROP TABLE dbs.product_content_source_urls;
+DROP TABLE dbs.product_sources;
