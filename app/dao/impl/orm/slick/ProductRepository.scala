@@ -147,7 +147,7 @@ class ProductRepository extends RepositoryBase with dao.common.ProductRepository
     val brandId = getBrandId(details.brand.title)
     sqlu"""
       insert into
-        products(title, description, short_description, price, brand_id, createdByUser, isAvailable)
+        products(title, description, short_description, price, brand_id, created_by_user, isAvailable)
         values(${details.title},
           ${details.description},
           ${details.shortDescription},
