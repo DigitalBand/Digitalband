@@ -13,7 +13,7 @@ class UserRepository extends RepositoryBase with dao.common.UserRepository {
   def defaultEmail = Play.current.configuration.getString("email.default").get
   def createUser(name: String): Int = database withDynSession {
     sql"""
-         insert into users(sessionId) values('');
+         insert into users(session_id) values('');
         set @userId := (select last_insert_id());
         insert into user_profiles (email, password, user_id) values(${name}, '', @userId);
         select @userId;
@@ -45,7 +45,7 @@ class UserRepository extends RepositoryBase with dao.common.UserRepository {
   }
 
   def createUser = database withDynSession {
-    sqlu" insert into users(sessionId) values('');".execute
+    sqlu" insert into users(session_id) values('');".execute
     sql" select last_insert_id();".as[Int].first
   }
 

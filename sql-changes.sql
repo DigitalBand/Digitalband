@@ -26,3 +26,5 @@ ALTER TABLE dbs.user_profiles CHANGE userId user_id INT;
 ALTER TABLE dbs.user_profiles CHANGE userName user_name VARCHAR(50);
 ALTER TABLE dbs.user_profiles CHANGE phoneNumber phone_number VARCHAR(30);
 ALTER TABLE dbs.users CHANGE userId id INT;
+ALTER TABLE dbs.users CHANGE registerDate register_date TIMESTAMP;
+ALTER TABLE dbs.users CHANGE sessionId session_id VARCHAR(45);
