@@ -35,7 +35,7 @@ class UserRepository extends RepositoryBase with dao.common.UserRepository {
   def get(email: String): Option[UserEntity] = database withDynSession {
     implicit val getUserResult = GetResult(r => new UserEntity(r.<<, r.<<, r.<<))
     sql"""
-      select p.email, p.userId, ifnull(ur.roleId, 0) roleId
+      select p.email, p.userId, ifnull(ur.role_id, 0) role_id
       from
         user_profiles p
       left join users_roles ur on ur.userId = p.userId
