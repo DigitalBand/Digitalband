@@ -51,8 +51,8 @@ class UserRepository extends RepositoryBase with dao.common.UserRepository {
 
   def remove(userId: Int) = database withDynSession {
     sqlu"""
-      delete from users where userId = ${userId};
-      delete from user_profiles where userId = ${userId};
+      delete from users where id = ${userId};
+      delete from user_profiles where user_id = ${userId};
     """.execute()
   }
 

@@ -34,7 +34,7 @@ class CartRepository extends RepositoryBase with dao.common.CartRepository {
   def add(item: CartItem): Int = {
     database withDynSession {
       sqlu"""
-      insert into shopping_items(product_id, userId, quantity, unit_price)
+      insert into shopping_items(product_id, user_id, quantity, unit_price)
         select ${item.productId}, ${item.userId}, 0,
         (select price from products where id = ${item.productId} limit 1)
         from
