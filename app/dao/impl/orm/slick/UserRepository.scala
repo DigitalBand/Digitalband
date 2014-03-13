@@ -38,7 +38,7 @@ class UserRepository extends RepositoryBase with dao.common.UserRepository {
       select p.email, p.user_id, ifnull(ur.role_id, 0) role_id
       from
         user_profiles p
-      left join users_roles ur on ur.userId = p.user_id
+      left join users_roles ur on ur.user_id = p.user_id
       where
         p.email = ${email};
     """.as[UserEntity].firstOption
