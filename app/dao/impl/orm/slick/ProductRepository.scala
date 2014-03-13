@@ -21,7 +21,7 @@ class ProductRepository extends RepositoryBase with dao.common.ProductRepository
         p.title,
         p.shortDescription,
         p.price,
-        p.productId,
+        p.id,
         p.defaultImageId
       from
         products p
@@ -49,7 +49,7 @@ class ProductRepository extends RepositoryBase with dao.common.ProductRepository
         prod.title,
         prod.shortDescription,
         prod.price,
-        prod.productId,
+        prod.id,
         prod.defaultImageId,
         prod.isAvailable
       from
@@ -58,7 +58,7 @@ class ProductRepository extends RepositoryBase with dao.common.ProductRepository
         categories cat
       where
         prod.archived = false and
-        (prod.productId = prod_cat.productId) and
+        (prod.id = prod_cat.productId) and
         (prod_cat.categoryId = cat.category_id) and
         (cat.left_value >= ${category.leftValue}) and
         (cat.right_value <= ${category.rightValue}) and
@@ -76,7 +76,7 @@ class ProductRepository extends RepositoryBase with dao.common.ProductRepository
         categories cat
       where
         prod.archived = false and
-        (prod.productId = prod_cat.productId) and
+        (prod.id = prod_cat.productId) and
         (prod_cat.categoryId = cat.category_id) and
         (cat.left_value >= ${category.leftValue}) and
         (cat.right_value <= ${category.rightValue}) and
@@ -109,7 +109,7 @@ class ProductRepository extends RepositoryBase with dao.common.ProductRepository
         p.description,
         p.shortDescription,
         p.price,
-        p.productId,
+        p.id,
         p.defaultImageId,
         b.id,
         b.title as brandTitle,
@@ -118,10 +118,10 @@ class ProductRepository extends RepositoryBase with dao.common.ProductRepository
         p.isAvailable
       from
         products p
-      left join products_categories pc on pc.productId = p.productId
+      left join products_categories pc on pc.productId = p.id
       left join categories c on c.category_id = pc.categoryId
       left join brands b on b.id = p.brand_id
-      where p.productId = ${id};
+      where p.id = ${id};
     """.as[ProductDetails].first()
   }
 
@@ -132,13 +132,13 @@ class ProductRepository extends RepositoryBase with dao.common.ProductRepository
         p.title,
         p.description,
         p.price,
-        p.productId,
+        p.id,
         p.defaultImageId,
         p.brand_id
       from
         products p
       where
-        p.productId = ${id};
+        p.id = ${id};
     """.as[ProductDetails].first
   }
 
@@ -184,7 +184,7 @@ class ProductRepository extends RepositoryBase with dao.common.ProductRepository
         shortDescription = ${product.shortDescription},
         price = ${product.price},
         brand_id = ${getBrandId(product.brand.title)}
-      where productId = ${product.id}
+      where id = ${product.id}
     """.execute
     after
     product.id
@@ -197,7 +197,7 @@ class ProductRepository extends RepositoryBase with dao.common.ProductRepository
     sqlu"""
       update products
       set defaultImageId = null
-      where productId = ${productId} and (select count(*) from product_images where product_id = ${productId}) = 0
+      where id = ${productId} and (select count(*) from product_images where product_id = ${productId}) = 0
     """.execute
     val count = sql"""
       select count(*) from product_images where image_id = ${imageId}
@@ -226,7 +226,7 @@ class ProductRepository extends RepositoryBase with dao.common.ProductRepository
         }
     }
     sqlu"delete from products_categories where productId = ${productId}".execute
-    sqlu"delete from products where productId = ${productId}".execute
+    sqlu"delete from products where id = ${productId}".execute
   }
 
 

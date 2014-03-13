@@ -56,7 +56,7 @@ class OrderRepository extends RepositoryBase with dao.common.OrderRepository {
         from
           order_items o, products p
          where
-          o.product_id = p.productId and
+          o.product_id = p.id and
           o.order_id = $orderId
     """.as[CartItem].list
   }

@@ -27,7 +27,7 @@ class StockItemRepository extends RepositoryBase with dao.common.StockItemReposi
       set
         isAvailable = ((select sum(quantity) from stock_items where product_id = ${productId}) > 0)
       where
-        productId = ${productId}
+        id = ${productId}
     """.execute()
   }
   def list(productId: Int) = database withDynSession {

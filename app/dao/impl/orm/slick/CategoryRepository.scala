@@ -51,7 +51,7 @@ class CategoryRepository extends RepositoryBase with dao.common.CategoryReposito
         scat.title,
         (
           select
-            count(prod.productId)
+            count(prod.id)
           from
             products_categories prod_cat,
             products prod,
@@ -59,7 +59,7 @@ class CategoryRepository extends RepositoryBase with dao.common.CategoryReposito
           where
             prod.archived = false and
             (cat.category_id = prod_cat.categoryId) and
-            (prod.productId = prod_cat.productId) and
+            (prod.id = prod_cat.productId) and
             (cat.left_value >= scat.left_value) and
             (cat.right_value <= scat.right_value) and
             ((${brandId} = 0) or (prod.brand_id = ${brandId})) and

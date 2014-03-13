@@ -23,9 +23,9 @@ class CartRepository extends RepositoryBase with dao.common.CartRepository {
             sum(shop.quantity) as quantity,
             p.price
           from shopping_items shop
-            left join products p on p.productId = shop.productId
+            left join products p on p.id = shop.productId
           where shop.userId = $userId
-            group by p.productId
+            group by p.id
       """.as[CartItem].list.filter(p => p.unitPrice > 0)
 
     }
@@ -36,7 +36,7 @@ class CartRepository extends RepositoryBase with dao.common.CartRepository {
       sqlu"""
       insert into shopping_items(productId, userId, quantity, unitPrice)
         select ${item.productId}, ${item.userId}, 0,
-        (select price from products where productId = ${item.productId} limit 1)
+        (select price from products where id = ${item.productId} limit 1)
         from
           dual
         where not exists
@@ -52,7 +52,7 @@ class CartRepository extends RepositoryBase with dao.common.CartRepository {
   }
 
   def deleteItem(userId: Int, productId: Int) = database withDynSession {
-    sqlu"delete from shopping_items where userId = $userId and productId = $productId".execute()
+    sqlu"delete from shopping_items where userId = $userId and productId = ${productId}".execute()
   }
 
 

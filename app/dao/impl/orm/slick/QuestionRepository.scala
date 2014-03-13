@@ -18,7 +18,7 @@ class QuestionRepository extends RepositoryBase with dao.common.QuestionReposito
         q.questionId, q.productId, p.title, q.email, q.type
       from
         questions q
-      inner join products p on p.productId = q.productId
+      inner join products p on p.id = q.productId
       where q.questionId = $id;
     """.as[Question].first
   }
@@ -53,7 +53,7 @@ class QuestionRepository extends RepositoryBase with dao.common.QuestionReposito
         q.questionId, q.productId, p.title, q.email, q.type
       from
         questions q
-      inner join products p on p.productId = q.productId
+      inner join products p on p.id = q.productId
       where status = 'unanswered';
     """.as[Question].list
   }
@@ -65,7 +65,7 @@ class QuestionRepository extends RepositoryBase with dao.common.QuestionReposito
         q.questionId, q.productId, p.title, q.email, q.type
       from
         questions q
-      inner join products p on p.productId = q.productId
+      inner join products p on p.id = q.productId
       limit ${pageSize * (pageNumber - 1)}, ${pageSize};
     """.as[Question].list
     val totalCount = sql"select count(q.questionId) from questions q".as[Int].first()
