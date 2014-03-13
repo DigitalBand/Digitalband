@@ -29,14 +29,14 @@ class OrderRepository extends RepositoryBase with dao.common.OrderRepository {
           order_items(order_id, product_id, quantity, unit_price)
         select
           ${orderId},
-          productId,
+          product_id,
           sum(quantity) as quantity,
-          (select price from products where productId = si.productId limit 1) as unit_price
+          (select price from products where id = si.product_id limit 1) as unit_price
         from
           shopping_items si
         where
           user_id = ${userId}
-        group by productId;
+        group by product_id;
         delete from shopping_items where user_id = ${userId};
        """.execute()
       orderId

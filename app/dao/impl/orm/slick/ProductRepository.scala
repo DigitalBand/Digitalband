@@ -170,7 +170,7 @@ class ProductRepository extends RepositoryBase with dao.common.ProductRepository
         set
           default_image_id = ${imageId}
         where
-          productId = ${productId} and (default_image_id = 0 or default_image_id is null)
+          id = ${productId} and (default_image_id = 0 or default_image_id is null)
       """.execute
     }
   }

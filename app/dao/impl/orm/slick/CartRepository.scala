@@ -17,13 +17,13 @@ class CartRepository extends RepositoryBase with dao.common.CartRepository {
       sql"""
          select
             shop.user_id,
-            shop.productId,
+            shop.product_id,
             p.title,
-            (select image_id from product_images where product_id = shop.productId limit 1) as image_id,
+            (select image_id from product_images where product_id = shop.product_id limit 1) as image_id,
             sum(shop.quantity) as quantity,
             p.price
           from shopping_items shop
-            left join products p on p.id = shop.productId
+            left join products p on p.id = shop.product_id
           where shop.user_id = ${userId}
             group by p.id
       """.as[CartItem].list.filter(p => p.unitPrice > 0)
@@ -34,25 +34,25 @@ class CartRepository extends RepositoryBase with dao.common.CartRepository {
   def add(item: CartItem): Int = {
     database withDynSession {
       sqlu"""
-      insert into shopping_items(productId, userId, quantity, unitPrice)
+      insert into shopping_items(product_id, userId, quantity, unitPrice)
         select ${item.productId}, ${item.userId}, 0,
         (select price from products where id = ${item.productId} limit 1)
         from
           dual
         where not exists
-          (select * from shopping_items where productId = ${item.productId} and user_id = ${item.userId});
+          (select * from shopping_items where product_id = ${item.productId} and user_id = ${item.userId});
         update shopping_items
         set
           quantity = quantity + ${item.count}
         where
-          productId = ${item.productId} and user_id = ${item.userId};
+          product_id = ${item.productId} and user_id = ${item.userId};
         """.execute()
       item.userId
     }
   }
 
   def deleteItem(userId: Int, productId: Int) = database withDynSession {
-    sqlu"delete from shopping_items where user_id = ${userId} and productId = ${productId}".execute()
+    sqlu"delete from shopping_items where user_id = ${userId} and product_id = ${productId}".execute()
   }
 
 
@@ -61,8 +61,8 @@ class CartRepository extends RepositoryBase with dao.common.CartRepository {
       def update(citem: Seq[CItem], query: String = ""): String = {
         val item = citem.head
         val mainQuery = s"""
-            delete from shopping_items where productId = ${item.productId} and user_id = ${userId};
-            insert into shopping_items(productId, user_id, quantity) values (${item.productId}, ${userId}, ${item.count});
+            delete from shopping_items where product_id = ${item.productId} and user_id = ${userId};
+            insert into shopping_items(product_id, user_id, quantity) values (${item.productId}, ${userId}, ${item.count});
          """
         val combinedQuery = query+mainQuery
         if (citem.tail.length > 0)
