@@ -72,13 +72,13 @@ class OrderRepository extends RepositoryBase with dao.common.OrderRepository {
       from
         orders
        where
-        orderId = $orderId
+        id = $orderId
     """.as[DeliveryInfo].first
   }
 
   override def get(orderId: Int): OrderInfo = database withDynSession {
     implicit val getOrderInfo = GetResult(r => new OrderInfo(r.<<, r.<<, r.<<, new DeliveryInfo(r.<<, r.<<, r.<<, r.<<)))
-    val query = sql"select orderId, placeDate, status, name, email, phone, address from orders where orderId = $orderId"
+    val query = sql"select id, placeDate, status, name, email, phone, address from orders where id = $orderId"
     val order = query.as[OrderInfo].first()
     new OrderInfo(order, getItems(orderId))
   }
@@ -93,7 +93,7 @@ class OrderRepository extends RepositoryBase with dao.common.OrderRepository {
     implicit val getOrderInfo = GetResult(r => new OrderInfo(r.<<, r.<<, r.<<, new DeliveryInfo(r.<<, r.<<, r.<<, r.<<)))
     val items = sql"""
       select
-        orderId, placeDate, status, name, email, phone, address
+        id, placeDate, status, name, email, phone, address
       from orders
       order by placeDate desc
       limit ${pageSize * (pageNumber - 1)}, $pageSize
@@ -103,11 +103,11 @@ class OrderRepository extends RepositoryBase with dao.common.OrderRepository {
   }
 
   def changeStatus(orderId: Int, status: String) = database withDynSession {
-    sqlu"update orders set status = $status where orderId = $orderId".execute()
+    sqlu"update orders set status = $status where id = $orderId".execute()
   }
 
   def delete(orderId: Int) = database withDynSession {
-    sqlu"delete from orders where orderId = $orderId; delete from order_items where orderId = $orderId".execute()
+    sqlu"delete from orders where id = $orderId; delete from order_items where orderId = $orderId".execute()
   }
 
   def getCounters: Seq[(String, Int)] = database withDynSession {
