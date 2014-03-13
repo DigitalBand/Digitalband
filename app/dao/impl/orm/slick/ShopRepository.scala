@@ -18,7 +18,7 @@ class ShopRepository extends RepositoryBase with dao.common.ShopRepository {
         s.city,
         s.address,
         s.phones
-      from shop s
+      from shops s
     """.as[ShopInfo].list
   }
 
@@ -31,7 +31,7 @@ class ShopRepository extends RepositoryBase with dao.common.ShopRepository {
         s.city,
         s.address,
         s.phones
-      from shop s
+      from shops s
       where
         s.id = ${shopId};
     """.as[ShopInfo].first
@@ -44,7 +44,7 @@ class ShopRepository extends RepositoryBase with dao.common.ShopRepository {
 
   def update(shop: ShopInfo) = database withDynSession {
     sqlu"""
-      UPDATE shop
+      UPDATE shops
       SET
         title = ${shop.title},
         city = ${shop.city},
@@ -58,7 +58,7 @@ class ShopRepository extends RepositoryBase with dao.common.ShopRepository {
   def add(shop: ShopInfo): Int = database withDynSession {
     sqlu"""
       insert into
-        shop(title, city, address, phones)
+        shops(title, city, address, phones)
         values(${shop.title}, ${shop.city}, ${shop.address}, ${shop.phoneNumbers.mkString(";")});
     """.execute
     sql"""select last_insert_id();""".as[Int].first
@@ -66,7 +66,7 @@ class ShopRepository extends RepositoryBase with dao.common.ShopRepository {
 
   def remove(shopId: Int) = database withDynSession {
     sqlu"""
-      delete from shop where id = ${shopId};
+      delete from shops where id = ${shopId};
     """.execute
   }
 }

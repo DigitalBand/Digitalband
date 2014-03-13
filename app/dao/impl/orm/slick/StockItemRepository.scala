@@ -41,7 +41,7 @@ class StockItemRepository extends RepositoryBase with dao.common.StockItemReposi
         sh.id,
         sh.title
       from stock_items s
-      inner join shop sh on sh.id = s.shop_id
+      inner join shops sh on sh.id = s.shop_id
       where
         s.product_id = ${productId};
     """.as[StockItemInfo].list
