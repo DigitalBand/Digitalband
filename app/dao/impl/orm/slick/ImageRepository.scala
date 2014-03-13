@@ -44,7 +44,7 @@ class ImageRepository extends RepositoryBase with dao.common.ImageRepository {
   def listByProductId(productId: Int): Seq[Int] = database withDynSession {
     sql"""
       select
-        pi.imageId
+        pi.image_id
       from
         product_images pi
       where

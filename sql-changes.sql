@@ -4,3 +4,4 @@ ALTER TABLE dbs.order_items CHANGE unitPrice unit_price DOUBLE;
 ALTER TABLE dbs.orders CHANGE orderId id INT;
 ALTER TABLE dbs.orders CHANGE userId user_id INT;
 ALTER TABLE dbs.orders CHANGE placeDate place_date TIMESTAMP;
+ALTER TABLE dbs.product_images CHANGE imageId image_id INT;
