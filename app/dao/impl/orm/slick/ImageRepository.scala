@@ -48,7 +48,7 @@ class ImageRepository extends RepositoryBase with dao.common.ImageRepository {
       from
         product_images pi
       where
-        pi.productId = ${productId};
+        pi.product_id = ${productId};
     """.as[Int].list
   }
 

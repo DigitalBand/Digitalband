@@ -19,7 +19,7 @@ class CartRepository extends RepositoryBase with dao.common.CartRepository {
             shop.userId,
             shop.productId,
             p.title,
-            (select image_id from product_images where productId = shop.productId limit 1) as image_id,
+            (select image_id from product_images where product_id = shop.productId limit 1) as image_id,
             sum(shop.quantity) as quantity,
             p.price
           from shopping_items shop
