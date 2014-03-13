@@ -11,3 +11,4 @@ ALTER TABLE dbs.products CHANGE addedDate added_date TIMESTAMP;
 ALTER TABLE dbs.products CHANGE discountPrice discount_price decimal;
 ALTER TABLE dbs.products DROP discount_price;
 ALTER TABLE dbs.products CHANGE shortDescription short_description TEXT;
+ALTER TABLE dbs.products CHANGE defaultImageId default_image_id INT;

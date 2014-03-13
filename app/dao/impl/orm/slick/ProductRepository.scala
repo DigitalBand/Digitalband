@@ -22,7 +22,7 @@ class ProductRepository extends RepositoryBase with dao.common.ProductRepository
         p.short_description,
         p.price,
         p.id,
-        p.defaultImageId
+        p.default_image_id
       from
         products p
       where
@@ -110,7 +110,7 @@ class ProductRepository extends RepositoryBase with dao.common.ProductRepository
         p.short_description,
         p.price,
         p.id,
-        p.defaultImageId,
+        p.default_image_id,
         b.id,
         b.title as brandTitle,
         pc.categoryId,
@@ -133,7 +133,7 @@ class ProductRepository extends RepositoryBase with dao.common.ProductRepository
         p.description,
         p.price,
         p.id,
-        p.defaultImageId,
+        p.default_image_id,
         p.brand_id
       from
         products p
@@ -168,9 +168,9 @@ class ProductRepository extends RepositoryBase with dao.common.ProductRepository
         insert into product_images(product_id, image_id) values(${productId}, ${imageId});
         update products
         set
-          defaultImageId = ${imageId}
+          default_image_id = ${imageId}
         where
-          productId = ${productId} and (defaultImageId = 0 or defaultImageId is null)
+          productId = ${productId} and (default_image_id = 0 or default_image_id is null)
       """.execute
     }
   }
@@ -196,7 +196,7 @@ class ProductRepository extends RepositoryBase with dao.common.ProductRepository
     """.execute
     sqlu"""
       update products
-      set defaultImageId = null
+      set default_image_id = null
       where id = ${productId} and (select count(*) from product_images where product_id = ${productId}) = 0
     """.execute
     val count = sql"""
