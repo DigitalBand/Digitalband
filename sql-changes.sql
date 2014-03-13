@@ -19,3 +19,4 @@ ALTER TABLE dbs.products_categories CHANGE productId product_id INT;
 ALTER TABLE dbs.products_categories CHANGE categoryId category_id INT;
 ALTER TABLE dbs.roles CHANGE roleId role_id INT;
 ALTER TABLE dbs.shop RENAME TO dbs.shops;
+ALTER TABLE dbs.shopping_items CHANGE userId user_id INT;
