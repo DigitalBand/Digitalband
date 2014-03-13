@@ -22,7 +22,7 @@ class ImageRepository extends RepositoryBase with dao.common.ImageRepository {
         sql"""
           select
             img.image_id,
-            img.filePath,
+            img.file_path,
             img.md5
           from
             images img
@@ -53,14 +53,14 @@ class ImageRepository extends RepositoryBase with dao.common.ImageRepository {
   }
 
   def getByMd5(md5: String): Option[PictureEntity] = database withDynSession {
-    sql"select image_id, filePath, md5 from images where md5 = $md5".as[PictureEntity].firstOption
+    sql"select image_id, file_path, md5 from images where md5 = $md5".as[PictureEntity].firstOption
   }
 
   def create(img: ImageEntity): Int = database withDynSession {
     getByMd5(img.md5) match {
       case Some(i) => i.id
       case _ => {
-        sqlu"insert into images(filePath, md5) values(${img.path}, ${img.md5})".execute()
+        sqlu"insert into images(file_path, md5) values(${img.path}, ${img.md5})".execute()
         sql"select last_insert_id();".as[Int].first
       }
     }

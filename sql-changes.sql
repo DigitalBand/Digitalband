@@ -2,6 +2,8 @@ ALTER TABLE dbs.categories CHANGE ParentCategoryId parent_category_id INT;
 ALTER TABLE dbs.category_images CHANGE categoryId category_id INT;
 ALTER TABLE dbs.category_images CHANGE imageId image_id INT;
 ALTER TABLE dbs.change_password_requests CHANGE createiondate creation_date TIMESTAMP;
+ALTER TABLE dbs.images CHANGE imageId image_id INT;
+ALTER TABLE dbs.images CHANGE filePath file_path VARCHAR(256);
 DROP TABLE dbs.content_source_urls;
 DROP TABLE dbs.category_aliases;
 drop table dbs.category_icons;

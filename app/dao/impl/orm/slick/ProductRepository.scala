@@ -121,7 +121,7 @@ class ProductRepository extends RepositoryBase with dao.common.ProductRepository
       left join products_categories pc on pc.productId = p.productId
       left join categories c on c.category_id = pc.categoryId
       left join brands b on b.id = p.brand_id
-      where p.productId = $id;
+      where p.productId = ${id};
     """.as[ProductDetails].first()
   }
 
@@ -200,7 +200,7 @@ class ProductRepository extends RepositoryBase with dao.common.ProductRepository
       where productId = ${productId} and (select count(*) from product_images where productId = ${productId}) = 0
     """.execute
     val count = sql"""
-      select count(*) from product_images where imageId = $imageId
+      select count(*) from product_images where imageId = ${imageId}
      """.as[Int].first()
     if (count == 0) {
       after(imageId)
@@ -210,7 +210,7 @@ class ProductRepository extends RepositoryBase with dao.common.ProductRepository
   def imageList(productId: Int) = database withDynSession {
     implicit val getImg = GetResult(r => new ImageEntity(r.<<, r.<<, r.<<))
     sql"""
-      select i.filePath, i.md5, i.image_id from product_images pi
+      select i.file_path, i.md5, i.image_id from product_images pi
       inner join images i on i.image_id = pi.imageId
       where productId = ${productId}
      """.as[ImageEntity].list
@@ -225,8 +225,8 @@ class ProductRepository extends RepositoryBase with dao.common.ProductRepository
             cleanOtherResources(image)
         }
     }
-    sqlu"delete from products_categories where productId = $productId".execute
-    sqlu"delete from products where productId = $productId".execute
+    sqlu"delete from products_categories where productId = ${productId}".execute
+    sqlu"delete from products where productId = ${productId}".execute
   }
 
 
