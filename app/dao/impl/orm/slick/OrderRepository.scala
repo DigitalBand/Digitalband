@@ -107,7 +107,7 @@ class OrderRepository extends RepositoryBase with dao.common.OrderRepository {
   }
 
   def delete(orderId: Int) = database withDynSession {
-    sqlu"delete from orders where id = $orderId; delete from order_items where orderId = $orderId".execute()
+    sqlu"delete from orders where id = $orderId; delete from order_items where order_id = $orderId".execute()
   }
 
   def getCounters: Seq[(String, Int)] = database withDynSession {
