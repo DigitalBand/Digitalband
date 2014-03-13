@@ -71,7 +71,7 @@ class UserRepository extends RepositoryBase with dao.common.UserRepository {
       set
         email = ${info.email},
         user_name = ${info.name},
-        phoneNumber = ${info.phone},
+        phone_number = ${info.phone},
         address = ${info.address}
       where
         user_id = ${userId}
@@ -86,7 +86,7 @@ class UserRepository extends RepositoryBase with dao.common.UserRepository {
         r.nextStringOption().getOrElse(""),
         r.nextStringOption().getOrElse("")))
     sql"""
-      select user_name, email, phoneNumber, address from user_profiles where user_id = ${userId};
+      select user_name, email, phone_number, address from user_profiles where user_id = ${userId};
     """.as[DeliveryInfo].firstOption
   }
 

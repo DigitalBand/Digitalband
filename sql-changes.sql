@@ -24,3 +24,4 @@ ALTER TABLE dbs.shopping_items CHANGE productId product_id INT;
 ALTER TABLE dbs.shopping_items CHANGE unitPrice unit_price DOUBLE;
 ALTER TABLE dbs.user_profiles CHANGE userId user_id INT;
 ALTER TABLE dbs.user_profiles CHANGE userName user_name VARCHAR(50);
+ALTER TABLE dbs.user_profiles CHANGE phoneNumber phone_number VARCHAR(30);
