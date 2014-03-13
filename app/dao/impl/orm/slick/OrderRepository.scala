@@ -26,7 +26,7 @@ class OrderRepository extends RepositoryBase with dao.common.OrderRepository {
       val orderId = sql"select last_insert_id();".as[Int].first
       sqlu"""
         insert into
-          order_items(orderId, productId, quantity, unitPrice)
+          order_items(order_id, productId, quantity, unitPrice)
         select
           $orderId,
           productId,
@@ -47,7 +47,7 @@ class OrderRepository extends RepositoryBase with dao.common.OrderRepository {
     implicit val getCartItem = GetResult(r => new CartItem(r.<<, r.<<, r.<<, r.<<, r.<<, r.<<))
     sql"""
         select
-          o.orderId,
+          o.order_id,
           o.productId,
           p.title,
           (select imageId from product_images where productId = o.productId limit 1) as imageId,
@@ -57,7 +57,7 @@ class OrderRepository extends RepositoryBase with dao.common.OrderRepository {
           order_items o, products p
          where
           o.productId = p.productId and
-          o.orderId = $orderId
+          o.order_id = $orderId
     """.as[CartItem].list
   }
 
@@ -85,7 +85,7 @@ class OrderRepository extends RepositoryBase with dao.common.OrderRepository {
 
   def exists(orderId: Int) = database withDynSession {
     sql"""
-      select count(orderId) from order_items where orderId = $orderId;
+      select count(order_id) from order_items where order_id = $orderId;
     """.as[Int].first > 0
   }
 
