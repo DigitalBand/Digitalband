@@ -31,3 +31,4 @@ ALTER TABLE dbs.users CHANGE sessionId session_id VARCHAR(45);
 ALTER TABLE dbs.users_roles CHANGE userId user_id INT;
 ALTER TABLE dbs.users_roles CHANGE roleId role_id INT;
 ALTER TABLE dbs.questions CHANGE questionId id INT;
+ALTER TABLE dbs.questions CHANGE productId product_id INT;

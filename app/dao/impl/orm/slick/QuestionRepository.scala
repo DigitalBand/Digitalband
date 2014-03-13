@@ -15,7 +15,7 @@ class QuestionRepository extends RepositoryBase with dao.common.QuestionReposito
     implicit val getQuestion = GetResult(r => new Question(r.<<, r.<<, r.<<, r.<<, r.<<))
     sql"""
       select
-        q.id, q.productId, p.title, q.email, q.type
+        q.id, q.product_id, p.title, q.email, q.type
       from
         questions q
       inner join products p on p.id = q.productId
@@ -33,7 +33,7 @@ class QuestionRepository extends RepositoryBase with dao.common.QuestionReposito
     val count = sql"""
       select count(*) from questions
       where
-        productId = $productId and
+        product_id = $productId and
         email = $email and
         type = $questionType and
         status = $unansweredStatus
@@ -41,7 +41,7 @@ class QuestionRepository extends RepositoryBase with dao.common.QuestionReposito
     if (count > 0)
       None
     else {
-      sqlu"insert into questions(productId, email, type) values($productId, $email, $questionType)".execute
+      sqlu"insert into questions(product_id, email, type) values($productId, $email, $questionType)".execute
       sql"select last_insert_id();".as[Int].firstOption
     }
   }
@@ -50,10 +50,10 @@ class QuestionRepository extends RepositoryBase with dao.common.QuestionReposito
     implicit val getQuestion = GetResult(r => new Question(r.<<, r.<<, r.<<, r.<<, r.<<))
     sql"""
       select
-        q.id, q.productId, p.title, q.email, q.type
+        q.id, q.product_id, p.title, q.email, q.type
       from
         questions q
-      inner join products p on p.id = q.productId
+      inner join products p on p.id = q.product_id
       where status = 'unanswered';
     """.as[Question].list
   }
@@ -62,10 +62,10 @@ class QuestionRepository extends RepositoryBase with dao.common.QuestionReposito
     implicit val getQuestion = GetResult(r => new Question(r.<<, r.<<, r.<<, r.<<, r.<<))
     val items = sql"""
       select
-        q.id, q.productId, p.title, q.email, q.type
+        q.id, q.product_id, p.title, q.email, q.type
       from
         questions q
-      inner join products p on p.id = q.productId
+      inner join products p on p.id = q.product_id
       limit ${pageSize * (pageNumber - 1)}, ${pageSize};
     """.as[Question].list
     val totalCount = sql"select count(q.id) from questions q".as[Int].first()
