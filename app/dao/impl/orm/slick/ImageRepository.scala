@@ -20,13 +20,13 @@ class ImageRepository extends RepositoryBase with dao.common.ImageRepository {
       database withDynSession {
 
         sql"""
-          select
+          SELECT
             img.image_id,
             img.file_path,
             img.md5
-          from
+          FROM
             images img
-          where
+          WHERE
             img.image_id = ${imageId};
         """.as[PictureEntity].firstOption match {
           case Some(x) => PictureEntity(x.id, x.path, "jpg") //TODO: jpg always?
@@ -43,11 +43,11 @@ class ImageRepository extends RepositoryBase with dao.common.ImageRepository {
 
   def listByProductId(productId: Int): Seq[Int] = database withDynSession {
     sql"""
-      select
+      SELECT
         pi.image_id
-      from
+      FROM
         product_images pi
-      where
+      WHERE
         pi.product_id = ${productId};
     """.as[Int].list
   }
@@ -60,13 +60,13 @@ class ImageRepository extends RepositoryBase with dao.common.ImageRepository {
     getByMd5(img.md5) match {
       case Some(i) => i.id
       case _ => {
-        sqlu"insert into images(file_path, md5) values(${img.path}, ${img.md5})".execute()
-        sql"select last_insert_id();".as[Int].first
+        sqlu"INSERT INTO images(file_path, md5) VALUES(${img.path}, ${img.md5})".execute()
+        sql"SELECT last_insert_id();".as[Int].first
       }
     }
   }
 
-  def remove(imageId: Int) = database withDynSession  {
-    sqlu"delete from images where image_id = ${imageId}".execute
+  def remove(imageId: Int) = database withDynSession {
+    sqlu"DELETE FROM images WHERE image_id = ${imageId}".execute
   }
 }

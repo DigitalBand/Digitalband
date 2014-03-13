@@ -10,7 +10,6 @@ import Q.interpolation
 
 class CategoryRepository extends RepositoryBase with dao.common.CategoryRepository {
 
-
   def listWithPictures: Seq[CategoryEntity] = database withDynSession {
     implicit val getCategory = GetResult(r => CategoryEntity(r.<<, r.<<, r.<<))
     sql"""
@@ -23,7 +22,6 @@ class CategoryRepository extends RepositoryBase with dao.common.CategoryReposito
       inner join category_images ci on ci.category_id = cat.category_id
     """.as[CategoryEntity].list
   }
-
 
   def get(id: Int): CategoryEntity = database withDynSession {
     implicit val getCategory = GetResult(r => CategoryEntity(r.<<, r.<<, r.<<, r.<<, r.<<, r.<<))

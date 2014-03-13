@@ -10,7 +10,6 @@ import models.{ListPage, Question}
 
 
 class QuestionRepository extends RepositoryBase with dao.common.QuestionRepository {
-
   def get(id: Int):Question = database withDynSession {
     implicit val getQuestion = GetResult(r => new Question(r.<<, r.<<, r.<<, r.<<, r.<<))
     sql"""

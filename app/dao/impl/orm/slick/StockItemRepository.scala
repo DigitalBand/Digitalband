@@ -30,6 +30,7 @@ class StockItemRepository extends RepositoryBase with dao.common.StockItemReposi
         id = ${productId}
     """.execute()
   }
+
   def list(productId: Int) = database withDynSession {
     implicit val res = GetResult(r => StockItemInfo(r.<<, r.<<, r.<<, r.<<, r.<<, r.<<))
     sql"""
@@ -61,7 +62,7 @@ class StockItemRepository extends RepositoryBase with dao.common.StockItemReposi
       select count(product_id) from stock_items where id = ${stockItemId};
     """.as[Int].first
     if (count > 0) {
-    sql"""
+      sql"""
       select product_id from stock_items where id = ${stockItemId};
     """.as[Int].first
     } else {

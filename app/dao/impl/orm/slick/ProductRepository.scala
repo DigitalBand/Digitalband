@@ -39,7 +39,6 @@ class ProductRepository extends RepositoryBase with dao.common.ProductRepository
     """.as[Int].first
   }
 
-
   def getList(getCategory: => CategoryEntity, brandId: Int, pageNumber: Int, pageSize: Int, search: String, inStock: Boolean): ListPage[ProductDetails] = database withDynSession {
     implicit val getProducts = GetResult(
       r => new ProductDetails(r.nextString, r.nextString, r.nextDouble, r.nextInt, r.nextInt, r.nextBoolean))
@@ -88,7 +87,6 @@ class ProductRepository extends RepositoryBase with dao.common.ProductRepository
     val count = countQuery.as[Int].first
     new ListPage(pageNumber, products, count)
   }
-
 
   def get(id: Int, getBrand: Int => Option[BrandEntity]): ProductDetails = database withDynSession {
     implicit val getProductDetails = GetResult(r =>
@@ -141,7 +139,6 @@ class ProductRepository extends RepositoryBase with dao.common.ProductRepository
         p.id = ${id};
     """.as[ProductDetails].first
   }
-
 
   def create(details: ProductDetails, getBrandId: String => Int, userId: Int)(after: Int => Unit): Int = database withDynSession {
     val brandId = getBrandId(details.brand.title)

@@ -11,6 +11,7 @@ import dao.impl.orm.slick.common.RepositoryBase
 
 class UserRepository extends RepositoryBase with dao.common.UserRepository {
   def defaultEmail = Play.current.configuration.getString("email.default").get
+
   def createUser(name: String): Int = database withDynSession {
     sql"""
          insert into users(session_id) values('');
@@ -19,7 +20,6 @@ class UserRepository extends RepositoryBase with dao.common.UserRepository {
         select @userId;
       """.as[Int].first
   }
-
 
   def authenticate(login: String, password: String): Option[UserEntity] = database withDynSession {
     implicit val getUserResult = GetResult(r => new UserEntity(r.<<, r.<<))

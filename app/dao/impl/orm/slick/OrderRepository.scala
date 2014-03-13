@@ -11,7 +11,6 @@ import dao.impl.orm.slick.common.RepositoryBase
 
 class OrderRepository extends RepositoryBase with dao.common.OrderRepository {
 
-
   def create(deliveryInfo: DeliveryInfo, userId: Int): Int = database withDynSession {
       sqlu"""
         insert into orders (user_id, place_date, name, email, phone, address)
@@ -41,7 +40,6 @@ class OrderRepository extends RepositoryBase with dao.common.OrderRepository {
        """.execute()
       orderId
     }
-
 
   def getItems(orderId: Int): Seq[CartItem] = database withDynSession {
     implicit val getCartItem = GetResult(r => new CartItem(r.<<, r.<<, r.<<, r.<<, r.<<, r.<<))

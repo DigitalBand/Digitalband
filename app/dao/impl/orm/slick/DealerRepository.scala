@@ -9,11 +9,10 @@ import dao.impl.orm.slick.common.RepositoryBase
 
 
 class DealerRepository extends RepositoryBase with dao.common.DealerRepository {
-
   override def list: Seq[DealerInfo] = database withDynSession {
     implicit val getDealers = GetResult(r => DealerInfo(r.<<, r.<<))
     sql"""
-      select id, title from dealers;
+      SELECT id, title FROM dealers;
     """.as[DealerInfo].list
   }
 }
