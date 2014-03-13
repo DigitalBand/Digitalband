@@ -47,21 +47,21 @@ class CategoryRepository extends RepositoryBase with dao.common.CategoryReposito
     implicit val getres = GetResult(r => CategoryListItem(r.<<, r.<<, r.<<))
     sql"""
       select
-        scat.`category_id`,
-        scat.`title`,
+        scat.category_id,
+        scat.title,
         (
           select
-            count(prod.`productId`)
+            count(prod.productId)
           from
-            `products_categories` prod_cat,
-            `products` prod,
-            `categories` cat
+            products_categories prod_cat,
+            products prod,
+            categories cat
           where
             prod.archived = false and
-            (cat.`category_id` = prod_cat.`categoryId`) and
-            (prod.`productId` = prod_cat.`productId`) and
-            (cat.`left_value` >= scat.`left_value`) and
-            (cat.`right_value` <= scat.`right_value`) and
+            (cat.category_id = prod_cat.categoryId) and
+            (prod.productId = prod_cat.productId) and
+            (cat.left_value >= scat.left_value) and
+            (cat.right_value <= scat.right_value) and
             ((${brandId} = 0) or (prod.brand_id = ${brandId})) and
             ((${search} = '') or (prod.title like ${'%' + search + '%'})) and
             ((${inStock} = FALSE) or (prod.isAvailable = ${inStock}))
@@ -69,7 +69,7 @@ class CategoryRepository extends RepositoryBase with dao.common.CategoryReposito
       from
         `categories` scat
       where
-        scat.`parentCategoryId` = ${categoryId}
+        scat.parent_category_id = ${categoryId}
     """.as[CategoryListItem].list.filter(p => p.productCount > 0)
   }
 
