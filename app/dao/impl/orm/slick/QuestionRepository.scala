@@ -15,16 +15,16 @@ class QuestionRepository extends RepositoryBase with dao.common.QuestionReposito
     implicit val getQuestion = GetResult(r => new Question(r.<<, r.<<, r.<<, r.<<, r.<<))
     sql"""
       select
-        q.questionId, q.productId, p.title, q.email, q.type
+        q.id, q.productId, p.title, q.email, q.type
       from
         questions q
       inner join products p on p.id = q.productId
-      where q.questionId = $id;
+      where q.id = $id;
     """.as[Question].first
   }
 
   def setAnswered(questionId: Int) = database withDynSession {
-     sqlu"update questions set status = 'answered' where questionId = $questionId;".execute
+     sqlu"update questions set status = 'answered' where id = $questionId;".execute
   }
 
   def insertQuestion(productId: Int, email: String): Option[Int] = database withDynSession {
@@ -50,7 +50,7 @@ class QuestionRepository extends RepositoryBase with dao.common.QuestionReposito
     implicit val getQuestion = GetResult(r => new Question(r.<<, r.<<, r.<<, r.<<, r.<<))
     sql"""
       select
-        q.questionId, q.productId, p.title, q.email, q.type
+        q.id, q.productId, p.title, q.email, q.type
       from
         questions q
       inner join products p on p.id = q.productId
@@ -62,13 +62,13 @@ class QuestionRepository extends RepositoryBase with dao.common.QuestionReposito
     implicit val getQuestion = GetResult(r => new Question(r.<<, r.<<, r.<<, r.<<, r.<<))
     val items = sql"""
       select
-        q.questionId, q.productId, p.title, q.email, q.type
+        q.id, q.productId, p.title, q.email, q.type
       from
         questions q
       inner join products p on p.id = q.productId
       limit ${pageSize * (pageNumber - 1)}, ${pageSize};
     """.as[Question].list
-    val totalCount = sql"select count(q.questionId) from questions q".as[Int].first()
+    val totalCount = sql"select count(q.id) from questions q".as[Int].first()
     new ListPage(pageNumber, items, totalCount)
   }
 }
