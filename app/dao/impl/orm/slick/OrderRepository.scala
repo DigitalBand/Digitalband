@@ -26,7 +26,7 @@ class OrderRepository extends RepositoryBase with dao.common.OrderRepository {
       val orderId = sql"select last_insert_id();".as[Int].first
       sqlu"""
         insert into
-          order_items(order_id, productId, quantity, unitPrice)
+          order_items(order_id, product_id, quantity, unitPrice)
         select
           $orderId,
           productId,
@@ -48,15 +48,15 @@ class OrderRepository extends RepositoryBase with dao.common.OrderRepository {
     sql"""
         select
           o.order_id,
-          o.productId,
+          o.product_id,
           p.title,
-          (select imageId from product_images where productId = o.productId limit 1) as imageId,
+          (select imageId from product_images where productId = o.product_id limit 1) as imageId,
           o.quantity,
           o.unitPrice
         from
           order_items o, products p
          where
-          o.productId = p.productId and
+          o.product_id = p.productId and
           o.order_id = $orderId
     """.as[CartItem].list
   }
