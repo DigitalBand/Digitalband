@@ -69,17 +69,17 @@ class ProductRepository extends RepositoryBase with dao.common.ProductRepository
     """.as[ProductDetails].list
     val countQuery = sql"""
       select
-        count(prod.`title`)
+        count(prod.title)
       from
-        `products` prod,
-        `products_categories` prod_cat,
-        `categories` cat
+        products prod,
+        products_categories prod_cat,
+        categories cat
       where
         prod.archived = false and
-        (prod.`productId` = prod_cat.`productId`) and
-        (prod_cat.`categoryId` = cat.`category_id`) and
-        (cat.`left_value` >= ${category.leftValue}) and
-        (cat.`right_value` <= ${category.rightValue}) and
+        (prod.productId = prod_cat.productId) and
+        (prod_cat.categoryId = cat.category_id) and
+        (cat.left_value >= ${category.leftValue}) and
+        (cat.right_value <= ${category.rightValue}) and
         ((${brandId} = 0) or (prod.brand_id = ${brandId})) and
         ((${search} = '') or (prod.title like ${'%'+search+'%'})) and
         ((${inStock} = FALSE) or (prod.isAvailable = ${inStock}))
@@ -165,12 +165,12 @@ class ProductRepository extends RepositoryBase with dao.common.ProductRepository
   def insertImage(imageId: Int, productId: Int) = database withDynSession {
     if (imageId > 0) {
       sqlu"""
-        insert into product_images(productId, imageId) values($productId, $imageId);
+        insert into product_images(productId, imageId) values(${productId}, ${imageId});
         update products
         set
-          defaultImageId = $imageId
+          defaultImageId = ${imageId}
         where
-          productId = $productId and (defaultImageId = 0 or defaultImageId is null)
+          productId = ${productId} and (defaultImageId = 0 or defaultImageId is null)
       """.execute
     }
   }
@@ -192,7 +192,7 @@ class ProductRepository extends RepositoryBase with dao.common.ProductRepository
 
   def removeImage(imageId: Int, productId: Int)(after: Int => Unit) = database withDynSession {
     sqlu"""
-      delete from product_images where productId = $productId and imageId = $imageId;
+      delete from product_images where productId = ${productId} and imageId = ${imageId};
     """.execute
     sqlu"""
       update products
@@ -210,9 +210,9 @@ class ProductRepository extends RepositoryBase with dao.common.ProductRepository
   def imageList(productId: Int) = database withDynSession {
     implicit val getImg = GetResult(r => new ImageEntity(r.<<, r.<<, r.<<))
     sql"""
-      select i.filePath, i.md5, i.imageId from product_images pi
-      inner join images i on i.imageId = pi.imageId
-      where productId = $productId
+      select i.filePath, i.md5, i.image_id from product_images pi
+      inner join images i on i.image_id = pi.imageId
+      where productId = ${productId}
      """.as[ImageEntity].list
   }
 

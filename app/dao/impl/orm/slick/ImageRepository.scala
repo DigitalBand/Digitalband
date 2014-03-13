@@ -21,13 +21,13 @@ class ImageRepository extends RepositoryBase with dao.common.ImageRepository {
 
         sql"""
           select
-            img.imageId,
+            img.image_id,
             img.filePath,
             img.md5
           from
             images img
           where
-            img.imageId = ${imageId};
+            img.image_id = ${imageId};
         """.as[PictureEntity].firstOption match {
           case Some(x) => PictureEntity(x.id, x.path, "jpg") //TODO: jpg always?
           case None => errorImage
@@ -53,7 +53,7 @@ class ImageRepository extends RepositoryBase with dao.common.ImageRepository {
   }
 
   def getByMd5(md5: String): Option[PictureEntity] = database withDynSession {
-    sql"select imageId, filePath, md5 from images where md5 = $md5".as[PictureEntity].firstOption
+    sql"select image_id, filePath, md5 from images where md5 = $md5".as[PictureEntity].firstOption
   }
 
   def create(img: ImageEntity): Int = database withDynSession {
@@ -67,6 +67,6 @@ class ImageRepository extends RepositoryBase with dao.common.ImageRepository {
   }
 
   def remove(imageId: Int) = database withDynSession  {
-    sqlu"delete from images where imageId = $imageId".execute
+    sqlu"delete from images where image_id = ${imageId}".execute
   }
 }
