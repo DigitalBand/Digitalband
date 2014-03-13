@@ -15,7 +15,7 @@ class UserRepository extends RepositoryBase with dao.common.UserRepository {
     sql"""
          insert into users(sessionId) values('');
         set @userId := (select last_insert_id());
-        insert into user_profiles (email, password, user_id) values($name, '', @userId);
+        insert into user_profiles (email, password, user_id) values(${name}, '', @userId);
         select @userId;
       """.as[Int].first
   }
@@ -27,8 +27,8 @@ class UserRepository extends RepositoryBase with dao.common.UserRepository {
       select
         email, user_id from user_profiles
       where
-        email = $login and
-        password = $password;
+        email = ${login} and
+        password = ${password};
     """.as[UserEntity].firstOption
   }
 
@@ -40,7 +40,7 @@ class UserRepository extends RepositoryBase with dao.common.UserRepository {
         user_profiles p
       left join users_roles ur on ur.userId = p.user_id
       where
-        p.email = $email;
+        p.email = ${email};
     """.as[UserEntity].firstOption
   }
 
@@ -70,11 +70,11 @@ class UserRepository extends RepositoryBase with dao.common.UserRepository {
         user_profiles
       set
         email = ${info.email},
-        userName = ${info.name},
+        user_name = ${info.name},
         phoneNumber = ${info.phone},
         address = ${info.address}
       where
-        user_id = $userId
+        user_id = ${userId}
     """.execute()
   }
 
@@ -86,7 +86,7 @@ class UserRepository extends RepositoryBase with dao.common.UserRepository {
         r.nextStringOption().getOrElse(""),
         r.nextStringOption().getOrElse("")))
     sql"""
-      select userName, email, phoneNumber, address from user_profiles where user_id = $userId;
+      select user_name, email, phoneNumber, address from user_profiles where user_id = ${userId};
     """.as[DeliveryInfo].firstOption
   }
 
@@ -103,7 +103,7 @@ class UserRepository extends RepositoryBase with dao.common.UserRepository {
       from
         user_profiles p
       where
-        p.email = $email;
+        p.email = ${email};
     """.as[String].firstOption
   }
 }
