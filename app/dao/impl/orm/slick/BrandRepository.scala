@@ -46,7 +46,7 @@ class BrandRepository extends RepositoryBase with dao.common.BrandRepository {
              categories c,
              brands b
           where
-             p.id = pc.productId and
+             p.id = pc.product_id and
              c.category_id = pc.categoryId and
              c.left_value >= ${category.leftValue} and
              c.right_value <= ${category.rightValue} and
@@ -66,7 +66,7 @@ class BrandRepository extends RepositoryBase with dao.common.BrandRepository {
                 products_categories pc,
                 categories c
               where
-                p.id = pc.productId and
+                p.id = pc.product_id and
                 c.category_id = pc.categoryId and
                 c.left_value >= ${category.leftValue} and
                 c.right_value <= ${category.rightValue} and

@@ -58,7 +58,7 @@ class ProductRepository extends RepositoryBase with dao.common.ProductRepository
         categories cat
       where
         prod.archived = false and
-        (prod.id = prod_cat.productId) and
+        (prod.id = prod_cat.product_id) and
         (prod_cat.categoryId = cat.category_id) and
         (cat.left_value >= ${category.leftValue}) and
         (cat.right_value <= ${category.rightValue}) and
@@ -76,7 +76,7 @@ class ProductRepository extends RepositoryBase with dao.common.ProductRepository
         categories cat
       where
         prod.archived = false and
-        (prod.id = prod_cat.productId) and
+        (prod.id = prod_cat.product_id) and
         (prod_cat.categoryId = cat.category_id) and
         (cat.left_value >= ${category.leftValue}) and
         (cat.right_value <= ${category.rightValue}) and
@@ -118,7 +118,7 @@ class ProductRepository extends RepositoryBase with dao.common.ProductRepository
         p.is_available
       from
         products p
-      left join products_categories pc on pc.productId = p.id
+      left join products_categories pc on pc.product_id = p.id
       left join categories c on c.category_id = pc.categoryId
       left join brands b on b.id = p.brand_id
       where p.id = ${id};
@@ -157,7 +157,7 @@ class ProductRepository extends RepositoryBase with dao.common.ProductRepository
           ${details.isAvailable})
     """.execute()
     val productId = sql"select last_insert_id();".as[Int].first
-    sqlu"insert into products_categories(productId, categoryId) values($productId, ${details.category.id})".execute
+    sqlu"insert into products_categories(product_id, categoryId) values($productId, ${details.category.id})".execute
     after(productId)
     productId
   }
@@ -225,7 +225,7 @@ class ProductRepository extends RepositoryBase with dao.common.ProductRepository
             cleanOtherResources(image)
         }
     }
-    sqlu"delete from products_categories where productId = ${productId}".execute
+    sqlu"delete from products_categories where product_id = ${productId}".execute
     sqlu"delete from products where id = ${productId}".execute
   }
 
