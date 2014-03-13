@@ -14,7 +14,7 @@ class OrderRepository extends RepositoryBase with dao.common.OrderRepository {
 
   def create(deliveryInfo: DeliveryInfo, userId: Int): Int = database withDynSession {
       sqlu"""
-        insert into orders (userId, placeDate, name, email, phone, address)
+        insert into orders (user_id, placeDate, name, email, phone, address)
         values(
           $userId,
           ${new Timestamp(new java.util.Date().getTime)},
