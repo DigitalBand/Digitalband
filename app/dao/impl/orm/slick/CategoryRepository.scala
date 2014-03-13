@@ -17,10 +17,10 @@ class CategoryRepository extends RepositoryBase with dao.common.CategoryReposito
       select
         cat.category_id,
         cat.title,
-        ci.imageId
+        ci.image_id
       from
         categories cat
-      inner join category_images ci on ci.categoryId = cat.category_id
+      inner join category_images ci on ci.category_id = cat.category_id
     """.as[CategoryEntity].list
   }
 
