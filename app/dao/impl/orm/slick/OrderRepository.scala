@@ -14,7 +14,7 @@ class OrderRepository extends RepositoryBase with dao.common.OrderRepository {
 
   def create(deliveryInfo: DeliveryInfo, userId: Int): Int = database withDynSession {
       sqlu"""
-        insert into orders (user_id, placeDate, name, email, phone, address)
+        insert into orders (user_id, place_date, name, email, phone, address)
         values(
           $userId,
           ${new Timestamp(new java.util.Date().getTime)},
@@ -78,7 +78,7 @@ class OrderRepository extends RepositoryBase with dao.common.OrderRepository {
 
   override def get(orderId: Int): OrderInfo = database withDynSession {
     implicit val getOrderInfo = GetResult(r => new OrderInfo(r.<<, r.<<, r.<<, new DeliveryInfo(r.<<, r.<<, r.<<, r.<<)))
-    val query = sql"select id, placeDate, status, name, email, phone, address from orders where id = $orderId"
+    val query = sql"select id, place_date, status, name, email, phone, address from orders where id = $orderId"
     val order = query.as[OrderInfo].first()
     new OrderInfo(order, getItems(orderId))
   }
@@ -93,9 +93,9 @@ class OrderRepository extends RepositoryBase with dao.common.OrderRepository {
     implicit val getOrderInfo = GetResult(r => new OrderInfo(r.<<, r.<<, r.<<, new DeliveryInfo(r.<<, r.<<, r.<<, r.<<)))
     val items = sql"""
       select
-        id, placeDate, status, name, email, phone, address
+        id, place_date, status, name, email, phone, address
       from orders
-      order by placeDate desc
+      order by place_date desc
       limit ${pageSize * (pageNumber - 1)}, $pageSize
     """.as[OrderInfo].list
     val totalCount = sql"select count(*) from orders".as[Int].first
