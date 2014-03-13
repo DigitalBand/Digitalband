@@ -19,7 +19,7 @@ class ProductRepository extends RepositoryBase with dao.common.ProductRepository
     sql"""
       select
         p.title,
-        p.shortDescription,
+        p.short_description,
         p.price,
         p.id,
         p.defaultImageId
@@ -47,7 +47,7 @@ class ProductRepository extends RepositoryBase with dao.common.ProductRepository
     val products = sql"""
       select
         prod.title,
-        prod.shortDescription,
+        prod.short_description,
         prod.price,
         prod.id,
         prod.defaultImageId,
@@ -107,7 +107,7 @@ class ProductRepository extends RepositoryBase with dao.common.ProductRepository
       select
         p.title,
         p.description,
-        p.shortDescription,
+        p.short_description,
         p.price,
         p.id,
         p.defaultImageId,
@@ -147,7 +147,7 @@ class ProductRepository extends RepositoryBase with dao.common.ProductRepository
     val brandId = getBrandId(details.brand.title)
     sqlu"""
       insert into
-        products(title, description, shortDescription, price, brand_id, createdByUser, isAvailable)
+        products(title, description, short_description, price, brand_id, createdByUser, isAvailable)
         values(${details.title},
           ${details.description},
           ${details.shortDescription},
@@ -181,7 +181,7 @@ class ProductRepository extends RepositoryBase with dao.common.ProductRepository
       set
         title = ${product.title},
         description = ${product.description},
-        shortDescription = ${product.shortDescription},
+        short_description = ${product.shortDescription},
         price = ${product.price},
         brand_id = ${getBrandId(product.brand.title)}
       where id = ${product.id}

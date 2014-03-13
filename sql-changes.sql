@@ -7,3 +7,7 @@ ALTER TABLE dbs.orders CHANGE placeDate place_date TIMESTAMP;
 ALTER TABLE dbs.product_images CHANGE imageId image_id INT;
 ALTER TABLE dbs.product_images CHANGE productId product_id int;
 ALTER TABLE dbs.products CHANGE productId id INT;
+ALTER TABLE dbs.products CHANGE addedDate added_date TIMESTAMP;
+ALTER TABLE dbs.products CHANGE discountPrice discount_price decimal;
+ALTER TABLE dbs.products DROP discount_price;
+ALTER TABLE dbs.products CHANGE shortDescription short_description TEXT;
