@@ -59,7 +59,7 @@ class ProductRepository extends RepositoryBase with dao.common.ProductRepository
       where
         prod.archived = false and
         (prod.id = prod_cat.product_id) and
-        (prod_cat.categoryId = cat.category_id) and
+        (prod_cat.category_id = cat.category_id) and
         (cat.left_value >= ${category.leftValue}) and
         (cat.right_value <= ${category.rightValue}) and
         ((${brandId} = 0) or (prod.brand_id = ${brandId})) and
@@ -77,7 +77,7 @@ class ProductRepository extends RepositoryBase with dao.common.ProductRepository
       where
         prod.archived = false and
         (prod.id = prod_cat.product_id) and
-        (prod_cat.categoryId = cat.category_id) and
+        (prod_cat.category_id = cat.category_id) and
         (cat.left_value >= ${category.leftValue}) and
         (cat.right_value <= ${category.rightValue}) and
         ((${brandId} = 0) or (prod.brand_id = ${brandId})) and
@@ -112,14 +112,14 @@ class ProductRepository extends RepositoryBase with dao.common.ProductRepository
         p.id,
         p.default_image_id,
         b.id,
-        b.title as brandTitle,
-        pc.categoryId,
+        b.title as brand_title,
+        pc.category_id,
         c.title,
         p.is_available
       from
         products p
       left join products_categories pc on pc.product_id = p.id
-      left join categories c on c.category_id = pc.categoryId
+      left join categories c on c.category_id = pc.category_id
       left join brands b on b.id = p.brand_id
       where p.id = ${id};
     """.as[ProductDetails].first()
@@ -157,7 +157,7 @@ class ProductRepository extends RepositoryBase with dao.common.ProductRepository
           ${details.isAvailable})
     """.execute()
     val productId = sql"select last_insert_id();".as[Int].first
-    sqlu"insert into products_categories(product_id, categoryId) values($productId, ${details.category.id})".execute
+    sqlu"insert into products_categories(product_id, category_id) values($productId, ${details.category.id})".execute
     after(productId)
     productId
   }

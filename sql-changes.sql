@@ -16,3 +16,4 @@ ALTER TABLE dbs.products CHANGE visitCounter visit_counter INT;
 ALTER TABLE dbs.products CHANGE createdByUser created_by_user INT;
 ALTER TABLE dbs.products CHANGE isAvailable is_available BIT;
 ALTER TABLE dbs.products_categories CHANGE productId product_id INT;
+ALTER TABLE dbs.products_categories CHANGE categoryId category_id INT;
