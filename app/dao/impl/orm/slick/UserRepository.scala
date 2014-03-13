@@ -15,7 +15,7 @@ class UserRepository extends RepositoryBase with dao.common.UserRepository {
     sql"""
          insert into users(sessionId) values('');
         set @userId := (select last_insert_id());
-        insert into user_profiles (email, password, userId) values($name, '', @userId);
+        insert into user_profiles (email, password, user_id) values($name, '', @userId);
         select @userId;
       """.as[Int].first
   }
@@ -25,7 +25,7 @@ class UserRepository extends RepositoryBase with dao.common.UserRepository {
     implicit val getUserResult = GetResult(r => new UserEntity(r.<<, r.<<))
     sql"""
       select
-        email, userId from user_profiles
+        email, user_id from user_profiles
       where
         email = $login and
         password = $password;
@@ -35,10 +35,10 @@ class UserRepository extends RepositoryBase with dao.common.UserRepository {
   def get(email: String): Option[UserEntity] = database withDynSession {
     implicit val getUserResult = GetResult(r => new UserEntity(r.<<, r.<<, r.<<))
     sql"""
-      select p.email, p.userId, ifnull(ur.role_id, 0) role_id
+      select p.email, p.user_id, ifnull(ur.role_id, 0) role_id
       from
         user_profiles p
-      left join users_roles ur on ur.userId = p.userId
+      left join users_roles ur on ur.userId = p.user_id
       where
         p.email = $email;
     """.as[UserEntity].firstOption
@@ -51,15 +51,15 @@ class UserRepository extends RepositoryBase with dao.common.UserRepository {
 
   def remove(userId: Int) = database withDynSession {
     sqlu"""
-      delete from users where userId = $userId;
-      delete from user_profiles where userId = $userId;
+      delete from users where userId = ${userId};
+      delete from user_profiles where userId = ${userId};
     """.execute()
   }
 
   def register(email: String, password: String): Int = database withDynSession {
     val userId = createUser
     sqlu"""
-        insert into user_profiles (email, password, userId) values($email, $password, $userId);
+        insert into user_profiles (email, password, user_id) values(${email}, ${password}, ${userId});
       """.execute
     userId
   }
@@ -74,7 +74,7 @@ class UserRepository extends RepositoryBase with dao.common.UserRepository {
         phoneNumber = ${info.phone},
         address = ${info.address}
       where
-        userId = $userId
+        user_id = $userId
     """.execute()
   }
 
@@ -86,7 +86,7 @@ class UserRepository extends RepositoryBase with dao.common.UserRepository {
         r.nextStringOption().getOrElse(""),
         r.nextStringOption().getOrElse("")))
     sql"""
-      select userName, email, phoneNumber, address from user_profiles where userId = $userId;
+      select userName, email, phoneNumber, address from user_profiles where user_id = $userId;
     """.as[DeliveryInfo].firstOption
   }
 

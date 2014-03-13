@@ -22,3 +22,4 @@ ALTER TABLE dbs.shop RENAME TO dbs.shops;
 ALTER TABLE dbs.shopping_items CHANGE userId user_id INT;
 ALTER TABLE dbs.shopping_items CHANGE productId product_id INT;
 ALTER TABLE dbs.shopping_items CHANGE unitPrice unit_price DOUBLE;
+ALTER TABLE dbs.user_profiles CHANGE userId user_id INT;
