@@ -51,7 +51,7 @@ class BrandRepository extends RepositoryBase with dao.common.BrandRepository {
              c.left_value >= ${category.leftValue} and
              c.right_value <= ${category.rightValue} and
              b.id = p.brand_id and
-             ((${inStock} = FALSE) or p.isAvailable = ${inStock}) and
+             ((${inStock} = FALSE) or p.is_available = ${inStock}) and
              ${if (search.isEmpty) "1=1" else "p.title like '%" + search + "%'"}
           group by p.brand_id order by productCount desc limit $drop, $pageSize;
         """)

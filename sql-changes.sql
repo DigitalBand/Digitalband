@@ -14,3 +14,4 @@ ALTER TABLE dbs.products CHANGE shortDescription short_description TEXT;
 ALTER TABLE dbs.products CHANGE defaultImageId default_image_id INT;
 ALTER TABLE dbs.products CHANGE visitCounter visit_counter INT;
 ALTER TABLE dbs.products CHANGE createdByUser created_by_user INT;
+ALTER TABLE dbs.products CHANGE isAvailable is_available BIT;

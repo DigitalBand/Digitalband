@@ -28,7 +28,7 @@ class ProductRepository extends RepositoryBase with dao.common.ProductRepository
       where
         p.archived = false and
         p.price > 0 and
-        p.isAvailable = true
+        p.is_available = true
       limit ${count};
     """.as[ProductDetails].list
   }
@@ -51,7 +51,7 @@ class ProductRepository extends RepositoryBase with dao.common.ProductRepository
         prod.price,
         prod.id,
         prod.defaultImageId,
-        prod.isAvailable
+        prod.is_available
       from
         products prod,
         products_categories prod_cat,
@@ -64,7 +64,7 @@ class ProductRepository extends RepositoryBase with dao.common.ProductRepository
         (cat.right_value <= ${category.rightValue}) and
         ((${brandId} = 0) or (prod.brand_id = ${brandId})) and
         ((${search} = '') or (prod.title like ${'%'+search+'%'})) and
-        ((${inStock} = FALSE) or (prod.isAvailable = ${inStock}))
+        ((${inStock} = FALSE) or (prod.is_available = ${inStock}))
       limit ${(pageNumber - 1)*pageSize}, ${pageSize}
     """.as[ProductDetails].list
     val countQuery = sql"""
@@ -82,7 +82,7 @@ class ProductRepository extends RepositoryBase with dao.common.ProductRepository
         (cat.right_value <= ${category.rightValue}) and
         ((${brandId} = 0) or (prod.brand_id = ${brandId})) and
         ((${search} = '') or (prod.title like ${'%'+search+'%'})) and
-        ((${inStock} = FALSE) or (prod.isAvailable = ${inStock}))
+        ((${inStock} = FALSE) or (prod.is_available = ${inStock}))
     """
 
     val count = countQuery.as[Int].first
@@ -115,7 +115,7 @@ class ProductRepository extends RepositoryBase with dao.common.ProductRepository
         b.title as brandTitle,
         pc.categoryId,
         c.title,
-        p.isAvailable
+        p.is_available
       from
         products p
       left join products_categories pc on pc.productId = p.id
@@ -147,7 +147,7 @@ class ProductRepository extends RepositoryBase with dao.common.ProductRepository
     val brandId = getBrandId(details.brand.title)
     sqlu"""
       insert into
-        products(title, description, short_description, price, brand_id, created_by_user, isAvailable)
+        products(title, description, short_description, price, brand_id, created_by_user, is_available)
         values(${details.title},
           ${details.description},
           ${details.shortDescription},
