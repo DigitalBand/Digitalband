@@ -113,7 +113,11 @@ categoryId = categoryId, brandId = brandId, subnav = subnav, scripts = scripts, 
 
                 <strong>Наличие:</strong>
                 <span>
-                    @(if (product.isAvailable) "Есть в наличии" else "Нет в наличии")
+                    @if(product.isAvailable) {
+                        <a href="@routes.Application.contacts">Есть в наличии</a>
+                    }else {
+                        <span>Нет в наличии</span>
+                    }
                 </span>
                 <br/>
             </address>

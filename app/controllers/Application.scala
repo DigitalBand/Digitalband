@@ -11,11 +11,13 @@ import play.api.mvc._
 import play.api.Play.current
 import helpers.{Secured, ReCaptchaHelper, EmailHelper}
 import com.google.inject.Inject
-import dao.common.{UserRepository, ProductRepository, CategoryRepository}
+import dao.common._
 import scala.concurrent.{ExecutionContext, Future}
 import ExecutionContext.Implicits.global
 
-class Application @Inject()(implicit ur: UserRepository, val categoryRepository: CategoryRepository,
+class Application @Inject()(implicit ur: UserRepository,
+                            val shopRepository: ShopRepository,
+                            val categoryRepository: CategoryRepository,
                             val productRepository: ProductRepository) extends ControllerBase with Secured {
   val oneDayDuration = 86400
   val emailHelper = new EmailHelper()
@@ -61,7 +63,8 @@ class Application @Inject()(implicit ur: UserRepository, val categoryRepository:
     implicit user =>
       implicit request => Future {
         val recaptcha = ReCaptchaHelper.get("6LfMQdYSAAAAAJCe85Y6CRp9Ww7n-l3HOBf5bifB")
-        Ok(views.html.Application.contacts(contactsForm, recaptcha))
+
+        Ok(views.html.Application.contacts(contactsForm, recaptcha, shopRepository.list))
       }
   }
 
@@ -69,8 +72,10 @@ class Application @Inject()(implicit ur: UserRepository, val categoryRepository:
     implicit user =>
       implicit request => Future {
         contactsForm.bindFromRequest.fold(
-          formWithErrors => BadRequest(views.html.Application.contacts(formWithErrors,
-            ReCaptchaHelper.get("6LfMQdYSAAAAAJCe85Y6CRp9Ww7n-l3HOBf5bifB"))),
+          formWithErrors => BadRequest(
+            views.html.Application.contacts(formWithErrors,
+              ReCaptchaHelper.get("6LfMQdYSAAAAAJCe85Y6CRp9Ww7n-l3HOBf5bifB"),
+              shopRepository.list)),
           contactsForm => {
             emailHelper.sendFeedback(contactsForm)
             Redirect(routes.Application.contacts()).flashing(
