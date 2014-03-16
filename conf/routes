@@ -50,6 +50,7 @@ GET           /        @controllers.Application.index
 GET           /about        @controllers.Application.about
 GET           /contacts        @controllers.Application.contacts
 POST          /sendFeedback        @controllers.Application.sendFeedback
+GET           /stock/:productId        @controllers.Application.stock(productId: Int)
 
 # Product
 GET           /category/list        @controllers.Product.list

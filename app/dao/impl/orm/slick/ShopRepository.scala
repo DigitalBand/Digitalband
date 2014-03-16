@@ -4,7 +4,7 @@ import scala.slick.driver.JdbcDriver.backend.Database
 import Database.dynamicSession
 import slick.jdbc.{StaticQuery => Q, GetResult}
 import Q.interpolation
-
+import helpers.PhoneHelper.parsePhones
 import models.ShopInfo
 import dao.impl.orm.slick.common.RepositoryBase
 
@@ -37,10 +37,7 @@ class ShopRepository extends RepositoryBase with dao.common.ShopRepository {
     """.as[ShopInfo].first
   }
 
-  def parsePhones(phones: Option[String]): Seq[String] = phones match {
-    case Some(phones) => phones.split(";")
-    case None => Nil
-  }
+
 
   def update(shop: ShopInfo) = database withDynSession {
     sqlu"""

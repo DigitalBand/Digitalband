@@ -14,9 +14,11 @@ import com.google.inject.Inject
 import dao.common._
 import scala.concurrent.{ExecutionContext, Future}
 import ExecutionContext.Implicits.global
+import javax.management.remote.rmi._RMIConnection_Stub
 
 class Application @Inject()(implicit ur: UserRepository,
                             val shopRepository: ShopRepository,
+                            val stockItemRepository: StockItemRepository,
                             val categoryRepository: CategoryRepository,
                             val productRepository: ProductRepository) extends ControllerBase with Secured {
   val oneDayDuration = 86400
@@ -65,6 +67,15 @@ class Application @Inject()(implicit ur: UserRepository,
         val recaptcha = ReCaptchaHelper.get("6LfMQdYSAAAAAJCe85Y6CRp9Ww7n-l3HOBf5bifB")
 
         Ok(views.html.Application.contacts(contactsForm, recaptcha, shopRepository.list))
+      }
+  }
+
+  def stock(productId: Int) = withUser {
+    implicit user =>
+      implicit request => Future {
+        val product = productRepository.get(productId)
+        val shopList = stockItemRepository.shopList(productId)
+        Ok(views.html.Application.stock(product, shopList))
       }
   }
 

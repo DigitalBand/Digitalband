@@ -1,0 +1,24 @@
+@(product: ProductDetails, shopList: Seq[ShopListItem])(implicit user: Option[models.UserEntity], request: play.api.mvc.Request[Any])
+@main("Наличие товара") {
+  <div class="page-header">
+    <h4>Наличие @product.title в магазинах и на складах</h4>
+  </div>
+  <table class="table table-striped">
+    <thead>
+      <tr>
+        <th>Склад / Магазин</th>
+        <th>Контактная информация</th>
+        <th>Количество</th>
+      </tr>
+    </thead>
+    <tbody>
+      @shopList.map { shop =>
+        <tr>
+          <td>@shop.shopTitle</td>
+          <td>@shop.phoneNumbers.mkString("; ")</td>
+          <td>@shop.quantity</td>
+        </tr>
+      }
+    </tbody>
+  </table>
+}

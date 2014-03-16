@@ -5,8 +5,9 @@ import scala.slick.driver.JdbcDriver.simple._
 import Database.dynamicSession
 import slick.jdbc.{StaticQuery => Q, GetResult}
 import Q.interpolation
+import helpers.PhoneHelper.parsePhones
 
-import models.StockItemInfo
+import models.{ShopListItem, StockItemInfo}
 
 class StockItemRepository extends RepositoryBase with dao.common.StockItemRepository {
   def create(productId: Int, stockItem: StockItemInfo): Int = database withDynSession {
@@ -84,5 +85,21 @@ class StockItemRepository extends RepositoryBase with dao.common.StockItemReposi
     """.execute()
     val productId = getProductIdByStock(stockItem.id)
     cacheStock(productId)
+  }
+
+  def shopList(productId: Int) = database withDynSession {
+    implicit val getResult = GetResult(r => ShopListItem(r.<<, r.<<, parsePhones(r.<<), r.<<))
+    sql"""
+      select
+        s.id,
+        s.title,
+        s.phones,
+        sum(si.quantity) as quantity
+      from
+        stock_items si
+        inner join shops s on s.id = si.shop_id
+      where
+        product_id = ${productId} group by si.shop_id;
+    """.as[ShopListItem].list
   }
 }
