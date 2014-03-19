@@ -3,7 +3,7 @@ import com.google.inject.Guice
 import com.tzavellas.sse.guice.ScalaModule
 import dao.impl.orm.slick._
 
-import helpers.{NotificationsHelper, EmailHelper}
+import helpers.NotificationsHelper
 import play.api._
 import play.api.Play.current
 import webServices.{GoogleImageSearch, FakeImageSearch}
