@@ -13,8 +13,8 @@ class StockItemRepository extends RepositoryBase with dao.common.StockItemReposi
   def create(productId: Int, stockItem: StockItemInfo): Int = database withDynSession {
     sqlu"""
       insert into
-        stock_items(product_id, dealer_id, dealer_price, shop_id)
-        values(${productId}, (select id from dealers where title = ${stockItem.dealerName}), ${stockItem.dealerPrice}, ${stockItem.shopId})
+        stock_items(product_id, dealer_id, dealer_price, shop_id, quantity)
+        values(${productId}, (select id from dealers where title = ${stockItem.dealerName}), ${stockItem.dealerPrice}, ${stockItem.shopId}, ${stockItem.quantity})
     """.execute()
     val result = sql"""select last_insert_id();""".as[Int].first
     cacheStock(productId)

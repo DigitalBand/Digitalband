@@ -29,8 +29,8 @@ class StockItem @Inject()(
   def create(productId: Int) = withAdmin(parse.json) {
     implicit user =>
       implicit request =>
-        val body = request.body;
-        val stockItem = Json.parse[StockItemInfo](body.toString)
+        val body = request.body
+        val stockItem = Json.parse[StockItemInfo](body.toString())
         val id = stockItemRepository.create(productId, stockItem)
         Ok(Json.generate(id))
   }
@@ -45,8 +45,8 @@ class StockItem @Inject()(
   def update(id: Int) = withAdmin(parse.json) {
     implicit user =>
       implicit request =>
-        val body = request.body;
-        val stockItem = Json.parse[StockItemInfo](body.toString)
+        val body = request.body
+        val stockItem = Json.parse[StockItemInfo](body.toString())
         stockItemRepository.update(stockItem)
         Ok("Ok")
   }
