@@ -28,17 +28,17 @@
     <div class="thumbnails top-products">
     @products.map { product =>
         <div class="col-lg-2 col-md-3 col-sm-4">
-            <div class="thumbnail">
+            <a class="thumbnail" href="@routes.Product.filteredList(1, 1, productId = product.id, is = 1)">
 
                 <img src="@routes.Image.get(product.defaultImageId + ".jpg", quality = 60, "660x580", "full")"/>
 
                 <div class="caption">
 
-                        <p><a href="@routes.Product.filteredList(1, 1, productId = product.id, is = 1)">@product.title</a></p>
+                        <p>@product.title</p>
                         <small>@product.price р.</small>
 
                 </div>
-            </div>
+            </a>
         </div>
     }
     </div>
