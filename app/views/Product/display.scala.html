@@ -85,11 +85,13 @@ categoryId = categoryId, brandId = brandId, subnav = subnav, scripts = scripts, 
 <h4>@product.title <small ng-cloak>{{ product.title }}</small></h4>
 <div class="row">
     <div class="col-md-5 product-photos">
+        <div class="thumbnail" style="border: 0;box-shadow: none;">
         @if(imageIds.length == 0){
-            <img alt="" style="width:330px;height: 250px" src="@routes.Image.get(product.defaultImageId + ".jpg", 90, "660x500", "full")">
+            <img alt="" src="@routes.Image.get(product.defaultImageId + ".jpg", 90, "660x500", "full")">
         }else{
-            <img alt="" style="width:330px;height: 250px" src="@routes.Image.get(imageIds.head + ".jpg", 90, "660x500", "full")">
+            <img alt="" src="@routes.Image.get(imageIds.head + ".jpg", 90, "660x500", "full")">
         }
+        </div>
         @if(imageIds.length > 0){
         <hr/>
         <div class="row">
