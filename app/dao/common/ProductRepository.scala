@@ -7,7 +7,7 @@ import models.BrandEntity
 import wt.common.image.ImageEntity
 
 trait ProductRepository {
-
+  def getAllNotInStockIds: Seq[Int]
 
   def delete(productId: Int)(cleanOtherResources: ImageEntity => Unit)
 

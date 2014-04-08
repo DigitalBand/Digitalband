@@ -226,5 +226,9 @@ class ProductRepository extends RepositoryBase with dao.common.ProductRepository
     sqlu"delete from products where id = ${productId}".execute
   }
 
-
+  override def getAllNotInStockIds: Seq[Int] = database withDynSession {
+    sql"""
+      select p.id from products p where p.id not in (select si.product_id from stock_items si where si.product_id = p.id)
+    """.as[Int].list
+  }
 }

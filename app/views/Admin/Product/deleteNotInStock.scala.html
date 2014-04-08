@@ -1,0 +1,23 @@
+@()(implicit user: Option[UserEntity], request: play.api.mvc.Request[Any])
+@scripts = {
+  <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.10/angular.js"></script>
+  <script src="@controllers.admin.routes.Product.javascriptRoutes()"></script>
+  <script src="@routes.Assets.at("javascripts/lodash.js")"></script>
+  <script src="@routes.Assets.at("javascripts/modules/product/product.js")"></script>
+  <script src="@routes.Assets.at("javascripts/modules/product/controllers/Product.js")"></script>
+}
+@views.html.Admin.main("Администрирование", "index", scripts = scripts) {
+  <div ng-app="productModule">
+    <div ng-controller="ProductController">
+      <div class="alert alert-danger">Всего товаров для удаления: {{items.length}}</div>
+
+      <div class="progress">
+        <div class="progress-bar" role="progressbar" aria-valuenow="{{progress}}" aria-valuemin="0" aria-valuemax="100" style="width: {{progress}}%;">
+          {{progress}}%
+        </div>
+      </div>
+
+      <button class="btn btn-primary" ng-click="vm.deleteAll(items)" ng-disabled="vm.isDeleting">Удалить</button>
+    </div>
+  </div>
+}

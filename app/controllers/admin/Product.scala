@@ -11,9 +11,10 @@ import models.{BrandEntity, ProductDetails}
 import wt.common.image.ImageHelper
 import helpers.Secured
 import wt.common.DataStore
-import play.api.Play
+import play.api.{Routes, Play}
 import java.nio.file.Paths
 import play.api.Play.current
+import com.codahale.jerkson.Json
 
 
 class Product @Inject()(implicit userRepository: UserRepository, brandRepository: BrandRepository, productRepository: ProductRepository, imageRepository: ImageRepository) extends ControllerBase with Secured {
@@ -30,6 +31,39 @@ class Product @Inject()(implicit userRepository: UserRepository, brandRepository
       "isAvailable" -> boolean
     )(ProductDetails.apply)(ProductDetails.unapply)
   )
+
+  def javascriptRoutes = withAdmin {
+    implicit user =>
+      implicit request =>
+        Ok(
+          Routes.javascriptRouter("jsRoutes")(
+            controllers.admin.routes.javascript.Product.listAllNotInStock,
+            controllers.admin.routes.javascript.Product.deleteById
+          )
+        ).as("text/javascript")
+  }
+
+  def deleteNotInStockForm() = withAdmin {
+    implicit user =>
+      implicit request =>
+        Ok(views.html.Admin.Product.deleteNotInStock())
+  }
+  def deleteById(id: Int) = withAdmin {
+    implicit user =>
+      implicit request =>
+        productRepository.delete(id) {
+          image =>
+            ImageHelper(dataStore).deleteImage(image.path)
+        }
+        Ok("")
+  }
+
+  def listAllNotInStock = withAdmin {
+    implicit user =>
+      implicit request =>
+        val ids = productRepository.getAllNotInStockIds
+        Ok(Json.generate(ids))
+  }
 
   def create(categoryId: Int, brandId: Int) = withAdmin {
     implicit user =>
