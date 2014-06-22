@@ -2,7 +2,7 @@ package controllers.admin
 
 import com.google.inject.Inject
 import controllers.common.ControllerBase
-import helpers.Secured
+import helpers.withAdmin
 import com.codahale.jerkson.Json
 import play.api.Routes
 import play.api.mvc.Action
@@ -12,7 +12,7 @@ import models.StockItemInfo
 class StockItem @Inject()(
                            implicit userRepository: dao.common.UserRepository,
                            stockItemRepository: dao.common.StockItemRepository,
-                           productRepository: dao.common.ProductRepository) extends ControllerBase with Secured {
+                           productRepository: dao.common.ProductRepository) extends ControllerBase {
   def edit(productId: Int) = withAdmin {
     implicit user =>
       implicit request =>

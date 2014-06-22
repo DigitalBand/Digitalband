@@ -1,15 +1,14 @@
 package controllers.admin
 
+import com.codahale.jerkson.Json
 import com.google.inject.Inject
 import controllers.common.ControllerBase
 import dao.common.{ShopRepository, UserRepository}
-import helpers.Secured
+import helpers.withAdmin
+import models.ShopInfo
 import play.api.Routes
-import play.api.mvc.Action
-import com.codahale.jerkson.Json
-import models.{ShopInfo, StockItemInfo}
 
-class Shop @Inject()(implicit userRepository: UserRepository, shopRepository: ShopRepository) extends ControllerBase with Secured {
+class Shop @Inject()(implicit userRepository: UserRepository, shopRepository: ShopRepository) extends ControllerBase {
   def main = withAdmin {
     implicit user =>
       implicit request =>

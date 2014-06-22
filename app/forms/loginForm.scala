@@ -11,12 +11,11 @@ object loginForm {
       tuple(
         "email" -> nonEmptyText,
         "password" -> nonEmptyText
-      ) verifying(Messages("validation.login.wronginfo"), result =>
-        result match {
-          case (email, password) =>
-            val user = userService.authenticate(email, password)
-            user.isDefined
-        })
+      ) verifying(Messages("validation.login.wronginfo"), (credentials) => {
+          val (email, password) = credentials
+          val user = userService.authenticate(email, password)
+          user.isDefined
+      })
     )
   }
 }
@@ -27,12 +26,11 @@ object registrationForm {
       tuple(
         "email" -> nonEmptyText,
         "password" -> nonEmptyText
-      ) verifying(Messages("validation.registration.emailexists"), result =>
-        result match {
-          case (email, password) =>
-            val user = userService.get(email)
-            !user.isDefined
-        })
+      ) verifying(Messages("validation.registration.emailexists"), (credentials) => {
+          val (email, password) = credentials
+          val user = userService.get(email)
+          !user.isDefined
+      })
     )
   }
 }

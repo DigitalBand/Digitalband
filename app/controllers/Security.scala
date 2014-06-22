@@ -1,22 +1,18 @@
 package controllers
 
 import com.google.inject.Inject
-import common.ControllerBase
-import play.api.mvc.Action
+import controllers.common.ControllerBase
 import dao.common.{CartRepository, UserRepository}
+import forms.{loginForm, registrationForm}
+import helpers.{EmailHelper, withUser}
+import play.api.Play.current
+import play.api.cache.Cache
 import play.api.data.Form
 import play.api.data.Forms._
 import play.api.i18n.Messages
-import forms.{registrationForm, loginForm}
-import play.api.cache.Cache
-import play.api.Play.current
-import helpers.{EmailHelper, Secured}
-import java.lang.ProcessBuilder
-import scala.concurrent.{ExecutionContext, Future}
-import ExecutionContext.Implicits.global
 
 
-class Security @Inject()(implicit ur: UserRepository, val cartRepository: CartRepository) extends ControllerBase with Secured {
+class Security @Inject()(implicit ur: UserRepository, val cartRepository: CartRepository) extends ControllerBase {
 
   val forgotPasswordForm = Form(
     "email" -> nonEmptyText.verifying(
@@ -32,7 +28,7 @@ class Security @Inject()(implicit ur: UserRepository, val cartRepository: CartRe
   //POST
   def signIn(redirectUrl: String) = withUser {
     implicit user =>
-      implicit request => Future {
+      implicit request =>
         loginForm().bindFromRequest.fold(
           formWithErrors => BadRequest(views.html.Security.login(formWithErrors, redirectUrl)),
           user => {
@@ -51,13 +47,12 @@ class Security @Inject()(implicit ur: UserRepository, val cartRepository: CartRe
             }
           }
         )
-      }
   }
 
   //POST
   def signUp(redirectUrl: String) = withUser {
     implicit user =>
-      implicit request => Future {
+      implicit request =>
         registrationForm().bindFromRequest.fold(
           formWithErrors => BadRequest(views.html.Security.registration(formWithErrors, redirectUrl)),
           user => {
@@ -79,50 +74,45 @@ class Security @Inject()(implicit ur: UserRepository, val cartRepository: CartRe
             }
           }
         )
-      }
   }
 
   //GET
   def signOff(redirectUrl: String) = withUser {
     implicit user =>
-      implicit request => Future {
+      implicit request =>
         if (redirectUrl.isEmpty)
           Redirect(routes.Application.index()).withNewSession
         else {
           Cache.remove(redirectUrl)
           Redirect(redirectUrl).withNewSession
         }
-      }
   }
 
   //GET
   def login(returnUrl: String) = withUser {
     implicit user =>
-      implicit request => Future {
+      implicit request =>
         Ok(views.html.Security.login(forms.loginForm(), returnUrl))
-      }
   }
 
   //GET
   def registration(redirectUrl: String) = withUser {
     implicit user =>
-      implicit request => Future {
+      implicit request =>
         Ok(views.html.Security.registration(registrationForm(), redirectUrl))
-      }
   }
 
   //GET
   def forgotPassword = withUser {
     implicit user =>
-      implicit request => Future {
+      implicit request =>
         Ok(views.html.Security.forgotpassword(forgotPasswordForm))
-      }
   }
 
   //POST
   def sendPassword = withUser {
     implicit user =>
-      implicit request => Future {
+      implicit request =>
         forgotPasswordForm.bindFromRequest.fold(
           withErrors => BadRequest(views.html.Security.forgotpassword(withErrors)),
           email => {
@@ -132,6 +122,5 @@ class Security @Inject()(implicit ur: UserRepository, val cartRepository: CartRe
             )
           }
         )
-      }
   }
 }

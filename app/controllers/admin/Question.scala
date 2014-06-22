@@ -3,7 +3,7 @@ package controllers.admin
 import com.google.inject.Inject
 import dao.common.{QuestionRepository, ProductRepository, UserRepository}
 import controllers.common.ControllerBase
-import helpers.{EmailHelper, Secured}
+import helpers.{withAdmin, EmailHelper}
 import play.api.data._
 import play.api.data.Forms._
 import play.api.libs.concurrent.Akka
@@ -12,7 +12,7 @@ import scala.concurrent.duration._
 import play.api.Play.current
 import play.api.Logger
 
-class Question @Inject()(implicit userRepository: UserRepository, productRepository: ProductRepository, questionRepository: QuestionRepository) extends ControllerBase with Secured {
+class Question @Inject()(implicit userRepository: UserRepository, productRepository: ProductRepository, questionRepository: QuestionRepository) extends ControllerBase {
   val commentForm = Form("comment" -> text)
   val emailHelper = new EmailHelper()
   def listWithAnswers(pageNumber: Int, pageSize: Int = 20) = withAdmin {

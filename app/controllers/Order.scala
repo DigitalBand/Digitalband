@@ -1,18 +1,14 @@
 package controllers
 
-import _root_.models.{OrderInfo, DeliveryInfo}
-import common.ControllerBase
-import play.api.mvc.{Action}
+import _root_.models.{DeliveryInfo, OrderInfo}
 import com.google.inject.Inject
-import dao.common.{UserRepository, CartRepository, OrderRepository}
-import play.api._
-import data.Form
-import data.Forms._
-import helpers.{Secured, EmailHelper}
-import scala.concurrent.{ExecutionContext, Future}
-import ExecutionContext.Implicits.global
+import controllers.common.ControllerBase
+import dao.common.{CartRepository, OrderRepository, UserRepository}
+import helpers.{EmailHelper, withUser}
+import play.api.data.Form
+import play.api.data.Forms._
 
-class Order @Inject()(implicit ur: UserRepository, orderRepository: OrderRepository, cartRepository: CartRepository) extends ControllerBase with Secured {
+class Order @Inject()(implicit ur: UserRepository, orderRepository: OrderRepository, cartRepository: CartRepository) extends ControllerBase {
   val deliveryForm = Form(mapping(
     "name" -> nonEmptyText(minLength = 2, maxLength = 50),
     "email" -> email,
@@ -23,7 +19,7 @@ class Order @Inject()(implicit ur: UserRepository, orderRepository: OrderReposit
 
   def fill = withUser {
     implicit user =>
-      implicit request => Future {
+      implicit request =>
         val itemsList = cartRepository.list(getUserId)
         if (!itemsList.isEmpty)
           Ok {
@@ -33,13 +29,12 @@ class Order @Inject()(implicit ur: UserRepository, orderRepository: OrderReposit
           }.withHeaders(CACHE_CONTROL -> "no-cache, max-age=0, must-revalidate, no-store")
         else
           Redirect(routes.Cart.display())
-      }
   }
 
   //TODO: rename to "create"
   def create = withUser {
     implicit user =>
-      implicit request => Future {
+      implicit request =>
         deliveryForm.bindFromRequest.fold(
           formWithErrors => {
             BadRequest(views.html.Order.fill(cartRepository.list(getUserId), formWithErrors))
@@ -51,20 +46,17 @@ class Order @Inject()(implicit ur: UserRepository, orderRepository: OrderReposit
             Redirect(routes.Order.confirmation(orderId))
           }
         )
-      }
   }
 
   def confirmation(orderId: Int) = withUser {
     implicit user =>
-      implicit request => Future {
+      implicit request =>
         Ok(views.html.Order.confirmation(orderRepository.getItems(orderId), orderId))
-      }
   }
 
   def display(orderId: Int) = withUser {
     implicit user =>
-      implicit request => Future {
+      implicit request =>
         NotImplemented
-      }
   }
 }

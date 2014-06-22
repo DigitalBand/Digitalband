@@ -1,26 +1,21 @@
 package controllers
 
 
-import common.ControllerBase
-import models._
-import play.api._
-import data.Form
-import data.Forms._
-import i18n.Messages
-import play.api.mvc._
-import play.api.Play.current
-import helpers.{Secured, ReCaptchaHelper, EmailHelper}
 import com.google.inject.Inject
+import controllers.common.ControllerBase
 import dao.common._
-import scala.concurrent.{ExecutionContext, Future}
-import ExecutionContext.Implicits.global
-import javax.management.remote.rmi._RMIConnection_Stub
+import helpers.{EmailHelper, ReCaptchaHelper, withUser}
+import models._
+import play.api.data.Form
+import play.api.data.Forms._
+import play.api.i18n.Messages
+import play.api.mvc._
 
 class Application @Inject()(implicit ur: UserRepository,
                             val shopRepository: ShopRepository,
                             val stockItemRepository: StockItemRepository,
                             val categoryRepository: CategoryRepository,
-                            val productRepository: ProductRepository) extends ControllerBase with Secured {
+                            val productRepository: ProductRepository) extends ControllerBase {
   val oneDayDuration = 86400
   val emailHelper = new EmailHelper()
 
@@ -46,42 +41,38 @@ class Application @Inject()(implicit ur: UserRepository,
   def index = /*Cached("homePage", oneDayDuration)*/ {
     withUser {
       implicit user =>
-        implicit request => Future {
+        implicit request =>
           val categories: Seq[CategoryEntity] = categoryRepository.listWithPictures
           val products: Seq[ProductDetails] = productRepository.listMostVisited(12)
           Ok(views.html.index(categories, products))
-        }
     }
   }
 
   def about = withUser {
     implicit user =>
-      implicit request => Future {
+      implicit request =>
         Ok(views.html.Application.about())
-      }
   }
 
   def contacts = withUser {
     implicit user =>
-      implicit request => Future {
+      implicit request =>
         val recaptcha = ReCaptchaHelper.get("6LfMQdYSAAAAAJCe85Y6CRp9Ww7n-l3HOBf5bifB")
 
         Ok(views.html.Application.contacts(contactsForm, recaptcha, shopRepository.list))
-      }
   }
 
   def stock(productId: Int) = withUser {
     implicit user =>
-      implicit request => Future {
+      implicit request =>
         val product = productRepository.get(productId)
         val shopList = stockItemRepository.shopList(productId)
         Ok(views.html.Application.stock(product, shopList))
-      }
   }
 
   def sendFeedback = withUser {
     implicit user =>
-      implicit request => Future {
+      implicit request =>
         contactsForm.bindFromRequest.fold(
           formWithErrors => BadRequest(
             views.html.Application.contacts(formWithErrors,
@@ -94,7 +85,6 @@ class Application @Inject()(implicit ur: UserRepository,
             )
           }
         )
-      }
   }
 
 

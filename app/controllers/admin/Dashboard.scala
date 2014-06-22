@@ -3,11 +3,11 @@ package controllers.admin
 import com.google.inject.Inject
 import dao.common.{QuestionRepository, ProductRepository, OrderRepository, UserRepository}
 import controllers.common.ControllerBase
-import helpers.Secured
+import helpers.withAdmin
 import play.api.libs.json.Json
 import play.api.i18n.Messages
 
-class Dashboard @Inject()(implicit userRepository: UserRepository, orderRepository: OrderRepository, productRepository: ProductRepository, questionRepository: QuestionRepository) extends ControllerBase with Secured {
+class Dashboard @Inject()(implicit userRepository: UserRepository, orderRepository: OrderRepository, productRepository: ProductRepository, questionRepository: QuestionRepository) extends ControllerBase {
   def index = withAdmin {
     implicit user =>
       implicit request =>

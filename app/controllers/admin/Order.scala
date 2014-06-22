@@ -1,17 +1,15 @@
 package controllers.admin
 
 import com.google.inject.Inject
-import dao.common.{OrderRepository, UserRepository}
 import controllers.common.ControllerBase
-import play.api.mvc.Action
+import dao.common.{OrderRepository, UserRepository}
+import helpers.{EmailHelper, withAdmin}
 import models.ListPage
+import play.api.data.Forms._
+import play.api.data._
 import views.html.Admin.Order
 
-import play.api.data._
-import play.api.data.Forms._
-import helpers.{Secured, EmailHelper}
-
-class Order @Inject()(implicit userRepository: UserRepository, orderRepository: OrderRepository) extends ControllerBase with Secured {
+class Order @Inject()(implicit userRepository: UserRepository, orderRepository: OrderRepository) extends ControllerBase {
   val orderStatusForm = Form("comment" -> text)
   val emailHelper = new EmailHelper()
 

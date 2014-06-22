@@ -9,7 +9,7 @@ import play.api.data.Forms._
 import play.api.data.format.Formats._
 import models.{BrandEntity, ProductDetails}
 import wt.common.image.ImageHelper
-import helpers.Secured
+import helpers.withAdmin
 import wt.common.DataStore
 import play.api.{Routes, Play}
 import java.nio.file.Paths
@@ -17,7 +17,7 @@ import play.api.Play.current
 import com.codahale.jerkson.Json
 
 
-class Product @Inject()(implicit userRepository: UserRepository, brandRepository: BrandRepository, productRepository: ProductRepository, imageRepository: ImageRepository) extends ControllerBase with Secured {
+class Product @Inject()(implicit userRepository: UserRepository, brandRepository: BrandRepository, productRepository: ProductRepository, imageRepository: ImageRepository) extends ControllerBase {
   lazy val dataStore = new DataStore(Paths.get(System.getProperty("user.home"), Play.application.configuration.getString("data.root").get).toString)
   val productForm = Form(
     mapping(

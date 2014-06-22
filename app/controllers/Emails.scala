@@ -1,12 +1,11 @@
 package controllers
 
 import com.google.inject.Inject
-import common.ControllerBase
+import controllers.common.ControllerBase
 import dao.common.{OrderRepository, UserRepository}
-import play.api.mvc.Action
-import helpers.Secured
+import helpers.withAdmin
 
-class Emails @Inject()(implicit ur: UserRepository, orderRepository: OrderRepository) extends ControllerBase with Secured {
+class Emails @Inject()(implicit ur: UserRepository, orderRepository: OrderRepository) extends ControllerBase {
   def orderConfirmation(orderId: Int) = withAdmin { implicit user =>
       implicit request =>
         Ok(views.html.emails.plain.order.confirmation(orderRepository.get(orderId)))

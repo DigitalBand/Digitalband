@@ -11,6 +11,7 @@ version := "1.0-SNAPSHOT"
 
 resolvers += Resolver.file("Local repo", file(Paths.get(System.getProperty("user.home"), ".ivy2", "local").toString))(Resolver.ivyStylePatterns)
 
+
 libraryDependencies ++= Seq(
   jdbc,
   cache,
@@ -27,6 +28,6 @@ libraryDependencies ++= Seq(
   "com.yuvimasory" % "jerkson_2.10" % "0.6.1"
 )
 
-def customLessEntryPoints(base: File): PathFinder = (base / "app" / "assets" / "stylesheets" ** "main.less")
+def customLessEntryPoints(base: File): PathFinder = base / "app" / "assets" / "stylesheets" ** "main.less"
 
 lessEntryPoints <<= baseDirectory(customLessEntryPoints)
