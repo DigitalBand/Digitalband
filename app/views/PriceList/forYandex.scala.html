@@ -5,12 +5,12 @@
   <shop>
     <name>@yandexShopInfo.name</name>
     <company>@yandexShopInfo.company</company>
+    <url>@yandexShopInfo.url</url>
     <currencies>
       <currency id="RUR" rate="1"/>
       <currency id="USD" rate="CBRF" plus="3"/>
       <currency id="EUR" rate="CBRF" plus="3"/>
     </currencies>
-    <url>@yandexShopInfo.url</url>
     <categories>
       @categories.map { category =>
       <category id="@category.id" parentId="@category.parentId">@category.title</category>}
