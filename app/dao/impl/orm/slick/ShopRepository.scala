@@ -5,7 +5,7 @@ import Database.dynamicSession
 import slick.jdbc.{StaticQuery => Q, GetResult}
 import Q.interpolation
 import helpers.PhoneHelper.parsePhones
-import models.ShopInfo
+import models.{YandexShopInfo, ShopInfo}
 import dao.impl.orm.slick.common.RepositoryBase
 
 class ShopRepository extends RepositoryBase with dao.common.ShopRepository {
@@ -65,5 +65,19 @@ class ShopRepository extends RepositoryBase with dao.common.ShopRepository {
     sqlu"""
       delete from shops where id = ${shopId};
     """.execute
+  }
+
+  //TODO: Implement with DB data
+  def getYandexShopInfo = database withDynSession {
+    implicit val getYandexShopInfoResults = GetResult(r => YandexShopInfo(r.<<, r.<<, r.<<))
+    sql"""
+        select
+          title,
+          company,
+          url
+        from yandex_shop_info
+        where
+          shop_id = 1;
+    """.as[YandexShopInfo].first
   }
 }

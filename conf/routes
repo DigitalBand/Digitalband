@@ -73,7 +73,8 @@ GET           /order                                               @controllers.
 POST          /order/place                                         @controllers.Order.create
 GET           /order/:orderId/display                              @controllers.Order.display(orderId: Int)
 GET           /order/:orderId/confirmation                         @controllers.Order.confirmation(orderId: Int)
-
+# PriceList
+GET           /prices.xml                                          @controllers.PriceList.forYandex
 # Emails
 GET           /email/orderConfirmation/:orderId                    @controllers.Emails.orderConfirmation(orderId: Int)
 GET           /admin/email/orderConfirmation/:orderId              @controllers.Emails.orderAdminConfirmation(orderId: Int)

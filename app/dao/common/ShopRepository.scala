@@ -1,8 +1,10 @@
 package dao.common
 
-import models.ShopInfo
+import models.{YandexShopInfo, ShopInfo}
 
 trait ShopRepository {
+  def getYandexShopInfo: YandexShopInfo
+
   def remove(shopId: Int)
   def add(shop: ShopInfo): Int
   def update(shop: ShopInfo)

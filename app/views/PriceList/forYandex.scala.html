@@ -1,0 +1,24 @@
+@(products: Seq[ProductDetails], yandexShopInfo: YandexShopInfo, productUrl: Int => String, pictureUrl: Int => String)
+<?xml version='1.0' encoding='UTF-8'?>
+<!DOCTYPE yml_catalog SYSTEM "shops.dtd">
+<yml_catalog>
+  <shop>
+    <name>@yandexShopInfo.name</name>
+    <company>@yandexShopInfo.company</company>
+    <url>@yandexShopInfo.url</url>
+    <categories></categories>
+    <offers>
+    @products.map { product =>  <offer id="@product.id" available="@product.isAvailable" type="vendor.model">
+        <url>@productUrl(product.id)</url>
+        <picture>@pictureUrl(product.defaultImageId)</picture>
+        <price>@product.price</price>
+        <currencyId>RUR</currencyId>
+        <name>@product.title</name>
+        <categoryId>@product.category.id</categoryId>
+        <vendor>@product.brand.title</vendor>
+        <model>@product.title</model>
+        <description>@product.description</description>
+      </offer>}
+    </offers>
+  </shop>
+</yml_catalog>
