@@ -14,7 +14,7 @@
     @products.map { product =>
       <offer id="@product.id" available="@product.isAvailable" type="vendor.model">
         <url>@{yandexShopInfo.url+productUrl(product.id)}</url>
-        <picture>@{yandexShopInfo.url + pictureUrl(product.defaultImageId)}</picture>
+
         <price>@product.price</price>
         <currencyId>RUR</currencyId>
         <name>@product.title</name>
