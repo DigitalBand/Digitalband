@@ -86,4 +86,15 @@ class CategoryRepository extends RepositoryBase with dao.common.CategoryReposito
       """.as[(Int, String)].list
     }
   }
+
+  def listAll = database withDynSession {
+    implicit val getCategoryResult = GetResult(r => CategoryEntity(id = r.<<, title = r.<<, parentId = r.<<))
+    sql"""
+      select
+        c.category_id,
+        c.title,
+        c.parent_category_id
+      from categories c
+    """.as[CategoryEntity].list
+  }
 }

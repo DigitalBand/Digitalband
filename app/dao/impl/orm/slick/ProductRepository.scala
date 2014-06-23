@@ -62,9 +62,9 @@ class ProductRepository extends RepositoryBase with dao.common.ProductRepository
         (cat.left_value >= ${category.leftValue}) and
         (cat.right_value <= ${category.rightValue}) and
         ((${brandId} = 0) or (prod.brand_id = ${brandId})) and
-        ((${search} = '') or (prod.title like ${'%'+search+'%'})) and
+        ((${search} = '') or (prod.title like ${'%' + search + '%'})) and
         ((${inStock} = FALSE) or (prod.is_available = ${inStock}))
-      limit ${(pageNumber - 1)*pageSize}, ${pageSize}
+      limit ${(pageNumber - 1) * pageSize}, ${pageSize}
     """.as[ProductDetails].list
     val countQuery = sql"""
       select
@@ -80,7 +80,7 @@ class ProductRepository extends RepositoryBase with dao.common.ProductRepository
         (cat.left_value >= ${category.leftValue}) and
         (cat.right_value <= ${category.rightValue}) and
         ((${brandId} = 0) or (prod.brand_id = ${brandId})) and
-        ((${search} = '') or (prod.title like ${'%'+search+'%'})) and
+        ((${search} = '') or (prod.title like ${'%' + search + '%'})) and
         ((${inStock} = FALSE) or (prod.is_available = ${inStock}))
     """
 
@@ -230,5 +230,35 @@ class ProductRepository extends RepositoryBase with dao.common.ProductRepository
     sql"""
       select p.id from products p where p.id not in (select si.product_id from stock_items si where si.product_id = p.id)
     """.as[Int].list
+  }
+
+  def listAll = database.withDynSession {
+    implicit val getProductDetailsResult = GetResult(r => ProductDetails(
+      id = r.<<,
+      title = r.<<,
+      description = r.<<,
+      shortDescription = r.<<,
+      price = r.<<,
+      brandName = r.<<,
+      categoryId = r.<<,
+      isAvailable = r.<<,
+      defaultImageId = r.<<
+    ))
+    sql"""
+      select
+        p.id,
+        p.title,
+        p.description,
+        p.short_description,
+        p.price,
+        b.title,
+        pc.category_id,
+        p.is_available,
+        p.default_image_id
+      from
+        products p
+      inner join brands b on p.brand_id = b.id
+      inner join products_categories pc on pc.product_id = p.id
+    """.as[ProductDetails].list
   }
 }

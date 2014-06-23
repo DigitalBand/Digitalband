@@ -69,4 +69,6 @@ class ProductRepository extends dao.common.ProductRepository {
   def getUnansweredQuestions() = ???
 
   override def getAllNotInStockIds: Seq[Int] = ???
+
+  def listAll = ???
 }

@@ -1,23 +1,29 @@
-@(products: Seq[ProductDetails], yandexShopInfo: YandexShopInfo, productUrl: Int => String, pictureUrl: Int => String)
-<?xml version='1.0' encoding='UTF-8'?>
+@(products: Seq[ProductDetails], categories: Seq[CategoryEntity], yandexShopInfo: YandexShopInfo, productUrl: Int => String, pictureUrl: Int => String)
+<?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE yml_catalog SYSTEM "shops.dtd">
 <yml_catalog>
   <shop>
     <name>@yandexShopInfo.name</name>
     <company>@yandexShopInfo.company</company>
     <url>@yandexShopInfo.url</url>
-    <categories></categories>
+    <categories>
+      @categories.map { category =>
+      <category id="@category.id" parentId="@category.parentId">@category.title</category>}
+    </categories>
     <offers>
-    @products.map { product =>  <offer id="@product.id" available="@product.isAvailable" type="vendor.model">
-        <url>@productUrl(product.id)</url>
-        <picture>@pictureUrl(product.defaultImageId)</picture>
+    @products.map { product =>
+      <offer id="@product.id" available="@product.isAvailable" type="vendor.model">
+        <url>@{yandexShopInfo.url+productUrl(product.id)}</url>
+        <picture>@{yandexShopInfo.url + pictureUrl(product.defaultImageId)}</picture>
         <price>@product.price</price>
         <currencyId>RUR</currencyId>
         <name>@product.title</name>
         <categoryId>@product.category.id</categoryId>
         <vendor>@product.brand.title</vendor>
-        <model>@product.title</model>
-        <description>@product.description</description>
+        <model>@product.title.replace(product.brand.title, "").trim</model>
+        <delivery>true</delivery>
+        <local_delivery_cost>300</local_delivery_cost>
+        <description>@product.shortDescription</description>
       </offer>}
     </offers>
   </shop>

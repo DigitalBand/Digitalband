@@ -3,6 +3,8 @@ package dao.common
 import models.{CategoryListItem, CategoryEntity}
 
 trait CategoryRepository {
+  def listAll: Seq[CategoryEntity]
+
   def getBreadcrumbs(categoryId: Int, productId: Int, search: String): Seq[(Int, String)]
 
   def listWithPictures: Seq[CategoryEntity]
