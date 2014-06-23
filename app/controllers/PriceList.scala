@@ -24,7 +24,7 @@ class PriceList @Inject()(implicit userRepository: UserRepository, shopRepositor
         routes.Product.display(id).url
       },
       (id) => {
-        routes.Image.get(id.toString + ".jpg", 90, "60x60", "full").url
+        routes.Image.get(id.toString + ".jpg", 90, "150x150", "full").url
       }
     ).toString
 
