@@ -1,7 +1,7 @@
-@(products: Seq[ProductDetails], categories: Seq[CategoryEntity], yandexShopInfo: YandexShopInfo, productUrl: Int => String, pictureUrl: Int => String)
+@(products: Seq[ProductDetails], categories: Seq[CategoryEntity], date: String, yandexShopInfo: YandexShopInfo, productUrl: Int => String, pictureUrl: Int => String)
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE yml_catalog SYSTEM "shops.dtd">
-<yml_catalog>
+<yml_catalog date="@date">
   <shop>
     <name>@yandexShopInfo.name</name>
     <company>@yandexShopInfo.company</company>
