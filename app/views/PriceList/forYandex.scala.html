@@ -14,15 +14,16 @@
     @products.map { product =>
       <offer id="@product.id" available="@product.isAvailable" type="vendor.model">
         <url>@{yandexShopInfo.url+productUrl(product.id)}</url>
-
         <price>@product.price</price>
         <currencyId>RUR</currencyId>
-        <name>@product.title</name>
         <categoryId>@product.category.id</categoryId>
-        <vendor>@product.brand.title</vendor>
-        <model>@product.title.replace(product.brand.title, "").trim</model>
+        <picture>@{yandexShopInfo.url + pictureUrl(product.defaultImageId)}</picture>
+        <store>false</store>
+        <pickup>true</pickup>
         <delivery>true</delivery>
         <local_delivery_cost>300</local_delivery_cost>
+        <vendor>@product.brand.title</vendor>
+        <model>@product.title.replace(product.brand.title, "").trim</model>
         <description>@product.shortDescription</description>
       </offer>}
     </offers>
