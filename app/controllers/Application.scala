@@ -54,6 +54,10 @@ class Application @Inject()(implicit ur: UserRepository,
         Ok(views.html.Application.about())
   }
 
+  def delivery = withUser {
+    implicit user => implicit request =>
+      Ok(views.html.Application.delivery())
+  }
   def contacts = withUser {
     implicit user =>
       implicit request =>

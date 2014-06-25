@@ -54,7 +54,7 @@ GET           /about                                               @controllers.
 GET           /contacts                                            @controllers.Application.contacts
 POST          /sendFeedback                                        @controllers.Application.sendFeedback
 GET           /stock/:productId                                    @controllers.Application.stock(productId: Int)
-
+GET           /delivery                                            @controllers.Application.delivery
 # Product
 GET           /category/list                                       @controllers.Product.list
 GET           /category/:categoryId/products/:pageNumber           @controllers.Product.filteredList(categoryId:Int, pageNumber:Int, brandId:Int ?= 0, brandPage:Int ?= 1, productId:Int ?= 0, pageSize:Int ?= 10, s:String ?= "", is: Int ?= 0)

@@ -35,17 +35,12 @@
               <span class="icon-bar"></span>
               <span class="icon-bar"></span>
             </button>
+            <a class="navbar-brand" href="@routes.Application.index">&nbsp;</a>
           </div>
 
           <div class="collapse navbar-collapse navbar-ex1-collapse">
             <ul class="nav navbar-nav">
-              <li class="@{
-                if(menuItem.equals("index")) "active" else ""
-              }">
-                <a href="@routes.Application.index">
-                  <i class="icon-home"></i>
-                </a>
-              </li>
+
               <li class="@{
                 if(menuItem.equals("catalogue")) "active" else ""
               }">
@@ -103,8 +98,12 @@
       <section class="footerlinks">
         <div class="container">
           <ul class="nav">
-
-            <a href="@routes.Application.contacts"> @Messages("main.footer.nav.contact") </a>
+            <li>
+            <a href="@routes.Application.contacts"><i class="icon icon-info"></i>&nbsp;@Messages("main.footer.nav.contact") </a>
+            </li>
+            <li>
+              <a href="@routes.Application.delivery"><i class="icon icon-truck"></i>&nbsp;Доставка и оплата</a>
+            </li>
           </ul>
         </div>
       </section>
