@@ -1,9 +1,11 @@
 package controllers
 
+import java.time.ZoneId
+
 import com.google.inject.Inject
 import controllers.common.ControllerBase
 import dao.common.{CategoryRepository, ProductRepository, ShopRepository, UserRepository}
-import org.joda.time.DateTime
+import org.joda.time.{DateTimeZone, DateTime}
 import org.joda.time.format.DateTimeFormat
 import play.api.mvc.Action
 
@@ -18,7 +20,7 @@ class PriceList @Inject()(implicit userRepository: UserRepository, shopRepositor
     val yandex = views.html.PriceList.forYandex(
       products,
       categories,
-      fmt.print(DateTime.now()),
+      fmt.print(DateTime.now().withZone(DateTimeZone.forID("Europe/Moscow"))),
       yandexShopInfo,
       (id) => {
         routes.Product.display(id).url
