@@ -16,7 +16,7 @@ class PriceList @Inject()(implicit userRepository: UserRepository, shopRepositor
     val categories = categoryRepository.listAll
     val fmt = DateTimeFormat.forPattern("YYYY-MM-dd HH:mm")
     val getUrl: Int => String = { id => routes.Product.display(id).url}
-    val getPictureUrl: Int => String = { id => routes.Image.get(id.toString + ".jpg", 90, "300x300", "full").url}
+    val getPictureUrl: Int => String = { id => routes.Image.get(id.toString + ".jpg", 90, "150x150", "full").url}
     val yandex = views.html.PriceList.forYandex(
       products,
       categories,
