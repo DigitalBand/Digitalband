@@ -10,7 +10,7 @@ import Q.interpolation
 import models.{ListPage, CategoryEntity, BrandEntity}
 
 class BrandRepository extends RepositoryBase with dao.common.BrandRepository {
-  implicit val getBrandEntityResult = GetResult(r => new BrandEntity(r.<<, r.<<, r.<<, r.<<))
+  implicit val getBrandEntityResult = GetResult(r => new BrandEntity(r.<<, r.<<, r.<<, r.nextIntOption().getOrElse(0)))
 
   def get(id: Int): Option[BrandEntity] = {
     database withDynSession  {
@@ -23,7 +23,7 @@ class BrandRepository extends RepositoryBase with dao.common.BrandRepository {
           bi.image_id
         from
           brands b
-        inner join brand_images bi on bi.brand_id = b.id
+        left join brand_images bi on bi.brand_id = b.id
         where
           b.id = ${id};
       """.as[BrandEntity].firstOption
