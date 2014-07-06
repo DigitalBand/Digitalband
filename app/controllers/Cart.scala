@@ -27,7 +27,7 @@ class Cart @Inject()(implicit ur: UserRepository, val cartRepository: CartReposi
         val userId = getUserId
         cartRepository.add(new CartItem(userId, cItem.productId, cItem.count))
         Redirect(routes.Cart.display(cItem.returnUrl)) withSession
-          session + ("userid" -> userId.toString)
+          request.session + ("userid" -> userId.toString)
   }
 
   def display(returnUrl: String) = withUser {

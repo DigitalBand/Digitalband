@@ -1,20 +1,21 @@
-import sbt._
-import Keys._
 import java.nio.file.Paths
-import play.Project._
-
-playScalaSettings
 
 name := "digitalband"
 
 version := "1.0-SNAPSHOT"
+
+lazy val root = (project in file(".")).enablePlugins(PlayScala)
+
+scalaVersion := "2.10.4"
 
 resolvers += Resolver.file("Local repo", file(Paths.get(System.getProperty("user.home"), ".ivy2", "local").toString))(Resolver.ivyStylePatterns)
 
 
 libraryDependencies ++= Seq(
   jdbc,
+  anorm,
   cache,
+  ws,
   "com.typesafe.slick" %% "slick" % "2.0.1",
   "mysql" % "mysql-connector-java" % "5.1.25",
   "org.jsoup" % "jsoup" % "1.7.2",
@@ -28,6 +29,4 @@ libraryDependencies ++= Seq(
   "com.yuvimasory" % "jerkson_2.10" % "0.6.1"
 )
 
-def customLessEntryPoints(base: File): PathFinder = base / "app" / "assets" / "stylesheets" ** "main.less"
-
-lessEntryPoints <<= baseDirectory(customLessEntryPoints)
+includeFilter in (Assets, LessKeys.less) := "main.less"

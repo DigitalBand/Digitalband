@@ -1,11 +1,11 @@
 package webServices
-
-import common.ImageSearch
 import models.{ImageSearchItem, ListPage}
-import play.api.libs.ws.WS
-import play.api.libs.json.JsArray
-import concurrent.Future
 import play.api.libs.concurrent.Execution.Implicits._
+import play.api.libs.json.JsArray
+import play.api.libs.ws.WS
+import webServices.common.ImageSearch
+import play.api.Play.current
+import scala.concurrent.Future
 
 class GoogleImageSearch extends ImageSearch {
   def getList[S](search: String, pageNumber: Int)(f: ListPage[ImageSearchItem] => S): Future[S] = {
