@@ -116,7 +116,7 @@ class Product @Inject()(implicit ur: UserRepository, productRepository: ProductR
 
   //}
 
-  //TODO: Make async
+
   def display(id: Int, categoryId: Int, brandId: Int, brandPage: Int, pageNumber: Int, search: String, inStock: Int = 0)(implicit request: Request[AnyContent], user: Option[UserEntity]) = {
     val product = productRepository.get(id, brandRepository.get)
 

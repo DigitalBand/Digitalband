@@ -16,17 +16,17 @@ class Image @Inject()(val imageRepository: ImageRepository) extends Controller {
   lazy val dataStore = new DataStore(Paths.get(System.getProperty("user.home"), Play.application.configuration.getString("data.root").get).toString)
   val imageCacher = ImageCacher(dataStore, None)
   val imageHelper = ImageHelper(dataStore)
-  val imageResizer = ImageResizer(None)
 
   def get(imageNumber: String, quality: Int, imageSize: String, fill: String) = Action {
     import imageCacher._
     import imageHelper._
     val imageId = _getImageId(imageNumber)
-    cachedImage(getSourceFile(imageId), imageId, getDimension(imageSize), checkQuality(quality), isCropped(fill)) {
-      imageData =>
-        Ok(imageData)
+    cachedImage(getSourceFile(imageId), imageId, getDimension(imageSize), checkQuality(quality), isCropped(fill), preserveAlpha = false) {
+      file =>
+        Ok.sendFile(file)
+        //Ok(imageData)
     }.withHeaders(
-        CONTENT_TYPE -> "image/jpg",
+        CONTENT_TYPE -> "image/jpeg",
         CONTENT_DISPOSITION -> "inline",
         CACHE_CONTROL -> "public, max-age=86400"
       )
