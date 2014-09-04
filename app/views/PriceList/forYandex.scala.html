@@ -1,11 +1,11 @@
-@(products: Seq[ProductDetails], categories: Seq[CategoryEntity], date: String, yandexShopInfo: YandexShopInfo, productUrl: Int => String, pictureUrl: Int => String)
+@(products: Seq[ProductDetails], categories: Seq[CategoryEntity], date: String, yandexShopInfo: YandexShopInfo, productUrl: Int => String, pictureUrl: Int => String, host: String)
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE yml_catalog SYSTEM "shops.dtd">
 <yml_catalog date="@date">
   <shop>
     <name>@yandexShopInfo.name</name>
     <company>@yandexShopInfo.company</company>
-    <url>@yandexShopInfo.url</url>
+    <url>http://@host</url>
     <currencies>
       <currency id="RUR" rate="1"/>
       <currency id="USD" rate="CBRF" plus="3"/>
@@ -18,11 +18,11 @@
     <offers>
     @products.map { product =>
       <offer id="@product.id" available="@product.isAvailable" type="vendor.model">
-        <url>@{yandexShopInfo.url+productUrl(product.id)}</url>
+        <url>http://@{host+productUrl(product.id)}</url>
         <price>@product.price</price>
         <currencyId>RUR</currencyId>
         <categoryId>@product.category.id</categoryId>
-        <picture>@{yandexShopInfo.url + pictureUrl(product.defaultImageId)}</picture>
+        <picture>http://@{host + pictureUrl(product.defaultImageId)}</picture>
         <store>false</store>
         <pickup>true</pickup>
         <delivery>true</delivery>
