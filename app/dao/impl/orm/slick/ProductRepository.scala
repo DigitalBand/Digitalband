@@ -259,6 +259,7 @@ class ProductRepository extends RepositoryBase with dao.common.ProductRepository
         products p
       inner join brands b on p.brand_id = b.id
       inner join products_categories pc on pc.product_id = p.id
+      where archived = false;
     """.as[ProductDetails].list
   }
 }
