@@ -39,7 +39,7 @@ class ProductRepository extends RepositoryBase with dao.common.ProductRepository
     """.as[Int].first
   }
 
-  def getList(getCategory: => CategoryEntity, brandId: Int, pageNumber: Int, pageSize: Int, search: String, inStock: Boolean): ListPage[ProductDetails] = database withDynSession {
+  def getList(getCategory: => CategoryEntity, brandId: Int, pageNumber: Int, pageSize: Int, search: String, inStock: Boolean, domain: String = "digitalband.ru"): ListPage[ProductDetails] = database withDynSession {
     implicit val getProducts = GetResult(
       r => new ProductDetails(r.nextString, r.nextString, r.nextDouble, r.nextInt, r.nextInt, r.nextBoolean))
     val category = getCategory
@@ -63,7 +63,14 @@ class ProductRepository extends RepositoryBase with dao.common.ProductRepository
         (cat.right_value <= ${category.rightValue}) and
         ((${brandId} = 0) or (prod.brand_id = ${brandId})) and
         ((${search} = '') or (prod.title like ${'%' + search + '%'})) and
-        ((${inStock} = FALSE) or (prod.is_available = ${inStock}))
+        ((${inStock} = FALSE) or (prod.is_available = ${inStock})) and
+        ((${inStock} = FALSE) or ((
+                                    select sum(quantity) from stock_items si
+                                    left join shops s on s.id = si.shop_id
+                                    left join cities c on c.id = s.city_id
+                                    where
+                                      product_id = prod.id and c.domain = ${domain}
+                                  ) > 0))
       limit ${(pageNumber - 1) * pageSize}, ${pageSize}
     """.as[ProductDetails].list
     val countQuery = sql"""

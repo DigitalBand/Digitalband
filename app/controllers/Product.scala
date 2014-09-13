@@ -77,7 +77,8 @@ class Product @Inject()(implicit ur: UserRepository, productRepository: ProductR
           if (productId > 0)
             display(productId, categoryId, brandId, brandPage, pageNumber, search, isAvailable)
           else {
-            val products = productRepository.getList(categoryRepository.get(categoryId), brandId, pageNumber, pageSize, search, inStock)
+            val host = if (request.host.contains("localhost")) "digitalband.ru" else request.host
+            val products = productRepository.getList(categoryRepository.get(categoryId), brandId, pageNumber, pageSize, search, inStock, host)
             if (categoryId == 1 && !search.isEmpty && products.totalCount == 1)
               Redirect(routes.Product.display(products.items.head.id))
             else {
