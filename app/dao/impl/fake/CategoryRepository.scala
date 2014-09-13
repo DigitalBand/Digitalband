@@ -13,4 +13,6 @@ class CategoryRepository extends dao.common.CategoryRepository {
   def getBreadcrumbs(categoryId: Int, productId: Int, search:String): Seq[(Int, String)] = ???
 
   def listAll = ???
+
+  def list(categoryId: Int, brandId: Int, search: String, inStock: Boolean, domain: String) = ???
 }

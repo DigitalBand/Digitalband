@@ -17,7 +17,7 @@ class Product @Inject()(implicit ur: UserRepository, productRepository: ProductR
                         questionRepository: QuestionRepository) extends ControllerBase {
   val emailHelper = new EmailHelper()
   def availabilityForm = Form("email" -> nonEmptyText)
-
+  def host(implicit request: Request[AnyContent]) = if (request.host.contains("localhost")) "digitalband.ru" else request.host
   def list = filteredList(1)
 
   def availability(id: Int, returnUrl: String) = withUser {
@@ -77,7 +77,7 @@ class Product @Inject()(implicit ur: UserRepository, productRepository: ProductR
           if (productId > 0)
             display(productId, categoryId, brandId, brandPage, pageNumber, search, isAvailable)
           else {
-            val host = if (request.host.contains("localhost")) "digitalband.ru" else request.host
+
             val products = productRepository.getList(categoryRepository.get(categoryId), brandId, pageNumber, pageSize, search, inStock, host)
             if (categoryId == 1 && !search.isEmpty && products.totalCount == 1)
               Redirect(routes.Product.display(products.items.head.id))
@@ -90,8 +90,8 @@ class Product @Inject()(implicit ur: UserRepository, productRepository: ProductR
               Ok(views.html.Product.list(
                 products,
                 category,
-                categoryRepository.list(categoryId, brandId, search, inStock),
-                brandRepository.list(categoryRepository.get(categoryId), brandPage, pageSize = 24, search, inStock),
+                categoryRepository.list(categoryId, brandId, search, inStock, host),
+                brandRepository.list(categoryRepository.get(categoryId), brandPage, pageSize = 24, search, inStock, host),
                 brand,
                 pageNumber,
                 pageSize,
@@ -124,8 +124,8 @@ class Product @Inject()(implicit ur: UserRepository, productRepository: ProductR
     Ok(views.html.Product.display(
       product,
       imageRepository.listByProductId(id),
-      categoryRepository.list(categoryId, brandId, search, inStock == 1),
-      brandRepository.list(categoryRepository.get(categoryId), brandPage, pageSize = 24, search, inStock == 1),
+      categoryRepository.list(categoryId, brandId, search, inStock == 1, host),
+      brandRepository.list(categoryRepository.get(categoryId), brandPage, pageSize = 24, search, inStock == 1, host),
       categoryId, brandId,
       categoryRepository.getBreadcrumbs(categoryId, id, ""), pageNumber, search, isAdmin(user), inStock))
   }

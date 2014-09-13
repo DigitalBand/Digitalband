@@ -71,4 +71,8 @@ class ProductRepository extends dao.common.ProductRepository {
   override def getAllNotInStockIds: Seq[Int] = ???
 
   def listAll = ???
+
+  def listMostVisited(count: Int, domain: String) = ???
+
+  def listAll(domain: String) = ???
 }

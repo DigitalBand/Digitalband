@@ -41,7 +41,7 @@ class CategoryRepository extends RepositoryBase with dao.common.CategoryReposito
 
   }
 
-  def list(categoryId: Int, brandId: Int, search: String, inStock: Boolean): Seq[CategoryListItem] = database withDynSession {
+  def list(categoryId: Int, brandId: Int, search: String, inStock: Boolean, domain: String = "digitalband.ru"): Seq[CategoryListItem] = database withDynSession {
     implicit val getres = GetResult(r => CategoryListItem(r.<<, r.<<, r.<<))
     sql"""
       select
@@ -62,7 +62,13 @@ class CategoryRepository extends RepositoryBase with dao.common.CategoryReposito
             (cat.right_value <= scat.right_value) and
             ((${brandId} = 0) or (prod.brand_id = ${brandId})) and
             ((${search} = '') or (prod.title like ${'%' + search + '%'})) and
-            ((${inStock} = FALSE) or (prod.is_available = ${inStock}))
+            ((${inStock} = FALSE) or ((
+                                    select sum(quantity) from stock_items si
+                                    left join shops s on s.id = si.shop_id
+                                    left join cities c on c.id = s.city_id
+                                    where
+                                      product_id = prod.id and c.domain = ${domain}
+                                  ) > 0))
         ) as productCount
       from
         `categories` scat

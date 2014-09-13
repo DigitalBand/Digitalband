@@ -5,14 +5,15 @@ import controllers.common.ControllerBase
 import dao.common.{CategoryRepository, ProductRepository, ShopRepository, UserRepository}
 import org.joda.time.{DateTimeZone, DateTime}
 import org.joda.time.format.DateTimeFormat
-import play.api.mvc.Action
+import play.api.mvc.{AnyContent, Request, Action}
 
 class PriceList @Inject()(implicit userRepository: UserRepository, shopRepository: ShopRepository, productRepository: ProductRepository, categoryRepository: CategoryRepository) extends ControllerBase {
+  def host(implicit request: Request[AnyContent]) = if (request.host.contains("localhost")) "digitalband.ru" else request.host
   def forYandex = Action {
     implicit request =>
       val w = new java.io.StringWriter()
       val yandexShopInfo = shopRepository.getYandexShopInfo
-      val products = productRepository.listAll
+      val products = productRepository.listAll(host)
       val categories = categoryRepository.listAll
       val fmt = DateTimeFormat.forPattern("YYYY-MM-dd HH:mm")
       val getUrl: Int => String = { id => routes.Product.display(id).url }

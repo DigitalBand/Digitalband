@@ -9,5 +9,5 @@ trait CategoryRepository {
 
   def listWithPictures: Seq[CategoryEntity]
   def get(id: Int): CategoryEntity
-  def list(categoryId: Int, brandId: Int, search:String, inStock: Boolean): Seq[CategoryListItem]
+  def list(categoryId: Int, brandId: Int, search:String, inStock: Boolean, domain: String = "digitalband.ru"): Seq[CategoryListItem]
 }

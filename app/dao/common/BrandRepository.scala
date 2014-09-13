@@ -7,6 +7,6 @@ trait BrandRepository {
 
   def get(id: Int): Option[BrandEntity]
 
-  def list(getCategory: => CategoryEntity, pageNumber: Int, pageSize: Int, search: String, inStock: Boolean = false): ListPage[models.BrandEntity]
+  def list(getCategory: => CategoryEntity, pageNumber: Int, pageSize: Int, search: String, inStock: Boolean = false, domain: String = "digitalband.ru"): ListPage[models.BrandEntity]
 
 }

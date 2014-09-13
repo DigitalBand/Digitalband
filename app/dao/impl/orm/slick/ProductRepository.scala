@@ -14,7 +14,7 @@ import play.api.i18n.Messages
 import wt.common.image.ImageEntity
 
 class ProductRepository extends RepositoryBase with dao.common.ProductRepository {
-  def listMostVisited(count: Int) = database withDynSession {
+  def listMostVisited(count: Int, domain: String = "digitalband.ru") = database withDynSession {
     implicit val res = GetResult(r => new ProductDetails(r.<<, r.<<, r.<<, r.<<, r.<<))
     sql"""
       select
@@ -28,7 +28,13 @@ class ProductRepository extends RepositoryBase with dao.common.ProductRepository
       where
         p.archived = false and
         p.price > 0 and
-        p.is_available = true
+        ((
+          select sum(quantity) from stock_items si
+          left join shops s on s.id = si.shop_id
+          left join cities c on c.id = s.city_id
+          where
+            product_id = p.id and c.domain = ${domain}
+        ) > 0)
       limit ${count};
     """.as[ProductDetails].list
   }
@@ -63,7 +69,7 @@ class ProductRepository extends RepositoryBase with dao.common.ProductRepository
         (cat.right_value <= ${category.rightValue}) and
         ((${brandId} = 0) or (prod.brand_id = ${brandId})) and
         ((${search} = '') or (prod.title like ${'%' + search + '%'})) and
-        ((${inStock} = FALSE) or (prod.is_available = ${inStock})) and
+
         ((${inStock} = FALSE) or ((
                                     select sum(quantity) from stock_items si
                                     left join shops s on s.id = si.shop_id
@@ -88,7 +94,13 @@ class ProductRepository extends RepositoryBase with dao.common.ProductRepository
         (cat.right_value <= ${category.rightValue}) and
         ((${brandId} = 0) or (prod.brand_id = ${brandId})) and
         ((${search} = '') or (prod.title like ${'%' + search + '%'})) and
-        ((${inStock} = FALSE) or (prod.is_available = ${inStock}))
+        ((${inStock} = FALSE) or ((
+                                    select sum(quantity) from stock_items si
+                                    left join shops s on s.id = si.shop_id
+                                    left join cities c on c.id = s.city_id
+                                    where
+                                      product_id = prod.id and c.domain = ${domain}
+                                  ) > 0))
     """
 
     val count = countQuery.as[Int].first
@@ -239,7 +251,7 @@ class ProductRepository extends RepositoryBase with dao.common.ProductRepository
     """.as[Int].list
   }
 
-  def listAll = database.withDynSession {
+  def listAll(domain: String = "digitalband.ru") = database.withDynSession {
     implicit val getProductDetailsResult = GetResult(r => ProductDetails(
       id = r.<<,
       title = r.<<,
@@ -248,7 +260,7 @@ class ProductRepository extends RepositoryBase with dao.common.ProductRepository
       price = r.<<,
       brandName = r.<<,
       categoryId = r.<<,
-      isAvailable = r.<<,
+      isAvailable = r.nextBooleanOption().getOrElse(false),
       defaultImageId = r.<<
     ))
     sql"""
@@ -260,7 +272,13 @@ class ProductRepository extends RepositoryBase with dao.common.ProductRepository
         p.price,
         b.title,
         pc.category_id,
-        p.is_available,
+        (
+          select sum(ifnull(si.quantity, 0)) from stock_items si
+          left join shops s on s.id = si.shop_id
+          left join cities c on c.id = s.city_id
+          where
+            product_id = p.id and c.domain = ${domain}
+        ) > 0 as is_available,
         p.default_image_id
       from
         products p

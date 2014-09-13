@@ -30,7 +30,7 @@ class BrandRepository extends RepositoryBase with dao.common.BrandRepository {
     }
   }
 
-  def list(getCategory: => CategoryEntity, pageNumber: Int, pageSize: Int, search: String, inStock:Boolean = false): ListPage[BrandEntity] = {
+  def list(getCategory: => CategoryEntity, pageNumber: Int, pageSize: Int, search: String, inStock:Boolean = false, domain: String = "digitalband.ru"): ListPage[BrandEntity] = {
     database withDynSession {
       val category = getCategory
       val drop = pageSize * (pageNumber - 1)
@@ -51,7 +51,13 @@ class BrandRepository extends RepositoryBase with dao.common.BrandRepository {
              c.left_value >= ${category.leftValue} and
              c.right_value <= ${category.rightValue} and
              b.id = p.brand_id and
-             ((${inStock} = FALSE) or p.is_available = ${inStock}) and
+             ((${inStock} = FALSE) or ((
+                                    select sum(quantity) from stock_items si
+                                    left join shops s on s.id = si.shop_id
+                                    left join cities c on c.id = s.city_id
+                                    where
+                                      product_id = p.id and c.domain = '${domain}'
+                                  ) > 0)) and
              ${if (search.isEmpty) "1=1" else "p.title like '%" + search + "%'"}
           group by p.brand_id order by productCount desc limit $drop, $pageSize;
         """)
