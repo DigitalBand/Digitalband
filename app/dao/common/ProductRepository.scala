@@ -23,7 +23,7 @@ trait ProductRepository {
   def get(productId: Int, getBrand: Int => Option[BrandEntity]): ProductDetails
   def get(productId: Int): ProductDetails
   def getList(getCategory: => CategoryEntity): ListPage[ProductDetails] = getList(getCategory, brandId = 0, pageNumber = 1, pageSize = 10, search = "", inStock = false)
-  def getList(getCategory: => CategoryEntity, brandId: Int, pageNumber: Int, pageSize: Int, search: String, inStock: Boolean): ListPage[ProductDetails]
+  def getList(getCategory: => CategoryEntity, brandId: Int, pageNumber: Int, pageSize: Int, search: String, inStock: Boolean, domain: String = "digitalband.ru"): ListPage[ProductDetails]
   def listMostVisited(count: Int): Seq[ProductDetails]
   def getAvailability(productId: Int): Int
 }
