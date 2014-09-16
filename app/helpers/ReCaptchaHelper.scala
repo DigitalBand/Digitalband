@@ -3,9 +3,26 @@ package helpers
 import models.ReCaptcha
 import java.util
 import org.jsoup.Jsoup
+import play.api.Play
+
 case class RecaptchaChallenge(val challenge: String, val imageUrl: String)
-object ReCaptchaHelper {
-  def validate(recaptcha: ReCaptcha): Boolean = {
+
+
+trait RecaptchaWrapper {
+  def get(key: String): RecaptchaChallenge
+  def validate(recaptcha: ReCaptcha): Boolean
+}
+class RecaptchaWrapperRealImpl extends RecaptchaWrapper {
+  def get(key: String) = {
+    val baseUrl = "http://www.google.com/recaptcha/api/"
+    val url = s"${baseUrl}noscript?k=$key";
+    val d = Jsoup.connect(url).timeout(10000).get()
+    val challenge = d.select("#recaptcha_challenge_field").`val`
+    val imageUrl = baseUrl + d.select("img").attr("src")
+    RecaptchaChallenge(challenge, imageUrl)
+  }
+
+  def validate(recaptcha: ReCaptcha) = {
     val map: util.HashMap[String, String] = new util.HashMap[String, String]()
     map.put("challenge", recaptcha.challenge)
     map.put("response", recaptcha.response)
@@ -15,12 +32,19 @@ object ReCaptchaHelper {
       .data(map).timeout(10000).post().body().html()
     d contains "success"
   }
-  def get(key: String) = {
-    val baseUrl = "http://www.google.com/recaptcha/api/"
-    val url = s"${baseUrl}noscript?k=$key";
-    val d = Jsoup.connect(url).timeout(10000).get()
-    val challenge = d.select("#recaptcha_challenge_field").`val`
-    val imageUrl = baseUrl + d.select("img").attr("src")
-     RecaptchaChallenge(challenge, imageUrl)
+}
+class RecaptchaFalseImpl extends RecaptchaWrapper {
+  def get(key: String) = RecaptchaChallenge("sdfsdf", "")
+
+  def validate(recaptcha: ReCaptcha) = true
+}
+object ReCaptchaHelper {
+  val recaptchaWrapper: RecaptchaWrapper = {
+    Play.current.configuration.getString("recaptcha.impl") match {
+      case Some(config) => if (config == "false") new RecaptchaFalseImpl else new RecaptchaWrapperRealImpl
+      case None => new RecaptchaWrapperRealImpl
+    }
   }
+  def validate(recaptcha: ReCaptcha): Boolean = recaptchaWrapper.validate(recaptcha)
+  def get(key: String) = recaptchaWrapper.get(key)
 }
