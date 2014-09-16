@@ -1,0 +1,79 @@
+@(form: Form[models.ContactEntity], recaptcha: helpers.RecaptchaChallenge, shops: Seq[ShopInfo])(implicit user: Option[models.UserEntity], request: play.api.mvc.Request[Any])
+@import views.html.common.bootstrap._
+@import views.html.Shared.alert
+@main(Messages("contacts.title"), "contacts") {
+  <div class="page-block col-md-12">
+    <br>
+    @alert()
+    <div class="row">
+      <div class="col-md-6 block">
+        <h3 class="block-title sub-title">
+          <span>О нас</span>
+        </h3>
+        <img class="text-img thumbnail pull-left" src="@routes.Assets.at("images/about.jpg")">
+        <p> <strong> Digitalband </strong>
+          - это интернет магазин, в котором можно купить все что связано с шоу техникой,
+          музыкальными инструментами, и музыкальным оборудованием.
+          Что бы купить то, что вы хотите, больше не надо искать, где это продается,
+          сколько это стоит и даже как это называется. Просто нужно связаться с нами по электронной почте или по Skype, и мы предоставим вам информацию по вашему запросу.
+          Только индивидуальный подход к каждому покупателю. У нас можно торговаться.</p>
+        <br/>
+        <h3 class="block-title sub-title">
+          <span>Юридическая информация</span>
+        </h3>
+        <p>
+          <strong>Digitalband.ru</strong>
+      <div>ИП Ткаченко Алексей Сергеевич</div>
+        <div>ОГРН: 308616114400025</div>
+        <div>Россия 344092 г Ростов-на-Дону ул Королева 1/9 кв70 (для документов)</div>
+        </p>
+        <h3 class="block-title sub-title">
+          <span>Наши магазины</span>
+        </h3>
+        @shops.map { shop =>
+          <div>
+            <h5>@shop.title</h5>
+            <div>
+              <div>
+                Адрес: <span>@shop.city</span>, <span>@shop.address</span>
+              </div>
+              <div>
+                Телефоны: @shop.phoneNumbers.mkString(", ")
+              </div>
+            </div>
+          </div>
+        }
+      </div>
+      <div class="col-md-6 block">
+        <h3 class="block-title sub-title">
+          <span>Связаться с нами</span>
+        </h3>
+        <form class="form-inline" action="@routes.Application.sendFeedback()" method="POST">
+
+          <div>
+            @helper.inputText(form("name"), 'placeholder -> "Введите Ваше имя", '_label -> Messages("contacts.form.namelabel"), 'class -> "form-control")
+            @helper.inputText(form("email"), 'placeholder -> "Введите Ваш email", '_label -> Messages("contacts.form.emaillabel"), 'class -> "form-control")
+            @helper.inputText(form("productName"), 'placeholder -> "Введите тему сообщения", '_label -> Messages("contacts.form.productnamelabel"), 'class -> "form-control")
+            @helper.textarea(form("message"), 'placeholder -> "Введите сообщение", '_label -> Messages("contacts.form.messagelabel"), 'class -> "form-control")
+            <div class="control-group">
+              <input name="recaptcha_challenge_field" type="hidden" value="@recaptcha.challenge">
+              <label class="control-label" for="recaptcha_response_field">Код</label>
+              <div class="controls">
+                <input type="text" placeholder="Введите два слова с картинки" id="recaptcha_response_field" name="recaptcha_response_field" class="form-control recaptcha-input" />
+                <div class="thumbnail">
+                  <img src="@recaptcha.imageUrl" style="margin: 10px 0; padding: 0" />
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="form-actions">
+
+            <button class="btn btn-primary pull-right"> @Messages("contacts.form.submitbutton") </button>
+          </div>
+        </form>
+      </div>
+
+    </div>
+  </div>
+
+}
