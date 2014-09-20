@@ -66,11 +66,7 @@ class Application @Inject()(implicit ur: UserRepository,
     implicit user =>
       implicit request =>
         val recaptcha = ReCaptchaHelper.get("6LfMQdYSAAAAAJCe85Y6CRp9Ww7n-l3HOBf5bifB")
-        //TODO: temporary. move to DB!!!
-        if (request.host == "digitalband.ru")
-          Ok(views.html.Application.contacts(contactsForm, recaptcha, shopRepository.list.filter(si => si.id == 1)))
-        else
-          Ok(views.html.Application.contacts(contactsForm, recaptcha, shopRepository.list.filter(si => si.id == 2)))
+        Ok(views.html.Application.contacts(contactsForm, recaptcha, shopRepository.getByHostname(request.host)))
   }
 
   def stock(productId: Int) = withUser {

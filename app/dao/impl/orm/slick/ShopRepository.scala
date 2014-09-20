@@ -37,7 +37,23 @@ class ShopRepository extends RepositoryBase with dao.common.ShopRepository {
     """.as[ShopInfo].first
   }
 
-
+  def getByHostname(host: String): Seq[ShopInfo] = database withDynSession{
+    implicit val res = GetResult(r => ShopInfo(r.<<, r.<<, r.<<, r.<<, parsePhones(r.<<)))
+    sql"""
+      select
+        s.id,
+        s.title,
+        s.city,
+        s.address,
+        s.phones
+      from shops s
+      where
+        s.city_id in (
+          select c.id
+          from cities c
+          where c.domain = ${host})
+    """.as[ShopInfo].list
+  }
 
   def update(shop: ShopInfo) = database withDynSession {
     sqlu"""
