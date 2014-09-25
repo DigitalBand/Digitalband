@@ -13,6 +13,7 @@ import play.api.mvc._
 
 class Application @Inject()(implicit ur: UserRepository,
                             val shopRepository: ShopRepository,
+                            val cityRepository: CityRepository,
                             val stockItemRepository: StockItemRepository,
                             val categoryRepository: CategoryRepository,
                             val productRepository: ProductRepository) extends ControllerBase {
@@ -57,11 +58,9 @@ class Application @Inject()(implicit ur: UserRepository,
 
   def delivery = withUser {
     implicit user => implicit request =>
-      if (request.host == "digitalband.ru")
-        Ok(views.html.Application.delivery())
-      else
-        Ok(views.html.Application.deliverymg())
+      Ok(views.html.Application.delivery(cityRepository.getByHostname(request.host)))
   }
+
   def contacts = withUser {
     implicit user =>
       implicit request =>
