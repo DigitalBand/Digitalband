@@ -1,0 +1,23 @@
+<div class="col-lg-12">
+    <a class="btn btn-primary" ui-sref="cityNew"><i class="icon icon-plus"></i> Добавить город</a>
+    <table class="table table-striped">
+        <thead>
+        <tr>
+            <th></th>
+            <th>Город</th>
+            <th>Хост</th>
+            <th>Доставка</th>
+            <th>Оплата</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr ng-repeat="city in cities">
+            <td><a href="#" ng-click="remove(city.id)"><i class="icon icon-trash"></i></a></td>
+            <td><a ng-href="{{href('cityEdit', {cityId: city.id})}}">{{city.name}}</a></td>
+            <td>{{city.domain}}</td>
+            <td>{{city.delivery}}</td>
+            <td>{{city.payment}}</td>
+        </tr>
+        </tbody>
+    </table>
+</div>

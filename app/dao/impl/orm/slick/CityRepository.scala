@@ -61,7 +61,7 @@ class CityRepository extends RepositoryBase with dao.common.CityRepository {
       r => CityInfo(id = r.<<, name = r.<<, domain = r.<<, delivery = r.<<, payment = r.<<))
     sql"""
       select
-         c.id,
+        c.id,
         c.name,
         c.domain,
         c.delivery,
