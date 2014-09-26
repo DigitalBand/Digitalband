@@ -41,19 +41,21 @@ class CityRepository extends RepositoryBase with dao.common.CityRepository {
     """.as[CityInfo].first
   }
 
-  def add(cityDelivery: CityInfo): Int = database withDynSession {
+  def add(city: CityInfo): Int = database withDynSession {
     sqlu"""
 
            """
     sql"""select last_insert_id();""".as[Int].first
   }
 
-  def update(cityDelivery: CityInfo) = {
+  def update(city: CityInfo) = {
 
   }
 
-  def remove(cityDeliveryId: Int) = {
-
+  def remove(cityId: Int) = database withDynSession {
+    sqlu"""
+      delete from cities where id = ${cityId};
+    """.execute
   }
 
   def list: Seq[CityInfo] = database withDynSession {
