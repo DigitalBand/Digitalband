@@ -10,11 +10,11 @@
         </div>
         <div class="form-group">
             <label>Доставка</label>
-            <input class="form-control" type="text" ng-model="vm.city.delivery"/>
+            <text-angular style="height: 100px;" ta-toolbar="[['bold', 'italics', 'underline', 'ul', 'ol']]" ng-model="vm.city.delivery"></text-angular>
         </div>
         <div class="form-group">
             <label>Оплата</label>
-            <input class="form-control" type="text" ng-model="vm.city.payment"/>
+            <text-angular style="height: 100px;" ta-toolbar="[['bold', 'italics', 'underline', 'ul', 'ol']]" ng-model="vm.city.payment"></text-angular>
         </div>
         <div class="form-group">
             <button class="btn btn-primary" ng-click="vm.save()">Сохранить</button>
