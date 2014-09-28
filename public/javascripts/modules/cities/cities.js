@@ -1,5 +1,5 @@
 "use strict";
-var citiesApp = angular.module('citiesModule', ['ngRoute', 'ui.router', 'textAngular', 'ngSanitize']);
+var citiesApp = angular.module('citiesModule', ['ngRoute', 'ui.router', 'ui.tinymce']);
 citiesApp.config(['$stateProvider', function ($stateProvider) {
     function vw(url) {
         return '/assets/javascripts/modules/cities' + url;

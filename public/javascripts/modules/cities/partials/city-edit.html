@@ -10,12 +10,13 @@
         </div>
         <div class="form-group">
             <label>Доставка</label>
-            <text-angular style="height: 100px;" ta-toolbar="[['bold', 'italics', 'underline', 'ul', 'ol']]" ng-model="vm.city.delivery" required></text-angular>
+            <textarea ui-tinymce ng-model="vm.city.delivery" required></textarea>
         </div>
         <div class="form-group">
             <label>Оплата</label>
-            <text-angular style="height: 100px;" ta-toolbar="[['bold', 'italics', 'underline', 'ul', 'ol']]" ng-model="vm.city.payment" required></text-angular>
+            <textarea ui-tinymce ng-model="vm.city.payment" required></textarea>з
         </div>
+
         <div class="form-group">
             <button class="btn btn-primary" ng-click="vm.save()">Сохранить</button>
         </div>

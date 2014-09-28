@@ -23,6 +23,9 @@
         },
         save: function () {
             var that = this;
+            if(this.city.delivery === undefined || this.city.payment === undefined){
+                return;
+            }
             this.cityService.save(this.city).then(function () {
                 that.$state.go('home1');
             });
