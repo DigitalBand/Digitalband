@@ -7,7 +7,7 @@
 
     CityService.prototype = {
         get: function(cityId) {
-            return this.$http(jsRoutes.controllers.admin.City.get(cityId)).then(function(response){
+            return this.$http(jsRoutes.controllers.admin.City.get(cityId)).then(function(response) {
                 return response.data;
             });
         },

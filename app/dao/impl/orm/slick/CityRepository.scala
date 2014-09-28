@@ -26,7 +26,7 @@ class CityRepository extends RepositoryBase with dao.common.CityRepository {
     """.as[CityInfo].first
   }
 
-  def getByHostname(host: String): CityInfo = database withDynSession{
+  def getByHostname(host: String): CityInfo = database withDynSession {
     implicit val result = GetResult(
       r => CityInfo(id = r.<<, name = r.<<, domain = r.<<, delivery = r.<<, payment = r.<<))
     sql"""
