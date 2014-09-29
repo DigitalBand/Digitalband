@@ -23,7 +23,7 @@
         },
         save: function () {
             var that = this;
-            if(this.city.delivery === undefined || this.city.payment === undefined){
+            if(!this.city.delivery || !this.city.payment){
                 return;
             }
             this.cityService.save(this.city).then(function () {
@@ -31,10 +31,10 @@
             });
         },
         deliveryNotFilled: function() {
-            return this.city.delivery === undefined;
+            return !this.city.delivery;
         },
         paymentNotFilled: function() {
-            return this.city.payment === undefined;
+            return !this.city.payment;
         }
     };
     app.controller('CityEditController', CityEditController);
