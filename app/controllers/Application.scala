@@ -13,6 +13,7 @@ import play.api.mvc._
 
 class Application @Inject()(implicit ur: UserRepository,
                             val shopRepository: ShopRepository,
+                            val cityRepository: CityRepository,
                             val stockItemRepository: StockItemRepository,
                             val categoryRepository: CategoryRepository,
                             val productRepository: ProductRepository) extends ControllerBase {
@@ -57,20 +58,14 @@ class Application @Inject()(implicit ur: UserRepository,
 
   def delivery = withUser {
     implicit user => implicit request =>
-      if (request.host == "digitalband.ru")
-        Ok(views.html.Application.delivery())
-      else
-        Ok(views.html.Application.deliverymg())
+      Ok(views.html.Application.delivery(cityRepository.getByHostname(request.host)))
   }
+
   def contacts = withUser {
     implicit user =>
       implicit request =>
         val recaptcha = ReCaptchaHelper.get("6LfMQdYSAAAAAJCe85Y6CRp9Ww7n-l3HOBf5bifB")
-        //TODO: temporary. move to DB!!!
-        if (request.host == "digitalband.ru")
-          Ok(views.html.Application.contacts(contactsForm, recaptcha, shopRepository.list.filter(si => si.id == 1)))
-        else
-          Ok(views.html.Application.contacts(contactsForm, recaptcha, shopRepository.list.filter(si => si.id == 2)))
+        Ok(views.html.Application.contacts(contactsForm, recaptcha, shopRepository.getByHostname(request.host)))
   }
 
   def stock(productId: Int) = withUser {
