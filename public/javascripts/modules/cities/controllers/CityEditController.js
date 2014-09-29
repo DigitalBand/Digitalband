@@ -29,6 +29,12 @@
             this.cityService.save(this.city).then(function () {
                 that.$state.go('home1');
             });
+        },
+        deliveryNotFilled: function() {
+            return this.city.delivery === undefined;
+        },
+        paymentNotFilled: function() {
+            return this.city.payment === undefined;
         }
     };
     app.controller('CityEditController', CityEditController);
