@@ -5,6 +5,9 @@
         $scope.vm = this;
         this.aboutService = aboutService;
         this.$state = $state;
+        this.resultSuccess = false;
+        this.aboutAlert = false;
+        this.legalInfoAlert = false;
         this.initAboutInfo();
     }
 
@@ -17,11 +20,14 @@
         },
         save: function () {
             var that = this;
-            if(!this.aboutInfo.about || !this.aboutInfo.legalInfo){
+            this.aboutAlert = !this.aboutInfo.about;
+            this.legalInfoAlert = !this.aboutInfo.legalInfo;
+
+            if(this.aboutAlert || this.legalInfoAlert) {
                 return;
             }
             this.aboutService.save(this.aboutInfo).then(function () {
-                that.$state.go('home1');
+                that.resultSuccess = true;
             });
         }
     };
