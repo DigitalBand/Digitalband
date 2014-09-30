@@ -51,7 +51,9 @@
                             <li>
                                 <a href="@controllers.admin.routes.Shop.main">Склады</a>
                             </li>
-                            <li>
+                            <li class="@{
+                                if(menuItem.equals("about")) "active" else ""
+                            }">
                                 <a href="@controllers.admin.routes.About.main">О компании</a>
                             </li>
                         </ul>
