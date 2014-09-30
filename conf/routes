@@ -30,6 +30,12 @@ PUT           /admin/cities/update                                 @controllers.
 POST          /admin/cities/add                                    @controllers.admin.City.add
 GET           /admin/cities/get/:cityId                            @controllers.admin.City.get(cityId: Int)
 GET           /admin/cities/javascriptRoutes                       @controllers.admin.City.javascriptRoutes
+#Admin about us
+GET           /admin/about                                         @controllers.admin.About.main()
+GET           /admin/about/get                                     @controllers.admin.About.get
+PUT           /admin/about/update                                  @controllers.admin.About.update
+POST          /admin/about/add                                     @controllers.admin.About.add
+GET           /admin/about/javascriptRoutes                        @controllers.admin.About.javascriptRoutes
 #Admin product
 GET           /admin/category/:categoryId/product/create           @controllers.admin.Product.create(categoryId: Int, brandId: Int ?= 0)
 GET           /admin/product/:productId/edit                       @controllers.admin.Product.edit(productId: Int)
