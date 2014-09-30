@@ -45,10 +45,14 @@
                                 if(menuItem.equals("questions")) "active" else ""
                             }"> <a href="@controllers.admin.routes.Question.listWithAnswers(1)"> <i class="icon-question-sign"></i>
                                 Вопросы </a> </li>
-                            <li>
+                            <li class="@{
+                                if(menuItem.equals("cities")) "active" else ""
+                            }">
                                 <a href="@controllers.admin.routes.City.main">Города</a>
                             </li>
-                            <li>
+                            <li class="@{
+                                if(menuItem.equals("shops")) "active" else ""
+                            }">
                                 <a href="@controllers.admin.routes.Shop.main">Склады</a>
                             </li>
 
