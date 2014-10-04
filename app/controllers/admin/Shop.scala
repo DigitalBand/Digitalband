@@ -62,7 +62,8 @@ class Shop @Inject()(implicit userRepository: UserRepository, shopRepository: Sh
             controllers.admin.routes.javascript.Shop.add,
             controllers.admin.routes.javascript.Shop.remove,
             controllers.admin.routes.javascript.Shop.update,
-            controllers.admin.routes.javascript.Shop.get
+            controllers.admin.routes.javascript.Shop.get,
+            controllers.admin.routes.javascript.City.list
           )
         ).as("text/javascript")
   }
