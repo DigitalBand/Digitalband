@@ -1,6 +1,6 @@
 package dao.impl.orm.slick
 
-import models.{DeliveryInfo, UserEntity}
+import models.{DeliveryInfo, DeliveryAddress, UserEntity}
 
 import scala.slick.driver.JdbcDriver.backend.Database
 import Database.dynamicSession
@@ -78,15 +78,32 @@ class UserRepository extends RepositoryBase with dao.common.UserRepository {
     """.execute()
   }
 
+  def updateDeliveryAddress(address: DeliveryAddress, userId: Int) = database withDynSession {
+    sqlu"""
+      update
+        user_profiles
+      set
+        city = ${address.city},
+        street = ${address.street},
+        building = ${address.building},
+        housing = ${address.housing},
+        apartment = ${address.apartment}
+      where
+        user_id = ${userId}
+    """.execute()
+  }
+
   def getDeliveryInfo(userId: Int) = database withDynSession {
     implicit val deliveryResult = GetResult(r =>
       new DeliveryInfo(
         r.nextStringOption().getOrElse(""),
         r.nextStringOption().getOrElse(""),
         r.nextStringOption().getOrElse(""),
+        Option(r.nextStringOption().getOrElse("")),
+        r.nextStringOption().getOrElse(""),
         r.nextStringOption().getOrElse("")))
     sql"""
-      select user_name, email, phone_number, address from user_profiles where user_id = ${userId};
+      select user_name, "", "", email, phone_number, address from user_profiles where user_id = ${userId};
     """.as[DeliveryInfo].firstOption
   }
 

@@ -7,4 +7,9 @@ package object bootstrap {
     def apply(elements: FieldElements) =
       bootstrap.fieldConstructor(elements)
   }
+
+  implicit val hfc = new FieldConstructor {
+    def apply(elements: FieldElements) =
+      bootstrap.horizontalFieldConstructor(elements)
+  }
 }

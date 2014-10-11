@@ -1,6 +1,6 @@
 package dao.impl.fake
 
-import models.{DeliveryInfo, UserEntity}
+import models.{DeliveryAddress, DeliveryInfo, UserEntity}
 
 class UserRepository extends dao.common.UserRepository {
   def authenticate(login: String, password: String): Option[UserEntity] = {
@@ -18,6 +18,8 @@ class UserRepository extends dao.common.UserRepository {
   def register(email: String, password: String): Int = ???
 
   def updateDeliveryInfo(info: DeliveryInfo, userId: Int) = ???
+
+  def updateDeliveryAddress(address: DeliveryAddress, userId: Int) = ???
 
   def getDeliveryInfo(userId: Int) = ???
 

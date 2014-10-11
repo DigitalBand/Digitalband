@@ -49,11 +49,13 @@ class EmailHelper(implicit userRepository: UserRepository) {
   }
 
   def orderConfirmed(comment: String, order: OrderInfo)(implicit request: play.api.mvc.Request[Any]) = Akka.system.scheduler.scheduleOnce(1.second) {
-    val mail = use[MailerPlugin].email
-    mail.setSubject(s"Подтверждение заказа №${order.id}")
-    mail.addFrom(systemEmail)
-    mail.addRecipient(order.deliveryInfo.email)
-    mail.sendHtml(comment)
+    if(order.deliveryInfo.email.isDefined){
+      val mail = use[MailerPlugin].email
+      mail.setSubject(s"Подтверждение заказа №${order.id}")
+      mail.addFrom(systemEmail)
+      mail.addRecipient(order.deliveryInfo.email.get)
+      mail.sendHtml(comment)
+    }
   }
 
   def sendUnconfirmedOrdersExist(count: Int) = {
@@ -79,11 +81,13 @@ class EmailHelper(implicit userRepository: UserRepository) {
   }
 
   def orderCanceled(comment: String, order: OrderInfo)(implicit request: Request[Any]) = Akka.system.scheduler.scheduleOnce(1.second) {
-    val mail = use[MailerPlugin].email
-    mail.setSubject(s"Информация по заказу №${order.id}")
-    mail.addFrom(systemEmail)
-    mail.addRecipient(order.deliveryInfo.email)
-    mail.sendHtml(comment)
+    if(order.deliveryInfo.email.isDefined) {
+      val mail = use[MailerPlugin].email
+      mail.setSubject(s"Информация по заказу №${order.id}")
+      mail.addFrom(systemEmail)
+      mail.addRecipient(order.deliveryInfo.email.get)
+      mail.sendHtml(comment)
+    }
   }
 
   def sendFeedback(message: ContactEntity)(implicit request: Request[Any]) = Akka.system.scheduler.scheduleOnce(1.second) {
@@ -112,24 +116,25 @@ class EmailHelper(implicit userRepository: UserRepository) {
   }
 
   def orderConfirmation(order: OrderInfo)(implicit request: Request[Any]) = Akka.system.scheduler.scheduleOnce(1.second) {
-    val deliveryInfo = order.deliveryInfo
-    sendToClient(systemEmail, deliveryInfo.email)
-    adminEmails.map(email => sendToAdmins(email, deliveryInfo.email, systemEmail))
-    def sendToClient(from: String, to: String) = {
-      val mail: MailerAPI = use[MailerPlugin].email
-      mail.setSubject(Messages("emailhelper.orderconfirmation.subject"))
-      mail.addRecipient(to)
-      mail.addFrom(from)
-      mail.sendHtml(views.html.emails.plain.order.confirmation(order).body)
+    if (order.deliveryInfo.email.isDefined) {
+      val deliveryInfo = order.deliveryInfo
+      sendToClient(systemEmail, deliveryInfo.email.get)
+      adminEmails.map(email => sendToAdmins(email, deliveryInfo.email.get, systemEmail))
+      def sendToClient(from: String, to: String) = {
+        val mail: MailerAPI = use[MailerPlugin].email
+        mail.setSubject(Messages("emailhelper.orderconfirmation.subject"))
+        mail.addRecipient(to)
+        mail.addFrom(from)
+        mail.sendHtml(views.html.emails.plain.order.confirmation(order).body)
+      }
+      def sendToAdmins(adminEmail: String, userEmail: String, systemEmail: String) = {
+        val mail: MailerAPI = use[MailerPlugin].email
+        mail.setSubject(Messages("emailhelper.orderconfirmation.subject"))
+        mail.addFrom(systemEmail)
+        mail.setReplyTo(userEmail)
+        mail.addRecipient(adminEmail)
+        mail.sendHtml(views.html.emails.plain.order.adminConfirmation(order).body)
+      }
     }
-    def sendToAdmins(adminEmail: String, userEmail: String, systemEmail: String) = {
-      val mail: MailerAPI = use[MailerPlugin].email
-      mail.setSubject(Messages("emailhelper.orderconfirmation.subject"))
-      mail.addFrom(systemEmail)
-      mail.setReplyTo(userEmail)
-      mail.addRecipient(adminEmail)
-      mail.sendHtml(views.html.emails.plain.order.adminConfirmation(order).body)
-    }
-
   }
 }

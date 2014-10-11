@@ -1,0 +1,13 @@
+@(items: Seq[models.CartItem], deliveryInfo: Form[DeliveryAddress])(implicit user: Option[models.UserEntity], request: play.api.mvc.Request[Any])
+@import Cart.shoppingList
+@import Shared.wizard
+@import views.html.common.bootstrap.hfc
+@import views.html.Security.loginpart
+
+@main(menuItem = "cart") {
+    <div class="page-block">
+        <div class="col-md-12">
+            @wizard(3)
+        </div>
+    </div>
+}
