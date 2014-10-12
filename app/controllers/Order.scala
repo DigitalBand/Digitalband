@@ -1,6 +1,6 @@
 package controllers
 
-import _root_.models.{DeliveryInfo, DeliveryAddress, OrderInfo}
+import models.{PersonalInfo, DeliveryInfo, DeliveryAddress, OrderInfo}
 import com.google.inject.Inject
 import controllers.common.ControllerBase
 import dao.common.{CartRepository, OrderRepository, UserRepository}
@@ -9,18 +9,26 @@ import play.api.data.Form
 import play.api.data.Forms._
 
 class Order @Inject()(implicit ur: UserRepository, orderRepository: OrderRepository, cartRepository: CartRepository) extends ControllerBase {
-//  val deliveryForm = Form(mapping(
-//    "lastName" -> nonEmptyText(minLength = 2, maxLength = 50),
-//    "name" -> nonEmptyText(minLength = 2, maxLength = 50),
-//    "middleName" -> text,
-//    "email" -> optional(email),
-//    "phone" -> nonEmptyText(minLength = 10, maxLength = 25),
-//    "address" -> text
-//  )(DeliveryInfo.apply)(DeliveryInfo.unapply))
+  val deliveryPersonalForm = Form(mapping(
+    "lastName" -> nonEmptyText(minLength = 2, maxLength = 50),
+    "firstName" -> nonEmptyText(minLength = 2, maxLength = 50),
+    "middleName" -> text,
+    "phone" -> nonEmptyText(minLength = 10, maxLength = 25),
+    "email" -> optional(email)
+  )(PersonalInfo.apply)(PersonalInfo.unapply))
+
+  val pickupPersonalForm = Form(mapping(
+    "lastName" -> text,
+    "firstName" -> text,
+    "middleName" -> text,
+    "phone" -> nonEmptyText(minLength = 10, maxLength = 25),
+    "email" -> optional(email)
+  )(PersonalInfo.apply)(PersonalInfo.unapply))
+
   val deliveryForm = Form(mapping(
     "city" -> nonEmptyText(minLength = 2, maxLength = 50),
     "street" -> nonEmptyText(minLength = 2, maxLength = 50),
-    "building" -> nonEmptyText(minLength = 2, maxLength = 50),
+    "building" -> nonEmptyText(minLength = 1, maxLength = 50),
     "housing" -> optional(text),
     "apartment" -> optional(text)
   )(DeliveryAddress.apply)(DeliveryAddress.unapply))
@@ -32,7 +40,7 @@ class Order @Inject()(implicit ur: UserRepository, orderRepository: OrderReposit
         val itemsList = cartRepository.list(getUserId)
         if (!itemsList.isEmpty)
           Ok {
-            val deliveryAddress = new DeliveryAddress() // userRepository.getDeliveryInfo(getUserId).getOrElse(new DeliveryInfo())
+            val deliveryAddress = userRepository.getDeliveryAddress(getUserId).getOrElse(new DeliveryAddress())
             val form = deliveryForm.fill(deliveryAddress)
             views.html.Order.fill(itemsList, form)
           }.withHeaders(CACHE_CONTROL -> "no-cache, max-age=0, must-revalidate, no-store")
@@ -49,19 +57,22 @@ class Order @Inject()(implicit ur: UserRepository, orderRepository: OrderReposit
           },
           deliveryAddress => {
             userRepository.updateDeliveryAddress(deliveryAddress, getUserId)
-            Redirect(routes.Order.fillPersonal()) //orderId))
+            Redirect(routes.Order.fillPersonal("Доставка"))
           }
         )
   }
 
-  def fillPersonal() = withUser {
+  def fillPersonal(deliveryType: String) = withUser {
     implicit user =>
       implicit request =>
         val itemsList = cartRepository.list(getUserId)
         if (!itemsList.isEmpty)
           Ok {
-            val deliveryInfo = new DeliveryAddress()// userRepository.getDeliveryInfo(getUserId).getOrElse(new DeliveryInfo())
-            val form = deliveryForm.fill(deliveryInfo)
+            val personalInfo = userRepository.getPersonalInfo(getUserId).getOrElse(new PersonalInfo())
+            val form =
+
+                pickupPersonalForm.fill(personalInfo)
+
             views.html.Order.fillPersonal(itemsList, form)
           }.withHeaders(CACHE_CONTROL -> "no-cache, max-age=0, must-revalidate, no-store")
         else
@@ -72,15 +83,15 @@ class Order @Inject()(implicit ur: UserRepository, orderRepository: OrderReposit
   def create = withUser {
     implicit user =>
       implicit request =>
-        deliveryForm.bindFromRequest.fold(
+        pickupPersonalForm.bindFromRequest.fold(
           formWithErrors => {
-            BadRequest(views.html.Order.fill(cartRepository.list(getUserId), formWithErrors))
+            BadRequest(views.html.Order.fillPersonal(cartRepository.list(getUserId), formWithErrors))
           },
-          deliveryInfo => {
-            //userRepository.updateDeliveryInfo(deliveryInfo, getUserId)
+          personalInfo => {
+            userRepository.updatePersonalInfo(personalInfo, getUserId)
             //val orderId = orderRepository.create(deliveryInfo, getUserId)
             //emailHelper.orderConfirmation(new OrderInfo(orderId, deliveryInfo, orderRepository.getItems(orderId)))
-            Redirect(routes.Order.confirmation(1)) //orderId))
+            Redirect(routes.Order.confirmation(334)) //orderId))
           }
         )
   }

@@ -79,7 +79,7 @@ GET           /checkout                                            @controllers.
 # Order
 GET           /order                                               @controllers.Order.fill
 POST          /delivery                                            @controllers.Order.updateDeliveryAddress
-GET           /personal                                            @controllers.Order.fillPersonal
+GET           /personal                                            @controllers.Order.fillPersonal(deliveryType: String ?= "")
 POST          /order/place                                         @controllers.Order.create
 GET           /order/:orderId/display                              @controllers.Order.display(orderId: Int)
 GET           /order/:orderId/confirmation                         @controllers.Order.confirmation(orderId: Int)

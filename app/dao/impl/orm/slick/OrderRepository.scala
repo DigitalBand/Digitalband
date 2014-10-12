@@ -61,7 +61,7 @@ class OrderRepository extends RepositoryBase with dao.common.OrderRepository {
 
   def getDeliveryInfo(orderId: Int) = database withDynSession {
     implicit val getDeliveryInfo = GetResult(
-      r => new DeliveryInfo(name = r.<<, middleName = r.<<, lastName = r.<<, r.<<, r.<<, r.<<))
+      r => new DeliveryInfo(name = r.<<, r.<<, r.<<, r.<<))
     sql"""
       select
         name,
@@ -79,7 +79,7 @@ class OrderRepository extends RepositoryBase with dao.common.OrderRepository {
 
   override def get(orderId: Int): OrderInfo = database withDynSession {
     implicit val getOrderInfo = GetResult(
-      r => new OrderInfo(r.<<, r.<<, r.<<, new DeliveryInfo(name = r.<<, middleName = r.<<, lastName = r.<<, r.<<, r.<<, r.<<)))
+      r => new OrderInfo(r.<<, r.<<, r.<<, new DeliveryInfo(name = r.<<, r.<<, r.<<, r.<<)))
     val query = sql"select id, place_date, status, name, email, phone, address from orders where id = $orderId"
     val order = query.as[OrderInfo].first()
     new OrderInfo(order, getItems(orderId))
@@ -93,7 +93,7 @@ class OrderRepository extends RepositoryBase with dao.common.OrderRepository {
 
   def listAll(pageNumber: Int, pageSize: Int): ListPage[OrderInfo] = database withDynSession {
     implicit val getOrderInfo = GetResult(
-      r => new OrderInfo(r.<<, r.<<, r.<<, new DeliveryInfo(name = r.<<, middleName = r.<<, lastName = r.<<, r.<<, r.<<, r.<<)))
+      r => new OrderInfo(r.<<, r.<<, r.<<, new DeliveryInfo(name = r.<<, r.<<, r.<<, r.<<)))
     val items = sql"""
       select
         id, place_date, status, name, email, phone, address

@@ -66,6 +66,7 @@ street=Улица
 building=Дом
 housing=Корпус
 apartment=Квартира
+comment=Комментарий к заказу
 global.buttons.addtocart.value=В корзину
 global.productItem.noprice=Уточняйте цену
 
@@ -121,6 +122,7 @@ order.deliveryinfo.editbutton=Редактировать заказ
 order.deliveryinfo.form.legend=Информация для доставки
 order.deliveryinfo.form.personallegend=Личные данные
 order.deliveryinfo.form.deliverylegend=Доставка
+order.deliveryinfo.form.additionallegend=Дополнительно
 
 wizard.step1=Метод оформления заказа
 wizard.step2=Иформация о доставке

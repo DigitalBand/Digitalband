@@ -18,17 +18,6 @@
             @shoppingList(items, "", false)
             <form method="post" action="@routes.Order.updateDeliveryAddress">
                 <div class="form-horizontal">
-                    <!--<fieldset>-->
-                        <!--<legend>-->
-                            <!--@Messages("order.deliveryinfo.form.personallegend")-->
-                        <!--</legend>-->
-                        <!--@helper.inputText(deliveryInfo("lastName"), 'class -> "form-control")-->
-                        <!--@helper.inputText(deliveryInfo("name"), 'class -> "form-control form-input")-->
-                        <!--@helper.inputText(deliveryInfo("middleName"), 'class -> "form-control form-input")-->
-                        <!--@helper.inputText(deliveryInfo("phone"), 'class -> "form-control form-input")-->
-                        <!--@helper.inputText(deliveryInfo("email"), 'class -> "form-control form-input")-->
-                    <!--</fieldset>-->
-
                     <fieldset>
                         <legend>
                             @Messages("order.deliveryinfo.form.deliverylegend")
@@ -47,43 +36,11 @@
                         @helper.inputText(deliveryInfo("building"), 'class -> "form-control form-input")
                         @helper.inputText(deliveryInfo("housing"), 'class -> "form-control form-input")
                         @helper.inputText(deliveryInfo("apartment"), 'class -> "form-control form-input")
-                        <!--<div class="form-group">-->
-                            <!--<label class="col-sm-4 control-label" for="building">Дом</label>-->
-                            <!--<div class="col-sm-2">-->
-                                <!--<input type="text" id="building" class="form-control" />-->
-                            <!--</div>-->
-                            <!--<label class="col-sm-1 control-label" for="housing">Корпус</label>-->
-                            <!--<div class="col-sm-2">-->
-                                <!--<input type="text" id="housing" class="form-control" />-->
-                            <!--</div>-->
-                            <!--<label class="col-sm-1 control-label" for="apartment">Квартира</label>-->
-                            <!--<div class="col-sm-2">-->
-                                <!--<input type="text" id="apartment" class="form-control" />-->
-                            <!--</div>-->
-                        <!--</div>-->
+
                     </fieldset>
-
                 </div>
-                <!--<fieldset>-->
-                    <!--<legend> @Messages("order.deliveryinfo.form.legend")</legend>-->
-                    <!--<div class="row">-->
-                    <!--<div class="col-md-6">-->
-                        <!--@helper.inputText(deliveryInfo("lastName"), 'class -> "form-control form-input")-->
-                        <!--@helper.inputText(deliveryInfo("name"), 'class -> "form-control form-input")-->
-                        <!--@helper.inputText(deliveryInfo("middleName"), 'class -> "form-control form-input")-->
-                        <!--@helper.inputText(deliveryInfo("phone"), 'class -> "form-control form-input")-->
-                    <!--</div>-->
-                    <!--<div class="col-md-6">-->
-                        <!--@helper.inputText(deliveryInfo("email"), 'class -> "form-control form-input")-->
-                        <!--@helper.textarea(deliveryInfo("address"), 'rows -> 8, 'class -> "form-control form-input")-->
-                    <!--</div>-->
-                    <!--</div>-->
-                    <br>
-                    <!--<a href="@routes.Order.fillPersonal" class="btn btn-primary"><i class="icon-arrow-right"></i>  Продолжить </a>-->
-                    <button class="btn btn-primary"> <i class="icon-arrow-right"></i> &nbsp; @Messages("order.fill.form.buttons.nextstep") </button>
-                <!--</fieldset>-->
-
-
+                <br>
+                <button class="btn btn-primary"> <i class="icon-arrow-right"></i> &nbsp; @Messages("order.fill.form.buttons.nextstep") </button>
             </form>
         </div>
 

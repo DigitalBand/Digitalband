@@ -1,13 +1,44 @@
-@(items: Seq[models.CartItem], deliveryInfo: Form[DeliveryAddress])(implicit user: Option[models.UserEntity], request: play.api.mvc.Request[Any])
+@(items: Seq[models.CartItem], personalInfo: Form[PersonalInfo])(implicit user: Option[models.UserEntity], request: play.api.mvc.Request[Any])
 @import Cart.shoppingList
 @import Shared.wizard
 @import views.html.common.bootstrap.hfc
 @import views.html.Security.loginpart
 
 @main(menuItem = "cart") {
-    <div class="page-block">
-        <div class="col-md-12">
-            @wizard(3)
-        </div>
+<div class="page-block">
+    <div class="col-md-12">
+        @wizard(3)
     </div>
+
+    <div class="col-md-12">
+        <div class="page-header">
+            <h3> @Messages("order.deliveryinfo.title") </h3>
+            &nbsp;<a href="@routes.Cart.display()"> <i class="icon-edit"></i> @Messages("order.deliveryinfo.editbutton") </a>
+        </div>
+        @shoppingList(items, "", false)
+        <form method="post" action="@routes.Order.create">
+            <div class="form-horizontal">
+                <fieldset>
+                    <legend>
+                        @Messages("order.deliveryinfo.form.personallegend")
+                    </legend>
+                    @helper.inputText(personalInfo("lastName"), 'class -> "form-control")
+                    @helper.inputText(personalInfo("name"), 'class -> "form-control form-input")
+                    @helper.inputText(personalInfo("middleName"), 'class -> "form-control form-input")
+                    @helper.inputText(personalInfo("phone"), 'class -> "form-control form-input")
+                    @helper.inputText(personalInfo("email"), 'class -> "form-control form-input")
+                </fieldset>
+                <fieldset>
+                    <legend>
+                        @Messages("order.deliveryinfo.form.additionallegend")
+                    </legend>
+                    @helper.textarea(personalInfo("comment"), 'rows -> 6, 'class -> "form-control")
+                </fieldset>
+            </div>
+            <br>
+            <button class="btn btn-primary"> <i class="icon-arrow-right"></i> &nbsp; @Messages("order.fill.form.buttons.placeorder") </button>
+        </form>
+    </div>
+
+</div>
 }
