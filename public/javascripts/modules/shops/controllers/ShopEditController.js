@@ -27,8 +27,8 @@
         var that = this;
         this.cityService.list().then(function (cities) {
             that.cities = [];
-            $(cities).each(function() {
-               that.cities.push(this.name);
+            cities.forEach(function(city) {
+               that.cities.push(city.name);
             });
         });
     },
