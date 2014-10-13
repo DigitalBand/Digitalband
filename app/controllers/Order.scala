@@ -57,12 +57,12 @@ class Order @Inject()(implicit ur: UserRepository, orderRepository: OrderReposit
           },
           deliveryAddress => {
             userRepository.updateDeliveryAddress(deliveryAddress, getUserId)
-            Redirect(routes.Order.fillPersonal("Доставка"))
+            Redirect(routes.Order.fillPersonal(1))
           }
         )
   }
 
-  def fillPersonal(deliveryType: String) = withUser {
+  def fillPersonal(deliveryType: Int) = withUser {
     implicit user =>
       implicit request =>
         val itemsList = cartRepository.list(getUserId)
@@ -70,28 +70,29 @@ class Order @Inject()(implicit ur: UserRepository, orderRepository: OrderReposit
           Ok {
             val personalInfo = userRepository.getPersonalInfo(getUserId).getOrElse(new PersonalInfo())
             val form =
-
+              if (deliveryType == 1)
+                deliveryPersonalForm.fill(personalInfo)
+              else
                 pickupPersonalForm.fill(personalInfo)
-
             views.html.Order.fillPersonal(itemsList, form)
           }.withHeaders(CACHE_CONTROL -> "no-cache, max-age=0, must-revalidate, no-store")
         else
           Redirect(routes.Cart.display())
   }
 
-  //TODO: rename to "create"
   def create = withUser {
     implicit user =>
       implicit request =>
-        pickupPersonalForm.bindFromRequest.fold(
+        deliveryPersonalForm.bindFromRequest.fold(
           formWithErrors => {
             BadRequest(views.html.Order.fillPersonal(cartRepository.list(getUserId), formWithErrors))
           },
           personalInfo => {
             userRepository.updatePersonalInfo(personalInfo, getUserId)
-            //val orderId = orderRepository.create(deliveryInfo, getUserId)
+            val deliveryAddress = userRepository.getDeliveryAddress(getUserId).getOrElse(new DeliveryAddress())
+            val orderId = orderRepository.create(getUserId, deliveryAddress, personalInfo)
             //emailHelper.orderConfirmation(new OrderInfo(orderId, deliveryInfo, orderRepository.getItems(orderId)))
-            Redirect(routes.Order.confirmation(334)) //orderId))
+            Redirect(routes.Order.confirmation(orderId))
           }
         )
   }

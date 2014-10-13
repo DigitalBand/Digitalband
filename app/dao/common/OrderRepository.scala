@@ -1,6 +1,6 @@
 package dao.common
 
-import models.{ListPage, OrderInfo, CartItem, DeliveryInfo}
+import models._
 
 trait OrderRepository {
   def countUnconfirmed: Int
@@ -22,5 +22,7 @@ trait OrderRepository {
   def getItems(orderId: Int): Seq[CartItem]
 
   def create(deliveryInfo: DeliveryInfo, userId: Int): Int
+
+  def create(userId: Int, address: DeliveryAddress, personalInfo: PersonalInfo): Int
 
 }

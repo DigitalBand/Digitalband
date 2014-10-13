@@ -41,6 +41,58 @@ class OrderRepository extends RepositoryBase with dao.common.OrderRepository {
       orderId
     }
 
+  def create(userId: Int, address: DeliveryAddress, personalInfo: PersonalInfo): Int = database withDynSession {
+    sqlu"""
+      insert into
+        orders (user_id, place_date, name, last_name, middle_name, email, phone, delivery_type)
+      values(
+        $userId,
+        ${new Timestamp(new java.util.Date().getTime)},
+        ${personalInfo.firstName},
+        ${personalInfo.lastName},
+        ${personalInfo.middleName},
+        ${personalInfo.email},
+        ${personalInfo.phone},
+        "Доставка");
+    """.execute()
+    val orderId = sql"select last_insert_id();".as[Int].first
+    sqlu"""
+        insert into
+          order_items(order_id, product_id, quantity, unit_price)
+        select
+          ${orderId},
+          product_id,
+          sum(quantity) as quantity,
+          (select price from products where id = si.product_id limit 1) as unit_price
+        from
+          shopping_items si
+        where
+          user_id = ${userId}
+        group by product_id;
+        delete from shopping_items where user_id = ${userId};
+       """.execute()
+    addOrderDeliveryInfo(orderId, "", address)
+    orderId
+  }
+
+  def addOrderDeliveryInfo(orderId: Int, deliveryType: String, address: DeliveryAddress) = {
+//    if(deliveryType == "Доставка")
+      sqlu"""
+          insert into
+            order_delivery_addresses(order_id, city, street, building, housing, apartment)
+          values(
+            ${orderId},
+            ${address.city},
+            ${address.street},
+            ${address.building},
+            ${address.housing},
+            ${address.apartment}
+          );
+         """.execute()
+//    else
+
+  }
+
   def getItems(orderId: Int): Seq[CartItem] = database withDynSession {
     implicit val getCartItem = GetResult(r => new CartItem(r.<<, r.<<, r.<<, r.<<, r.<<, r.<<))
     sql"""

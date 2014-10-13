@@ -56,6 +56,7 @@ application.sendfeedback.alert.success=Ваше сообщение было ус
 email=Эл. почта
 password=Пароль
 name=Имя
+firstName=Имя
 middleName=Отчество
 lastName=Фамилия
 phone=Телефон
