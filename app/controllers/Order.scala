@@ -108,7 +108,8 @@ class Order @Inject()(implicit ur: UserRepository, orderRepository: OrderReposit
             val userInfo = new UserInfo(getUserId, deliveryInfo.personalInfo, Option(deliveryInfo.address))
             userRepository.updateUserInfo(userInfo)
             val orderId = orderRepository.create(deliveryInfo, getUserId)
-            //emailHelper.orderConfirmation(new OrderInfo(orderId, deliveryInfo, orderRepository.getItems(orderId)))
+            val orderDeliveryInfo = new DeliveryInfo(userInfo.personalInfo.firstName, userInfo.personalInfo.email.getOrElse(""), userInfo.personalInfo.phone, "")
+            emailHelper.orderConfirmation(new OrderInfo(orderId, orderDeliveryInfo, orderRepository.getItems(orderId)))
             Redirect(routes.Order.confirmation(orderId))
           }
         )
@@ -126,7 +127,8 @@ class Order @Inject()(implicit ur: UserRepository, orderRepository: OrderReposit
             val userInfo = new UserInfo(getUserId, pickupInfo.personalInfo, None)
             userRepository.updateUserInfo(userInfo)
             val orderId = orderRepository.create(pickupInfo, getUserId)
-            //emailHelper.orderConfirmation(new OrderInfo(orderId, deliveryInfo, orderRepository.getItems(orderId)))
+            val orderDeliveryInfo = new DeliveryInfo(userInfo.personalInfo.firstName, userInfo.personalInfo.email.getOrElse(""), userInfo.personalInfo.phone, "")
+            emailHelper.orderConfirmation(new OrderInfo(orderId, orderDeliveryInfo, orderRepository.getItems(orderId)))
             Redirect(routes.Order.confirmation(orderId))
           }
         )
