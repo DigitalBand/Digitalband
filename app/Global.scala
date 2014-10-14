@@ -1,3 +1,4 @@
+package db
 import com.google.inject.Guice
 
 import com.tzavellas.sse.guice.ScalaModule
