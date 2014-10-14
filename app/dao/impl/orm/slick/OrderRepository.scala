@@ -161,8 +161,6 @@ class OrderRepository extends RepositoryBase with dao.common.OrderRepository {
     sql"""
       select
         name,
-        null,
-        null
         email,
         phone,
         address
