@@ -12,14 +12,15 @@ import dao.impl.orm.slick.common.RepositoryBase
 class CityRepository extends RepositoryBase with dao.common.CityRepository {
   def get(cityId: Int): CityInfo = database withDynSession {
     implicit val result = GetResult(
-      r => CityInfo(id = r.<<, name = r.<<, domain = r.<<, delivery = r.<<, payment = r.<<))
+      r => CityInfo(id = r.<<, name = r.<<, domain = r.<<, delivery = r.<<, payment = r.<<, phone = r.<<))
     sql"""
       select
         c.id,
         c.name,
         c.domain,
         c.delivery,
-        c.payment
+        c.payment,
+        c.phone
       from cities c
       where
         c.id = ${cityId};
@@ -28,14 +29,15 @@ class CityRepository extends RepositoryBase with dao.common.CityRepository {
 
   def getByHostname(host: String): CityInfo = database withDynSession {
     implicit val result = GetResult(
-      r => CityInfo(id = r.<<, name = r.<<, domain = r.<<, delivery = r.<<, payment = r.<<))
+      r => CityInfo(id = r.<<, name = r.<<, domain = r.<<, delivery = r.<<, payment = r.<<, phone = r.<<))
     sql"""
       select
         c.id,
         c.name,
         c.domain,
         c.delivery,
-        c.payment
+        c.payment,
+        c.phone
       from cities  c
       where c.domain = ${host};
     """.as[CityInfo].first
@@ -71,14 +73,15 @@ class CityRepository extends RepositoryBase with dao.common.CityRepository {
 
   def list: Seq[CityInfo] = database withDynSession {
     implicit val res = GetResult(
-      r => CityInfo(id = r.<<, name = r.<<, domain = r.<<, delivery = r.<<, payment = r.<<))
+      r => CityInfo(id = r.<<, name = r.<<, domain = r.<<, delivery = r.<<, payment = r.<<, phone = r.<<))
     sql"""
       select
         c.id,
         c.name,
         c.domain,
         c.delivery,
-        c.payment
+        c.payment,
+        c.phone
       from cities c
     """.as[CityInfo].list
   }

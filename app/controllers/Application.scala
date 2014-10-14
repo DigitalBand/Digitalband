@@ -44,7 +44,6 @@ class Application @Inject()(implicit ur: UserRepository,
       implicit user =>
         implicit request =>
           val categories: Seq[CategoryEntity] = categoryRepository.listWithPictures
-          val host = if (request.host.contains("localhost")) "digitalband.ru" else request.host
           val products: Seq[ProductDetails] = productRepository.listMostVisited(12)
           Ok(views.html.index(categories, products))
     }
