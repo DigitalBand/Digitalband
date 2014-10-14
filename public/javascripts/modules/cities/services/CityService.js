@@ -53,6 +53,6 @@
                 return city;
             });
         }
-    }
+    };
     app.service('CityService', CityService);
 }(citiesApp));

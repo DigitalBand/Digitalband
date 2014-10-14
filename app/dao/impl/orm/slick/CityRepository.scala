@@ -59,7 +59,8 @@ class CityRepository extends RepositoryBase with dao.common.CityRepository {
         name = ${city.name},
         domain = ${city.domain},
         delivery = ${city.delivery},
-        payment = ${city.payment}
+        payment = ${city.payment},
+        phone = ${city.phone}
       WHERE
         id = ${city.id};
     """.execute
