@@ -1,6 +1,6 @@
 package dao.impl.orm.slick
 
-import models.{PersonalInfo, DeliveryInfo, DeliveryAddress, UserEntity}
+import models._
 
 import scala.slick.driver.JdbcDriver.backend.Database
 import Database.dynamicSession
@@ -78,8 +78,24 @@ class UserRepository extends RepositoryBase with dao.common.UserRepository {
     """.execute()
   }
 
-  def updateDeliveryAddress(address: DeliveryAddress, userId: Int) = database withDynSession {
+  def updateUserInfo(info: UserInfo) = database withDynSession {
     sqlu"""
+      update
+        user_profiles
+      set
+        user_name = ${info.personalInfo.firstName},
+        user_last_name = ${info.personalInfo.lastName},
+        user_middle_name = ${info.personalInfo.middleName},
+        email = ${info.personalInfo.email},
+        phone_number = ${info.personalInfo.phone}
+      where
+        user_id = ${info.id}
+    """.execute()
+
+    if (info.address.isDefined)
+    {
+      val address = info.address.get
+      sqlu"""
       update
         user_profiles
       set
@@ -89,23 +105,9 @@ class UserRepository extends RepositoryBase with dao.common.UserRepository {
         housing = ${address.housing},
         apartment = ${address.apartment}
       where
-        user_id = ${userId}
+        user_id = ${info.id}
     """.execute()
-  }
-
-  def updatePersonalInfo(info: PersonalInfo, userId: Int) = database withDynSession {
-    sqlu"""
-      update
-        user_profiles
-      set
-        user_name = ${info.firstName},
-        user_last_name = ${info.lastName},
-        user_middle_name = ${info.middleName},
-        email = ${info.email},
-        phone_number = ${info.phone}
-      where
-        user_id = ${userId}
-    """.execute()
+    }
   }
 
   def getDeliveryInfo(userId: Int) = database withDynSession {
@@ -120,11 +122,19 @@ class UserRepository extends RepositoryBase with dao.common.UserRepository {
     """.as[DeliveryInfo].firstOption
   }
 
-  def getDeliveryAddress(userId: Int) = database withDynSession {
+  def getUserInfo(userId: Int) = database withDynSession {
     implicit val result = GetResult(r =>
-      new DeliveryAddress(city = r.<<, street = r.<<, building = r.<<, housing = r.<<, apartment = r.<<))
+      new UserInfo(
+        id = userId ,
+        personalInfo = new PersonalInfo(firstName = r.<<, lastName = r.<<, middleName = r.<<, email = r.<<, phone = r.<<),
+        address = Option(new DeliveryAddress(city = r.<<, street = r.<<, building = r.<<, housing = r.<<, apartment = r.<<))))
     sql"""
       select
+        user_name,
+        user_last_name,
+        user_middle_name,
+        email,
+        phone_number,
         city,
         street,
         building,
@@ -132,22 +142,7 @@ class UserRepository extends RepositoryBase with dao.common.UserRepository {
         apartment
       from user_profiles
       where user_id = ${userId};
-    """.as[DeliveryAddress].firstOption
-  }
-
-  def getPersonalInfo(userId: Int) = database withDynSession {
-    implicit val result = GetResult(r =>
-      new PersonalInfo(firstName = r.<<, lastName = r.<<, middleName = r.<<, email = r.<<, phone = r.<<))
-    sql"""
-      select
-        user_name,
-        user_last_name,
-        user_middle_name,
-        email,
-        phone_number
-      from user_profiles
-      where user_id = ${userId};
-    """.as[PersonalInfo].firstOption
+    """.as[UserInfo].firstOption
   }
 
   def getAdminEmails: Seq[String] = Play.current.configuration.getString("email.admins") match {

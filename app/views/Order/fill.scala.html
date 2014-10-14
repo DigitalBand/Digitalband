@@ -1,4 +1,4 @@
-@(items: Seq[models.CartItem], deliveryInfo: Form[DeliveryAddress])(implicit user: Option[models.UserEntity], request: play.api.mvc.Request[Any])
+@(items: Seq[models.CartItem])(implicit user: Option[models.UserEntity], request: play.api.mvc.Request[Any])
 @import Cart.shoppingList
 @import Shared.wizard
 @import views.html.common.bootstrap.hfc
@@ -16,26 +16,22 @@
                     &nbsp;<a href="@routes.Cart.display()"> <i class="icon-edit"></i> @Messages("order.deliveryinfo.editbutton") </a>
             </div>
             @shoppingList(items, "", false)
-            <form method="post" action="@routes.Order.updateDeliveryAddress">
+            <form method="post" action="@routes.Order.checkDeliveryType">
                 <div class="form-horizontal">
                     <fieldset>
                         <legend>
                             @Messages("order.deliveryinfo.form.deliverylegend")
                         </legend>
                         <div class="form-group">
-                            <label class="col-sm-2 control-label" for="delivery">Способ доставки</label>
+                            <label class="col-sm-2 control-label" for="delivery">@Messages("deliveryType")</label>
                             <div class="col-sm-6">
-                                <select id="delivery" class="form-control">
-                                    <option>Доставка</option>
-                                    <option>Самовывоз</option>
+                                <select id="delivery" name="delivery" class="form-control">
+                                    <option value="1">@Messages("delivery")</option>
+                                    <option value="2">@Messages("pickup")</option>
                                 </select>
                             </div>
                         </div>
-                        @helper.inputText(deliveryInfo("city"), 'class -> "form-control form-input")
-                        @helper.inputText(deliveryInfo("street"), 'class -> "form-control form-input")
-                        @helper.inputText(deliveryInfo("building"), 'class -> "form-control form-input")
-                        @helper.inputText(deliveryInfo("housing"), 'class -> "form-control form-input")
-                        @helper.inputText(deliveryInfo("apartment"), 'class -> "form-control form-input")
+                        <input type="hidden" name="id" value="123"/>
                     </fieldset>
                 </div>
                 <br>

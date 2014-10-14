@@ -1,0 +1,54 @@
+@(items: Seq[models.CartItem], orderInfo: Form[OrderDeliveryInfo])(implicit user: Option[models.UserEntity], request: play.api.mvc.Request[Any])
+@import Cart.shoppingList
+@import Shared.wizard
+@import views.html.common.bootstrap.hfc
+@import views.html.Security.loginpart
+
+@main(menuItem = "cart") {
+<div class="page-block">
+    <div class="col-md-12">
+        @wizard(3)
+    </div>
+
+    <div class="col-md-12">
+        <div class="page-header">
+            <h3> @Messages("order.deliveryinfo.title") </h3>
+            &nbsp;<a href="@routes.Cart.display()"> <i class="icon-edit"></i> @Messages("order.deliveryinfo.editbutton") </a>
+        </div>
+        @shoppingList(items, "", false)
+        <form method="post" action="@routes.Order.create">
+            <div class="form-horizontal">
+                <fieldset>
+                    <legend>
+                        @Messages("order.deliveryinfo.form.deliverylegend")
+                    </legend>
+                    @helper.inputText(orderInfo("address.city"), 'class -> "form-control")
+                    @helper.inputText(orderInfo("address.street"), 'class -> "form-control")
+                    @helper.inputText(orderInfo("address.building"), 'class -> "form-control")
+                    @helper.inputText(orderInfo("address.housing"), 'class -> "form-control")
+                    @helper.inputText(orderInfo("address.apartment"), 'class -> "form-control")
+                </fieldset>
+                <fieldset>
+                    <legend>
+                        @Messages("order.deliveryinfo.form.personallegend")
+                    </legend>
+                    @helper.inputText(orderInfo("personalInfo.lastName"), 'class -> "form-control")
+                    @helper.inputText(orderInfo("personalInfo.firstName"), 'class -> "form-control")
+                    @helper.inputText(orderInfo("personalInfo.middleName"), 'class -> "form-control")
+                    @helper.inputText(orderInfo("personalInfo.phone"), 'class -> "form-control")
+                    @helper.inputText(orderInfo("personalInfo.email"), 'class -> "form-control")
+                </fieldset>
+                <fieldset>
+                    <legend>
+                        @Messages("order.deliveryinfo.form.additionallegend")
+                    </legend>
+                    @helper.textarea(orderInfo("comment"), 'rows -> 6, 'class -> "form-control")
+                </fieldset>
+            </div>
+            <br>
+            <button class="btn btn-primary"> <i class="icon-arrow-right"></i> &nbsp; @Messages("order.fill.form.buttons.placeorder") </button>
+        </form>
+    </div>
+
+</div>
+}

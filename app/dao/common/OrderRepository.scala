@@ -23,6 +23,8 @@ trait OrderRepository {
 
   def create(deliveryInfo: DeliveryInfo, userId: Int): Int
 
-  def create(userId: Int, address: DeliveryAddress, personalInfo: PersonalInfo): Int
+  def create(deliveryInfo: OrderDeliveryInfo, userId: Int): Int
+
+  def create(deliveryInfo: PickupDeliveryInfo, userId: Int): Int
 
 }
