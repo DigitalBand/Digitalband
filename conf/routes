@@ -15,6 +15,7 @@ POST          /admin/order/:orderId/confirm                        @controllers.
 POST          /admin/order/:orderId/cancel                         @controllers.admin.Order.cancel(orderId:Int)
 POST          /admin/order/:orderId/complete                       @controllers.admin.Order.complete(orderId:Int)
 POST          /admin/order/:orderId/delete                         @controllers.admin.Order.delete(orderId:Int)
+#Admin shops
 GET           /admin/shops                                         @controllers.admin.Shop.main()
 DELETE        /admin/shops/remove/:shopId                          @controllers.admin.Shop.remove(shopId: Int)
 GET           /admin/shops/list                                    @controllers.admin.Shop.list
@@ -26,6 +27,7 @@ GET           /admin/shops/javaScriptRoutes                        @controllers.
 GET           /admin/cities                                        @controllers.admin.City.main()
 DELETE        /admin/cities/remove/:cityId                         @controllers.admin.City.remove(cityId: Int)
 GET           /admin/cities/list                                   @controllers.admin.City.list
+GET           /admin/cities/list-short-info                        @controllers.admin.City.listShortInfo
 PUT           /admin/cities/update                                 @controllers.admin.City.update
 POST          /admin/cities/add                                    @controllers.admin.City.add
 GET           /admin/cities/get/:cityId                            @controllers.admin.City.get(cityId: Int)

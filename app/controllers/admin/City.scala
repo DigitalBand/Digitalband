@@ -51,6 +51,12 @@ class City @Inject()(implicit userRepository: UserRepository, cityRepository: Ci
         Ok(Json.generate(cityRepository.list)).withHeaders(CONTENT_TYPE -> "application/json")
   }
 
+  def listShortInfo = withAdmin {
+    implicit user =>
+      implicit request =>
+        Ok(Json.generate(cityRepository.listShortInfo)).withHeaders(CONTENT_TYPE -> "application/json")
+  }
+
   def javascriptRoutes = withAdmin {
     implicit user =>
       implicit request =>
@@ -60,7 +66,8 @@ class City @Inject()(implicit userRepository: UserRepository, cityRepository: Ci
             controllers.admin.routes.javascript.City.add,
             controllers.admin.routes.javascript.City.remove,
             controllers.admin.routes.javascript.City.update,
-            controllers.admin.routes.javascript.City.get
+            controllers.admin.routes.javascript.City.get,
+            controllers.admin.routes.javascript.City.listShortInfo
           )
         ).as("text/javascript")
   }

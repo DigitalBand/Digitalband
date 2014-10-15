@@ -25,11 +25,8 @@
     },
     initCities: function() {
         var that = this;
-        this.cityService.list().then(function (cities) {
-            that.cities = [];
-            cities.forEach(function(city) {
-               that.cities.push(city.name);
-            });
+        this.cityService.listShortInfo().then(function (cities) {
+            that.cities = cities;
         });
     },
     save: function () {

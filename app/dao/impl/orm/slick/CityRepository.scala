@@ -2,7 +2,7 @@ package dao.impl.orm.slick
 
 import dao.impl.orm.slick.common.RepositoryBase
 import helpers.PhoneHelper._
-import models.{ShopInfo, CityInfo}
+import models.{CityShortInfo, ShopInfo, CityInfo}
 import scala.slick.driver.JdbcDriver.backend.Database
 import Database.dynamicSession
 import slick.jdbc.{StaticQuery => Q, GetResult}
@@ -70,6 +70,17 @@ class CityRepository extends RepositoryBase with dao.common.CityRepository {
     sqlu"""
       delete from cities where id = ${cityId};
     """.execute
+  }
+
+  def listShortInfo: Seq[CityShortInfo] = database withDynSession {
+    implicit val res = GetResult(
+      r => CityShortInfo(id = r.<<, name = r.<<))
+    sql"""
+      select
+        c.id,
+        c.name
+      from cities c
+    """.as[CityShortInfo].list
   }
 
   def list: Seq[CityInfo] = database withDynSession {
