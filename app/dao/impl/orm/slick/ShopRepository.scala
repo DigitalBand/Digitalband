@@ -2,18 +2,19 @@ package dao.impl.orm.slick
 
 import scala.slick.driver.JdbcDriver.backend.Database
 import Database.dynamicSession
-import slick.jdbc.{StaticQuery => Q, GetResult}
-import Q.interpolation
-import helpers.PhoneHelper.parsePhones
-import models.{CityShortInfo, YandexShopInfo, ShopInfo}
 import dao.impl.orm.slick.common.RepositoryBase
+import helpers.PhoneHelper.parsePhones
+import models.{ShopInfo, YandexShopInfo}
+import scala.slick.jdbc.{GetResult, StaticQuery => Q}
+import Q.interpolation
 
 class ShopRepository extends RepositoryBase with dao.common.ShopRepository {
   def list: Seq[ShopInfo] = database withDynSession {
     implicit val res = GetResult(r => ShopInfo(
       id = r.<<,
       title = r.<<,
-      city = CityShortInfo(r.<<, r.<<),
+      cityId = r.<<,
+      cityName = r.<<,
       address = r.<<,
       phoneNumbers = parsePhones(r.<<)
     ))
@@ -25,7 +26,6 @@ class ShopRepository extends RepositoryBase with dao.common.ShopRepository {
         c.name,
         s.address,
         s.phones
-
       from shops s
       inner join cities c on c.id = s.city_id;
     """.as[ShopInfo].list
@@ -35,9 +35,11 @@ class ShopRepository extends RepositoryBase with dao.common.ShopRepository {
     implicit val res = GetResult(r => ShopInfo(
       id = r.<<,
       title = r.<<,
-      city = CityShortInfo(r.<<, r.<<),
+      cityId = r.<<,
+      cityName = r.<<,
       address = r.<<,
-      phoneNumbers = parsePhones(r.<<)))
+      phoneNumbers = parsePhones(r.<<)
+    ))
     sql"""
       select
         s.id,
@@ -57,7 +59,8 @@ class ShopRepository extends RepositoryBase with dao.common.ShopRepository {
     implicit val res = GetResult(r => ShopInfo(
       id = r.<<,
       title = r.<<,
-      city = CityShortInfo(r.<<, r.<<),
+      cityId = r.<<,
+      cityName = r.<<,
       address = r.<<,
       phoneNumbers = parsePhones(r.<<)
     ))
@@ -72,7 +75,7 @@ class ShopRepository extends RepositoryBase with dao.common.ShopRepository {
       from shops s
       inner join cities c on c.id = s.city_id
       where
-        c.domain = ${host});
+        c.domain = ${host};
     """.as[ShopInfo].list
   }
 
@@ -81,7 +84,7 @@ class ShopRepository extends RepositoryBase with dao.common.ShopRepository {
       UPDATE shops
       SET
         title = ${shop.title},
-        city_id = ${shop.city.id},
+        city_id = ${shop.cityId},
         address = ${shop.address},
         phones = ${shop.phoneNumbers.mkString(";")}
       WHERE
@@ -93,7 +96,7 @@ class ShopRepository extends RepositoryBase with dao.common.ShopRepository {
     sqlu"""
       insert into
         shops(title, city_id, address, phones)
-        values(${shop.title}, ${shop.city.id}, ${shop.address}, ${shop.phoneNumbers.mkString(";")});
+        values(${shop.title}, ${shop.cityId}, ${shop.address}, ${shop.phoneNumbers.mkString(";")});
     """.execute
     sql"select last_insert_id();".as[Int].first
   }
