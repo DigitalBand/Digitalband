@@ -1,0 +1,19 @@
+<div class="col-lg-12">
+    <form class="form-horizontal" name="aboutForm">
+        <div class="form-group">
+            <label>О нас</label>
+            <textarea ui-tinymce ng-model="vm.aboutInfo.about"></textarea>
+            <div class="alert alert-danger" role="alert" ng-show="vm.aboutAlert">Поле обязательно для заполнения</div>
+        </div>
+        <div class="form-group">
+            <label>Юридическая информация</label>
+            <textarea ui-tinymce ng-model="vm.aboutInfo.legalInfo"></textarea>
+            <div class="alert alert-danger" role="alert" ng-show="vm.legalInfoAlert">Поле обязательно для заполнения</div>
+        </div>
+        <div class="form-group alert alert-success" role="alert" ng-show="vm.resultSuccess" >Данные успешно обновлены</div>
+
+        <div class="form-group">
+            <button class="btn btn-primary" ng-click="vm.save()">Сохранить</button>
+        </div>
+    </form>
+</div>

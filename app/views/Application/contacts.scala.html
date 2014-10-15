@@ -1,4 +1,4 @@
-@(form: Form[models.ContactEntity], recaptcha: helpers.RecaptchaChallenge, shops: Seq[ShopInfo])(implicit user: Option[models.UserEntity], request: play.api.mvc.Request[Any])
+@(form: Form[models.ContactEntity], recaptcha: helpers.RecaptchaChallenge, aboutInfo: AboutInfo, shops: Seq[ShopInfo])(implicit user: Option[models.UserEntity], request: play.api.mvc.Request[Any])
 @import views.html.common.bootstrap._
 @import views.html.Shared.alert
 @main(Messages("contacts.title"), "contacts") {
@@ -11,22 +11,12 @@
               <span>О нас</span>
             </h3>
             <img class="text-img thumbnail pull-left" src="@routes.Assets.at("images/about.jpg")">
-            <p> <strong> Digitalband </strong>
-              - это интернет магазин, в котором можно купить все что связано с шоу техникой,
-              музыкальными инструментами, и музыкальным оборудованием.
-              Что бы купить то, что вы хотите, больше не надо искать, где это продается,
-              сколько это стоит и даже как это называется. Просто нужно связаться с нами по электронной почте или по Skype, и мы предоставим вам информацию по вашему запросу.
-              Только индивидуальный подход к каждому покупателю. У нас можно торговаться.</p>
+            <p>@Html(aboutInfo.about)</p>
             <br/>
             <h3 class="block-title sub-title">
               <span>Юридическая информация</span>
             </h3>
-            <p>
-
-              <div>ИП Ткаченко Алексей Сергеевич</div>
-              <div>ОГРН: 308616114400025</div>
-              <div>Россия 344092 г Ростов-на-Дону ул Королева 1/9 кв70 (для документов)</div>
-            </p>
+            <p>@Html(aboutInfo.legalInfo)</p>
             <h3 class="block-title sub-title">
               <span>Наши магазины</span>
             </h3>
