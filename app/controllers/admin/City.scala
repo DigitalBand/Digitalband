@@ -5,7 +5,7 @@ import com.google.inject.Inject
 import controllers.common.ControllerBase
 import dao.common.{CityRepository, UserRepository}
 import helpers.withAdmin
-import models.{CityInfo, ShopInfo}
+import models.CityInfo
 import play.api.Routes
 
 class City @Inject()(implicit userRepository: UserRepository, cityRepository: CityRepository) extends ControllerBase {
