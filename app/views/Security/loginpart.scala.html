@@ -1,5 +1,5 @@
 @(loginForm: Form[(String, String)], returnUrl: String = "")(implicit lang: Lang)
-@import views.html.common.bootstrap._
+@import views.html.common.bootstrap.fc
 <div class="page-block">
     @loginForm.globalError.map { error =>
         <div class="alert alert-danger">

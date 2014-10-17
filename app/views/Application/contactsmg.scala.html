@@ -1,5 +1,5 @@
 @(form: Form[models.ContactEntity], recaptcha: helpers.RecaptchaChallenge, shops: Seq[ShopInfo])(implicit user: Option[models.UserEntity], request: play.api.mvc.Request[Any])
-@import views.html.common.bootstrap._
+@import views.html.common.bootstrap.fc
 @import views.html.Shared.alert
 @main(Messages("contacts.title"), "contacts") {
   <div class="page-block col-md-12">
