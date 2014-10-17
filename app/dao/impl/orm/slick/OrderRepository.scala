@@ -54,7 +54,7 @@ class OrderRepository extends RepositoryBase with dao.common.OrderRepository {
         ${deliveryInfo.personalInfo.email},
         ${deliveryInfo.personalInfo.phone},
         ${deliveryInfo.comment},
-        "Доставка");
+        "Delivery");
     """.execute()
     val orderId = sql"select last_insert_id();".as[Int].first
     sqlu"""
@@ -89,7 +89,7 @@ class OrderRepository extends RepositoryBase with dao.common.OrderRepository {
         ${deliveryInfo.personalInfo.email},
         ${deliveryInfo.personalInfo.phone},
         ${deliveryInfo.comment},
-        "Самовывоз");
+        "Pickup");
     """.execute()
     val orderId = sql"select last_insert_id();".as[Int].first
     sqlu"""
