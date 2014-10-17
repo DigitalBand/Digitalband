@@ -1,3 +1,3 @@
 package models
 
-case class ShopInfo(id: Int, title: String, city: String, address: String, phoneNumbers: Seq[String])
+case class ShopInfo(id: Int, title: String, cityId: Option[Int], cityName: String, address: String, phoneNumbers: Seq[String])

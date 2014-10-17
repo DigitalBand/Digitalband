@@ -1,6 +1,6 @@
 package dao.common
 
-import models.CityInfo
+import models.{CityShortInfo, CityInfo}
 
 trait CityRepository {
   def get(cityDeliveryId: Int): CityInfo
@@ -9,4 +9,5 @@ trait CityRepository {
   def update(cityDelivery: CityInfo)
   def remove(cityDeliveryId: Int)
   def list: Seq[CityInfo]
+  def listShortInfo: Seq[CityShortInfo]
 }
