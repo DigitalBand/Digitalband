@@ -8,6 +8,7 @@ import dao.common.{CartRepository, OrderRepository, UserRepository}
 import helpers.{EmailHelper, withUser}
 import play.api.data.Form
 import play.api.data.Forms._
+import play.api.i18n.Messages
 
 class Order @Inject()(implicit ur: UserRepository, orderRepository: OrderRepository, cartRepository: CartRepository, shopRepository: ShopRepository) extends ControllerBase {
   val deliveryForm = Form(mapping(
@@ -108,7 +109,7 @@ class Order @Inject()(implicit ur: UserRepository, orderRepository: OrderReposit
             val userInfo = new UserInfo(getUserId, deliveryInfo.personalInfo, Option(deliveryInfo.address))
             userRepository.updateUserInfo(userInfo)
             val orderId = orderRepository.create(deliveryInfo, getUserId)
-            val orderDeliveryInfo = new DeliveryInfo(userInfo.personalInfo.firstName, userInfo.personalInfo.email.getOrElse(""), userInfo.personalInfo.phone, "")
+            val orderDeliveryInfo = new DeliveryInfo(userInfo.personalInfo.toString(), userInfo.personalInfo.email.getOrElse(""), userInfo.personalInfo.phone, userInfo.address.get.toString())
             emailHelper.orderConfirmation(new OrderInfo(orderId, orderDeliveryInfo, orderRepository.getItems(orderId)))
             Redirect(routes.Order.confirmation(orderId))
           }
@@ -127,7 +128,9 @@ class Order @Inject()(implicit ur: UserRepository, orderRepository: OrderReposit
             val userInfo = new UserInfo(getUserId, pickupInfo.personalInfo, None)
             userRepository.updateUserInfo(userInfo)
             val orderId = orderRepository.create(pickupInfo, getUserId)
-            val orderDeliveryInfo = new DeliveryInfo(userInfo.personalInfo.firstName, userInfo.personalInfo.email.getOrElse(""), userInfo.personalInfo.phone, "")
+            val pickupShop = shopRepository.get(pickupInfo.shopId);
+            val address = Messages("pickup") + " - " + pickupShop.address;
+            val orderDeliveryInfo = new DeliveryInfo(userInfo.personalInfo.toString(), userInfo.personalInfo.email.getOrElse(""), userInfo.personalInfo.phone, address)
             emailHelper.orderConfirmation(new OrderInfo(orderId, orderDeliveryInfo, orderRepository.getItems(orderId)))
             Redirect(routes.Order.confirmation(orderId))
           }
