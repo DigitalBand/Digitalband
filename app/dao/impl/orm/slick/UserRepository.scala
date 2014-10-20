@@ -102,7 +102,6 @@ class UserRepository extends RepositoryBase with dao.common.UserRepository {
         city = ${address.city},
         street = ${address.street},
         building = ${address.building},
-        housing = ${address.housing},
         apartment = ${address.apartment}
       where
         user_id = ${info.id}
@@ -127,7 +126,7 @@ class UserRepository extends RepositoryBase with dao.common.UserRepository {
       new UserInfo(
         id = userId ,
         personalInfo = new PersonalInfo(firstName = r.<<, lastName = r.<<, middleName = r.<<, email = r.<<, phone = r.<<),
-        address = Option(new DeliveryAddress(city = r.<<, street = r.<<, building = r.<<, housing = r.<<, apartment = r.<<))))
+        address = Option(new DeliveryAddress(city = r.<<, street = r.<<, building = r.<<, apartment = r.<<))))
     sql"""
       select
         user_name,
@@ -138,7 +137,6 @@ class UserRepository extends RepositoryBase with dao.common.UserRepository {
         city,
         street,
         building,
-        housing,
         apartment
       from user_profiles
       where user_id = ${userId};

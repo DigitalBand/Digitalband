@@ -2,14 +2,15 @@ package controllers.admin
 
 import com.google.inject.Inject
 import controllers.common.ControllerBase
-import dao.common.{OrderRepository, UserRepository}
+import dao.common.{OrderRepository, UserRepository, ShopRepository}
 import helpers.{EmailHelper, withAdmin}
-import models.ListPage
+import models._
 import play.api.data.Forms._
 import play.api.data._
+import play.api.i18n.Messages
 import views.html.Admin.Order
 
-class Order @Inject()(implicit userRepository: UserRepository, orderRepository: OrderRepository) extends ControllerBase {
+class Order @Inject()(implicit userRepository: UserRepository, orderRepository: OrderRepository, shopRepository: ShopRepository) extends ControllerBase {
   val orderStatusForm = Form("comment" -> text)
   val emailHelper = new EmailHelper()
 
@@ -23,7 +24,49 @@ class Order @Inject()(implicit userRepository: UserRepository, orderRepository: 
   def display(id: Int) = withAdmin { implicit user =>
       implicit request =>
         val order = orderRepository.get(id)
-        Ok(Order.display(order))
+        if(order.deliveryType == Messages("internationalDelivery"))
+          Ok(Order.display(getDeliveryOrder(order)))
+        else if(order.deliveryType == Messages("internationalPickup"))
+          Ok(Order.display(getPickupOrder(order)))
+        else
+          Ok(Order.display(order))
+  }
+
+  def getDeliveryOrder(order: OrderInfo): OrderInfo = {
+    val orderDeliveryInfo = orderRepository.getOrderDeliveryInfo(order.id)
+    val deliveryInfo = new DeliveryInfo(
+      orderDeliveryInfo.personalInfo.toString(),
+      orderDeliveryInfo.personalInfo.email.getOrElse(""),
+      orderDeliveryInfo.personalInfo.phone,
+      orderDeliveryInfo.address.toString())
+    val orderInfo = new OrderInfo(
+      order.id,
+      order.orderDate,
+      order.status,
+      Messages("delivery"),
+      order.comment,
+      deliveryInfo,
+      order.items)
+    orderInfo
+  }
+
+  def getPickupOrder(order: OrderInfo): OrderInfo = {
+    val pickupDeliveryInfo = orderRepository.getPickupDeliveryInfo(order.id)
+    val shop = shopRepository.get(pickupDeliveryInfo.shopId);
+    val deliveryInfo = new DeliveryInfo(
+      pickupDeliveryInfo.personalInfo.toString(),
+      pickupDeliveryInfo.personalInfo.email.getOrElse(""),
+      pickupDeliveryInfo.personalInfo.phone,
+      shop.address)
+    val orderInfo = new OrderInfo(
+      order.id,
+      order.orderDate,
+      order.status,
+      Messages("pickup"),
+      order.comment,
+      deliveryInfo,
+      order.items)
+    orderInfo
   }
 
   def confirm(orderId: Int) = withAdmin { implicit user =>

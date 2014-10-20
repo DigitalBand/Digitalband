@@ -16,7 +16,6 @@ class Order @Inject()(implicit ur: UserRepository, orderRepository: OrderReposit
       "city" -> nonEmptyText(minLength = 2, maxLength = 50),
       "street" -> nonEmptyText(minLength = 2, maxLength = 50),
       "building" -> nonEmptyText(minLength = 1, maxLength = 50),
-      "housing" -> optional(text),
       "apartment" -> optional(text)
     )(DeliveryAddress.apply)(DeliveryAddress.unapply),
     "personalInfo" -> mapping(
