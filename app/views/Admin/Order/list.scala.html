@@ -31,14 +31,19 @@
                                 Заказ № @order.id
                             </a>
                         </div>
-                        <div class="col-md-4">
+                        <div class="col-md-3">
                             <i class="icon-calendar"></i>
                             @order.orderDateFormatted
                         </div>
                         <div class="col-md-3">
                             <i class="icon-user"></i> @order.deliveryInfo.email
                         </div>
-                        <div class="col-md-3">
+                        <div class="col-md-2">
+                            @{if(order.deliveryType == Messages("internationalDelivery")) Messages("delivery")
+                            else if(order.deliveryType == Messages("internationalPickup")) Messages("pickup")
+                            else ""}
+                        </div>
+                        <div class="col-md-2">
                             <div class="pull-right">
                             @statusButton(order.status, order.id)
                             </div>

@@ -187,10 +187,15 @@ class OrderRepository extends RepositoryBase with dao.common.OrderRepository {
 
   def listAll(pageNumber: Int, pageSize: Int): ListPage[OrderInfo] = database withDynSession {
     implicit val getOrderInfo = GetResult(
-      r => new OrderInfo(r.<<, r.<<, r.<<, new DeliveryInfo(name = r.<<, r.<<, r.<<, r.<<)))
+      r => new OrderInfo(
+        orderId = r.<<,
+        orderDate = r.<<,
+        status = r.<<,
+        deliveryType = r.<<,
+        new DeliveryInfo(name = r.<<, email = r.<<, phone = r.<<, address = r.<<)))
     val items = sql"""
       select
-        id, place_date, status, name, email, phone, address
+        id, place_date, status, delivery_type, name, email, phone, address
       from orders
       order by place_date desc
       limit ${pageSize * (pageNumber - 1)}, $pageSize
