@@ -11,6 +11,13 @@ import dao.impl.orm.slick.common.RepositoryBase
 
 class OrderRepository extends RepositoryBase with dao.common.OrderRepository {
 
+  def create[TDeliveryInfo](userId: Int, deliveryInfo: TDeliveryInfo): Int = {
+    deliveryInfo match {
+      case di: OrderDeliveryInfo => create(di, userId)
+      case pi: PickupDeliveryInfo => create(pi, userId)
+    }
+  }
+
   def create(deliveryInfo: OrderDeliveryInfo, userId: Int): Int = database withDynSession {
     sqlu"""
       insert into

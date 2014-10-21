@@ -107,7 +107,7 @@ class Order @Inject()(implicit ur: UserRepository, orderRepository: OrderReposit
           deliveryInfo => {
             val userInfo = new UserInfo(getUserId, deliveryInfo.personalInfo, Option(deliveryInfo.address))
             userRepository.updateUserInfo(userInfo)
-            val orderId = orderRepository.create(deliveryInfo, getUserId)
+            val orderId = orderRepository.create(getUserId, deliveryInfo)
             val orderDeliveryInfo = new DeliveryInfo(userInfo.personalInfo.toString(), userInfo.personalInfo.email.getOrElse(""), userInfo.personalInfo.phone, userInfo.address.get.toString())
             emailHelper.orderConfirmation(new OrderInfo(orderId, orderDeliveryInfo, orderRepository.getItems(orderId)))
             Redirect(routes.Order.confirmation(orderId))
@@ -126,7 +126,7 @@ class Order @Inject()(implicit ur: UserRepository, orderRepository: OrderReposit
           pickupInfo => {
             val userInfo = new UserInfo(getUserId, pickupInfo.personalInfo, None)
             userRepository.updateUserInfo(userInfo)
-            val orderId = orderRepository.create(pickupInfo, getUserId)
+            val orderId = orderRepository.create(getUserId, pickupInfo)
             val pickupShop = shopRepository.get(pickupInfo.shopId);
             val address = Messages("pickup") + " - " + pickupShop.address;
             val orderDeliveryInfo = new DeliveryInfo(userInfo.personalInfo.toString(), userInfo.personalInfo.email.getOrElse(""), userInfo.personalInfo.phone, address)
