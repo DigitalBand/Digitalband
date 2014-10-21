@@ -1,6 +1,6 @@
 package dao.impl.orm.slick
 
-import models.{DeliveryInfo, UserEntity}
+import models._
 
 import scala.slick.driver.JdbcDriver.backend.Database
 import Database.dynamicSession
@@ -78,6 +78,37 @@ class UserRepository extends RepositoryBase with dao.common.UserRepository {
     """.execute()
   }
 
+  def updateUserInfo(info: UserInfo) = database withDynSession {
+    sqlu"""
+      update
+        user_profiles
+      set
+        user_name = ${info.personalInfo.firstName},
+        user_last_name = ${info.personalInfo.lastName},
+        user_middle_name = ${info.personalInfo.middleName},
+        email = ${info.personalInfo.email},
+        phone_number = ${info.personalInfo.phone}
+      where
+        user_id = ${info.id}
+    """.execute()
+
+    if (info.address.isDefined)
+    {
+      val address = info.address.get
+      sqlu"""
+      update
+        user_profiles
+      set
+        city = ${address.city},
+        street = ${address.street},
+        building = ${address.building},
+        apartment = ${address.apartment}
+      where
+        user_id = ${info.id}
+    """.execute()
+    }
+  }
+
   def getDeliveryInfo(userId: Int) = database withDynSession {
     implicit val deliveryResult = GetResult(r =>
       new DeliveryInfo(
@@ -88,6 +119,28 @@ class UserRepository extends RepositoryBase with dao.common.UserRepository {
     sql"""
       select user_name, email, phone_number, address from user_profiles where user_id = ${userId};
     """.as[DeliveryInfo].firstOption
+  }
+
+  def getUserInfo(userId: Int) = database withDynSession {
+    implicit val result = GetResult(r =>
+      new UserInfo(
+        id = userId ,
+        personalInfo = new PersonalInfo(firstName = r.<<, lastName = r.<<, middleName = r.<<, email = r.<<, phone = r.<<),
+        address = Option(new DeliveryAddress(city = r.<<, street = r.<<, building = r.<<, apartment = r.<<))))
+    sql"""
+      select
+        user_name,
+        user_last_name,
+        user_middle_name,
+        email,
+        phone_number,
+        city,
+        street,
+        building,
+        apartment
+      from user_profiles
+      where user_id = ${userId};
+    """.as[UserInfo].firstOption
   }
 
   def getAdminEmails: Seq[String] = Play.current.configuration.getString("email.admins") match {

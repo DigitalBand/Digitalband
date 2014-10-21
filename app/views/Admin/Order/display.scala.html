@@ -9,24 +9,21 @@
         <div class="row">
             <dl class="col-md-6">
                 <dt> Имя: </dt>
-                <dd>
-                @order.deliveryInfo.name
-                </dd>
-
-                <dt> email: </dt>
-                <dd>
-                    <a href="mailto:  @order.deliveryInfo.email"> @order.deliveryInfo.email </a>
-                </dd>
-
-            </dl>
-            <dl class="col-md-6">
+                <dd>@order.deliveryInfo.name</dd>
                 <dt>Телефон:</dt>
                 <dd><a href="callto:@order.deliveryInfo.phone">@order.deliveryInfo.phone</a></dd>
+                <dt> email: </dt>
+                <dd><a href="mailto:  @order.deliveryInfo.email"> @order.deliveryInfo.email </a></dd>
+            </dl>
+            <dl class="col-md-6">
+                <dt>Тип доставки:</dt>
+                <dd>@order.deliveryType</dd>
                 <dt>Адрес:</dt>
                 <dd>@order.deliveryInfo.address</dd>
+                <dt>Комментарий к заказу:</dt>
+                <dd>@order.comment</dd>
             </dl>
         </div>
-
 
         @shoppingList(order.items, "", false)
     </div>

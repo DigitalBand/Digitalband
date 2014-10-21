@@ -80,7 +80,11 @@ GET           /cart                                                @controllers.
 GET           /checkout                                            @controllers.Cart.checkout
 # Order
 GET           /order                                               @controllers.Order.fill
-POST          /order/place                                         @controllers.Order.create
+POST          /order                                               @controllers.Order.checkDeliveryType
+GET           /order/delivery                                      @controllers.Order.fillDelivery
+GET           /order/pickup                                        @controllers.Order.fillPickup
+POST          /order/delivery                                      @controllers.Order.create
+POST          /order/pickup                                        @controllers.Order.createPickup
 GET           /order/:orderId/display                              @controllers.Order.display(orderId: Int)
 GET           /order/:orderId/confirmation                         @controllers.Order.confirmation(orderId: Int)
 # PriceList

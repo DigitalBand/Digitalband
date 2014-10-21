@@ -11,19 +11,30 @@ import dao.impl.orm.slick.common.RepositoryBase
 
 class OrderRepository extends RepositoryBase with dao.common.OrderRepository {
 
-  def create(deliveryInfo: DeliveryInfo, userId: Int): Int = database withDynSession {
-      sqlu"""
-        insert into orders (user_id, place_date, name, email, phone, address)
-        values(
-          $userId,
-          ${new Timestamp(new java.util.Date().getTime)},
-          ${deliveryInfo.name},
-          ${deliveryInfo.email},
-          ${deliveryInfo.phone},
-          ${deliveryInfo.address});
-      """.execute()
-      val orderId = sql"select last_insert_id();".as[Int].first
-      sqlu"""
+  def create[TDeliveryInfo](userId: Int, deliveryInfo: TDeliveryInfo): Int = {
+    deliveryInfo match {
+      case di: OrderDeliveryInfo => create(di, userId)
+      case pi: PickupDeliveryInfo => create(pi, userId)
+    }
+  }
+
+  def create(deliveryInfo: OrderDeliveryInfo, userId: Int): Int = database withDynSession {
+    sqlu"""
+      insert into
+        orders (user_id, place_date, name, last_name, middle_name, email, phone, comment, delivery_type)
+      values(
+        $userId,
+        ${new Timestamp(new java.util.Date().getTime)},
+        ${deliveryInfo.personalInfo.firstName},
+        ${deliveryInfo.personalInfo.lastName},
+        ${deliveryInfo.personalInfo.middleName},
+        ${deliveryInfo.personalInfo.email},
+        ${deliveryInfo.personalInfo.phone},
+        ${deliveryInfo.comment},
+        "Delivery");
+    """.execute()
+    val orderId = sql"select last_insert_id();".as[Int].first
+    sqlu"""
         insert into
           order_items(order_id, product_id, quantity, unit_price)
         select
@@ -38,8 +49,69 @@ class OrderRepository extends RepositoryBase with dao.common.OrderRepository {
         group by product_id;
         delete from shopping_items where user_id = ${userId};
        """.execute()
-      orderId
-    }
+    addOrderDeliveryInfo(orderId, deliveryInfo.address)
+    orderId
+  }
+
+  def create(deliveryInfo: PickupDeliveryInfo, userId: Int): Int = database withDynSession {
+    sqlu"""
+      insert into
+        orders (user_id, place_date, name, last_name, middle_name, email, phone, comment, delivery_type)
+      values(
+        $userId,
+        ${new Timestamp(new java.util.Date().getTime)},
+        ${deliveryInfo.personalInfo.firstName},
+        ${deliveryInfo.personalInfo.lastName},
+        ${deliveryInfo.personalInfo.middleName},
+        ${deliveryInfo.personalInfo.email},
+        ${deliveryInfo.personalInfo.phone},
+        ${deliveryInfo.comment},
+        "Pickup");
+    """.execute()
+    val orderId = sql"select last_insert_id();".as[Int].first
+    sqlu"""
+        insert into
+          order_items(order_id, product_id, quantity, unit_price)
+        select
+          ${orderId},
+          product_id,
+          sum(quantity) as quantity,
+          (select price from products where id = si.product_id limit 1) as unit_price
+        from
+          shopping_items si
+        where
+          user_id = ${userId}
+        group by product_id;
+        delete from shopping_items where user_id = ${userId};
+       """.execute()
+    addOrderPickupInfo(orderId, deliveryInfo.shopId)
+    orderId
+  }
+
+  def addOrderDeliveryInfo(orderId: Int, address: DeliveryAddress) = {
+      sqlu"""
+          insert into
+            order_delivery_addresses(order_id, city, street, building, apartment)
+          values(
+            ${orderId},
+            ${address.city},
+            ${address.street},
+            ${address.building},
+            ${address.apartment}
+          );
+      """.execute()
+  }
+
+  def addOrderPickupInfo(orderId: Int, shopId: Int) = {
+    sqlu"""
+          insert into
+            order_delivery_shops(order_id, shop_id)
+          values(
+            ${orderId},
+            ${shopId}
+          );
+     """.execute()
+  }
 
   def getItems(orderId: Int): Seq[CartItem] = database withDynSession {
     implicit val getCartItem = GetResult(r => new CartItem(r.<<, r.<<, r.<<, r.<<, r.<<, r.<<))
@@ -60,7 +132,8 @@ class OrderRepository extends RepositoryBase with dao.common.OrderRepository {
   }
 
   def getDeliveryInfo(orderId: Int) = database withDynSession {
-    implicit val getDeliveryInfo = GetResult(r => new DeliveryInfo(r.<<, r.<<, r.<<, r.<<))
+    implicit val getDeliveryInfo = GetResult(
+      r => new DeliveryInfo(name = r.<<, r.<<, r.<<, r.<<))
     sql"""
       select
         name,
@@ -74,9 +147,60 @@ class OrderRepository extends RepositoryBase with dao.common.OrderRepository {
     """.as[DeliveryInfo].first
   }
 
+  def getOrderDeliveryInfo(orderId: Int): OrderDeliveryInfo = database withDynSession {
+    implicit val getDeliveryInfo = GetResult(
+      r => new OrderDeliveryInfo(
+        new DeliveryAddress(city = r.<<, street = r.<<, building = r.<<, apartment = r.<<),
+        new PersonalInfo(lastName = r.<<, firstName = r.<<, middleName = r.<<, phone = r.<<, email = r.<<),
+        comment = r.<<
+      ))
+    sql"""
+      select
+        oda.city,
+        oda.street,
+        oda.building,
+        oda.apartment,
+        o.last_name,
+        o.name,
+        o.middle_name,
+        o.phone,
+        o.email,
+        o.comment
+      from
+        orders o,
+        order_delivery_addresses oda
+       where
+        o.id = $orderId AND oda.order_id = $orderId
+    """.as[OrderDeliveryInfo].first
+  }
+
+  def getPickupDeliveryInfo(orderId: Int): PickupDeliveryInfo = database withDynSession {
+    implicit val getDeliveryInfo = GetResult(r => new PickupDeliveryInfo(
+      shopId = r.<<,
+      new PersonalInfo(lastName = r.<<, firstName = r.<<, middleName = r.<<, phone = r.<<, email = r.<<),
+      comment = r.<<
+    ))
+    sql"""
+      select
+        ods.shop_id,
+        o.last_name,
+        o.name,
+        o.middle_name,
+        o.phone,
+        o.email,
+        o.comment
+      from
+        orders o,
+        order_delivery_shops ods
+       where
+        o.id = $orderId AND ods.order_id = $orderId
+    """.as[PickupDeliveryInfo].first
+  }
+
   override def get(orderId: Int): OrderInfo = database withDynSession {
-    implicit val getOrderInfo = GetResult(r => new OrderInfo(r.<<, r.<<, r.<<, new DeliveryInfo(r.<<, r.<<, r.<<, r.<<)))
-    val query = sql"select id, place_date, status, name, email, phone, address from orders where id = $orderId"
+    implicit val getOrderInfo = GetResult(
+      r => new OrderInfo(r.<<, r.<<, r.<<, r.<<, r.<<, new DeliveryInfo(name = r.<<, r.<<, r.<<, r.<<)))
+    val query = sql"select id, place_date, status, delivery_type, comment, name, email, phone, address from orders where id = $orderId"
     val order = query.as[OrderInfo].first()
     new OrderInfo(order, getItems(orderId))
   }
@@ -88,10 +212,16 @@ class OrderRepository extends RepositoryBase with dao.common.OrderRepository {
   }
 
   def listAll(pageNumber: Int, pageSize: Int): ListPage[OrderInfo] = database withDynSession {
-    implicit val getOrderInfo = GetResult(r => new OrderInfo(r.<<, r.<<, r.<<, new DeliveryInfo(r.<<, r.<<, r.<<, r.<<)))
+    implicit val getOrderInfo = GetResult(
+      r => new OrderInfo(
+        orderId = r.<<,
+        orderDate = r.<<,
+        status = r.<<,
+        deliveryType = r.<<,
+        new DeliveryInfo(name = r.<<, email = r.<<, phone = r.<<, address = r.<<)))
     val items = sql"""
       select
-        id, place_date, status, name, email, phone, address
+        id, place_date, status, delivery_type, Concat(name, ' ', last_name) as name, email, phone, address
       from orders
       order by place_date desc
       limit ${pageSize * (pageNumber - 1)}, $pageSize

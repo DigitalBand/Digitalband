@@ -1,5 +1,5 @@
 @(product: Form[models.ProductDetails], images: Seq[Int], productId: Int)(implicit user: Option[models.UserEntity], request: play.api.mvc.Request[Any])
-@import views.html.common.bootstrap._
+@import views.html.common.bootstrap.fc
     @styles = {
         <link rel="stylesheet" media="screen" href="@routes.Assets.at("stylesheets/bootstrap/fileupload.min.css")"/>
     }

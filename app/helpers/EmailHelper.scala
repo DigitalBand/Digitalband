@@ -130,6 +130,5 @@ class EmailHelper(implicit userRepository: UserRepository) {
       mail.addRecipient(adminEmail)
       mail.sendHtml(views.html.emails.plain.order.adminConfirmation(order).body)
     }
-
   }
 }

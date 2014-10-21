@@ -1,6 +1,6 @@
 package dao.common
 
-import models.{DeliveryInfo, UserEntity}
+import models._
 
 
 trait UserRepository {
@@ -11,7 +11,11 @@ trait UserRepository {
 
   def getDeliveryInfo(userId: Int): Option[DeliveryInfo]
 
+  def getUserInfo(userId: Int): Option[UserInfo]
+
   def updateDeliveryInfo(info: DeliveryInfo, userId: Int)
+
+  def updateUserInfo(info: UserInfo)
 
   def remove(userId: Int)
 
