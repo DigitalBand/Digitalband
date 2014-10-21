@@ -11,36 +11,6 @@ import dao.impl.orm.slick.common.RepositoryBase
 
 class OrderRepository extends RepositoryBase with dao.common.OrderRepository {
 
-  def create(deliveryInfo: DeliveryInfo, userId: Int): Int = database withDynSession {
-      sqlu"""
-        insert into orders (user_id, place_date, name, email, phone, address)
-        values(
-          $userId,
-          ${new Timestamp(new java.util.Date().getTime)},
-          ${deliveryInfo.name},
-          ${deliveryInfo.email},
-          ${deliveryInfo.phone},
-          ${deliveryInfo.address});
-      """.execute()
-      val orderId = sql"select last_insert_id();".as[Int].first
-      sqlu"""
-        insert into
-          order_items(order_id, product_id, quantity, unit_price)
-        select
-          ${orderId},
-          product_id,
-          sum(quantity) as quantity,
-          (select price from products where id = si.product_id limit 1) as unit_price
-        from
-          shopping_items si
-        where
-          user_id = ${userId}
-        group by product_id;
-        delete from shopping_items where user_id = ${userId};
-       """.execute()
-      orderId
-    }
-
   def create(deliveryInfo: OrderDeliveryInfo, userId: Int): Int = database withDynSession {
     sqlu"""
       insert into
@@ -244,7 +214,7 @@ class OrderRepository extends RepositoryBase with dao.common.OrderRepository {
         new DeliveryInfo(name = r.<<, email = r.<<, phone = r.<<, address = r.<<)))
     val items = sql"""
       select
-        id, place_date, status, delivery_type, name, email, phone, address
+        id, place_date, status, delivery_type, Concat(name, ' ', last_name) as name, email, phone, address
       from orders
       order by place_date desc
       limit ${pageSize * (pageNumber - 1)}, $pageSize

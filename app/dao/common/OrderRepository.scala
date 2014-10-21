@@ -25,8 +25,6 @@ trait OrderRepository {
 
   def getItems(orderId: Int): Seq[CartItem]
 
-  def create(deliveryInfo: DeliveryInfo, userId: Int): Int
-
   def create(deliveryInfo: OrderDeliveryInfo, userId: Int): Int
 
   def create(deliveryInfo: PickupDeliveryInfo, userId: Int): Int
