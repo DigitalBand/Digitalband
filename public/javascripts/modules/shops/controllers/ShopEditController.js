@@ -1,12 +1,14 @@
 (function (app) {
   "use strict";
-  ShopEditController.$inject = ['$scope', '$stateParams', 'ShopService', '$state'];
-  function ShopEditController($scope, $stateParams, shopService, $state) {
+  ShopEditController.$inject = ['$scope', '$stateParams', 'ShopService', 'CityService', '$state'];
+  function ShopEditController($scope, $stateParams, shopService, cityService, $state) {
     $scope.vm = this;
     this.shopService = shopService;
+    this.cityService = cityService;
     this.$state = $state;
     this.shopId = $stateParams.shopId;
     this.initShop();
+    this.initCities();
   }
 
   ShopEditController.prototype = {
@@ -20,6 +22,15 @@
       else {
         this.shop = {};
       }
+    },
+    initCities: function() {
+        var that = this;
+        this.cityService.list().then(function (cities) {
+            that.cities = [];
+            cities.forEach(function(city) {
+               that.cities.push(city.name);
+            });
+        });
     },
     save: function () {
       var that = this;
