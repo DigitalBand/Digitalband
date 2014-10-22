@@ -80,7 +80,6 @@ GET           /cart                                                @controllers.
 GET           /checkout                                            @controllers.Cart.checkout
 # Order
 GET           /order                                               @controllers.Order.fill
-POST          /order                                               @controllers.Order.checkDeliveryType
 GET           /order/delivery                                      @controllers.Order.fillDelivery
 GET           /order/pickup                                        @controllers.Order.fillPickup
 POST          /order/delivery                                      @controllers.Order.create

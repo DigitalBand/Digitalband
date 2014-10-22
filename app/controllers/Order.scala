@@ -54,17 +54,6 @@ class Order @Inject()(implicit ur: UserRepository, orderRepository: OrderReposit
           Redirect(routes.Cart.display())
   }
 
-  def checkDeliveryType() = withUser {
-    implicit user =>
-      implicit request => {
-        val deliveryType =  request.body.asFormUrlEncoded.get("delivery")(0).toInt
-        if (deliveryType == 1)
-          Redirect(routes.Order.fillDelivery)
-        else
-          Redirect(routes.Order.fillPickup)
-      }
-  }
-
   def fillDelivery() = withUser {
     implicit user =>
       implicit request =>
