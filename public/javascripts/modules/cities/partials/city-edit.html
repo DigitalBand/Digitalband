@@ -29,3 +29,23 @@
         </div>
     </form>
 </div>
+
+<div class="col-lg-12">
+    <a class="btn btn-primary" ui-sref="shopNew"><i class="icon icon-plus"></i> Добавить склад</a>
+    <table class="table table-striped">
+        <thead>
+        <tr>
+            <th></th>
+            <th>Название</th>
+            <th>Адрес</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr ng-repeat="shop in vm.shops">
+            <td><a href="#" ng-click="remove(shop.id)"><i class="icon icon-trash"></i></a></td>
+            <td><a ui-sref="shopEdit({shopId: shop.id})">{{shop.title}}</a></td>
+            <td>{{shop.address}}</td>
+        </tr>
+        </tbody>
+    </table>
+</div>
