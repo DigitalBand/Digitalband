@@ -16,28 +16,17 @@
                     &nbsp;<a href="@routes.Cart.display()"> <i class="icon-edit"></i> @Messages("order.deliveryinfo.editbutton") </a>
             </div>
             @shoppingList(items, "", false)
-            <form method="post" action="@routes.Order.checkDeliveryType">
-                <div class="form-horizontal">
-                    <fieldset>
-                        <legend>
-                            @Messages("order.deliveryinfo.form.deliverylegend")
-                        </legend>
-                        <div class="form-group">
-                            <label class="col-sm-2 control-label" for="delivery">@Messages("deliveryType")</label>
-                            <div class="col-sm-6">
-                                <select id="delivery" name="delivery" class="form-control">
-                                    <option value="1">@Messages("delivery")</option>
-                                    <option value="2">@Messages("pickup")</option>
-                                </select>
-                            </div>
-                        </div>
-                        <input type="hidden" name="id" value="123"/>
-                    </fieldset>
-                </div>
-                <br>
-                <button class="btn btn-primary"> <i class="icon-arrow-right"></i> &nbsp; @Messages("order.fill.form.buttons.nextstep") </button>
-            </form>
-        </div>
 
+            <div class="form-horizontal">
+                <fieldset>
+                    <legend>
+                        @Messages("order.deliveryinfo.form.deliverylegend")
+                    </legend>
+                    <a href="@routes.Order.fillDelivery" class="btn btn-primary"> @Messages("delivery") </a>
+                    <a href="@routes.Order.fillPickup" class="btn btn-primary"> @Messages("pickup") </a>
+
+                </fieldset>
+            </div>
+        </div>
     </div>
 }
