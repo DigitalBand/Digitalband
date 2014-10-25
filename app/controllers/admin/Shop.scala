@@ -51,8 +51,6 @@ class Shop @Inject()(implicit userRepository: UserRepository, shopRepository: Sh
         Ok("ok")
   }
 
-
-
   def list = withAdmin {
     implicit user =>
       implicit request =>

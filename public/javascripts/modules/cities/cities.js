@@ -5,6 +5,10 @@ citiesApp.config(['$stateProvider', function ($stateProvider) {
         return '/assets/javascripts/modules/cities' + url;
     }
 
+    function sw(url) {
+        return '/assets/javascripts/modules/shops' + url;
+    }
+
     $stateProvider.state('home0', {
         url: '',
         controller: 'CityListController',
@@ -20,6 +24,18 @@ citiesApp.config(['$stateProvider', function ($stateProvider) {
     }).state('cityNew', {
         url: '/new',
         controller: 'CityEditController',
+        templateUrl: vw('/partials/city-edit.html')
+    }).state('shopEdit', {
+        url: '/city/:cityId/shops/edit/:shopId',
+        controller: 'ShopEditController',
+        templateUrl: sw('/partials/shop/shop-edit.html')
+    }).state('shopNew', {
+        url: '/city/:cityId/shops/new',
+        controller: 'ShopEditController',
+        templateUrl: sw('/partials/shop/shop-edit.html')
+    }).state('shopRemove', {
+        url: '/city/:cityId',
+        controller: 'ShopListController',
         templateUrl: vw('/partials/city-edit.html')
     });
 }]);

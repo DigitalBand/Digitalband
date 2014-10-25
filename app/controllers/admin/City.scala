@@ -24,12 +24,6 @@ class City @Inject()
         Ok(Json.generate(cityRepository.get(cityId))).withHeaders(CONTENT_TYPE -> "application/json")
   }
 
-  def getShops(cityId : Int) = withAdmin {
-    implicit user =>
-      implicit request =>
-        Ok(Json.generate(shopRepository.getByCity(cityId))).withHeaders(CONTENT_TYPE -> "application/json")
-  }
-
   def remove(cityId: Int) = withAdmin {
     implicit user =>
       implicit request =>
@@ -77,6 +71,10 @@ class City @Inject()
             controllers.admin.routes.javascript.City.update,
             controllers.admin.routes.javascript.City.get,
             controllers.admin.routes.javascript.Shop.getByCity,
+            controllers.admin.routes.javascript.Shop.get,
+            controllers.admin.routes.javascript.Shop.add,
+            controllers.admin.routes.javascript.Shop.remove,
+            controllers.admin.routes.javascript.Shop.update,
             controllers.admin.routes.javascript.City.listShortInfo
           )
         ).as("text/javascript")
