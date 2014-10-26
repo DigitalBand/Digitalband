@@ -13,7 +13,7 @@
             </thead>
             <tbody>
             <tr ng-repeat="shop in vm.shops">
-                <td><a href="#" ng-click="vm.remove(shop.id)"><i class="icon icon-trash"></i></a></td>
+                <td><a href="" ng-click="vm.remove(shop.id)"><i class="icon icon-trash"></i></a></td>
                 <td><a ui-sref="shopEdit({shopId: shop.id, cityId: vm.cityId})">{{shop.title}}</a></td>
                 <td>{{shop.address}}</td>
             </tr>
