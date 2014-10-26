@@ -134,10 +134,9 @@ order.deliveryinfo.form.deliverylegend=Доставка
 order.deliveryinfo.form.pickuplegend=Самовывоз
 order.deliveryinfo.form.additionallegend=Дополнительно
 
-wizard.step1=Метод оформления заказа
-wizard.step2=Способ доставки
-wizard.step3=Личные данные
-wizard.step4=Подтверждение заказа
+wizard.step1=Способ доставки
+wizard.step2=Личные данные
+wizard.step3=Подтверждение заказа
 
 product.list.title=Каталог
 product.list.categories.linkTitle=Товаров в категории:

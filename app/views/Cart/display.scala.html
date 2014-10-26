@@ -18,14 +18,7 @@
                 @shoppingList(items, returnUrl)
                 <div class="form-actions">
                     <button class="btn btn-primary"> <i class="icon-refresh"></i> @Messages("cart.form.buttons.update") </button>
-                    @user match {
-                        case None => {
-                            <a class="pull-right btn btn-success" href="@routes.Cart.checkout()"> @Messages("cart.links.makeorder")</a>
-                        }
-                        case Some(u) => {
-                            <a class="pull-right btn btn-success" href="@routes.Order.fill()"> @Messages("cart.links.makeorder")</a>
-                        }
-                    }
+                    <a class="pull-right btn btn-success" href="@routes.Order.fill()"> @Messages("cart.links.makeorder")</a>
                 </div>
             </form>
         }
