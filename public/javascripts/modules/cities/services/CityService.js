@@ -52,6 +52,11 @@
                 city.id = cityId;
                 return city;
             });
+        },
+        listShortInfo: function () {
+            return this.$http(jsRoutes.controllers.admin.City.listShortInfo()).then(function (response) {
+                return response.data;
+            });
         }
     };
     app.service('CityService', CityService);

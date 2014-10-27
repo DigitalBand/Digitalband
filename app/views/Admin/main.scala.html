@@ -48,14 +48,8 @@
                             <li class="@{
                                 if(menuItem.equals("cities")) "active" else ""
                             }">
-                                <a href="@controllers.admin.routes.City.main">Города</a>
+                                <a href="@controllers.admin.routes.City.main">Контакты</a>
                             </li>
-                            <li class="@{
-                                if(menuItem.equals("shops")) "active" else ""
-                            }">
-                                <a href="@controllers.admin.routes.Shop.main">Склады</a>
-                            </li>
-
                         </ul>
                         <ul class="nav navbar-nav navbar-right">
                             <li> <a href="@routes.Application.index()"><i class="icon-globe"></i> На сайт</a> </li>

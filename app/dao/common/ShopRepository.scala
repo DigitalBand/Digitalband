@@ -10,5 +10,6 @@ trait ShopRepository {
   def update(shop: ShopInfo)
   def list: Seq[ShopInfo]
   def get(shopId: Int): ShopInfo
+  def getByCity(cityId: Int): Seq[ShopInfo]
   def getByHostname(host: String): Seq[ShopInfo]
 }

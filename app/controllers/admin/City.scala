@@ -3,12 +3,15 @@ package controllers.admin
 import com.codahale.jerkson.Json
 import com.google.inject.Inject
 import controllers.common.ControllerBase
-import dao.common.{CityRepository, UserRepository}
+import dao.common.{CityRepository, UserRepository, ShopRepository}
 import helpers.withAdmin
 import models.CityInfo
 import play.api.Routes
 
-class City @Inject()(implicit userRepository: UserRepository, cityRepository: CityRepository) extends ControllerBase {
+class City @Inject()
+(implicit userRepository: UserRepository,
+ cityRepository: CityRepository,
+ shopRepository: ShopRepository) extends ControllerBase {
   def main = withAdmin {
     implicit user =>
       implicit request =>
@@ -67,6 +70,11 @@ class City @Inject()(implicit userRepository: UserRepository, cityRepository: Ci
             controllers.admin.routes.javascript.City.remove,
             controllers.admin.routes.javascript.City.update,
             controllers.admin.routes.javascript.City.get,
+            controllers.admin.routes.javascript.Shop.getByCity,
+            controllers.admin.routes.javascript.Shop.get,
+            controllers.admin.routes.javascript.Shop.add,
+            controllers.admin.routes.javascript.Shop.remove,
+            controllers.admin.routes.javascript.Shop.update,
             controllers.admin.routes.javascript.City.listShortInfo
           )
         ).as("text/javascript")

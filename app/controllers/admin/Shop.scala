@@ -21,6 +21,12 @@ class Shop @Inject()(implicit userRepository: UserRepository, shopRepository: Sh
         Ok(Json.generate(shopRepository.get(shopId))).withHeaders(CONTENT_TYPE -> "application/json")
   }
 
+  def getByCity(cityId: Int) = withAdmin {
+    implicit user =>
+      implicit request =>
+        Ok(Json.generate(shopRepository.getByCity(cityId))).withHeaders(CONTENT_TYPE -> "application/json")
+  }
+
   def remove(shopId: Int) = withAdmin {
     implicit user =>
       implicit request =>
@@ -44,8 +50,6 @@ class Shop @Inject()(implicit userRepository: UserRepository, shopRepository: Sh
         shopRepository.update(shop)
         Ok("ok")
   }
-
-
 
   def list = withAdmin {
     implicit user =>

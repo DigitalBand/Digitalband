@@ -22,6 +22,7 @@ GET           /admin/shops/list                                    @controllers.
 PUT           /admin/shops/update                                  @controllers.admin.Shop.update
 POST          /admin/shops/add                                     @controllers.admin.Shop.add
 GET           /admin/shops/get/:shopId                             @controllers.admin.Shop.get(shopId: Int)
+GET           /admin/shops/getByCity/:cityId                       @controllers.admin.Shop.getByCity(cityId: Int)
 GET           /admin/shops/javaScriptRoutes                        @controllers.admin.Shop.javascriptRoutes
 #Admin city
 GET           /admin/cities                                        @controllers.admin.City.main()

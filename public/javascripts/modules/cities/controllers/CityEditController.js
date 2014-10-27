@@ -1,9 +1,10 @@
 (function (app) {
     "use strict";
-    CityEditController.$inject = ['$scope', '$stateParams', 'CityService', '$state'];
-    function CityEditController($scope, $stateParams, cityService, $state) {
+    CityEditController.$inject = ['$scope', '$stateParams', 'CityService', 'ShopService', '$state'];
+    function CityEditController($scope, $stateParams, cityService, shopService, $state) {
         $scope.vm = this;
         this.cityService = cityService;
+        this.shopService = shopService;
         this.$state = $state;
         this.cityId = $stateParams.cityId;
         this.initCity();
