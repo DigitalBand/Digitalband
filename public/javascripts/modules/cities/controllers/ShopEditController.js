@@ -33,6 +33,7 @@
     },
     save: function () {
       var that = this;
+      if(this.shop.phone) this.addPhone();
       this.shopService.save(this.shop).then(function () {
         that.$state.go('cityEdit', { cityId: that.$state.params.cityId });
       });
