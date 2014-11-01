@@ -28,6 +28,31 @@
                     @helper.inputText(orderInfo("personalInfo.middleName"), 'class -> "form-control")
                     @helper.inputText(orderInfo("personalInfo.phone"), 'class -> "form-control")
                     @helper.inputText(orderInfo("personalInfo.email"), 'class -> "form-control")
+
+                    @user match {
+                        case Some(u) => {}
+                        case None => {
+                            <div class="form-group">
+                                <label class="col-sm-2 control-label" for="password">
+                                    @Messages("password")
+                                </label>
+                                <div class="col-sm-6">
+                                    <input type="text" id="password" class="form-control">
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="col-sm-2 control-label"></label>
+                                <div class="checkbox col-sm-6">
+                                    <label>
+                                        <input type="checkbox">Зарегистрироваться на сайтe
+                                    </label>
+                                    &nbsp;|
+                                    <a href="@routes.Security.login(request.uri)">&nbsp;войти на сайт</a>
+                                </div>
+                            </div>
+                        }
+                    }
                 </fieldset>
                 <fieldset>
                     <legend>

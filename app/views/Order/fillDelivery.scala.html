@@ -2,7 +2,6 @@
 @import Cart.shoppingList
 @import Shared.wizard
 @import views.html.common.bootstrap.hfc
-@import views.html.Security.loginpart
 
 @main(menuItem = "cart") {
 <div class="page-block">
@@ -20,15 +19,6 @@
             <div class="form-horizontal">
                 <fieldset>
                     <legend>
-                        @Messages("order.deliveryinfo.form.deliverylegend")
-                    </legend>
-                    @helper.inputText(orderInfo("address.city"), 'class -> "form-control")
-                    @helper.inputText(orderInfo("address.street"), 'class -> "form-control")
-                    @helper.inputText(orderInfo("address.building"), 'class -> "form-control")
-                    @helper.inputText(orderInfo("address.apartment"), 'class -> "form-control")
-                </fieldset>
-                <fieldset>
-                    <legend>
                         @Messages("order.deliveryinfo.form.personallegend")
                     </legend>
                     @helper.inputText(orderInfo("personalInfo.lastName"), 'class -> "form-control")
@@ -36,6 +26,50 @@
                     @helper.inputText(orderInfo("personalInfo.middleName"), 'class -> "form-control")
                     @helper.inputText(orderInfo("personalInfo.phone"), 'class -> "form-control")
                     @helper.inputText(orderInfo("personalInfo.email"), 'class -> "form-control")
+                    @user match {
+                        case Some(u) => {}
+                        case None => {
+                    <style>
+                        .password {
+                            display: none;
+                        }
+                    </style>
+                            <div class="form-group password">
+                                <label class="col-sm-2 control-label" for="password">
+                                    @Messages("password")
+                                </label>
+                                <div class="col-sm-6">
+                                    <input type="text" id="password" class="form-control">
+                                </div>
+                            </div>
+                            <noscript>
+                                <style>
+                                    .password {
+                                        display: block;
+                                    }
+                                </style>
+                            </noscript>
+                            <div class="form-group">
+                                <label class="col-sm-2 control-label"></label>
+                                <div class="checkbox col-sm-6">
+                                    <label>
+                                        <input type="checkbox" id="register">Зарегистрироваться на сайтe
+                                    </label>
+                                    &nbsp;|
+                                    <a href="@routes.Security.login(request.uri)">&nbsp;войти на сайт</a>
+                                </div>
+                            </div>
+                        }
+                    }
+                </fieldset>
+                <fieldset>
+                    <legend>
+                        @Messages("order.deliveryinfo.form.deliverylegend")
+                    </legend>
+                    @helper.inputText(orderInfo("address.city"), 'class -> "form-control")
+                    @helper.inputText(orderInfo("address.street"), 'class -> "form-control")
+                    @helper.inputText(orderInfo("address.building"), 'class -> "form-control")
+                    @helper.inputText(orderInfo("address.apartment"), 'class -> "form-control")
                 </fieldset>
                 <fieldset>
                     <legend>

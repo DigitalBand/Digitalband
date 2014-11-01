@@ -151,7 +151,7 @@ class OrderRepository extends RepositoryBase with dao.common.OrderRepository {
     implicit val getDeliveryInfo = GetResult(
       r => new OrderDeliveryInfo(
         new DeliveryAddress(city = r.<<, street = r.<<, building = r.<<, apartment = r.<<),
-        new PersonalInfo(lastName = r.<<, firstName = r.<<, middleName = r.<<, phone = r.<<, email = r.<<),
+        new PersonalInfo(lastName = r.<<, firstName = r.<<, middleName = r.<<, phone = r.<<, email = r.<<, Option("")),
         comment = r.<<
       ))
     sql"""
@@ -177,7 +177,7 @@ class OrderRepository extends RepositoryBase with dao.common.OrderRepository {
   def getPickupDeliveryInfo(orderId: Int): PickupDeliveryInfo = database withDynSession {
     implicit val getDeliveryInfo = GetResult(r => new PickupDeliveryInfo(
       shopId = r.<<,
-      new PersonalInfo(lastName = r.<<, firstName = r.<<, middleName = r.<<, phone = r.<<, email = r.<<),
+      new PersonalInfo(lastName = r.<<, firstName = r.<<, middleName = r.<<, phone = r.<<, email = r.<<, Option("")),
       comment = r.<<
     ))
     sql"""

@@ -23,10 +23,14 @@ class Order @Inject()(implicit ur: UserRepository, orderRepository: OrderReposit
       "firstName" -> nonEmptyText(minLength = 2, maxLength = 50),
       "middleName" -> text,
       "phone" -> nonEmptyText(minLength = 10, maxLength = 25),
-      "email" -> optional(email)
+      "email" -> optional(email),
+      "password" -> optional(text)
     )(PersonalInfo.apply)(PersonalInfo.unapply),
     "comment" -> text
-  )(OrderDeliveryInfo.apply)(OrderDeliveryInfo.unapply))
+  )(OrderDeliveryInfo.apply)(OrderDeliveryInfo.unapply) verifying("Failed form constraints!",  {
+     deliveryInfo => validatePersonalInfo(
+      deliveryInfo.personalInfo.email.getOrElse(""),
+      deliveryInfo.personalInfo.password.getOrElse(""), false) == true}))
 
   val pickupForm = Form(mapping(
     "shopId" -> number,
@@ -35,12 +39,20 @@ class Order @Inject()(implicit ur: UserRepository, orderRepository: OrderReposit
       "firstName" -> nonEmptyText(minLength = 2, maxLength = 50),
       "middleName" -> text,
       "phone" -> nonEmptyText(minLength = 10, maxLength = 25),
-      "email" -> optional(email)
+      "email" -> optional(email),
+      "password" -> optional(text)
     )(PersonalInfo.apply)(PersonalInfo.unapply),
     "comment" -> text
   )(PickupDeliveryInfo.apply)(PickupDeliveryInfo.unapply))
 
   val emailHelper = new EmailHelper()
+
+  def validatePersonalInfo(email: String, password: String, register: Boolean) = {
+    if(register){
+      false
+    }
+    true
+  }
 
   def fill = withUser {
     implicit user =>

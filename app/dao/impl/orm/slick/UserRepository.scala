@@ -125,7 +125,7 @@ class UserRepository extends RepositoryBase with dao.common.UserRepository {
     implicit val result = GetResult(r =>
       new UserInfo(
         id = userId ,
-        personalInfo = new PersonalInfo(firstName = r.<<, lastName = r.<<, middleName = r.<<, email = r.<<, phone = r.<<),
+        personalInfo = new PersonalInfo(firstName = r.<<, lastName = r.<<, middleName = r.<<, email = r.<<, phone = r.<<, password = Option("")),
         address = Option(new DeliveryAddress(city = r.<<, street = r.<<, building = r.<<, apartment = r.<<))))
     sql"""
       select
