@@ -3,7 +3,7 @@ package helpers
 import models.{Question, OrderInfo, ContactEntity}
 import com.typesafe.plugin._
 import play.api.Play.current
-import dao.common.UserRepository
+import dao.common.{CityRepository, UserRepository}
 import play.api.i18n.Messages
 import play.api.mvc.{Request}
 
@@ -124,11 +124,14 @@ class EmailHelper(implicit userRepository: UserRepository) {
     }
     def sendToAdmins(adminEmail: String, userEmail: String, systemEmail: String) = {
       val mail: MailerAPI = use[MailerPlugin].email
-      mail.setSubject(Messages("emailhelper.orderconfirmation.subject"))
+      val cityRepository = db.Global.getControllerInstance(classOf[dao.common.CityRepository])
+      val city = cityRepository.getByHostname(request.host)
+      val orderPrefix = city.prefix.getOrElse("") + order.id.toString
+      mail.setSubject(Messages("emailhelper.orderconfirmation.subject", orderPrefix))
       mail.addFrom(systemEmail)
       mail.setReplyTo(userEmail)
       mail.addRecipient(adminEmail)
-      mail.sendHtml(views.html.emails.plain.order.adminConfirmation(order).body)
+      mail.sendHtml(views.html.emails.plain.order.adminConfirmation(order, orderPrefix).body)
     }
   }
 }

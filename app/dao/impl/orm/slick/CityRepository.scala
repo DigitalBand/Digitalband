@@ -12,7 +12,14 @@ import dao.impl.orm.slick.common.RepositoryBase
 class CityRepository extends RepositoryBase with dao.common.CityRepository {
   def get(cityId: Int): CityInfo = database withDynSession {
     implicit val result = GetResult(
-      r => CityInfo(id = r.<<, name = r.<<, domain = r.<<, delivery = r.<<, payment = r.<<, phone = r.<<))
+      r => CityInfo(
+        id = r.<<,
+        name = r.<<,
+        domain = r.<<,
+        delivery = r.<<,
+        payment = r.<<,
+        phone = r.<<,
+        prefix = r.<<))
     sql"""
       select
         c.id,
@@ -20,7 +27,8 @@ class CityRepository extends RepositoryBase with dao.common.CityRepository {
         c.domain,
         c.delivery,
         c.payment,
-        c.phone
+        c.phone,
+        c.prefix
       from cities c
       where
         c.id = ${cityId};
@@ -29,7 +37,14 @@ class CityRepository extends RepositoryBase with dao.common.CityRepository {
 
   def getByHostname(host: String): CityInfo = database withDynSession {
     implicit val result = GetResult(
-      r => CityInfo(id = r.<<, name = r.<<, domain = r.<<, delivery = r.<<, payment = r.<<, phone = r.<<))
+      r => CityInfo(
+        id = r.<<,
+        name = r.<<,
+        domain = r.<<,
+        delivery = r.<<,
+        payment = r.<<,
+        phone = r.<<,
+        prefix = r.<<))
     sql"""
       select
         c.id,
@@ -37,7 +52,8 @@ class CityRepository extends RepositoryBase with dao.common.CityRepository {
         c.domain,
         c.delivery,
         c.payment,
-        c.phone
+        c.phone,
+        c.prefix
       from cities  c
       where c.domain = ${host};
     """.as[CityInfo].first
@@ -46,8 +62,8 @@ class CityRepository extends RepositoryBase with dao.common.CityRepository {
   def add(city: CityInfo): Int = database withDynSession {
     sqlu"""
       insert into
-        cities(name, domain, delivery, payment)
-        values(${city.name}, ${city.domain}, ${city.delivery}, ${city.payment});
+        cities(name, domain, delivery, payment, phone, prefix)
+        values(${city.name}, ${city.domain}, ${city.delivery}, ${city.payment}, ${city.phone}, ${city.prefix});
     """.execute
     sql"""select last_insert_id();""".as[Int].first
   }
@@ -60,7 +76,8 @@ class CityRepository extends RepositoryBase with dao.common.CityRepository {
         domain = ${city.domain},
         delivery = ${city.delivery},
         payment = ${city.payment},
-        phone = ${city.phone}
+        phone = ${city.phone},
+        prefix = ${city.prefix}
       WHERE
         id = ${city.id};
     """.execute
@@ -85,7 +102,14 @@ class CityRepository extends RepositoryBase with dao.common.CityRepository {
 
   def list: Seq[CityInfo] = database withDynSession {
     implicit val res = GetResult(
-      r => CityInfo(id = r.<<, name = r.<<, domain = r.<<, delivery = r.<<, payment = r.<<, phone = r.<<))
+      r => CityInfo(
+        id = r.<<,
+        name = r.<<,
+        domain = r.<<,
+        delivery = r.<<,
+        payment = r.<<,
+        phone = r.<<,
+        prefix = r.<<))
     sql"""
       select
         c.id,
@@ -93,7 +117,8 @@ class CityRepository extends RepositoryBase with dao.common.CityRepository {
         c.domain,
         c.delivery,
         c.payment,
-        c.phone
+        c.phone,
+        c.prefix
       from cities c
     """.as[CityInfo].list
   }
