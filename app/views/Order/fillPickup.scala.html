@@ -32,20 +32,22 @@
                     @user match {
                         case Some(u) => {}
                         case None => {
-                            <div class="form-group">
-                                <label class="col-sm-2 control-label" for="password">
-                                    @Messages("password")
-                                </label>
-                                <div class="col-sm-6">
-                                    <input type="text" id="password" class="form-control">
-                                </div>
+                            <div id="password" class="password">
+                                @helper.inputText(orderInfo("personalInfo.password"), 'class -> "form-control")
                             </div>
-
+                            <!--@helper.checkbox(orderInfo("register"))-->
+                            <noscript>
+                                <style>
+                                    .password {
+                                        display: block;
+                                    }
+                                </style>
+                            </noscript>
                             <div class="form-group">
                                 <label class="col-sm-2 control-label"></label>
                                 <div class="checkbox col-sm-6">
                                     <label>
-                                        <input type="checkbox">Зарегистрироваться на сайтe
+                                        <input type="checkbox" name="register" id="register">Зарегистрироваться на сайтe
                                     </label>
                                     &nbsp;|
                                     <a href="@routes.Security.login(request.uri)">&nbsp;войти на сайт</a>
@@ -73,6 +75,6 @@
             <button class="btn btn-primary"> <i class="icon-arrow-right"></i> &nbsp; @Messages("order.fill.form.buttons.placeorder") </button>
         </form>
     </div>
-
 </div>
+<script type="text/javascript" src="@routes.Assets.at("javascripts/password.js")"></script>
 }
