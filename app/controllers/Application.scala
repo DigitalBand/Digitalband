@@ -69,7 +69,7 @@ class Application @Inject()(implicit ur: UserRepository,
         Ok(views.html.Application.contacts(
           contactsForm,
           recaptcha,
-          aboutRepository.get().getOrElse(new AboutInfo("", "")),
+          aboutRepository.get(),
           shopRepository.getByHostname(request.host)))
   }
 
@@ -88,7 +88,7 @@ class Application @Inject()(implicit ur: UserRepository,
           formWithErrors => BadRequest(
             views.html.Application.contacts(formWithErrors,
               ReCaptchaHelper.get("6LfMQdYSAAAAAJCe85Y6CRp9Ww7n-l3HOBf5bifB"),
-              aboutRepository.get().getOrElse(new AboutInfo("", "")),
+              aboutRepository.get(),
               shopRepository.list)),
           contactsForm => {
             emailHelper.sendFeedback(contactsForm)

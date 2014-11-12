@@ -18,7 +18,7 @@ class About @Inject()(implicit userRepository: UserRepository, aboutRepository: 
   def get() = withAdmin {
     implicit user =>
       implicit request =>
-        Ok(Json.generate(aboutRepository.get().getOrElse(new AboutInfo("", "")))).withHeaders(CONTENT_TYPE -> "application/json")
+        Ok(Json.generate(aboutRepository.get())).withHeaders(CONTENT_TYPE -> "application/json")
   }
 
   def save = withAdmin(parse.json) {
