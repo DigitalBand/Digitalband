@@ -66,7 +66,11 @@ class Application @Inject()(implicit ur: UserRepository,
     implicit user =>
       implicit request =>
         val recaptcha = ReCaptchaHelper.get("6LfMQdYSAAAAAJCe85Y6CRp9Ww7n-l3HOBf5bifB")
-        Ok(views.html.Application.contacts(contactsForm, recaptcha, aboutRepository.get(), shopRepository.getByHostname(request.host)))
+        Ok(views.html.Application.contacts(
+          contactsForm,
+          recaptcha,
+          aboutRepository.get().getOrElse(new AboutInfo("", "")),
+          shopRepository.getByHostname(request.host)))
   }
 
   def stock(productId: Int) = withUser {
@@ -84,7 +88,7 @@ class Application @Inject()(implicit ur: UserRepository,
           formWithErrors => BadRequest(
             views.html.Application.contacts(formWithErrors,
               ReCaptchaHelper.get("6LfMQdYSAAAAAJCe85Y6CRp9Ww7n-l3HOBf5bifB"),
-              aboutRepository.get(),
+              aboutRepository.get().getOrElse(new AboutInfo("", "")),
               shopRepository.list)),
           contactsForm => {
             emailHelper.sendFeedback(contactsForm)

@@ -18,24 +18,15 @@ class About @Inject()(implicit userRepository: UserRepository, aboutRepository: 
   def get() = withAdmin {
     implicit user =>
       implicit request =>
-        Ok(Json.generate(aboutRepository.get())).withHeaders(CONTENT_TYPE -> "application/json")
+        Ok(Json.generate(aboutRepository.get().getOrElse(new AboutInfo("", "")))).withHeaders(CONTENT_TYPE -> "application/json")
   }
 
-  def add = withAdmin(parse.json) {
+  def save = withAdmin(parse.json) {
     implicit user =>
       implicit request =>
         val body = request.body
         val aboutInfo = Json.parse[AboutInfo](body.toString)
-        Ok(Json.generate(aboutRepository.add(aboutInfo))).withHeaders(CONTENT_TYPE -> "application/json")
-  }
-
-  def update = withAdmin(parse.json) {
-    implicit user =>
-      implicit request =>
-        val body = request.body
-        val aboutInfo = Json.parse[AboutInfo](body.toString)
-        aboutRepository.update(aboutInfo)
-        Ok("ok")
+        Ok(Json.generate(aboutRepository.save(aboutInfo))).withHeaders(CONTENT_TYPE -> "application/json")
   }
 
   def javascriptRoutes = withAdmin {
@@ -43,8 +34,7 @@ class About @Inject()(implicit userRepository: UserRepository, aboutRepository: 
       implicit request =>
         Ok(
           Routes.javascriptRouter("jsRoutes")(
-            controllers.admin.routes.javascript.About.add,
-            controllers.admin.routes.javascript.About.update,
+            controllers.admin.routes.javascript.About.save,
             controllers.admin.routes.javascript.About.get
           )
         ).as("text/javascript")

@@ -11,27 +11,10 @@
                 return response.data;
             });
         },
-        update: function (aboutInfo) {
-            return this.$http({
-                url: jsRoutes.controllers.admin.About.update().url,
-                method: 'PUT',
-                data: aboutInfo,
-                dataType: 'json',
-                headers: {
-                    "Content-Type": "application/json"
-                }
-            });
-        },
+
         save: function (aboutInfo) {
-            if (aboutInfo.about) {
-                return this.update(aboutInfo);
-            } else {
-                return this.add(aboutInfo);
-            }
-        },
-        add: function (aboutInfo) {
             return this.$http({
-                url: jsRoutes.controllers.admin.About.add().url,
+                url: jsRoutes.controllers.admin.About.save().url,
                 method: 'POST',
                 data: aboutInfo,
                 dataType: 'json',

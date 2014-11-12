@@ -33,8 +33,7 @@ GET           /admin/cities/javascriptRoutes                       @controllers.
 #Admin about us
 GET           /admin/about                                         @controllers.admin.About.main()
 GET           /admin/about/get                                     @controllers.admin.About.get
-PUT           /admin/about/update                                  @controllers.admin.About.update
-POST          /admin/about/add                                     @controllers.admin.About.add
+POST          /admin/about/save                                    @controllers.admin.About.save
 GET           /admin/about/javascriptRoutes                        @controllers.admin.About.javascriptRoutes
 #Admin product
 GET           /admin/category/:categoryId/product/create           @controllers.admin.Product.create(categoryId: Int, brandId: Int ?= 0)
