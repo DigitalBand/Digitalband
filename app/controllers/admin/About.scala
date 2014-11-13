@@ -26,7 +26,8 @@ class About @Inject()(implicit userRepository: UserRepository, aboutRepository: 
       implicit request =>
         val body = request.body
         val aboutInfo = Json.parse[AboutInfo](body.toString)
-        Ok(Json.generate(aboutRepository.save(aboutInfo))).withHeaders(CONTENT_TYPE -> "application/json")
+        aboutRepository.save(aboutInfo)
+        Ok("ok")
   }
 
   def javascriptRoutes = withAdmin {

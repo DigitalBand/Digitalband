@@ -38,7 +38,7 @@ class PageRepository extends RepositoryBase with dao.common.PageRepository {
     sqlu"""
       update pages
       set
-        content = ${encodedContent},
+        content = ${encodedContent}
       where name = ${pageName}
     """.execute
   }
