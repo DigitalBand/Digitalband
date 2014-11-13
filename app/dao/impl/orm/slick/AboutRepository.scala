@@ -3,7 +3,6 @@ package dao.impl.orm.slick
 import com.codahale.jerkson.Json
 import models.AboutInfo
 import dao.impl.orm.slick.common.RepositoryBase
-import play.utils.UriEncoding
 
 class AboutRepository(pageRepository: PageRepository) extends RepositoryBase with dao.common.AboutRepository {
   val pageName = "about"

@@ -8,29 +8,37 @@ import Q.interpolation
 import play.utils.UriEncoding
 
 class PageRepository extends RepositoryBase with dao.common.PageRepository {
+  val charset = "utf-8"
+
   def get(pageName: String): Option[String] = database withDynSession {
     implicit val res = GetResult(r => r)
-    sql"""
+    val content = sql"""
       select
         p.content
       from pages p
       where p.name = ${pageName}
     """.as[String].firstOption
+    if (content.isDefined)
+      Option(UriEncoding.decodePath(content.get, charset))
+    else
+      content
   }
 
   def add(pageName: String, content: String) = database withDynSession {
+    val encodedContent = UriEncoding.encodePathSegment(content, charset)
     sqlu"""
      insert into
       pages(name, content)
-     values(${pageName}, ${content});
+     values(${pageName}, ${encodedContent});
    """.execute
   }
 
   def update(pageName: String, content: String) = database withDynSession {
+    val encodedContent = UriEncoding.encodePathSegment(content, charset)
     sqlu"""
       update pages
       set
-        content = ${content},
+        content = ${encodedContent},
       where name = ${pageName}
     """.execute
   }
