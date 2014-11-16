@@ -10,6 +10,23 @@ import models.{PageInfo, PageSection}
 import scala.slick.jdbc.GetResult
 
 class PageRepository extends RepositoryBase with dao.common.PageRepository {
+  def get(pageName: String): PageInfo = database withDynSession {
+    implicit val res = GetResult(r => PageInfo(
+      id = r.<<,
+      sections = getSections(r.<<),
+      name = r.<<,
+      sectionsCount = 0
+    ))
+    sql"""
+      select
+        p.id,
+        p.id,
+        p.name
+      from pages p
+      where p.name = ${pageName};
+    """.as[PageInfo].first
+  }
+
   def get(pageId: Int): PageInfo = database withDynSession {
     implicit val res = GetResult(r => PageInfo(
       id = r.<<,
@@ -27,7 +44,13 @@ class PageRepository extends RepositoryBase with dao.common.PageRepository {
   }
 
   def update(page: PageInfo) = database withDynSession {
+    sqlu"""
+      update pages
+      set name = ${page.name}
+      where id = ${page.id};
+    """.execute
 
+    saveSections(page.id, page.sections)
   }
 
   def remove(pageId: Int) = database withDynSession {
@@ -96,6 +119,38 @@ class PageRepository extends RepositoryBase with dao.common.PageRepository {
             values(${pageId}, ${section.name}, ${section.content});
         """.execute
     }
+  }
 
+  def saveSections(pageId: Int, sections: Seq[PageSection]) {
+    val currentSections = getSections(pageId)
+    val sectionsToAdd = sections.filter(s => s.id == 0)
+    val sectionsToRemove = currentSections.filterNot(section => sections.exists(s => s.id == section.id))
+    val sectionsToUpdate = sections.filter(section => currentSections.exists(s => s.id == section.id))
+
+    addSections(pageId, sectionsToAdd)
+    updateSections(sectionsToUpdate)
+    removeSections(sectionsToRemove)
+  }
+
+  def updateSections(sections: Seq[PageSection]) {
+    sections.foreach {
+      section =>
+        sqlu"""
+          update page_sections
+          set
+            name = ${section.name},
+            content = ${section.content}
+          where id = ${section.id};
+        """.execute
+    }
+  }
+
+  def removeSections(sections: Seq[PageSection]) {
+    sections.foreach {
+      section =>
+        sqlu"""
+          delete from page_sections where id = ${section.id};
+        """.execute
+    }
   }
 }

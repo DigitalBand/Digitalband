@@ -31,6 +31,7 @@
             });
         },
         addSection: function() {
+            if(!this.page.section.name || !this.page.section.content) return
             if (!this.page.sections) this.page.sections = [];
             this.page.section.id = 0;
             this.page.sectionsCount = this.page.sections.length;

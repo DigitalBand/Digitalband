@@ -7,7 +7,7 @@ CREATE TABLE `pages` (
 CREATE TABLE `dbs`.`page_sections` (
   `id` INT NOT NULL AUTO_INCREMENT,
   `page_id` INT NOT NULL,
-  `name` VARCHAR(45) NULL DEFAULT NULL,
+  `name` VARCHAR(45) CHARACTER SET 'utf8' NULL DEFAULT NULL,
   `content` TEXT CHARACTER SET 'utf8' NULL,
   PRIMARY KEY (`id`),
   UNIQUE INDEX `id_UNIQUE` (`id` ASC));

@@ -3,6 +3,7 @@ package dao.common
 import models.PageInfo
 
 trait PageRepository {
+  def get(pageName: String): PageInfo
   def get(pageId: Int): PageInfo
   def list(): Seq[PageInfo]
   def add(page: PageInfo): Int
