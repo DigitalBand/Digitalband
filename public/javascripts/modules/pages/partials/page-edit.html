@@ -1,26 +1,33 @@
 <form class="form-horizontal" name="pageForm">
     <div class="form-group">
         <label>Название</label>
-        <input class="form-control" type="text" ng-model="vm.page.name" required />
+        <input class="form-control" type="text" ng-model="vm.page.name" />
     </div>
     <div class="form-group">
         <label>Разделы</label>
         <ul class="list-group">
             <li class="list-group-item" ng-repeat="section in vm.page.sections">
-                <span class="link-button" ng-click="vm.removeSection(section)"><i class="icon icon-trash"></i></span> {{section.name}}
+                <span class="link-button" ng-click="vm.removeSection(section)"><i class="icon icon-trash"></i></span>
+                <span class="link-button" ng-click="vm.selectSection(section)">{{section.name}}</span>
             </li>
         </ul>
         <div class="input-group">
-            <input class="form-control" type="text" ng-model="vm.shop.phone"/>
+            <input class="form-control" type="text" ng-model="vm.page.section.name"/>
             <span class="input-group-btn">
-                <button class="btn btn-default" ng-click="vm.addPhone()"><i class="icon icon-plus"></i> Добавить раздел
+                <button class="btn btn-default" ng-click="vm.addSection()" ng-hide="vm.page.section.id > 0">
+                    <i class="icon icon-plus"></i> Добавить раздел
+                </button>
+                <button class="btn btn-default" ng-click="vm.editSection()" ng-show="vm.page.section.id > 0">
+                    <i class="icon icon-ok"></i> Изменить раздел
+                </button>
+                <button class="btn btn-default" ng-click="vm.cancelEdit()" ng-show="vm.page.section.id > 0">
+                    Отмена
                 </button>
             </span>
         </div>
         <div>
-            <textarea ui-tinymce ng-model="vm.aboutInfo.legalInfo"></textarea>
+            <textarea ui-tinymce ng-model="vm.page.section.content"></textarea>
         </div>
-
     </div>
     <div class="form-group">
         <button class="btn btn-primary" ng-click="vm.save()">Сохранить</button>

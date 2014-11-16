@@ -14,6 +14,7 @@ class PageRepository extends RepositoryBase with dao.common.PageRepository {
     implicit val res = GetResult(r => PageInfo(
       id = r.<<,
       name = r.<<,
+      sectionsCount = 0,
       sections = getSections(pageId)
     ))
     sql"""
@@ -42,13 +43,19 @@ class PageRepository extends RepositoryBase with dao.common.PageRepository {
   def list(): Seq[PageInfo] = database withDynSession {
     implicit val res = GetResult(r => PageInfo(
       id = r.<<,
-      sections = getSections(2),
-      name = r.<<
+      name = r.<<,
+      sectionsCount = r.<<,
+      sections = Seq[PageSection]()
     ))
     sql"""
       select
         p.id,
-        p.name
+        p.name,
+        (
+          select count(ps.id)
+          from page_sections ps
+          where ps.page_id = p.id
+        ) as sectionsCount
       from pages p;
     """.as[PageInfo].list
   }
@@ -81,13 +88,14 @@ class PageRepository extends RepositoryBase with dao.common.PageRepository {
   }
 
   def addSections(pageId: Int, sections: Seq[PageSection]) {
-    var sb = new StringBuilder
-    for(section <- sections){
-      sqlu"""
-      insert into
-        page_sections(page_id, name, content)
-        values(${pageId}, ${section.name}, ${section.content});
-    """.execute
+    sections.foreach {
+      section =>
+        sqlu"""
+          insert into
+            page_sections(page_id, name, content)
+            values(${pageId}, ${section.name}, ${section.content});
+        """.execute
     }
+
   }
 }
