@@ -1,11 +1,12 @@
 (function (app) {
     "use strict";
-    PageEditController.$inject = ['$scope', '$stateParams', 'PageService', '$state'];
-    function PageEditController($scope, $stateParams, pageService, $state) {
+    PageEditController.$inject = ['$scope', '$modal', 'PageService', '$state'];
+    function PageEditController($scope,  $modal, pageService, $state) {
         $scope.vm = this;
         this.pageService = pageService;
         this.$state = $state;
-        this.pageId = $stateParams.pageId;
+        this.$modal = $modal;
+        this.pageId = $state.params.pageId;
         this.initPage();
     }
 
@@ -31,30 +32,41 @@
             });
         },
         addSection: function() {
-            if(!this.page.section.name || !this.page.section.content) return
-            if (!this.page.sections) this.page.sections = [];
-            this.page.section.id = 0;
-            this.page.sectionsCount = this.page.sections.length;
-            this.page.sections.push(angular.copy(this.page.section));
-            this.page.section = {};
+            var section = {id: 0};
+            this.editSection(section);
         },
-        selectSection: function(section) {
-            this.page.section = angular.copy(section);
+        editSection: function(section) {
+            var that = this;
+            var modal = this.$modal.open({
+                templateUrl: "editSection.html",
+                windowClass: "app-modal-window",
+                controller: 'SectionEditController',
+                resolve: {
+                    section: function() {
+                        return angular.copy(section);
+                    }
+                }
+            });
+
+            modal.result.then(function (editedSection) {
+                if(editedSection.id > 0) {
+                    that.updateSection(editedSection);
+                }
+                else{
+                    that.insertSection(editedSection);
+                }
+            });
         },
-        editSection: function() {
-            var section = _.find(this.page.sections, {id: this.page.section.id})
-            section.name = this.page.section.name;
-            section.content = this.page.section.content;
-            this.page.section = {};
+        insertSection: function(section) {
+            this.page.sections.push(angular.copy(section));
         },
-        cancelEdit: function() {
-            this.page.section = {};
+        updateSection: function(section) {
+            var currentSection = _.find(this.page.sections, {id: section.id})
+            currentSection.name = section.name;
+            currentSection.content = section.content;
         },
         removeSection: function(section) {
             _.remove(this.page.sections, {name: section.name});
-        },
-        deliveryNotFilled: function() {
-            return !this.city.delivery;
         }
     };
     app.controller('PageEditController', PageEditController);

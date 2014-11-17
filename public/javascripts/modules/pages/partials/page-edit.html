@@ -1,33 +1,43 @@
 <form class="form-horizontal" name="pageForm">
+    <script type="text/ng-template" id="editSection.html">
+        <div class="modal-header">
+            <h3 class="modal-title">Раздел</h3>
+        </div>
+        <div class="modal-body">
+            <div class="form-group">
+                <label>Название</label>
+                <input class="form-control" type="text" ng-model="vm.section.name"/>
+            </div>
+            <div class="form-group">
+                <label>Описание</label>
+                <div>
+                    <textarea ui-tinymce ng-model="vm.section.content"></textarea>
+                </div>
+            </div>
+            <alert ng-repeat="alert in vm.alerts" type="{{alert.type}}" close="vm.closeAlert($index)">{{alert.message}}</alert>
+        </div>
+
+        <div class="modal-footer">
+            <button class="btn btn-primary" ng-click="vm.save()">Сохранить</button>
+            <button class="btn btn-default" ng-click="vm.cancel()">Отмена</button>
+        </div>
+    </script>
     <div class="form-group">
         <label>Название</label>
         <input class="form-control" type="text" ng-model="vm.page.name" />
     </div>
     <div class="form-group">
         <label>Разделы</label>
+        <div>
+            <a class="btn btn-primary" ng-click="vm.addSection()"><i class="icon icon-plus"></i> Добавить раздел</a>
+        </div>
         <ul class="list-group">
             <li class="list-group-item" ng-repeat="section in vm.page.sections">
-                <span class="link-button" ng-click="vm.removeSection(section)"><i class="icon icon-trash"></i></span>
-                <span class="link-button" ng-click="vm.selectSection(section)">{{section.name}}</span>
+                <span class="link-button" ng-click="vm.removeSection(section)"><i class="icon icon-trash">&nbsp;</i></span>
+                <span class="link link-button" ng-click="vm.editSection(section)"><i class="icon icon-pencil"></i></span>
+                <span class="link link-button" ng-click="vm.editSection(section)">{{section.name}}</span>
             </li>
         </ul>
-        <div class="input-group">
-            <input class="form-control" type="text" ng-model="vm.page.section.name"/>
-            <span class="input-group-btn">
-                <button class="btn btn-default" ng-click="vm.addSection()" ng-hide="vm.page.section.id > 0">
-                    <i class="icon icon-plus"></i> Добавить раздел
-                </button>
-                <button class="btn btn-default" ng-click="vm.editSection()" ng-show="vm.page.section.id > 0">
-                    <i class="icon icon-ok"></i> Изменить раздел
-                </button>
-                <button class="btn btn-default" ng-click="vm.cancelEdit()" ng-show="vm.page.section.id > 0">
-                    Отмена
-                </button>
-            </span>
-        </div>
-        <div>
-            <textarea ui-tinymce ng-model="vm.page.section.content"></textarea>
-        </div>
     </div>
     <div class="form-group">
         <button class="btn btn-primary" ng-click="vm.save()">Сохранить</button>
