@@ -14,8 +14,7 @@ class PageRepository extends RepositoryBase with dao.common.PageRepository {
     implicit val res = GetResult(r => PageInfo(
       id = r.<<,
       sections = getSections(r.<<),
-      name = r.<<,
-      sectionsCount = 0
+      name = r.<<
     ))
     sql"""
       select
@@ -31,7 +30,6 @@ class PageRepository extends RepositoryBase with dao.common.PageRepository {
     implicit val res = GetResult(r => PageInfo(
       id = r.<<,
       name = r.<<,
-      sectionsCount = 0,
       sections = getSections(pageId)
     ))
     sql"""
@@ -67,18 +65,12 @@ class PageRepository extends RepositoryBase with dao.common.PageRepository {
     implicit val res = GetResult(r => PageInfo(
       id = r.<<,
       name = r.<<,
-      sectionsCount = r.<<,
       sections = Seq[PageSection]()
     ))
     sql"""
       select
         p.id,
-        p.name,
-        (
-          select count(ps.id)
-          from page_sections ps
-          where ps.page_id = p.id
-        ) as sectionsCount
+        p.name
       from pages p;
     """.as[PageInfo].list
   }

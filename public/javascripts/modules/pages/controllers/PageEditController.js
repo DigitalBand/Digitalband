@@ -19,7 +19,7 @@
                 });
             }
             else {
-                this.page = {sections: [], sectionsCount: 0};
+                this.page = {sections: []};
             }
         },
         save: function () {
@@ -59,7 +59,6 @@
         },
         insertSection: function(section) {
             this.page.sections.push(angular.copy(section));
-            this.page.sectionsCount = this.page.sections.length;
         },
         updateSection: function(section) {
             var currentSection = _.find(this.page.sections, {id: section.id})
