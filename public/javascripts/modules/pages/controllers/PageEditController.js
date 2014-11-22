@@ -19,7 +19,7 @@
                 });
             }
             else {
-                this.page = {};
+                this.page = {sections: []};
             }
         },
         save: function () {
