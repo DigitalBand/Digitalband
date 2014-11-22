@@ -41,7 +41,7 @@ class CategoryRepository extends RepositoryBase with dao.common.CategoryReposito
 
   }
 
-  def list(categoryId: Int, brandId: Int, search: String, inStock: Boolean, domain: String = "digitalband.ru"): Seq[CategoryListItem] = database withDynSession {
+  def list(categoryId: Int, brandId: Int, search: String, inStock: Boolean, domain: String): Seq[CategoryListItem] = database withDynSession {
     implicit val getres = GetResult(r => CategoryListItem(r.<<, r.<<, r.<<))
     sql"""
       select

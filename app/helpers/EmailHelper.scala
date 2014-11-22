@@ -5,14 +5,14 @@ import com.typesafe.plugin._
 import play.api.Play.current
 import dao.common.{CityRepository, UserRepository}
 import play.api.i18n.Messages
-import play.api.mvc.{Request}
+import play.api.mvc.{AnyContent, Request}
 
 import play.api.libs.concurrent.Akka
 import play.api.libs.concurrent.Execution.Implicits._
 import scala.concurrent.duration._
 
 class EmailHelper(implicit userRepository: UserRepository) {
-
+  def host(implicit request: Request[AnyContent]) = request.host;
 
   def systemEmail = userRepository.getSystemEmail
 

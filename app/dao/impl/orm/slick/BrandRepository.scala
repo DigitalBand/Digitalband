@@ -30,7 +30,7 @@ class BrandRepository extends RepositoryBase with dao.common.BrandRepository {
     }
   }
 
-  def list(getCategory: => CategoryEntity, pageNumber: Int, pageSize: Int, search: String, inStock:Boolean = false, domain: String = "digitalband.ru"): ListPage[BrandEntity] = {
+  def list(getCategory: => CategoryEntity, pageNumber: Int, pageSize: Int, search: String, inStock:Boolean = false, domain: String): ListPage[BrandEntity] = {
     database withDynSession {
       val category = getCategory
       val drop = pageSize * (pageNumber - 1)
