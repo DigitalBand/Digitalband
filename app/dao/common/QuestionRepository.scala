@@ -7,6 +7,8 @@ trait QuestionRepository {
 
   def get(id: Int):Question
 
+  def countUnanswered(): Map[String, Int]
+
   def listUnanswered(): Seq[Question]
 
   def insertQuestion(productId: Int, email: String): Option[Int]

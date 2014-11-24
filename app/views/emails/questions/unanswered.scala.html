@@ -1,11 +1,16 @@
-@(unconfirmedCount: Int)
+@(unconfirmedCount: Map[String, Int])
 <h4>Уважаемый администратор!</h4>
 <p>Обратите, пожалуйста, внимание, что на сайте есть неотвеченные вопросы.
     Это значит, что клиент не получил еще никакого ответа от вас. Очень важно реагировать
     как можно скорее, иначе клиент обратится в другой интернет магазин.
 </p>
-<hr/>
-Количество неотвеченных вопросов: <b>@unconfirmedCount</b>
-<br/>
-<!--TODO: Hardcoded url. Move to config. -->
-<a href="http://digitalband.ru/admin">Перейти на страницу с вопросами</a>
+
+@for((host, count) <- unconfirmedCount) {
+    <hr/>
+    Количество неотвеченных вопросов: для @host: <b>@count</b>
+    <br/>
+    @{
+        val url = s"<a href='http://$host/admin'>Перейти на страницу с вопросами</a>";
+        Html(url)
+    }
+}

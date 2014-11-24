@@ -3,7 +3,7 @@ package dao.common
 import models._
 
 trait OrderRepository {
-  def countUnconfirmed: Int
+  def countUnconfirmed: Map[String, Int]
 
   def getCounters: Seq[(String, Int)]
 
@@ -25,10 +25,5 @@ trait OrderRepository {
 
   def getItems(orderId: Int): Seq[CartItem]
 
-  def create[TDeliveryInfo](userId: Int, deliveryInfo: TDeliveryInfo): Int
-
-//  def create(deliveryInfo: OrderDeliveryInfo, userId: Int): Int
-//
-//  def create(deliveryInfo: PickupDeliveryInfo, userId: Int): Int
-
+  def create[TDeliveryInfo](userId: Int, cityId: Option[Int], deliveryInfo: TDeliveryInfo): Int
 }

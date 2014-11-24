@@ -56,7 +56,7 @@ class EmailHelper(implicit userRepository: UserRepository) {
     mail.sendHtml(comment)
   }
 
-  def sendUnconfirmedOrdersExist(count: Int) = {
+  def sendUnconfirmedOrdersExist(count: Map[String, Int]) = {
     adminEmails.map {
       email =>
         val mail = use[MailerPlugin].email
@@ -67,7 +67,7 @@ class EmailHelper(implicit userRepository: UserRepository) {
     }
   }
 
-  def sendUnansweredQuestionsExist(count: Int) = {
+  def sendUnansweredQuestionsExist(count: Map[String, Int]) = {
     adminEmails.map {
       email =>
         val mail = use[MailerPlugin].email
