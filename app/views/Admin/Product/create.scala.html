@@ -54,17 +54,13 @@
 
                 </div>
                 <div class="col-md-6">
-                    @productId match {
-                        case 0 => {
-                        }
-                        case _ => {
-                            <div class="form-group">
-                                <label>Наличие</label>
-                                <div>
-                                    <a href="@controllers.admin.routes.StockItem.edit(productId)">Редактировать наличие</a>
-                                </div>
+                    @if(productId > 0) {
+                        <div class="form-group">
+                            <label>Наличие</label>
+                            <div>
+                                <a href="@controllers.admin.routes.StockItem.edit(productId)">Редактировать наличие</a>
                             </div>
-                        }
+                        </div>
                     }
 
                     @helper.inputText(product("brand"), '_label -> "Бренд", 'class -> "form-control")
