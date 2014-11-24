@@ -72,6 +72,6 @@ class QuestionRepository extends RepositoryBase with dao.common.QuestionReposito
   }
 
   def countUnanswered(): Map[String, Int] = database withDynSession {
-    Map("digitalband.ru" -> 1, "other" -> 5)
+    Map("Host" -> 1, "other" -> 5)
   }
 }

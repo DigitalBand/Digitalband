@@ -6,10 +6,19 @@
 </p>
 @for((host, count) <- unconfirmedCount) {
     <hr/>
-    Количество неподтвержденных заказов для @host: <b>@count</b>
-    <br/>
-    @{
-        val url = s"<a href='http://$host/admin/order/list/1'>Перейти на страницу заказов</a>";
-        Html(url)
-    }
+        @host match {
+            case null => {
+                Количество неподтвержденных заказов: <b>@count</b>
+                <br/>
+                Для просмотра неподтвержденных заказов зайдите в панель администрирования
+            }
+            case _ => {
+                Количество неподтвержденных заказов для @host: <b>@count</b>
+                <br/>
+                @{
+                    val url = s"<a href='http://$host/admin/order/list/1'>Перейти на страницу заказов</a>";
+                    Html(url)
+                }
+            }
+        }
 }
