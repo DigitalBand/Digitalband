@@ -5,12 +5,14 @@
         <tr>
             <th></th>
             <th>Название</th>
+            <th>Алиас</th>
         </tr>
         </thead>
         <tbody>
         <tr ng-repeat="page in pages">
             <td><a href="#" ng-click="remove(page.id)"><i class="icon icon-trash"></i></a></td>
             <td><a ui-sref="pageEdit({pageId: page.id})">{{page.name}}</a></td>
+            <td>{{page.alias}}</td>
         </tr>
         </tbody>
     </table>

@@ -1,0 +1,11 @@
+@(page: PageInfo)(implicit user:Option[UserEntity], request: play.api.mvc.Request[Any])
+@main(page.title, page.alias){
+    @page.sections.map { section =>
+        <h3 class="block-title sub-title">
+            <span>@section.name</span>
+        </h3>
+        @Html(section.content)
+        <br/>
+    }
+
+}

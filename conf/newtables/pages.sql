@@ -11,3 +11,7 @@ CREATE TABLE `dbs`.`page_sections` (
   `content` TEXT CHARACTER SET 'utf8' NULL,
   PRIMARY KEY (`id`),
   UNIQUE INDEX `id_UNIQUE` (`id` ASC));
+
+ALTER TABLE `dbs`.`pages`
+ADD COLUMN `alias` VARCHAR(45) NOT NULL AFTER `name`,
+ADD COLUMN `title` VARCHAR(45) CHARACTER SET 'utf8' NULL AFTER `alias`;

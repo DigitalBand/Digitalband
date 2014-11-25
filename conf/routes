@@ -69,7 +69,7 @@ GET           /admin/question/list-with-answers/:pageNumber        @controllers.
 GET           /admin/google/images/list                            @controllers.admin.ImageSearch.imageList(search: String ?= "", pageNumber:Int ?= 1)
 # Home page
 GET           /                                                    @controllers.Application.index
-GET           /about                                               @controllers.Application.about
+GET           /pages/:alias                                        @controllers.Application.pages(alias: String)
 GET           /contacts                                            @controllers.Application.contacts
 POST          /sendFeedback                                        @controllers.Application.sendFeedback
 GET           /stock/:productId                                    @controllers.Application.stock(productId: Int)

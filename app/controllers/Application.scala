@@ -19,7 +19,6 @@ class Application @Inject()(implicit ur: UserRepository,
                             val productRepository: ProductRepository,
                             val pageRepository: PageRepository) extends ControllerBase {
   val oneDayDuration = 86400
-  val aboutPageName = "about"
   val emailHelper = new EmailHelper()
 
   def contactsForm(implicit request: Request[Any]) = {
@@ -51,10 +50,11 @@ class Application @Inject()(implicit ur: UserRepository,
     }
   }
 
-  def about = withUser {
+  def pages(alias: String) = withUser {
     implicit user =>
       implicit request =>
-        Ok(views.html.Application.about())
+        val page = pageRepository.get(alias)
+        Ok(views.html.Application.page(new PageInfo(1, "", "", "sdf", Seq[PageSection]())))
   }
 
   def delivery = withUser {
@@ -67,8 +67,7 @@ class Application @Inject()(implicit ur: UserRepository,
       implicit request =>
         val recaptcha = ReCaptchaHelper.get("6LfMQdYSAAAAAJCe85Y6CRp9Ww7n-l3HOBf5bifB")
         val shops = shopRepository.getByHostname(request.host)
-        val page = pageRepository.get(aboutPageName)
-        Ok(views.html.Application.contacts(contactsForm, recaptcha, shops, page))
+        Ok(views.html.Application.contacts(contactsForm, recaptcha, shops))
   }
 
   def stock(productId: Int) = withUser {
@@ -86,8 +85,7 @@ class Application @Inject()(implicit ur: UserRepository,
           formWithErrors => BadRequest(
             views.html.Application.contacts(formWithErrors,
               ReCaptchaHelper.get("6LfMQdYSAAAAAJCe85Y6CRp9Ww7n-l3HOBf5bifB"),
-              shopRepository.getByHostname(request.host),
-              pageRepository.get(aboutPageName))),
+              shopRepository.getByHostname(request.host))),
           contactsForm => {
             emailHelper.sendFeedback(contactsForm)
             Redirect(routes.Application.contacts()).flashing(

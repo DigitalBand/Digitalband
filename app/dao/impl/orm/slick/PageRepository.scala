@@ -14,13 +14,17 @@ class PageRepository extends RepositoryBase with dao.common.PageRepository {
     implicit val res = GetResult(r => PageInfo(
       id = r.<<,
       sections = getSections(r.<<),
-      name = r.<<
+      name = r.<<,
+      alias = r.<<,
+      title = r.<<
     ))
     sql"""
       select
         p.id,
         p.id,
-        p.name
+        p.name,
+        p.alias,
+        p.title
       from pages p
       where p.name = ${pageName};
     """.as[PageInfo].first
@@ -30,12 +34,16 @@ class PageRepository extends RepositoryBase with dao.common.PageRepository {
     implicit val res = GetResult(r => PageInfo(
       id = r.<<,
       name = r.<<,
+      alias = r.<<,
+      title = r.<<,
       sections = getSections(pageId)
     ))
     sql"""
       select
         p.id,
-        p.name
+        p.name,
+        p.alias,
+        p.title
       from pages p
       where p.id = ${pageId};
     """.as[PageInfo].first
@@ -44,7 +52,10 @@ class PageRepository extends RepositoryBase with dao.common.PageRepository {
   def update(page: PageInfo) = database withDynSession {
     sqlu"""
       update pages
-      set name = ${page.name}
+      set
+        name = ${page.name},
+        alias = ${page.alias},
+        title = ${page.title}
       where id = ${page.id};
     """.execute
 
@@ -65,12 +76,16 @@ class PageRepository extends RepositoryBase with dao.common.PageRepository {
     implicit val res = GetResult(r => PageInfo(
       id = r.<<,
       name = r.<<,
+      alias = r.<<,
+      title = r.<<,
       sections = Seq[PageSection]()
     ))
     sql"""
       select
         p.id,
-        p.name
+        p.name,
+        p.alias,
+        p.title
       from pages p;
     """.as[PageInfo].list
   }
@@ -78,8 +93,8 @@ class PageRepository extends RepositoryBase with dao.common.PageRepository {
   def add(page: PageInfo): Int = database withDynSession {
     sqlu"""
       insert into
-        pages(name)
-        values(${page.name});
+        pages(name, alias, title)
+        values(${page.name}, ${page.alias}, ${page.title});
     """.execute
     val pageId = sql"select last_insert_id();".as[Int].first
     addSections(pageId, page.sections)
