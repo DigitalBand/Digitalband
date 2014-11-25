@@ -1,4 +1,4 @@
-@(unconfirmedCount: Map[String, Int])
+@(unconfirmedCount: Map[Option[String], Int])
 <h4>Уважаемый администратор!</h4>
 <p>Обратите, пожалуйста, внимание, что на сайте остались неподтвержденные заказы.
     Это значит, что клиент не получил еще никакого ответа от вас. Очень важно реагировать
@@ -7,16 +7,16 @@
 @for((host, count) <- unconfirmedCount) {
     <hr/>
         @host match {
-            case null => {
+            case None => {
                 Количество неподтвержденных заказов: <b>@count</b>
                 <br/>
                 Для просмотра неподтвержденных заказов зайдите в панель администрирования
             }
-            case _ => {
-                Количество неподтвержденных заказов для @host: <b>@count</b>
+            case Some(domain) => {
+                Количество неподтвержденных заказов для @domain: <b>@count</b>
                 <br/>
                 @{
-                    val url = s"<a href='http://$host/admin/order/list/1'>Перейти на страницу заказов</a>";
+                    val url = s"<a href='http://$domain/admin/order/list/1'>Перейти на страницу заказов</a>";
                     Html(url)
                 }
             }

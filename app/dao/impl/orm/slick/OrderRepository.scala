@@ -224,7 +224,7 @@ class OrderRepository extends RepositoryBase with dao.common.OrderRepository {
     query.as[(String, Int)].list
   }
 
-  def countUnconfirmed: Map[String, Int] = database withDynSession {
+  def countUnconfirmed = database withDynSession {
     sql"""
       select
         c.domain,
@@ -234,6 +234,6 @@ class OrderRepository extends RepositoryBase with dao.common.OrderRepository {
       left join
         cities c on c.id = o.city_id
       where o.status = 'unconfirmed'
-      group by city_id;""".as[(String, Int)].toMap
+      group by city_id;""".as[(Option[String], Int)].toMap
   }
 }
