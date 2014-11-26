@@ -56,25 +56,14 @@ class EmailHelper(implicit userRepository: UserRepository) {
     mail.sendHtml(comment)
   }
 
-  def sendUnconfirmedOrdersExist(count: Map[Option[String], Int]) = {
+  def sendUnconfirmedOrdersExist(orders: Map[Option[String], Int]) = {
     adminEmails.map {
       email =>
         val mail = use[MailerPlugin].email
         mail.setSubject("Digitalband - eсть неподтвержденные заказы!")
         mail.addFrom(systemEmail)
         mail.addRecipient(email)
-        mail.sendHtml(views.html.emails.order.unconfirmedExist(count).body)
-    }
-  }
-
-  def sendUnansweredQuestionsExist(count: Map[String, Int]) = {
-    adminEmails.map {
-      email =>
-        val mail = use[MailerPlugin].email
-        mail.setSubject("Digitalband - eсть неотвеченные вопросы!")
-        mail.addFrom(systemEmail)
-        mail.addRecipient(email)
-        mail.sendHtml(views.html.emails.questions.unanswered(count).body)
+        mail.sendHtml(views.html.emails.order.unconfirmedExist(orders).body)
     }
   }
 

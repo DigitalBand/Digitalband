@@ -1,10 +1,10 @@
-@(unconfirmedCount: Map[Option[String], Int])
+@(unconfirmedOrders: Map[Option[String], Int])
 <h4>Уважаемый администратор!</h4>
 <p>Обратите, пожалуйста, внимание, что на сайте остались неподтвержденные заказы.
     Это значит, что клиент не получил еще никакого ответа от вас. Очень важно реагировать
     как можно скорее, иначе клиент обратится в другой интернет магазин.
 </p>
-@for((host, count) <- unconfirmedCount) {
+@for((host, count) <- unconfirmedOrders) {
     <hr/>
         @host match {
             case None => {

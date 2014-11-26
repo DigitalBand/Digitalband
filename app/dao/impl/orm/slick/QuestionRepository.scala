@@ -70,8 +70,4 @@ class QuestionRepository extends RepositoryBase with dao.common.QuestionReposito
     val totalCount = sql"select count(q.id) from questions q".as[Int].first()
     new ListPage(pageNumber, items, totalCount)
   }
-
-  def countUnanswered(): Map[String, Int] = database withDynSession {
-    Map("Host" -> 1, "other" -> 5)
-  }
 }
