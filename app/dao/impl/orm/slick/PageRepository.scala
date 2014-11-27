@@ -10,7 +10,7 @@ import models.{PageInfo, PageSection}
 import scala.slick.jdbc.GetResult
 
 class PageRepository extends RepositoryBase with dao.common.PageRepository {
-  def get(pageName: String): PageInfo = database withDynSession {
+  def get(pageAlias: String): PageInfo = database withDynSession {
     implicit val res = GetResult(r => PageInfo(
       id = r.<<,
       sections = getSections(r.<<),
@@ -26,7 +26,7 @@ class PageRepository extends RepositoryBase with dao.common.PageRepository {
         p.alias,
         p.title
       from pages p
-      where p.name = ${pageName};
+      where p.alias = ${pageAlias};
     """.as[PageInfo].first
   }
 

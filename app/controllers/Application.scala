@@ -54,7 +54,7 @@ class Application @Inject()(implicit ur: UserRepository,
     implicit user =>
       implicit request =>
         val page = pageRepository.get(alias)
-        Ok(views.html.Application.page(new PageInfo(1, "", "", "sdf", Seq[PageSection]())))
+        Ok(views.html.Application.page(page))
   }
 
   def delivery = withUser {
