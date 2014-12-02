@@ -27,7 +27,6 @@
             if(!this.page.name || !this.page.alias) {
                 return;
             }
-            if(!this.page.title) this.page.title = this.page.name;
             this.pageService.save(this.page).then(function () {
                 that.$state.go('home1');
             });
