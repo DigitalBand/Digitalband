@@ -15,8 +15,7 @@ class PageRepository extends RepositoryBase with dao.common.PageRepository {
       id = r.<<,
       sections = getSections(r.<<),
       name = r.<<,
-      alias = r.<<,
-      title = r.<<
+      alias = r.<<
     ))
     sql"""
       select
@@ -35,7 +34,6 @@ class PageRepository extends RepositoryBase with dao.common.PageRepository {
       id = r.<<,
       name = r.<<,
       alias = r.<<,
-      title = r.<<,
       sections = getSections(pageId)
     ))
     sql"""
@@ -54,8 +52,7 @@ class PageRepository extends RepositoryBase with dao.common.PageRepository {
       update pages
       set
         name = ${page.name},
-        alias = ${page.alias},
-        title = ${page.title}
+        alias = ${page.alias}
       where id = ${page.id};
     """.execute
 
@@ -77,7 +74,6 @@ class PageRepository extends RepositoryBase with dao.common.PageRepository {
       id = r.<<,
       name = r.<<,
       alias = r.<<,
-      title = r.<<,
       sections = Seq[PageSection]()
     ))
     sql"""
@@ -93,8 +89,8 @@ class PageRepository extends RepositoryBase with dao.common.PageRepository {
   def add(page: PageInfo): Int = database withDynSession {
     sqlu"""
       insert into
-        pages(name, alias, title)
-        values(${page.name}, ${page.alias}, ${page.title});
+        pages(name, alias)
+        values(${page.name}, ${page.alias});
     """.execute
     val pageId = sql"select last_insert_id();".as[Int].first
     addSections(pageId, page.sections)
