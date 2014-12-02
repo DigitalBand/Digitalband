@@ -117,7 +117,10 @@ class EmailHelper(implicit userRepository: UserRepository) {
     adminEmails.map(email => sendToAdmins(email, deliveryInfo.email, systemEmail))
     def sendToClient(from: String, to: String) = {
       val mail: MailerAPI = use[MailerPlugin].email
-      mail.setSubject(Messages("emailhelper.orderconfirmation.subject"))
+      val cityRepository = db.Global.getControllerInstance(classOf[dao.common.CityRepository])
+      val city = cityRepository.getByHostname(request.host)
+      val idMark = city.prefix.getOrElse("") + order.id.toString
+      mail.setSubject(Messages("emailhelper.orderconfirmation.subject", idMark))
       mail.addRecipient(to)
       mail.addFrom(from)
       mail.sendHtml(views.html.emails.plain.order.confirmation(order).body)
