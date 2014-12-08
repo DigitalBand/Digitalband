@@ -14,3 +14,6 @@ CREATE TABLE `dbs`.`page_sections` (
 
 ALTER TABLE `dbs`.`pages`
 ADD COLUMN `alias` VARCHAR(45) NOT NULL AFTER `name`;
+
+ALTER TABLE `dbs`.`pages`
+ADD UNIQUE INDEX `alias_UNIQUE` (`alias` ASC);
