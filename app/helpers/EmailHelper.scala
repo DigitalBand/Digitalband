@@ -139,7 +139,7 @@ class EmailHelper(implicit userRepository: UserRepository) {
       val orderDetails =
         if(order.items.length > 1){
           val tailLength = order.items.tail.length
-          val itemSuffix = tailLength match {
+          val itemSuffix = tailLength % 10 match {
             case l if l > 1 && l < 5 => "а"
             case l if l > 5 => "ов"
           }
