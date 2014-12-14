@@ -1,5 +1,4 @@
 # --- !Ups
-
 CREATE TABLE brand_images (
   brand_id int(11) NOT NULL DEFAULT '0',
   image_id int(11) NOT NULL DEFAULT '0',
@@ -171,7 +170,7 @@ CREATE TABLE shopping_items (
 CREATE TABLE shops (
   id int(11) NOT NULL,
   title varchar(45) NOT NULL,
-  city varchar(45) NOT NULL,
+  city varchar(45) NULL,
   city_id int(11) DEFAULT NULL,
   address varchar(45) NOT NULL,
   phones varchar(500) DEFAULT NULL,
