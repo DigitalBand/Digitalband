@@ -9,13 +9,13 @@ CREATE TABLE brand_images (
 
 CREATE TABLE brands (
   id int(11) NOT NULL,
-  title varchar(127) NOT NULL,
+  title varchar(127) CHARACTER SET utf8 NOT NULL,
   PRIMARY KEY (id)
 );
 
 CREATE TABLE categories (
   category_id int(11) NOT NULL,
-  title varchar(256) DEFAULT NULL,
+  title varchar(256) CHARACTER SET utf8 DEFAULT NULL,
   left_value int(11) DEFAULT NULL,
   right_value int(11) DEFAULT NULL,
   parent_category_id int(11) DEFAULT NULL,
@@ -35,8 +35,8 @@ CREATE TABLE cities (
   domain varchar(45) NOT NULL,
   delivery text CHARACTER SET utf8,
   payment text CHARACTER SET utf8,
-  phone varchar(45) DEFAULT NULL,
-  prefix varchar(45) DEFAULT NULL,
+  phone varchar(45) CHARACTER SET utf8 DEFAULT NULL,
+  prefix varchar(45) CHARACTER SET utf8 DEFAULT NULL,
   PRIMARY KEY (id),
   UNIQUE KEY domain_UNIQUE (domain)
 );
@@ -49,19 +49,19 @@ CREATE TABLE dealers (
 
 CREATE TABLE images (
   image_id int(11) NOT NULL,
-  file_path varchar(256) DEFAULT NULL,
-  md5 varchar(100) DEFAULT NULL,
+  file_path varchar(256) CHARACTER SET utf8 DEFAULT NULL,
+  md5 varchar(100) CHARACTER SET utf8 DEFAULT NULL,
   PRIMARY KEY (image_id),
   UNIQUE KEY filePath_UNIQUE (file_path(255))
 );
 
 CREATE TABLE order_delivery_addresses (
   order_id int(11) NOT NULL,
-  city varchar(50) NOT NULL,
-  street varchar(50) NOT NULL,
-  building varchar(50) NOT NULL,
-  housing varchar(50) DEFAULT NULL,
-  apartment varchar(45) DEFAULT NULL
+  city varchar(50) CHARACTER SET utf8 NOT NULL,
+  street varchar(50) CHARACTER SET utf8 NOT NULL,
+  building varchar(50) CHARACTER SET utf8 NOT NULL,
+  housing varchar(50) CHARACTER SET utf8 DEFAULT NULL,
+  apartment varchar(45) CHARACTER SET utf8 DEFAULT NULL
 );
 
 CREATE TABLE order_delivery_shops (
@@ -81,15 +81,15 @@ CREATE TABLE orders (
   user_id int(11) DEFAULT NULL,
   city_id int(11) DEFAULT NULL,
   place_date timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `status` varchar(45) DEFAULT 'unconfirmed',
-  email varchar(85) DEFAULT NULL,
-  phone varchar(45) DEFAULT NULL,
-  `name` varchar(50) DEFAULT NULL,
-  middle_name varchar(50) DEFAULT NULL,
-  last_name varchar(50) DEFAULT NULL,
-  `comment` text,
-  delivery_type varchar(45) DEFAULT NULL,
-  address varchar(255) DEFAULT NULL,
+  `status` varchar(45) CHARACTER SET utf8 DEFAULT 'unconfirmed',
+  email varchar(85) CHARACTER SET utf8 DEFAULT NULL,
+  phone varchar(45) CHARACTER SET utf8 DEFAULT NULL,
+  `name` varchar(50) CHARACTER SET utf8 DEFAULT NULL,
+  middle_name varchar(50) CHARACTER SET utf8 DEFAULT NULL,
+  last_name varchar(50) CHARACTER SET utf8 DEFAULT NULL,
+  `comment` text CHARACTER SET utf8,
+  delivery_type varchar(45) CHARACTER SET utf8 DEFAULT NULL,
+  address varchar(255) CHARACTER SET utf8 DEFAULT NULL,
   PRIMARY KEY (id)
 );
 
@@ -121,12 +121,12 @@ CREATE TABLE product_images (
 
 CREATE TABLE products (
   id int(11) NOT NULL,
-  title varchar(256) NOT NULL,
-  description text,
+  title varchar(256) CHARACTER SET utf8 NOT NULL,
+  description text CHARACTER SET utf8,
   price decimal(10,2) DEFAULT NULL,
   added_date timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   brand_id int(11) DEFAULT NULL,
-  short_description text,
+  short_description text CHARACTER SET utf8,
   default_image_id int(11) DEFAULT NULL,
   visit_counter int(11) DEFAULT NULL,
   created_by_user int(11) DEFAULT NULL,
@@ -147,15 +147,15 @@ CREATE TABLE products_categories (
 CREATE TABLE questions (
   id int(11) NOT NULL,
   product_id int(11) DEFAULT NULL,
-  email varchar(100) NOT NULL,
-  `type` varchar(45) NOT NULL DEFAULT 'availability',
-  `status` varchar(45) NOT NULL DEFAULT 'unanswered',
+  email varchar(100) CHARACTER SET utf8 NOT NULL,
+  `type` varchar(45) CHARACTER SET utf8 NOT NULL DEFAULT 'availability',
+  `status` varchar(45) CHARACTER SET utf8 NOT NULL DEFAULT 'unanswered',
   PRIMARY KEY (id)
 );
 
 CREATE TABLE roles (
   role_id int(11) NOT NULL DEFAULT '0',
-  title varchar(45) NOT NULL,
+  title varchar(45) CHARACTER SET utf8 NOT NULL,
   PRIMARY KEY (role_id),
   UNIQUE KEY title_UNIQUE (title)
 );
@@ -169,10 +169,10 @@ CREATE TABLE shopping_items (
 
 CREATE TABLE shops (
   id int(11) NOT NULL,
-  title varchar(45) NOT NULL,
-  city varchar(45) NULL,
+  title varchar(45) CHARACTER SET utf8 NOT NULL,
+  city varchar(45) CHARACTER SET utf8 NULL,
   city_id int(11) DEFAULT NULL,
-  address varchar(45) NOT NULL,
+  address varchar(45) CHARACTER SET utf8 NOT NULL,
   phones varchar(500) DEFAULT NULL,
   PRIMARY KEY (id)
 );
@@ -192,16 +192,16 @@ CREATE TABLE user_profiles (
   email varchar(85) NOT NULL,
   `password` varchar(45) NOT NULL,
   user_id int(11) DEFAULT NULL,
-  user_name varchar(50) DEFAULT NULL,
-  user_last_name varchar(50) DEFAULT NULL,
-  user_middle_name varchar(50) DEFAULT NULL,
-  phone_number varchar(30) DEFAULT NULL,
-  address varchar(200) DEFAULT NULL,
-  city varchar(45) DEFAULT NULL,
-  street varchar(45) DEFAULT NULL,
-  building varchar(45) DEFAULT NULL,
-  housing varchar(45) DEFAULT NULL,
-  apartment varchar(45) DEFAULT NULL,
+  user_name varchar(50) CHARACTER SET utf8 DEFAULT NULL,
+  user_last_name varchar(50) CHARACTER SET utf8 DEFAULT NULL,
+  user_middle_name varchar(50) CHARACTER SET utf8 DEFAULT NULL,
+  phone_number varchar(30) CHARACTER SET utf8 DEFAULT NULL,
+  address varchar(200) CHARACTER SET utf8 DEFAULT NULL,
+  city varchar(45) CHARACTER SET utf8 DEFAULT NULL,
+  street varchar(45) CHARACTER SET utf8 DEFAULT NULL,
+  building varchar(45) CHARACTER SET utf8 DEFAULT NULL,
+  housing varchar(45) CHARACTER SET utf8 DEFAULT NULL,
+  apartment varchar(45) CHARACTER SET utf8 DEFAULT NULL,
   PRIMARY KEY (email),
   UNIQUE KEY userId_UNIQUE (user_id),
   KEY userId (user_id),
@@ -211,7 +211,7 @@ CREATE TABLE user_profiles (
 CREATE TABLE users (
   id int(11) NOT NULL,
   register_date timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  session_id varchar(45) DEFAULT NULL,
+  session_id varchar(45) CHARACTER SET utf8 DEFAULT NULL,
   PRIMARY KEY (id),
   KEY userId (id)
 );
