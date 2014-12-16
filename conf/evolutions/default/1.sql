@@ -8,13 +8,13 @@ CREATE TABLE brand_images (
 );
 
 CREATE TABLE brands (
-  id int(11) NOT NULL,
+  id int(11) NOT NULL AUTO_INCREMENT,
   title varchar(127) CHARACTER SET utf8 NOT NULL,
   PRIMARY KEY (id)
 );
 
 CREATE TABLE categories (
-  category_id int(11) NOT NULL,
+  category_id int(11) NOT NULL AUTO_INCREMENT,
   title varchar(256) CHARACTER SET utf8 DEFAULT NULL,
   left_value int(11) DEFAULT NULL,
   right_value int(11) DEFAULT NULL,
@@ -30,7 +30,7 @@ CREATE TABLE category_images (
 );
 
 CREATE TABLE cities (
-  id int(10) unsigned NOT NULL,
+  id int(10) unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(45) CHARACTER SET utf8 NOT NULL,
   domain varchar(45) NOT NULL,
   delivery text CHARACTER SET utf8,
@@ -42,13 +42,13 @@ CREATE TABLE cities (
 );
 
 CREATE TABLE dealers (
-  id int(11) NOT NULL,
+  id int(11) NOT NULL AUTO_INCREMENT,
   title varchar(60) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL,
   PRIMARY KEY (id)
 );
 
 CREATE TABLE images (
-  image_id int(11) NOT NULL,
+  image_id int(11) NOT NULL AUTO_INCREMENT,
   file_path varchar(256) CHARACTER SET utf8 DEFAULT NULL,
   md5 varchar(100) CHARACTER SET utf8 DEFAULT NULL,
   PRIMARY KEY (image_id),
@@ -77,7 +77,7 @@ CREATE TABLE order_items (
 );
 
 CREATE TABLE orders (
-  id int(11) NOT NULL,
+  id int(11) NOT NULL AUTO_INCREMENT,
   user_id int(11) DEFAULT NULL,
   city_id int(11) DEFAULT NULL,
   place_date timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -94,7 +94,7 @@ CREATE TABLE orders (
 );
 
 CREATE TABLE page_sections (
-  id int(11) NOT NULL,
+  id int(11) NOT NULL AUTO_INCREMENT,
   page_id int(11) NOT NULL,
   `name` varchar(45) CHARACTER SET utf8 DEFAULT NULL,
   content text CHARACTER SET utf8,
@@ -103,7 +103,7 @@ CREATE TABLE page_sections (
 );
 
 CREATE TABLE pages (
-  id int(11) NOT NULL,
+  id int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(45) CHARACTER SET utf8 NOT NULL,
   alias varchar(45) NOT NULL,
   title varchar(45) CHARACTER SET utf8 DEFAULT NULL,
@@ -120,7 +120,7 @@ CREATE TABLE product_images (
 );
 
 CREATE TABLE products (
-  id int(11) NOT NULL,
+  id int(11) NOT NULL AUTO_INCREMENT,
   title varchar(256) CHARACTER SET utf8 NOT NULL,
   description text CHARACTER SET utf8,
   price decimal(10,2) DEFAULT NULL,
@@ -145,7 +145,7 @@ CREATE TABLE products_categories (
 );
 
 CREATE TABLE questions (
-  id int(11) NOT NULL,
+  id int(11) NOT NULL AUTO_INCREMENT,
   product_id int(11) DEFAULT NULL,
   email varchar(100) CHARACTER SET utf8 NOT NULL,
   `type` varchar(45) CHARACTER SET utf8 NOT NULL DEFAULT 'availability',
@@ -168,7 +168,7 @@ CREATE TABLE shopping_items (
 );
 
 CREATE TABLE shops (
-  id int(11) NOT NULL,
+  id int(11) NOT NULL AUTO_INCREMENT,
   title varchar(45) CHARACTER SET utf8 NOT NULL,
   city varchar(45) CHARACTER SET utf8 NULL,
   city_id int(11) DEFAULT NULL,
@@ -178,7 +178,7 @@ CREATE TABLE shops (
 );
 
 CREATE TABLE stock_items (
-  id int(11) NOT NULL,
+  id int(11) NOT NULL AUTO_INCREMENT,
   product_id int(11) NOT NULL,
   dealer_id int(11) NOT NULL,
   dealer_price double NOT NULL DEFAULT '0',
@@ -209,7 +209,7 @@ CREATE TABLE user_profiles (
 );
 
 CREATE TABLE users (
-  id int(11) NOT NULL,
+  id int(11) NOT NULL AUTO_INCREMENT,
   register_date timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   session_id varchar(45) CHARACTER SET utf8 DEFAULT NULL,
   PRIMARY KEY (id),
