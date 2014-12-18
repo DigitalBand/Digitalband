@@ -5,7 +5,7 @@
 
 ###Admin
 GET           /admin                                               @controllers.admin.Dashboard.index
-GET           /admin/order/list/:pageNumber                        @controllers.admin.Order.list(pageNumber: Int, pageSize: Int ?= 10)
+GET           /admin/order/list/:pageNumber                        @controllers.admin.Order.list(pageNumber: Int, pageSize: Int ?= 100)
 GET           /admin/order/:orderId                                @controllers.admin.Order.display(orderId: Int)
 GET           /admin/order/:orderId/confirm                        @controllers.admin.Order.confirmPage(orderId: Int)
 GET           /admin/order/:orderId/cancel                         @controllers.admin.Order.cancelPage(orderId: Int)

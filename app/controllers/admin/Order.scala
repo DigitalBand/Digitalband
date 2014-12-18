@@ -5,6 +5,7 @@ import controllers.common.ControllerBase
 import dao.common.{OrderRepository, UserRepository, ShopRepository}
 import helpers.{EmailHelper, withAdmin}
 import models._
+import play.api.Logger
 import play.api.data.Forms._
 import play.api.data._
 import play.api.i18n.Messages
@@ -14,7 +15,7 @@ class Order @Inject()(implicit userRepository: UserRepository, orderRepository: 
   val orderStatusForm = Form("comment" -> text)
   val emailHelper = new EmailHelper()
 
-  def list(pageNumber: Int = 1, pageSize: Int = 10) = withAdmin { implicit user =>
+  def list(pageNumber: Int = 1, pageSize: Int) = withAdmin { implicit user =>
       implicit request =>
         val orders: ListPage[models.OrderInfo] = orderRepository.listAll(pageNumber, pageSize)
         val orderCounters: Seq[(String, Int)] = orderRepository.getCounters
@@ -32,6 +33,7 @@ class Order @Inject()(implicit userRepository: UserRepository, orderRepository: 
           Ok(Order.display(order))
   }
 
+  //TODO: It is not a good name, rename it
   def getDeliveryOrder(order: OrderInfo): OrderInfo = {
     val orderDeliveryInfo = orderRepository.getOrderDeliveryInfo(order.id)
     val deliveryInfo = new DeliveryInfo(
