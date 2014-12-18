@@ -1,12 +1,7 @@
 package models
 
-import java.text.SimpleDateFormat
-import java.time.format.DateTimeFormatter
-
-import org.joda.time.DateTime
-import org.ocpsoft.prettytime.PrettyTime
 import java.sql.Date
-import java.util.Locale
+import java.text.SimpleDateFormat
 
 
 class OrderInfo(val id: Int, val orderDate: java.sql.Timestamp,
