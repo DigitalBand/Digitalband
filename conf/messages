@@ -47,7 +47,7 @@ validation.registration.emailexists=Пользователь с данным ema
 security.forgotpassword.notregistered=Данный email не зарегистрирован в системе
 
 emailhelper.sendfeedback.subject=Сообщение со страницы Контакты
-emailhelper.orderconfirmation.subject=Подтверждение заказа № {0}, {1}
+emailhelper.orderconfirmation.subject=Уведомление о заказе {0}, {1}
 emailhelper.orderconfirmation.subjectDetails=' и еще' {0} товар{1}
 
 application.sendfeedback.alert.success=Ваше сообщение было успешно отправлено
