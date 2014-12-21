@@ -1,6 +1,6 @@
 @(order: OrderInfo, idMark: String)(implicit request: play.api.mvc.Request[Any])
 
-@emails.plain.order.main(order, additionalContent(order)) {
+@emails.plain.order.main(order, additionalContent = additionalContent(order)) {
 Уважаемый администратор!
 <p>
     На сайте был сформирован новый заказ с артикулом @idMark и его статус в данный момент "неподтвержденный".
