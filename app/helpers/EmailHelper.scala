@@ -130,7 +130,7 @@ class EmailHelper(implicit userRepository: UserRepository) {
       mail.setSubject(subject)
       mail.addRecipient(to)
       mail.addFrom(from)
-      mail.sendHtml(views.html.emails.plain.order.confirmation(order).body)
+      mail.sendHtml(views.html.emails.plain.order.notification(order).body)
     }
     def sendToAdmins(adminEmail: String, userEmail: String, systemEmail: String) = {
       val mail: MailerAPI = use[MailerPlugin].email
@@ -140,7 +140,7 @@ class EmailHelper(implicit userRepository: UserRepository) {
       mail.addFrom(systemEmail)
       mail.setReplyTo(userEmail)
       mail.addRecipient(adminEmail)
-      mail.sendHtml(views.html.emails.plain.order.adminConfirmation(order, idMark(city, order)).body)
+      mail.sendHtml(views.html.emails.plain.order.adminNotification(order, idMark(city, order)).body)
     }
     def getEmailSubject(order: OrderInfo): String  = {
       val orderDetails =
