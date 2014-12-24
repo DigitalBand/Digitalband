@@ -6,7 +6,7 @@ import play.api.Logger
 import play.api.Play.current
 import dao.common.{CityRepository, UserRepository}
 import play.api.i18n.Messages
-import play.api.mvc.{Request}
+import play.api.mvc.{AnyContent, Request}
 
 import play.api.libs.concurrent.Akka
 import play.api.libs.concurrent.Execution.Implicits._
@@ -62,25 +62,14 @@ class EmailHelper(implicit userRepository: UserRepository) {
     mail.sendHtml(comment)
   }
 
-  def sendUnconfirmedOrdersExist(count: Int) = {
+  def sendUnconfirmedOrdersExist(orders: Map[Option[String], Int]) = {
     adminEmails.map {
       email =>
         val mail = use[MailerPlugin].email
         mail.setSubject("Digitalband - eсть неподтвержденные заказы!")
         mail.addFrom(systemEmail)
         mail.addRecipient(email)
-        mail.sendHtml(views.html.emails.order.unconfirmedExist(count).body)
-    }
-  }
-
-  def sendUnansweredQuestionsExist(count: Int) = {
-    adminEmails.map {
-      email =>
-        val mail = use[MailerPlugin].email
-        mail.setSubject("Digitalband - eсть неотвеченные вопросы!")
-        mail.addFrom(systemEmail)
-        mail.addRecipient(email)
-        mail.sendHtml(views.html.emails.questions.unanswered(count).body)
+        mail.sendHtml(views.html.emails.order.unconfirmedExist(orders).body)
     }
   }
 

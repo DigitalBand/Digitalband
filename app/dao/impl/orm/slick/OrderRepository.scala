@@ -11,64 +11,47 @@ import dao.impl.orm.slick.common.RepositoryBase
 
 class OrderRepository extends RepositoryBase with dao.common.OrderRepository {
 
-  def create[TDeliveryInfo](userId: Int, deliveryInfo: TDeliveryInfo): Int = {
+  def create[TDeliveryInfo](userId: Int, cityId: Option[Int], deliveryInfo: TDeliveryInfo): Int = {
     deliveryInfo match {
-      case di: OrderDeliveryInfo => create(di, userId)
-      case pi: PickupDeliveryInfo => create(pi, userId)
+      case di: OrderDeliveryInfo => create(di, userId, cityId)
+      case pi: PickupDeliveryInfo => create(pi, userId, cityId)
     }
   }
 
-  def create(deliveryInfo: OrderDeliveryInfo, userId: Int): Int = database withDynSession {
-    sqlu"""
-      insert into
-        orders (user_id, place_date, name, last_name, middle_name, email, phone, comment, delivery_type)
-      values(
-        $userId,
-        ${new Timestamp(new java.util.Date().getTime)},
-        ${deliveryInfo.personalInfo.firstName},
-        ${deliveryInfo.personalInfo.lastName},
-        ${deliveryInfo.personalInfo.middleName},
-        ${deliveryInfo.personalInfo.email},
-        ${deliveryInfo.personalInfo.phone},
-        ${deliveryInfo.comment},
-        "Delivery");
-    """.execute()
-    val orderId = sql"select last_insert_id();".as[Int].first
-    sqlu"""
-        insert into
-          order_items(order_id, product_id, quantity, unit_price)
-        select
-          ${orderId},
-          product_id,
-          sum(quantity) as quantity,
-          (select price from products where id = si.product_id limit 1) as unit_price
-        from
-          shopping_items si
-        where
-          user_id = ${userId}
-        group by product_id;
-        delete from shopping_items where user_id = ${userId};
-       """.execute()
+  def create(deliveryInfo: OrderDeliveryInfo, userId: Int, cityId: Option[Int]): Int = database withDynSession {
+    val orderId = create(deliveryInfo.personalInfo, userId, cityId, deliveryInfo.comment, "Delivery")
+    addOrderItems(orderId, userId)
     addOrderDeliveryInfo(orderId, deliveryInfo.address)
     orderId
   }
 
-  def create(deliveryInfo: PickupDeliveryInfo, userId: Int): Int = database withDynSession {
+  def create(deliveryInfo: PickupDeliveryInfo, userId: Int, cityId: Option[Int]): Int = database withDynSession {
+    val orderId = create(deliveryInfo.personalInfo, userId, cityId, deliveryInfo.comment, "Pickup")
+    addOrderItems(orderId, userId)
+    addOrderPickupInfo(orderId, deliveryInfo.shopId)
+    orderId
+  }
+
+  def create(personalInfo: PersonalInfo, userId: Int, cityId: Option[Int], comment: String, deliveryType: String): Int = {
     sqlu"""
       insert into
-        orders (user_id, place_date, name, last_name, middle_name, email, phone, comment, delivery_type)
+        orders (user_id, city_id, place_date, name, last_name, middle_name, email, phone, comment, delivery_type)
       values(
         $userId,
+        $cityId,
         ${new Timestamp(new java.util.Date().getTime)},
-        ${deliveryInfo.personalInfo.firstName},
-        ${deliveryInfo.personalInfo.lastName},
-        ${deliveryInfo.personalInfo.middleName},
-        ${deliveryInfo.personalInfo.email},
-        ${deliveryInfo.personalInfo.phone},
-        ${deliveryInfo.comment},
-        "Pickup");
+        ${personalInfo.firstName},
+        ${personalInfo.lastName},
+        ${personalInfo.middleName},
+        ${personalInfo.email},
+        ${personalInfo.phone},
+        ${comment},
+        ${deliveryType});
     """.execute()
-    val orderId = sql"select last_insert_id();".as[Int].first
+    sql"select last_insert_id();".as[Int].first
+  }
+
+  def addOrderItems(orderId: Int, userId: Int) = {
     sqlu"""
         insert into
           order_items(order_id, product_id, quantity, unit_price)
@@ -84,8 +67,6 @@ class OrderRepository extends RepositoryBase with dao.common.OrderRepository {
         group by product_id;
         delete from shopping_items where user_id = ${userId};
        """.execute()
-    addOrderPickupInfo(orderId, deliveryInfo.shopId)
-    orderId
   }
 
   def addOrderDeliveryInfo(orderId: Int, address: DeliveryAddress) = {
@@ -243,8 +224,16 @@ class OrderRepository extends RepositoryBase with dao.common.OrderRepository {
     query.as[(String, Int)].list
   }
 
-  def countUnconfirmed: Int = database withDynSession {
-    sql"select count(*) from orders where status = 'unconfirmed'".as[Int].first
+  def groupUnconfirmedByHost = database withDynSession {
+    sql"""
+      select
+        c.domain,
+        count(o.id)
+      from
+        orders o
+      left join
+        cities c on c.id = o.city_id
+      where o.status = 'unconfirmed'
+      group by city_id;""".as[(Option[String], Int)].toMap
   }
-
 }
