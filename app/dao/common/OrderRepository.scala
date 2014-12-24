@@ -3,7 +3,7 @@ package dao.common
 import models._
 
 trait OrderRepository {
-  def countUnconfirmed: Map[Option[String], Int]
+  def groupUnconfirmedByHost: Map[Option[String], Int]
 
   def getCounters: Seq[(String, Int)]
 

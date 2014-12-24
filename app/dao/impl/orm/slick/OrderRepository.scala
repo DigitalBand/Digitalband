@@ -224,7 +224,7 @@ class OrderRepository extends RepositoryBase with dao.common.OrderRepository {
     query.as[(String, Int)].list
   }
 
-  def countUnconfirmed = database withDynSession {
+  def groupUnconfirmedByHost = database withDynSession {
     sql"""
       select
         c.domain,

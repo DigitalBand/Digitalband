@@ -4,7 +4,7 @@ import dao.common.{UserRepository, QuestionRepository, OrderRepository}
 
 class NotificationsHelper(orderRepository: OrderRepository, questionRepository: QuestionRepository, userRepository: UserRepository) {
   def unconfirmedOrders() = {
-    val unconfirmedOrders = orderRepository.countUnconfirmed
+    val unconfirmedOrders = orderRepository.groupUnconfirmedByHost
     if (unconfirmedOrders.size > 0) {
       implicit val ur = userRepository
       val emailHelper = new EmailHelper()

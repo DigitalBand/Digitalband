@@ -15,10 +15,7 @@
             case Some(domain) => {
                 Количество неподтвержденных заказов для @domain: <b>@count</b>
                 <br/>
-                @{
-                    val url = s"<a href='http://$domain/admin/order/list/1'>Перейти на страницу заказов</a>";
-                    Html(url)
-                }
+                <a href="http://@domain@controllers.admin.routes.Order.list(1)">Перейти на страницу заказов</a>
             }
         }
 }
