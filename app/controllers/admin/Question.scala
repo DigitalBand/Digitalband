@@ -12,6 +12,7 @@ import scala.concurrent.duration._
 import play.api.Play.current
 import play.api.Logger
 
+//TODO: Obsolete
 class Question @Inject()(implicit userRepository: UserRepository, productRepository: ProductRepository, questionRepository: QuestionRepository) extends ControllerBase {
   val commentForm = Form("comment" -> text)
   val emailHelper = new EmailHelper()
