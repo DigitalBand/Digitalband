@@ -1,5 +1,5 @@
 @(order: OrderInfo)(implicit request: play.api.mvc.Request[Any])
-@emails.plain.order.main(order) {
+@emails.plain.order.main(order, hidePrices = true) {
 Уважаемый покупатель!
 
 Ваш заказ сформирован и ожидает подтверждения. В ближайшее время с вами свяжется продавец и уточнит детали заказа.

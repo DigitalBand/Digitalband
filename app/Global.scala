@@ -23,7 +23,6 @@ object Global extends GlobalSettings {
     val notificationsHelper = new NotificationsHelper(new OrderRepository, new QuestionRepository, new UserRepository)
     Akka.system.scheduler.schedule(0.seconds, 2.hours) {
       notificationsHelper.unconfirmedOrders()
-      notificationsHelper.unansweredQuestions()
     }
   }
 }

@@ -41,7 +41,7 @@
             <div class="row">
                 <div class="col-md-6">
                     @helper.inputText(product("title"), '_label -> "Название", 'class -> "form-control")
-                    @helper.inputText(product("price"), '_label -> "Цена", 'type -> "number", 'class -> "form-control")
+                    @helper.inputText(product("price"), '_label -> "Цена", 'type -> "number", 'step -> "any", 'class -> "form-control")
                     @helper.textarea(product("shortDescription"), '_label -> "Краткое описание", 'class -> "form-control")
                     <div class="form-group" id="descriptionGroup">
                         <label>Описание</label>
@@ -54,12 +54,15 @@
 
                 </div>
                 <div class="col-md-6">
-                    <div class="form-group">
-                        <label>Наличие</label>
-                        <div>
-                            <a href="@controllers.admin.routes.StockItem.edit(productId)">Редактировать наличие</a>
+                    @if(productId > 0) {
+                        <div class="form-group">
+                            <label>Наличие</label>
+                            <div>
+                                <a href="@controllers.admin.routes.StockItem.edit(productId)">Редактировать наличие</a>
+                            </div>
                         </div>
-                    </div>
+                    }
+
                     @helper.inputText(product("brand"), '_label -> "Бренд", 'class -> "form-control")
                     <div>
                         <label class="control-label" for="image">

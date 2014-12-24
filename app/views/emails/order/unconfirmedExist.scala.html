@@ -1,11 +1,21 @@
-@(unconfirmedCount: Int)
+@(unconfirmedOrders: Map[Option[String], Int])
 <h4>Уважаемый администратор!</h4>
 <p>Обратите, пожалуйста, внимание, что на сайте остались неподтвержденные заказы.
     Это значит, что клиент не получил еще никакого ответа от вас. Очень важно реагировать
     как можно скорее, иначе клиент обратится в другой интернет магазин.
 </p>
-<hr/>
-Количество неподтвержденных заказов: <b>@unconfirmedCount</b>
-<br/>
-<!--TODO: Hardcoded url. Move to config. -->
-<a href="http://digitalband.ru/admin/order/list/1">Перейти на страницу заказов</a>
+@for((host, count) <- unconfirmedOrders) {
+    <hr/>
+        @host match {
+            case None => {
+                Количество неподтвержденных заказов: <b>@count</b>
+                <br/>
+                Для просмотра неподтвержденных заказов зайдите в панель администрирования
+            }
+            case Some(domain) => {
+                Количество неподтвержденных заказов для @domain: <b>@count</b>
+                <br/>
+                <a href="http://@domain@controllers.admin.routes.Order.list(1)">Перейти на страницу заказов</a>
+            }
+        }
+}

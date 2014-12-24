@@ -1,16 +1,19 @@
 package controllers
 
-import dao.impl.orm.slick.ShopRepository
 import models._
 import com.google.inject.Inject
 import controllers.common.ControllerBase
-import dao.common.{CartRepository, OrderRepository, UserRepository}
+import dao.common.{CartRepository, OrderRepository, UserRepository, ShopRepository, CityRepository}
 import helpers.{EmailHelper, withUser}
 import play.api.data.Form
 import play.api.data.Forms._
 import play.api.i18n.Messages
 
-class Order @Inject()(implicit ur: UserRepository, orderRepository: OrderRepository, cartRepository: CartRepository, shopRepository: ShopRepository) extends ControllerBase {
+class Order @Inject()(implicit ur: UserRepository,
+                               orderRepository: OrderRepository,
+                               cartRepository: CartRepository,
+                               shopRepository: ShopRepository,
+                               cityRepository: CityRepository) extends ControllerBase {
   val deliveryForm = Form(mapping(
     "address" -> mapping(
       "city" -> nonEmptyText(minLength = 2, maxLength = 50),
@@ -94,9 +97,11 @@ class Order @Inject()(implicit ur: UserRepository, orderRepository: OrderReposit
             BadRequest(views.html.Order.fillDelivery(cartRepository.list(getUserId), formWithErrors))
           },
           deliveryInfo => {
+            val city = cityRepository.getByHostname(request.host)
+            val cityId = if(city != null) Option(city.id) else None
             val userInfo = new UserInfo(getUserId, deliveryInfo.personalInfo, Option(deliveryInfo.address))
             userRepository.updateUserInfo(userInfo)
-            val orderId = orderRepository.create(getUserId, deliveryInfo)
+            val orderId = orderRepository.create(getUserId, cityId, deliveryInfo)
             val orderDeliveryInfo = new DeliveryInfo(userInfo.personalInfo.toString(), userInfo.personalInfo.email.getOrElse(""), userInfo.personalInfo.phone, userInfo.address.get.toString())
             emailHelper.orderConfirmation(new OrderInfo(orderId, orderDeliveryInfo, orderRepository.getItems(orderId)))
             Redirect(routes.Order.confirmation(orderId))
@@ -113,9 +118,11 @@ class Order @Inject()(implicit ur: UserRepository, orderRepository: OrderReposit
             BadRequest(views.html.Order.fillPickup(cartRepository.list(getUserId), formWithErrors, shops))
           },
           pickupInfo => {
+            val city = cityRepository.getByHostname(request.host)
+            val cityId = if(city != null) Option(city.id) else None
             val userInfo = new UserInfo(getUserId, pickupInfo.personalInfo, None)
             userRepository.updateUserInfo(userInfo)
-            val orderId = orderRepository.create(getUserId, pickupInfo)
+            val orderId = orderRepository.create(getUserId, cityId, pickupInfo)
             val pickupShop = shopRepository.get(pickupInfo.shopId);
             val address = Messages("pickup") + " - " + pickupShop.address;
             val orderDeliveryInfo = new DeliveryInfo(userInfo.personalInfo.toString(), userInfo.personalInfo.email.getOrElse(""), userInfo.personalInfo.phone, address)

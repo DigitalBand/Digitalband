@@ -14,7 +14,7 @@ import play.api.i18n.Messages
 import wt.common.image.ImageEntity
 
 class ProductRepository extends RepositoryBase with dao.common.ProductRepository {
-  def listMostVisited(count: Int, domain: String = "digitalband.ru") = database withDynSession {
+  def listMostVisited(count: Int, domain: String) = database withDynSession {
     implicit val res = GetResult(r => new ProductDetails(r.<<, r.<<, r.<<, r.<<, r.<<))
     sql"""
       select
@@ -45,7 +45,7 @@ class ProductRepository extends RepositoryBase with dao.common.ProductRepository
     """.as[Int].first
   }
 
-  def getList(getCategory: => CategoryEntity, brandId: Int, pageNumber: Int, pageSize: Int, search: String, inStock: Boolean, domain: String = "digitalband.ru"): ListPage[ProductDetails] = database withDynSession {
+  def getList(getCategory: => CategoryEntity, brandId: Int, pageNumber: Int, pageSize: Int, search: String, inStock: Boolean, domain: String): ListPage[ProductDetails] = database withDynSession {
     implicit val getProducts = GetResult(
       r => new ProductDetails(r.nextString, r.nextString, r.nextDouble, r.nextInt, r.nextInt, r.nextBoolean))
     val category = getCategory
@@ -251,7 +251,7 @@ class ProductRepository extends RepositoryBase with dao.common.ProductRepository
     """.as[Int].list
   }
 
-  def listAll(domain: String = "digitalband.ru") = database.withDynSession {
+  def listAll(domain: String) = database.withDynSession {
     implicit val getProductDetailsResult = GetResult(r => ProductDetails(
       id = r.<<,
       title = r.<<,

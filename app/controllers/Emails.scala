@@ -8,7 +8,7 @@ import helpers.withAdmin
 class Emails @Inject()(implicit ur: UserRepository, orderRepository: OrderRepository) extends ControllerBase {
   def orderConfirmation(orderId: Int) = withAdmin { implicit user =>
       implicit request =>
-        Ok(views.html.emails.plain.order.confirmation(orderRepository.get(orderId)))
+        Ok(views.html.emails.plain.order.notification(orderRepository.get(orderId)))
   }
 
   def orderAdminConfirmation(orderId: Int) = withAdmin { implicit user =>
@@ -17,7 +17,7 @@ class Emails @Inject()(implicit ur: UserRepository, orderRepository: OrderReposi
         val city = cityRepository.getByHostname(request.host)
         val order = orderRepository.get(orderId)
         val idMark = city.prefix + order.id.toString
-        Ok(views.html.emails.plain.order.adminConfirmation(order, idMark))
+        Ok(views.html.emails.plain.order.adminNotification(order, idMark))
 
   }
 }

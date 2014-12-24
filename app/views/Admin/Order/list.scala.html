@@ -24,7 +24,7 @@
             </div>
             @listPage.items.map {
                 case order => {
-                    <div class="row" style="clear: both">
+                    <div class="row clearfix" style="margin-bottom: 5px; border-bottom: 1px solid #d3d3d3">
                         <div class="col-md-2">
                             <a href="@controllers.admin.routes.Order.display(order.id)">
                                 <i class="icon-money"></i>
@@ -51,7 +51,6 @@
                             </div>
                         </div>
                     </div>
-                    <hr/>
                 }
             }
             <div class="row">

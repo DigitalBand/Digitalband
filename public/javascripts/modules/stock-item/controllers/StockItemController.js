@@ -59,6 +59,7 @@
     },
     save: function () {
       this.stockItem.shopTitle = this.getShopTitle(this.stockItem.shopId);
+      this.stockItem.dealerPrice = this.stockItem.dealerPrice.replace(',', '.');
       if (this.stockItem.id) {
         this.update();
       } else {

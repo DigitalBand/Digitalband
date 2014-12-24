@@ -8,8 +8,19 @@
                     Комментарий
                 </label>
                 <div class="controls">
-                    <textarea rows="10" class="form-control" name="comment" id="comment">
-                        Здравствуйте, @order.deliveryInfo.name! Спасибо за ваш заказ в нашем интернет-магазине! @order.items.map(item => item.title).reduce((a, b) => a + ", " + b) есть в наличии. Для уточнения способа оплаты и доставки мы свяжемся с Вами в течение 3 рабочих дней</textarea>
+          <textarea rows="10" class="form-control" name="comment" id="comment">
+  Здравствуйте, @order.deliveryInfo.name!
+
+Спасибо за ваш заказ в нашем интернет-магазине! @order.items.map(item => item.title).reduce((a, b) => a + ", " + b) есть в наличии.
+Для уточнения способа оплаты и доставки мы свяжемся с Вами в течение 3 рабочих дней
+
+---------------------------------------------------
+Вы заказали:
+@order.items.map { orderItem =>
+   - @orderItem.title - @orderItem.count шт. @Messages("formats.price", orderItem.total)
+}
+Итоговая сумма заказа: @Messages("formats.price", order.items.map(i => i.total).sum)
+                    </textarea>
                 </div>
             </div>
             <div class="form-actions">

@@ -8,7 +8,7 @@ import org.joda.time.format.DateTimeFormat
 import play.api.mvc.{AnyContent, Request, Action}
 
 class PriceList @Inject()(implicit userRepository: UserRepository, shopRepository: ShopRepository, productRepository: ProductRepository, categoryRepository: CategoryRepository) extends ControllerBase {
-  def host(implicit request: Request[AnyContent]) = if (request.host.contains("localhost")) "digitalband.ru" else request.host
+  def host(implicit request: Request[AnyContent]) = request.host
   def forYandex = Action {
     implicit request =>
       val w = new java.io.StringWriter()

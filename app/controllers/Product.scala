@@ -17,7 +17,7 @@ class Product @Inject()(implicit ur: UserRepository, productRepository: ProductR
                         questionRepository: QuestionRepository) extends ControllerBase {
   val emailHelper = new EmailHelper()
   def availabilityForm = Form("email" -> nonEmptyText)
-  def host(implicit request: Request[AnyContent]) = if (request.host.contains("localhost")) "digitalband.ru" else request.host
+  def host(implicit request: Request[AnyContent]) = request.host
   def list = filteredList(1)
 
   def availability(id: Int, returnUrl: String) = withUser {
