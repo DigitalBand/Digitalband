@@ -33,6 +33,14 @@ PUT           /admin/cities/update                                 @controllers.
 POST          /admin/cities/add                                    @controllers.admin.City.add
 GET           /admin/cities/get/:cityId                            @controllers.admin.City.get(cityId: Int)
 GET           /admin/cities/javascriptRoutes                       @controllers.admin.City.javascriptRoutes
+#Admin page
+GET           /admin/pages                                         @controllers.admin.Page.main()
+DELETE        /admin/pages/remove/:pageId                          @controllers.admin.Page.remove(pageId: Int)
+GET           /admin/pages/list                                    @controllers.admin.Page.list
+PUT           /admin/pages/update                                  @controllers.admin.Page.update
+POST          /admin/pages/add                                     @controllers.admin.Page.add
+GET           /admin/pages/get/:pageId                             @controllers.admin.Page.get(pageId: Int)
+GET           /admin/pages/javascriptRoutes                        @controllers.admin.Page.javascriptRoutes
 #Admin product
 GET           /admin/category/:categoryId/product/create           @controllers.admin.Product.create(categoryId: Int, brandId: Int ?= 0)
 GET           /admin/product/:productId/edit                       @controllers.admin.Product.edit(productId: Int)
@@ -61,7 +69,7 @@ GET           /admin/question/list-with-answers/:pageNumber        @controllers.
 GET           /admin/google/images/list                            @controllers.admin.ImageSearch.imageList(search: String ?= "", pageNumber:Int ?= 1)
 # Home page
 GET           /                                                    @controllers.Application.index
-GET           /about                                               @controllers.Application.about
+GET           /pages/:alias                                        @controllers.Application.pages(alias: String)
 GET           /contacts                                            @controllers.Application.contacts
 POST          /sendFeedback                                        @controllers.Application.sendFeedback
 GET           /stock/:productId                                    @controllers.Application.stock(productId: Int)

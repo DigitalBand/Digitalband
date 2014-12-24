@@ -104,6 +104,13 @@
             <li>
               <a href="@routes.Application.delivery"><i class="icon icon-truck"></i>&nbsp;Доставка и оплата</a>
             </li>
+            @{
+                val pages = helpers.PageHelper.getPages
+                pages.map(page => {
+                    val link = s"<li><a href='${routes.Application.pages({page.alias})}'>&nbsp;${page.name}</a></li>"
+                    Html(link)}
+                )
+              }
           </ul>
 
         </div>
