@@ -1,8 +1,7 @@
 package models
 
-import org.ocpsoft.prettytime.PrettyTime
 import java.sql.Date
-import java.util.Locale
+import java.text.SimpleDateFormat
 
 
 class OrderInfo(val id: Int, val orderDate: java.sql.Timestamp,
@@ -26,6 +25,7 @@ class OrderInfo(val id: Int, val orderDate: java.sql.Timestamp,
     this(order.id, order.orderDate, order.status, order.comment, order.deliveryType, order.deliveryInfo, items)
 
   def orderDateFormatted = {
-    new PrettyTime(new Locale("ru")).format(new Date(orderDate.getTime))
+    val dt1 = new SimpleDateFormat("dd/MM/yyyy HH:mm")
+    dt1.format(new Date(orderDate.getTime))
   }
 }

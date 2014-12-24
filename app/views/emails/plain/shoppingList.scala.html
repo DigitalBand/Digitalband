@@ -1,13 +1,22 @@
-@(items: Seq[models.CartItem], returnUrl: String = "", editable: Boolean = true)(implicit request: play.api.mvc.Request[Any])
+@(items: Seq[models.CartItem], hidePrices: Boolean = false, returnUrl: String = "", editable: Boolean = true)(implicit request: play.api.mvc.Request[Any])
 <ul>
     @items.map { cartItem =>
         <li><a href="@routes.Product.display(cartItem.productId).absoluteURL()">
-            @cartItem.title</a> - @Messages("formats.price", cartItem.total).trim @Messages("formats.count", cartItem.count)
+            @cartItem.title</a> - @{
+              if(!hidePrices)
+                Messages("formats.price", cartItem.total).trim
+              else
+                ""
+            }
+            @Messages("formats.count", cartItem.count)
         </li>
     }
 </ul>
-<hr/>
-<p>
-Итого:@Messages("formats.price", items.map(i => i.total).sum)
-</p>
+@if(!hidePrices) {
+    <hr/>
+    <p>
+      Итого: @Messages("formats.price", items.map(i => i.total).sum)
+    </p>
+}
+
 

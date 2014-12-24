@@ -204,7 +204,7 @@ class OrderRepository extends RepositoryBase with dao.common.OrderRepository {
       select
         id, place_date, status, delivery_type, Concat(name, ' ', last_name) as name, email, phone, address
       from orders
-      order by place_date desc
+      order by id desc
       limit ${pageSize * (pageNumber - 1)}, $pageSize
     """.as[OrderInfo].list
     val totalCount = sql"select count(*) from orders".as[Int].first
