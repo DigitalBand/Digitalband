@@ -41,10 +41,7 @@
                                 if(menuItem.equals("orders")) "active" else ""
                             }"> <a href="@controllers.admin.routes.Order.list(1)"> <i class="icon-shopping-cart"></i>
                                 Заказы </a> </li>
-                            <li class="@{
-                                if(menuItem.equals("questions")) "active" else ""
-                            }"> <a href="@controllers.admin.routes.Question.listWithAnswers(1)"> <i class="icon-question-sign"></i>
-                                Вопросы </a> </li>
+
                             <li class="@{
                                 if(menuItem.equals("cities")) "active" else ""
                             }">
