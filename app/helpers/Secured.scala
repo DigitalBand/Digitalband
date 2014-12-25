@@ -8,12 +8,11 @@ import play.api.mvc._
 
 import scala.concurrent.Future
 
-
 class AuthenticatedRequest[A](val username: String, request: Request[A]) extends WrappedRequest[A](request)
 
 object Authenticated {
 
-  def async[A](bp: BodyParser[A])(block: (AuthenticatedRequest[A]) => Future[SimpleResult]) = Action.async(bp) {
+  def async[A](bp: BodyParser[A])(block: (AuthenticatedRequest[A]) => Future[Result]) = Action.async(bp) {
     request =>
       request.session.get(SessionHelper.username).map {
         username =>
@@ -23,11 +22,11 @@ object Authenticated {
       }
   }
 
-  def async[A](block: (AuthenticatedRequest[AnyContent]) => Future[SimpleResult]): EssentialAction = async(parse.anyContent)(block)
+  def async[A](block: (AuthenticatedRequest[AnyContent]) => Future[Result]): EssentialAction = async(parse.anyContent)(block)
 
-  def apply[A](block: (AuthenticatedRequest[AnyContent]) => SimpleResult): EssentialAction = apply(parse.anyContent)(block)
+  def apply[A](block: (AuthenticatedRequest[AnyContent]) => Result): EssentialAction = apply(parse.anyContent)(block)
 
-  def apply[A](bp: BodyParser[A])(block: (AuthenticatedRequest[A]) => SimpleResult) = Action(bp) {
+  def apply[A](bp: BodyParser[A])(block: (AuthenticatedRequest[A]) => Result) = Action(bp) {
     request =>
       request.session.get(SessionHelper.username).map {
         username =>
@@ -39,25 +38,25 @@ object Authenticated {
 }
 
 object withUser {
-  def apply[A](bp: BodyParser[A])(f: Option[UserEntity] => Request[A] => SimpleResult)(implicit userRepository: UserRepository): EssentialAction = Action(bp) {
+  def apply[A](bp: BodyParser[A])(f: Option[UserEntity] => Request[A] => Result)(implicit userRepository: UserRepository): EssentialAction = Action(bp) {
     request =>
       f(userRepository.get(request.session.get(SessionHelper.username).getOrElse("")))(request)
   }
-  def apply[A](f: Option[UserEntity] => Request[AnyContent] => SimpleResult)(implicit userRepository: UserRepository): EssentialAction =  {
+  def apply[A](f: Option[UserEntity] => Request[AnyContent] => Result)(implicit userRepository: UserRepository): EssentialAction =  {
       apply(parse.anyContent)(f)
   }
-  def async[A](bp: BodyParser[A])(f: Option[UserEntity] => Request[A] => Future[SimpleResult])(implicit userRepository: UserRepository) = Action.async(bp) {
+  def async[A](bp: BodyParser[A])(f: Option[UserEntity] => Request[A] => Future[Result])(implicit userRepository: UserRepository) = Action.async(bp) {
     request =>
       f(userRepository.get(request.session.get(SessionHelper.username).getOrElse("")))(request)
   }
-  def async[A](f: Option[UserEntity] => Request[AnyContent] => Future[SimpleResult])(implicit userRepository: UserRepository): EssentialAction =
+  def async[A](f: Option[UserEntity] => Request[AnyContent] => Future[Result])(implicit userRepository: UserRepository): EssentialAction =
     async(parse.anyContent)(f)
 }
 
 object withAdmin {
-  def apply(f: Option[UserEntity] => AuthenticatedRequest[AnyContent] => SimpleResult)(implicit userRepository: UserRepository):EssentialAction = apply(parse.anyContent)(f)
+  def apply(f: Option[UserEntity] => AuthenticatedRequest[AnyContent] => Result)(implicit userRepository: UserRepository):EssentialAction = apply(parse.anyContent)(f)
 
-  def apply[A](bp: BodyParser[A])(f: Option[UserEntity] => AuthenticatedRequest[A] => SimpleResult)(implicit userRepository: UserRepository) = Authenticated(bp) {
+  def apply[A](bp: BodyParser[A])(f: Option[UserEntity] => AuthenticatedRequest[A] => Result)(implicit userRepository: UserRepository) = Authenticated(bp) {
     request =>
       userRepository.get(request.username) match {
         case Some(user) =>
@@ -71,9 +70,9 @@ object withAdmin {
       }
   }
 
-  def async(f: Option[UserEntity] => AuthenticatedRequest[AnyContent] => Future[SimpleResult])(implicit userRepository: UserRepository):EssentialAction = async(parse.anyContent)(f)
+  def async(f: Option[UserEntity] => AuthenticatedRequest[AnyContent] => Future[Result])(implicit userRepository: UserRepository):EssentialAction = async(parse.anyContent)(f)
 
-  def async[A](bp: BodyParser[A])(f: Option[UserEntity] => AuthenticatedRequest[A] => Future[SimpleResult])(implicit userRepository: UserRepository) = Authenticated.async(bp) {
+  def async[A](bp: BodyParser[A])(f: Option[UserEntity] => AuthenticatedRequest[A] => Future[Result])(implicit userRepository: UserRepository) = Authenticated.async(bp) {
     request =>
       userRepository.get(request.username) match {
         case Some(user) =>
