@@ -162,3 +162,5 @@ contacts.form.productnamelabel=Тема сообщения
 contacts.form.messagelabel=Сообщение
 contacts.form.recaptchalabel=Код
 contacts.form.submitbutton=Отправить
+
+rentRequest.quantity=Количество

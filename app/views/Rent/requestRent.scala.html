@@ -1,48 +1,23 @@
-@(product: models.ProductDetails)(implicit user: Option[models.UserEntity],request: play.api.mvc.Request[Any])
+@(product: models.ProductDetails, rentRequest: Form[RentRequest])(implicit user: Option[models.UserEntity],request: play.api.mvc.Request[Any])
+@import views.html.common.bootstrap.fc
 @main("Взять в аренду", "Index", scripts = Html("")) {
   <div class="row">
-    <form action="@routes.Rent.postRequest(product.id)" class="col-md-6">
-      <div class="form-group">
-        <label for="firstName">
-          Имя
-        </label>
-        <input type="text" name="firstName" id="firstName" class="form-control">
-      </div>
-      <div class="form-group">
-        <label for="lastName">
-          Фамилия
-        </label>
-        <input type="text" name="lastName" id="lastName" class="form-control">
-      </div>
-      <div class="form-group">
-        <label for="email">
-          Email
-        </label>
-        <input type="email" name="email" id="email" class="form-control">
-      </div>
-      <div class="form-group">
-        <label for="phone">
-          Телефон
-        </label>
-        <input type="text" name="phone" id="phone" class="form-control">
-      </div>
+    <form action="@routes.Rent.postRequest(product.id)" method="post" class="col-md-6">
+      @helper.inputText(rentRequest("quantity"), 'class -> "form-control", '_label -> "Количество")
+      @helper.inputText(rentRequest("firstName"), 'class -> "form-control", '_label -> "Имя")
+      @helper.inputText(rentRequest("lastName"), 'class -> "form-control", '_label -> "Фамилия")
+      @helper.inputText(rentRequest("email"), 'class -> "form-control", '_label -> "Email")
+      @helper.inputText(rentRequest("phone"), 'class -> "form-control", '_label -> "Телефон")
       <br>
       <div class="block">
         <span class="block-title">Адрес</span>
       </div>
-      <div class="form-group">
-        <label for="city">
-          Город
-        </label>
-        <input type="text" name="city" id="city" class="form-control">
-      </div>
-      <div class="form-group">
-        <label for="street">
-          Улица и номер дома
-        </label>
-        <input type="text" class="form-control" name="street" id="street">
-      </div>
+      @helper.inputText(rentRequest("city"), 'class -> "form-control", '_label -> "Город")
+      @helper.inputText(rentRequest("street"), 'class -> "form-control", '_label -> "Улица и номер дома")
+      @helper.textarea(rentRequest("notes"), 'class -> "form-control", '_label -> "Замечания к заказу")
       <button class="btn btn-primary">Отправить запрос</button>
+      <br>
     </form>
   </div>
+  <br>
 }
