@@ -1,15 +1,16 @@
 package helpers
 
-import models.{CityInfo, Question, OrderInfo, ContactEntity}
 import com.typesafe.plugin._
+import controllers.RentRequest
+import dao.common.UserRepository
+import models._
 import play.api.Logger
 import play.api.Play.current
-import dao.common.{CityRepository, UserRepository}
 import play.api.i18n.Messages
-import play.api.mvc.{AnyContent, Request}
-
 import play.api.libs.concurrent.Akka
 import play.api.libs.concurrent.Execution.Implicits._
+import play.api.mvc.Request
+
 import scala.concurrent.duration._
 
 class EmailHelper(implicit userRepository: UserRepository) {
@@ -24,6 +25,14 @@ class EmailHelper(implicit userRepository: UserRepository) {
   def adminEmails = userRepository.getAdminEmails
 
   def createMailer = use[MailerPlugin].email
+
+  def notifyAboutNewRent(details: ProductDetails, request: RentRequest) = {
+    val mail = use[MailerPlugin].email
+    mail.addFrom(systemEmail)
+    mail.addRecipient(systemEmail)
+    mail.setSubject(s"Заказ аренды ${details.title}")
+    mail.sendHtml(views.html.emails.rent.newRentNotification(details, request).body)
+  }
 
   def answerAvailability(subject: String, comment: String, email: String) = {
     val mail = use[MailerPlugin].email

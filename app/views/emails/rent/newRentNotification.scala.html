@@ -1,0 +1,25 @@
+@(product: ProductDetails, rentData: RentRequest)
+<div>
+  Добрый день!
+</div>
+<div>
+  На сайте сформирован заказ на аренду следующего оборудования:
+  <div>
+  @product.title
+  </div>
+
+  Имя:
+  <div>
+    @rentData.firstName @rentData.lastName
+  </div>
+  <br>
+  Адрес:
+  <div>
+    <span>@rentData.city</span>, <span>@rentData.city</span>, <span>@rentData.street</span>
+  </div>
+  <br>
+  Замечания к заказу:
+  <div>
+    @rentData.notes
+  </div>
+</div>
