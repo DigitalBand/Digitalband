@@ -1,25 +1,25 @@
 package controllers
 
 import controllers.common.ControllerBase
-import dao.common.ProductRepository
+import dao.common.{BrandRepository, ProductRepository}
 import dao.impl.orm.slick.UserRepository
 import com.google.inject.Inject
-import helpers.withUser
+import helpers.{EmailHelper, withUser}
 import play.api.data.Form
 import play.api.data.Forms._
 
 case class RentRequest(
-  quantity: Int,
-  firstName: String,
-  lastName: String,
-  email: String,
-  phone: String,
-  city: String,
-  street: String,
-  notes: Option[String]
+  quantity: Int = 1,
+  firstName: String = "",
+  lastName: String = "",
+  email: String = "",
+  phone: String = "",
+  city: String = "",
+  street: String = "",
+  notes: Option[String] = Some("")
 )
 
-class Rent @Inject()(implicit ur: UserRepository, productRepository: ProductRepository) extends ControllerBase{
+class Rent @Inject()(implicit ur: UserRepository, productRepository: ProductRepository, brandRepository: BrandRepository) extends ControllerBase{
 
   val rentForm = Form(mapping(
       "quantity" -> number,
@@ -36,24 +36,28 @@ class Rent @Inject()(implicit ur: UserRepository, productRepository: ProductRepo
   def requestRent(productId: Int) = withUser {
     implicit user =>
       implicit request =>
-        val product = productRepository.get(productId)
+        val product = productRepository.get(productId, brandRepository.get)
+        rentForm.fill(RentRequest(quantity = 1))
 
-        Ok(views.html.Rent.requestRent(product, rentForm))
+        Ok(views.html.Rent.requestRent(product, rentForm.fill(RentRequest(quantity = 1))))
   }
 
   def postRequest(productId: Int) = withUser {
     implicit user =>
       implicit request =>
-      rentForm.bindFromRequest.fold(
-        formWithErrors => {
-          val product = productRepository.get(productId)
-          BadRequest(views.html.Rent.requestRent(product, formWithErrors))
-        },
-        rentRequest => {
-          val product = productRepository.get(productId)
-          //RentEmailHelper.notifyNewRent(product, rentRequest)
-          Ok("good")
-        }
+        val product = productRepository.get(productId, brandRepository.get)
+        rentForm.bindFromRequest.fold(
+          formWithErrors => {
+
+            BadRequest(views.html.Rent.requestRent(product, formWithErrors))
+          },
+          rentRequest => {
+
+            val emailHelper = new EmailHelper()
+            emailHelper.notifyAboutNewRent(product, rentRequest)
+
+            Ok(views.html.Rent.success(product, rentRequest))
+          }
       )
 
   }
