@@ -26,7 +26,12 @@ libraryDependencies ++= Seq(
   "commons-io" % "commons-io" % "2.4",
   "web.common" %% "web-common" % "0.1-SNAPSHOT",
   "ch.qos.logback" % "logback-classic" % "1.0.9",
-  "com.yuvimasory" % "jerkson_2.10" % "0.6.1"
+  "com.yuvimasory" % "jerkson_2.10" % "0.6.1",
+  "org.webjars" % "jquery" % "2.1.3",
+  "org.webjars" % "tinymce-jquery" % "4.1.7-1",
+  "org.webjars" % "angularjs" % "1.3.8",
+  "org.webjars" % "bootstrap" % "3.3.1",
+  "org.webjars" % "angular-ui-router" % "0.2.13"
 )
 
 includeFilter in (Assets, LessKeys.less) := "main.less"
