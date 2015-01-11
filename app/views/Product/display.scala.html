@@ -137,24 +137,27 @@ categoryId = categoryId, brandId = brandId, subnav = subnav, scripts = scripts, 
             @if(product.isAvailable){
             <form action="@routes.Cart.add()"  method="POST">
                 <div class="row">
-                <div class="col-md-4">
-                <label>@Messages("product.display.countlabel")</label>
+                  <div class="col-md-2">
                     <input type="text" class="form-control" placeholder="1" name="count" value="1">
                     <input type="hidden" name="productId" value="@product.id" />
-
                     <input type="hidden" name="returnUrl"
-                        value="@routes.Product.filteredList(categoryId, pageNumber, brandId, productId = product.id, s = search)"/>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-md-4 justified">
-
-                            @addToCartButton(product.price)
-
-                    </div>
+                      value="@routes.Product.filteredList(categoryId, pageNumber, brandId, productId = product.id, s = search)"/>
+                  </div>
+                  <div class="col-md-10">
+                    @addToCartButton(product.price)
+                  </div>
                 </div>
             </form>
             }
+          <br>
+          <div class="block">
+            <span class="block-title"></span>
+          </div>
+          <form action="" method="POST">
+            <a href="@routes.Rent.requestRent(product.id)" class="btn btn-default">
+              Взять в аренду
+            </a>
+          </form>
         </div>
     </div>
 </div>

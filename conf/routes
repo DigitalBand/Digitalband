@@ -109,6 +109,9 @@ POST          /login                                               @controllers.
 POST          /signUp                                              @controllers.Security.signUp(returnUrl: String ?= "")
 GET           /forgotPassword                                      @controllers.Security.forgotPassword
 POST          /sendPassword                                        @controllers.Security.sendPassword
+
+#Rent
+GET           /rent/:productId                                     @controllers.Rent.requestRent(productId: Int)
 #Images
 GET           /images/:size/:quality/:fill/:imageNumber            @controllers.Image.get(imageNumber: String, quality: Int, size: String, fill: String)
 # Map static resources from the /public folder to the /assets URL path
