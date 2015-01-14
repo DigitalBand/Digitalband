@@ -134,7 +134,7 @@ categoryId = categoryId, brandId = brandId, subnav = subnav, scripts = scripts, 
         </h3>
         <hr/>
         <div>
-            @if(product.isAvailable){
+
             <form action="@routes.Cart.add()"  method="POST">
                 <div class="row">
                   <div class="col-md-2">
@@ -148,7 +148,7 @@ categoryId = categoryId, brandId = brandId, subnav = subnav, scripts = scripts, 
                   </div>
                 </div>
             </form>
-            }
+
           <br>
           <div class="block">
             <span class="block-title"></span>
