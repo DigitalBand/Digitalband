@@ -79,9 +79,9 @@ inStock: Int = 0)(implicit user:Option[models.UserEntity],request: play.api.mvc.
                         value="@routes.Product.filteredList(currentCategory.id, pageNumber, brandId(brand), 1, s = searchQuery, is = inStock)"/>
                         <input type="hidden" name="productId" value="@product.id" />
                         <input type="hidden" name="count" value="1" />
-                        @if(product.isAvailable){
+
                             @addToCartButton(product.price)
-                        }
+                        
                     </form>
                 </div>
             </div>
