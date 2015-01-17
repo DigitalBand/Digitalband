@@ -1,5 +1,5 @@
 <div class="col-lg-12">
-    <a class="btn btn-primary" ui-sref="cityNew"><i class="icon icon-plus"></i> Добавить город</a>
+    <a class="btn btn-primary" ui-sref="cityNew"><i class="fa fa-plus"></i> Добавить город</a>
     <table class="table table-striped">
         <thead>
         <tr>
@@ -10,7 +10,7 @@
         </thead>
         <tbody>
         <tr ng-repeat="city in cities">
-            <td><a href="#" ng-click="remove(city.id)"><i class="icon icon-trash"></i></a></td>
+            <td><a href="#" ng-click="remove(city.id)"><i class="fa fa-trash"></i></a></td>
             <td><a ui-sref="cityEdit({cityId: city.id})">{{city.name}}</a></td>
             <td>{{city.domain}}</td>
         </tr>

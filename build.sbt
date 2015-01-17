@@ -31,7 +31,8 @@ libraryDependencies ++= Seq(
   "org.webjars" % "tinymce-jquery" % "4.1.7-1",
   "org.webjars" % "angularjs" % "1.3.8",
   "org.webjars" % "bootstrap" % "3.3.1",
+  "org.webjars" % "font-awesome" % "4.2.0",
   "org.webjars" % "angular-ui-router" % "0.2.13"
 )
 
-includeFilter in (Assets, LessKeys.less) := "main.less"
+//includeFilter in (Assets, LessKeys.less) := "main.less"

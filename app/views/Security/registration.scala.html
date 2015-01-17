@@ -12,7 +12,7 @@
             <form class="form-horizontal well" action="@routes.Security.signUp(returnUrl)" method="POST">
                 <fieldset>
                     <legend>
-                        <i class="icon-key"></i>
+                        <i class="fa fa-key"></i>
                         @Messages("security.registration.form.legend")
                     </legend>
                     @helper.inputText(loginForm("email"), args = 'type -> "email", 'class -> "form-control")

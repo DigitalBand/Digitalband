@@ -6,7 +6,7 @@
         <div class="page-header">
             <h3>@Messages("cart.title")</h3>
                 @if(!returnUrl.isEmpty) {
-                    <a href="@returnUrl">@Messages("cart.links.continueshopping")&nbsp;<i class="icon-forward"></i></a>
+                    <a href="@returnUrl">@Messages("cart.links.continueshopping")&nbsp;<i class="fa fa-forward"></i></a>
                 }
         </div>
         @if(items.length == 0) {
@@ -17,7 +17,7 @@
             <form method="POST" action="@routes.Cart.update()">
                 @shoppingList(items, returnUrl)
                 <div class="form-actions">
-                    <button class="btn btn-primary"> <i class="icon-refresh"></i> @Messages("cart.form.buttons.update") </button>
+                    <button class="btn btn-primary"> <i class="fa fa-refresh"></i> @Messages("cart.form.buttons.update") </button>
                     @user match {
                         case None => {
                             <a class="pull-right btn btn-success" href="@routes.Cart.checkout()"> @Messages("cart.links.makeorder")</a>

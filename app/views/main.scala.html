@@ -13,6 +13,7 @@
     <meta name="keywords" content="музыкальные инструменты, музыкальный магазин, гитары, фортепиано, рояли, световое оборудование, шоу оборудование, купить гитару, купить гитару в ростове, купить гитару в москве, купить колонки, купить фортепиано в москве, купить рояль, купить фортепиано, продажа музыкальных инструментов, магазины музыкальных инструментов, интернет-магазин музыкальных инструментов"/>
     <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0">
     <link rel="stylesheet" media="screen" href="@routes.Assets.at("stylesheets/main.css")">
+
     <link rel="shortcut icon" type="image/png" href="@routes.Assets.at("images/favicon.png")">
     <link rel="stylesheet" media="screen" href="@routes.Assets.at("javascripts/lightbox/css/lightbox.css")">
 
@@ -31,9 +32,9 @@
           <div class="navbar-header">
             <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-ex1-collapse">
               <span class="sr-only">Toggle navigation</span>
-              <span class="icon-bar"></span>
-              <span class="icon-bar"></span>
-              <span class="icon-bar"></span>
+              <span class="fa fa-bar"></span>
+              <span class="fa fa-bar"></span>
+              <span class="fa fa-bar"></span>
             </button>
             <a class="navbar-brand" href="@routes.Application.index">&nbsp;</a>
           </div>
@@ -50,7 +51,7 @@
                 if(menuItem.equals("cart")) "active" else ""
               }">
                 <a href="@routes.Cart.display()">
-                  <i class="icon-shopping-cart"></i>
+                  <i class="fa fa-shopping-cart"></i>
                 </a>
               </li>
               @user match {
@@ -59,7 +60,7 @@
                     <li class="@{
                       if(menuItem.equals("admin")) "active" else ""
                     }">
-                      <a href="@controllers.admin.routes.Dashboard.index"><i class="icon-wrench"></i></a>
+                      <a href="@controllers.admin.routes.Dashboard.index"><i class="fa fa-wrench"></i></a>
                     </li>
                   }
                 }
@@ -80,7 +81,7 @@
                 if(menuItem.equals("security")) "active" else ""
               }">
                 <a href="@(if(user.isDefined) routes.Security.signOff(request.uri) else routes.Security.login(request.uri))">
-                  <i class="@(if(user.isDefined) "icon-off" else "icon-key")"></i>
+                  <i class="@(if(user.isDefined) "fa fa-power-off" else "fa fa-key")"></i>
                 </a>
               </li>
             </ul>
@@ -99,10 +100,10 @@
         <div class="container">
           <ul class="nav">
             <li>
-            <a href="@routes.Application.contacts"><i class="icon icon-info"></i>&nbsp;@Messages("main.footer.nav.contact") </a>
+            <a href="@routes.Application.contacts"><i class="fa fa-info"></i>&nbsp;@Messages("main.footer.nav.contact") </a>
             </li>
             <li>
-              <a href="@routes.Application.delivery"><i class="icon icon-truck"></i>&nbsp;Доставка и оплата</a>
+              <a href="@routes.Application.delivery"><i class="fa fa-truck"></i>&nbsp;Доставка и оплата</a>
             </li>
             @{
                 val pages = helpers.PageHelper.getPages
