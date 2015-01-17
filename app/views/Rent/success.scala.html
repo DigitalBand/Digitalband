@@ -1,0 +1,6 @@
+@(product: models.ProductDetails, rentRequest: RentRequest)(implicit user: Option[models.UserEntity],request: play.api.mvc.Request[Any])
+@main("Взять в аренду", "Index", scripts = Html("")) {
+  <div class="alert alert-success">
+    Запрос на аренду @product.title успешно отправлен.
+  </div>
+}

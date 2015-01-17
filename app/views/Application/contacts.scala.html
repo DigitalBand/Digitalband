@@ -28,7 +28,7 @@
                 <h3 class="block-title sub-title">
                     <span>Связаться с нами</span>
                 </h3>
-                <form class="form-inline" action="@routes.Application.sendFeedback()" method="POST">
+                <form action="@routes.Application.sendFeedback()" method="POST">
 
                     <div>
                         @helper.inputText(form("name"), 'placeholder -> "Введите Ваше имя", '_label -> Messages("contacts.form.namelabel"), 'class -> "form-control")
