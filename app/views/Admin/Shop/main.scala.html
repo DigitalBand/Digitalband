@@ -1,10 +1,10 @@
 @()(implicit user: Option[models.UserEntity], request: play.api.mvc.Request[Any])
   @scripts = {
-    <script src="@routes.Assets.at("javascripts/vendor/angular/1.2.26/angular.js")"></script>
-    <script src="@routes.Assets.at("javascripts/vendor/angular/1.2.26/angular-animate.js")"></script>
-    <script src="@routes.Assets.at("javascripts/vendor/angular/1.2.26/angular-route.js")"></script>
-    <script src="@routes.Assets.at("javascripts/vendor/angular/ui-router/0.2.11/angular-ui-router.js")"></script>
-    <script src="@routes.Assets.at("javascripts/lodash.js")"></script>
+    <script src="@routes.Assets.at("lib/angularjs/angular.min.js")"></script>
+    <script src="@routes.Assets.at("lib/angularjs/angular-animate.min.js")"></script>
+    <script src="@routes.Assets.at("lib/angularjs/angular-route.min.js")"></script>
+    <script src="@routes.Assets.at("lib/angular-ui-router/angular-ui-router.js")"></script>
+    <script src="@routes.Assets.at("lib/lodash/lodash.min.js")"></script>
 
     <script src="@routes.Assets.at("javascripts/modules/shops/shops.js")"></script>
     <script src="@routes.Assets.at("javascripts/modules/shops/controllers/ShopListController.js")"></script>
