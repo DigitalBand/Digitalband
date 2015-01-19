@@ -29,11 +29,13 @@ libraryDependencies ++= Seq(
   "com.yuvimasory" % "jerkson_2.10" % "0.6.1",
   "org.webjars" % "jquery" % "2.1.3",
   "org.webjars" % "tinymce-jquery" % "4.1.7-1",
-  "org.webjars" % "angularjs" % "1.3.8",
+  "org.webjars" % "angularjs" % "1.2.10",
   "org.webjars" % "bootstrap" % "3.3.1",
   "org.webjars" % "font-awesome" % "4.2.0",
   "org.webjars" % "angular-ui-router" % "0.2.13",
-  "org.webjars" % "jquery.lazyload" % "1.9.3"
+  "org.webjars" % "jquery.lazyload" % "1.9.3",
+  "org.webjars" % "highcharts" % "4.0.4",
+  "org.webjars" % "lodash" % "2.4.1-6"
 )
 
 //includeFilter in (Assets, LessKeys.less) := "main.less"

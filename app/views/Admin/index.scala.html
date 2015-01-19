@@ -1,7 +1,7 @@
 @(data: play.api.libs.json.JsValue, questions: Seq[models.Question])(implicit user: Option[models.UserEntity], request: play.api.mvc.Request[Any])
 @import Shared._
     @scripts = {
-        <script src="@routes.Assets.at("javascripts/highcharts/highcharts.js")" type="text/javascript"></script>
+        <script src="@routes.Assets.at("lib/highcharts/highcharts.js")" type="text/javascript"></script>
         <script src="@routes.Assets.at("javascripts/charts.js")" type="text/javascript"></script>
         <script>
             $(function(){
