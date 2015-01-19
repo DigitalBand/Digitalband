@@ -35,7 +35,9 @@ libraryDependencies ++= Seq(
   "org.webjars" % "angular-ui-router" % "0.2.13",
   "org.webjars" % "jquery.lazyload" % "1.9.3",
   "org.webjars" % "highcharts" % "4.0.4",
-  "org.webjars" % "lodash" % "2.4.1-6"
+  "org.webjars" % "lodash" % "2.4.1-6",
+  "org.webjars" % "ckeditor" % "4.4.6",
+  "org.webjars" % "jasny-bootstrap" % "2.3.0-j5"
 )
 
-//includeFilter in (Assets, LessKeys.less) := "main.less"
+includeFilter in (Assets, LessKeys.less) := "main.less"
