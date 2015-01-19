@@ -7,11 +7,13 @@
 
 @main(menuItem = "cart") {
 <div class="page-block" xmlns="http://www.w3.org/1999/html">
-    <div class="col-md-12">
+    <div class="row">
+      <div class="col-md-12">
         @wizard(3)
+      </div>
     </div>
-
-    <div class="col-md-12">
+    <div class="row">
+      <div class="col-md-12">
         <div class="page-header">
             <h3> @Messages("order.deliveryinfo.title") </h3>
             &nbsp;<a href="@routes.Cart.display()"> <i class="fa fa-edit"></i> @Messages("order.deliveryinfo.editbutton") </a>
@@ -48,6 +50,6 @@
             <button class="btn btn-primary"> <i class="fa fa-arrow-right"></i> &nbsp; @Messages("order.fill.form.buttons.placeorder") </button>
         </form>
     </div>
-
+    </div>
 </div>
 }

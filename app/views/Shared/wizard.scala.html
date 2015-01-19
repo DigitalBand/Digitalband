@@ -1,20 +1,16 @@
 @(activeStep: Int)
-<div id="myWizard" class="wizard" style="display: none">
+<div id="myWizard" class="wizard">
 <ul class="steps">
-    <li data-target="#step1" class="@(if(activeStep == 1) "active" else "")">
-        <span class="badge @(if(activeStep == 1) "badge-info" else "")"> 1 </span>
-        @Messages("wizard.step1") <span class="chevron"></span>
-    </li>
     <li data-target="#step2" class="@(if(activeStep == 2) "active" else "")">
-        <span class="badge @(if(activeStep == 2) "badge-info" else "")"> 2 </span>
+        <span class="badge @(if(activeStep == 2) "badge-info" else "")"> 1 </span>
         @Messages("wizard.step2") <span class="chevron"></span>
     </li>
     <li data-target="#step3" class="@(if(activeStep == 3) "active" else "")">
-        <span class="badge @(if(activeStep == 3) "badge-info" else "")"> 3 </span>
+        <span class="badge @(if(activeStep == 3) "badge-info" else "")"> 2 </span>
         @Messages("wizard.step3") <span class="chevron"></span>
     </li>
     <li data-target="#step4" class="@(if(activeStep == 4) "active" else "")">
-        <span class="badge @(if(activeStep == 4) "badge-info" else "")"> 4 </span>
+        <span class="badge @(if(activeStep == 4) "badge-info" else "")"> 3 </span>
         @Messages("wizard.step4") <span class="chevron"></span>
     </li>
 </ul>
