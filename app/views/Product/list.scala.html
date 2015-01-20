@@ -36,7 +36,7 @@ inStock: Int = 0)(implicit user:Option[models.UserEntity],request: play.api.mvc.
     @adminToolbar(user){
         <li>
             <a href="@controllers.admin.routes.Product.create(currentCategory.id, brandId(brand))">
-                <i class="icon-plus"></i>
+                <i class="fa fa-plus"></i>
                     Новый товар
             </a>
         </li>
@@ -81,7 +81,7 @@ inStock: Int = 0)(implicit user:Option[models.UserEntity],request: play.api.mvc.
                         <input type="hidden" name="count" value="1" />
 
                             @addToCartButton(product.price)
-                        
+
                     </form>
                 </div>
             </div>

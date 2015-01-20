@@ -33,12 +33,12 @@
     <div class="form-group">
         <label>Разделы</label>
         <div>
-            <a class="btn btn-primary" ng-click="vm.addSection()"><i class="icon icon-plus"></i> Добавить раздел</a>
+            <a class="btn btn-primary" ng-click="vm.addSection()"><i class="fa fa-plus"></i> Добавить раздел</a>
         </div>
         <ul class="list-group">
             <li class="list-group-item" ng-repeat="section in vm.page.sections">
-                <span class="link-button" ng-click="vm.removeSection(section)"><i class="icon icon-trash">&nbsp;</i></span>
-                <span class="link link-button" ng-click="vm.editSection(section)"><i class="icon icon-pencil"></i></span>
+                <span class="link-button" ng-click="vm.removeSection(section)"><i class="fa fa-trash">&nbsp;</i></span>
+                <span class="link link-button" ng-click="vm.editSection(section)"><i class="fa fa-pencil"></i></span>
                 <span class="link link-button" ng-click="vm.editSection(section)">{{section.name}}</span>
             </li>
         </ul>

@@ -1,7 +1,7 @@
 @(product: ProductDetails)(implicit user: Option[UserEntity], request: play.api.mvc.Request[Any])
   @scripts = {
-    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.10/angular.js"></script>
-    <script src="@routes.Assets.at("javascripts/lodash.js")"></script>
+    <script src="@routes.Assets.at("lib/angularjs/angular.min.js")"></script>
+    <script src="@routes.Assets.at("lib/lodash/lodash.min.js")"></script>
     <script src="@routes.Assets.at("javascripts/modules/stock-item/stock-item.js")"></script>
     <script src="@controllers.admin.routes.StockItem.javascriptRoutes"></script>
     <script>
@@ -63,9 +63,9 @@
         <tbody>
           <tr ng-repeat="item in vm.items">
             <td style="width : 60 px">
-              <a href="#" ng-click="vm.remove(item.id)"><i class="icon-trash"></i></a>
+              <a href="#" ng-click="vm.remove(item.id)"><i class="fa fa-trash"></i></a>
                 &nbsp;
-              <a href="#" ng-click="vm.edit(item)"><i class="icon-edit"></i> </a>
+              <a href="#" ng-click="vm.edit(item)"><i class="fa fa-edit"></i> </a>
             </td>
             <td>{{item.shopTitle}}</td>
             <td>{{item.dealerName}}</td>

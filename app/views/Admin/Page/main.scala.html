@@ -1,14 +1,14 @@
 @()(implicit user: Option[models.UserEntity], request: play.api.mvc.Request[Any])
 @scripts = {
-<script src="http://tinymce.cachefly.net/4.1/tinymce.min.js"></script>
-<script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.2.25/angular.js"></script>
-<script src="http://code.angularjs.org/1.2.25/angular-sanitize.js"></script>
-<script src="http://code.angularjs.org/1.2.25/angular-route.js"></script>
+<script src="@routes.Assets.at("lib/tinymce/tinymce.min.js")"></script>
+<script src="@routes.Assets.at("lib/angular/angular.min.js")"></script>
+<script src="@routes.Assets.at("lib/angular-sanitize/angular-sanitize.min.js")"></script>
+<script src="@routes.Assets.at("lib/angular-route/angular-route.min.js")"></script>
 
-<script src="@routes.Assets.at("javascripts/vendor/tinymceUi/tinymce.js")"></script>
-<script src="@routes.Assets.at("javascripts/vendor/angular/angular-ui-router.js")"></script>
-<script src="@routes.Assets.at("javascripts/vendor/angular/ui/ui-bootstrap-0.12.0.min.js")"></script>
-<script src="@routes.Assets.at("javascripts/lodash.js")"></script>
+<script src="@routes.Assets.at("lib/angular-ui-tinymce/src/tinymce.js")"></script>
+<script src="@routes.Assets.at("lib/angular-ui-router/angular-ui-router.min.js")"></script>
+<script src="@routes.Assets.at("lib/angular-bootstrap/ui-bootstrap-tpls.min.js")"></script>
+<script src="@routes.Assets.at("lib/lodash/lodash.min.js")"></script>
 
 <script src="@routes.Assets.at("javascripts/modules/pages/pages.js")"></script>
 <script src="@routes.Assets.at("javascripts/modules/pages/controllers/PageListController.js")"></script>

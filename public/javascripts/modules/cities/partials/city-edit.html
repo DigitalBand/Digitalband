@@ -2,7 +2,7 @@
 <fieldset ng-controller="ShopListController" ng-show="vm.cityId > 0">
     <legend>Магазины</legend>
     <div>
-        <a class="btn btn-primary" ui-sref="shopNew"><i class="icon icon-plus"></i> Добавить склад</a>
+        <a class="btn btn-primary" ui-sref="shopNew"><i class="fa fa-plus"></i> Добавить склад</a>
         <table class="table table-striped">
             <thead>
             <tr>
@@ -13,7 +13,7 @@
             </thead>
             <tbody>
             <tr ng-repeat="shop in vm.shops">
-                <td><a href="" ng-click="vm.remove(shop.id)"><i class="icon icon-trash"></i></a></td>
+                <td><a href="" ng-click="vm.remove(shop.id)"><i class="fa fa-trash"></i></a></td>
                 <td><a ui-sref="shopEdit({shopId: shop.id, cityId: vm.cityId})">{{shop.title}}</a></td>
                 <td>{{shop.address}}</td>
             </tr>

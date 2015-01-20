@@ -32,50 +32,20 @@ pageNumber:Int, search: String, isAdmin: Boolean, inStock: Int = 0)(implicit use
         </div>
     </div>
 }
-@scripts = {
-   @if(isAdmin){
-        <script src="@routes.Assets.at("javascripts/ckeditor/ckeditor.js")" type="text/javascript"></script>
-        <script src="http://code.angularjs.org/1.2.0rc2/angular.min.js"></script>
-        <script>
-            'use strict';
-            angular.module('directive', []).directive('contenteditable', function() {
-                return {
-                    require: 'ngModel',
-                    link: function(scope, elm, attrs, ctrl) {
-                                elm.on('blur', function() {
-                                    scope.$apply(function() {
-                                    ctrl.$setViewValue(elm.html());
-                                });
-                            });
-                            ctrl.$render = function(value) {
-                            elm.html(value);
-                        };
-                        ctrl.$setViewValue(elm.html());
-                    }
-                };
-            });
-            function ProductCtrl($scope) {
-                $scope.product = {
-                    title: "Test",
-                    description: "test"
-                };
-            }
-        </script>
-    }
-}
+
 @withsidebar(product.title, "catalogue", search = search, brands = brands, categories = categories,
-categoryId = categoryId, brandId = brandId, subnav = subnav, scripts = scripts, inStock = inStock) {
+categoryId = categoryId, brandId = brandId, subnav = subnav, inStock = inStock) {
     @alert()
     @adminToolbar(user) {
         <li>
             <a href="@controllers.admin.routes.Product.edit(product.id)">
-                <i class="icon-edit"></i>
+                <i class="fa fa-edit"></i>
                     Редактировать
             </a>
         </li>
         <li>
             <a href="@controllers.admin.routes.Product.deleteConfirmation(product.id)">
-                <i class="icon-trash"></i>
+                <i class="fa fa-trash"></i>
                 Удалить
             </a>
         </li>

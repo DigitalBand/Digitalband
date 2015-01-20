@@ -1,8 +1,8 @@
 @()(implicit user: Option[UserEntity], request: play.api.mvc.Request[Any])
 @scripts = {
-  <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.10/angular.js"></script>
+  <script src="@routes.Assets.at("lib/angularjs/angular.min.js")"></script>
   <script src="@controllers.admin.routes.Product.javascriptRoutes()"></script>
-  <script src="@routes.Assets.at("javascripts/lodash.js")"></script>
+  <script src="@routes.Assets.at("lib/lodash/lodash.min.js")"></script>
   <script src="@routes.Assets.at("javascripts/modules/product/product.js")"></script>
   <script src="@routes.Assets.at("javascripts/modules/product/controllers/Product.js")"></script>
 }
