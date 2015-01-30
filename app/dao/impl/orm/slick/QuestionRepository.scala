@@ -36,7 +36,7 @@ class QuestionRepository extends RepositoryBase with dao.common.QuestionReposito
         email = $email and
         type = $questionType and
         status = $unansweredStatus
-    """.as[Int].first()
+    """.as[Int].first
     if (count > 0)
       None
     else {
@@ -67,7 +67,7 @@ class QuestionRepository extends RepositoryBase with dao.common.QuestionReposito
       inner join products p on p.id = q.product_id
       limit ${pageSize * (pageNumber - 1)}, ${pageSize};
     """.as[Question].list
-    val totalCount = sql"select count(q.id) from questions q".as[Int].first()
+    val totalCount = sql"select count(q.id) from questions q".as[Int].first
     new ListPage(pageNumber, items, totalCount)
   }
 }

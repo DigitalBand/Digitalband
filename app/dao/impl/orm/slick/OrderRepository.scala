@@ -47,7 +47,7 @@ class OrderRepository extends RepositoryBase with dao.common.OrderRepository {
         ${personalInfo.phone},
         ${comment},
         ${deliveryType});
-    """.execute()
+    """.execute
     sql"select last_insert_id();".as[Int].first
   }
 
@@ -66,7 +66,7 @@ class OrderRepository extends RepositoryBase with dao.common.OrderRepository {
           user_id = ${userId}
         group by product_id;
         delete from shopping_items where user_id = ${userId};
-       """.execute()
+       """.execute
   }
 
   def addOrderDeliveryInfo(orderId: Int, address: DeliveryAddress) = {
@@ -80,7 +80,7 @@ class OrderRepository extends RepositoryBase with dao.common.OrderRepository {
             ${address.building},
             ${address.apartment}
           );
-      """.execute()
+      """.execute
   }
 
   def addOrderPickupInfo(orderId: Int, shopId: Int) = {
@@ -91,7 +91,7 @@ class OrderRepository extends RepositoryBase with dao.common.OrderRepository {
             ${orderId},
             ${shopId}
           );
-     """.execute()
+     """.execute
   }
 
   def getItems(orderId: Int): Seq[CartItem] = database withDynSession {
@@ -182,7 +182,7 @@ class OrderRepository extends RepositoryBase with dao.common.OrderRepository {
     implicit val getOrderInfo = GetResult(
       r => new OrderInfo(r.<<, r.<<, r.<<, r.<<, r.<<, new DeliveryInfo(name = r.<<, r.<<, r.<<, r.<<)))
     val query = sql"select id, place_date, status, delivery_type, comment, name, email, phone, address from orders where id = $orderId"
-    val order = query.as[OrderInfo].first()
+    val order = query.as[OrderInfo].first
     new OrderInfo(order, getItems(orderId))
   }
 
@@ -212,11 +212,11 @@ class OrderRepository extends RepositoryBase with dao.common.OrderRepository {
   }
 
   def changeStatus(orderId: Int, status: String) = database withDynSession {
-    sqlu"update orders set status = $status where id = $orderId".execute()
+    sqlu"update orders set status = $status where id = $orderId".execute
   }
 
   def delete(orderId: Int) = database withDynSession {
-    sqlu"delete from orders where id = $orderId; delete from order_items where order_id = $orderId".execute()
+    sqlu"delete from orders where id = $orderId; delete from order_items where order_id = $orderId".execute
   }
 
   def getCounters: Seq[(String, Int)] = database withDynSession {

@@ -139,7 +139,7 @@ class ProductRepository extends RepositoryBase with dao.common.ProductRepository
       left join categories c on c.category_id = pc.category_id
       left join brands b on b.id = p.brand_id
       where p.id = ${id};
-    """.as[ProductDetails].first()
+    """.as[ProductDetails].first
   }
 
   def get(id: Int): ProductDetails = database withDynSession {
@@ -171,7 +171,7 @@ class ProductRepository extends RepositoryBase with dao.common.ProductRepository
           ${brandId},
           ${userId},
           ${details.isAvailable})
-    """.execute()
+    """.execute
     val productId = sql"select last_insert_id();".as[Int].first
     sqlu"insert into products_categories(product_id, category_id) values($productId, ${details.category.id})".execute
     after(productId)
@@ -217,7 +217,7 @@ class ProductRepository extends RepositoryBase with dao.common.ProductRepository
     """.execute
     val count = sql"""
       select count(*) from product_images where image_id = ${imageId}
-     """.as[Int].first()
+     """.as[Int].first
     if (count == 0) {
       after(imageId)
     }

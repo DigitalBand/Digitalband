@@ -82,7 +82,7 @@ class BrandRepository extends RepositoryBase with dao.common.BrandRepository {
                 p.brand_id
               ) t
       """)
-      new ListPage(pageNumber, brands.list, brandsCount.first())
+      new ListPage(pageNumber, brands.list, brandsCount.first)
     }
   }
 

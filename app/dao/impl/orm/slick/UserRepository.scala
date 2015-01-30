@@ -53,7 +53,7 @@ class UserRepository extends RepositoryBase with dao.common.UserRepository {
     sqlu"""
       delete from users where id = ${userId};
       delete from user_profiles where user_id = ${userId};
-    """.execute()
+    """.execute
   }
 
   def register(email: String, password: String): Int = database withDynSession {
@@ -75,7 +75,7 @@ class UserRepository extends RepositoryBase with dao.common.UserRepository {
         address = ${info.address}
       where
         user_id = ${userId}
-    """.execute()
+    """.execute
   }
 
   def updateUserInfo(info: UserInfo) = database withDynSession {
@@ -90,7 +90,7 @@ class UserRepository extends RepositoryBase with dao.common.UserRepository {
         phone_number = ${info.personalInfo.phone}
       where
         user_id = ${info.id}
-    """.execute()
+    """.execute
 
     if (info.address.isDefined)
     {
@@ -105,7 +105,7 @@ class UserRepository extends RepositoryBase with dao.common.UserRepository {
         apartment = ${address.apartment}
       where
         user_id = ${info.id}
-    """.execute()
+    """.execute
     }
   }
 
