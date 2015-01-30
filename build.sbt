@@ -16,7 +16,7 @@ libraryDependencies ++= Seq(
   anorm,
   cache,
   ws,
-  "com.typesafe.slick" %% "slick" % "2.0.1",
+  "com.typesafe.slick" %% "slick" % "2.1.0",
   "mysql" % "mysql-connector-java" % "5.1.25",
   "org.jsoup" % "jsoup" % "1.7.2",
   "com.typesafe" %% "play-plugins-mailer" % "2.1.0",

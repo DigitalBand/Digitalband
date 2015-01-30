@@ -15,7 +15,7 @@ class StockItemRepository extends RepositoryBase with dao.common.StockItemReposi
       insert into
         stock_items(product_id, dealer_id, dealer_price, shop_id, quantity)
         values(${productId}, (select id from dealers where title = ${stockItem.dealerName}), ${stockItem.dealerPrice}, ${stockItem.shopId}, ${stockItem.quantity})
-    """.execute()
+    """.execute
     val result = sql"""select last_insert_id();""".as[Int].first
     cacheStock(productId)
     result
@@ -29,7 +29,7 @@ class StockItemRepository extends RepositoryBase with dao.common.StockItemReposi
         is_available = ((select sum(quantity) from stock_items where product_id = ${productId}) > 0)
       where
         id = ${productId}
-    """.execute()
+    """.execute
   }
 
   def list(productId: Int) = database withDynSession {
@@ -53,7 +53,7 @@ class StockItemRepository extends RepositoryBase with dao.common.StockItemReposi
     val productId = getProductIdByStock(stockItemId)
     sqlu"""
       delete from stock_items where id = ${stockItemId};
-    """.execute()
+    """.execute
     cacheStock(productId)
 
   }
@@ -82,7 +82,7 @@ class StockItemRepository extends RepositoryBase with dao.common.StockItemReposi
         shop_id = ${stockItem.shopId}
       where
         id = ${stockItem.id}
-    """.execute()
+    """.execute
     val productId = getProductIdByStock(stockItem.id)
     cacheStock(productId)
   }

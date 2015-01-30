@@ -60,7 +60,7 @@ class ImageRepository extends RepositoryBase with dao.common.ImageRepository {
     getByMd5(img.md5) match {
       case Some(i) => i.id
       case _ => {
-        sqlu"INSERT INTO images(file_path, md5) VALUES(${img.path}, ${img.md5})".execute()
+        sqlu"INSERT INTO images(file_path, md5) VALUES(${img.path}, ${img.md5})".execute
         sql"SELECT last_insert_id();".as[Int].first
       }
     }

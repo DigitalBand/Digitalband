@@ -46,13 +46,13 @@ class CartRepository extends RepositoryBase with dao.common.CartRepository {
           quantity = quantity + ${item.count}
         WHERE
           product_id = ${item.productId} AND user_id = ${item.userId};
-        """.execute()
+        """.execute
       item.userId
     }
   }
 
   def deleteItem(userId: Int, productId: Int) = database withDynSession {
-    sqlu"DELETE FROM shopping_items WHERE user_id = ${userId} AND product_id = ${productId}".execute()
+    sqlu"DELETE FROM shopping_items WHERE user_id = ${userId} AND product_id = ${productId}".execute
   }
 
   def updateItems(userId: Int, items: Seq[CItem]) = {
@@ -70,13 +70,13 @@ class CartRepository extends RepositoryBase with dao.common.CartRepository {
           combinedQuery
       }
       val query = update(items)
-      Q.updateNA(query).execute()
+      Q.updateNA(query).execute
     }
   }
 
   def mergeShoppingCarts(authenticatedUserId: Int, anonymousUserId: Int) = database withDynSession {
     sqlu"""
       UPDATE shopping_items SET user_id = ${authenticatedUserId} WHERE user_id = ${anonymousUserId};
-    """.execute()
+    """.execute
   }
 }
