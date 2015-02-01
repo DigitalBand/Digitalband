@@ -1,13 +1,12 @@
 @()(implicit user: Option[models.UserEntity], request: play.api.mvc.Request[Any])
 @scripts = {
-  <script src="@routes.Assets.at("lib/ckeditor/ckeditor.js")"></script>
-  <script src="@routes.Assets.at("lib/angular/angular.js")"></script>
-  <script src="@routes.Assets.at("lib/angular-route/angular-route.min.js")"></script>
+  <script src="@routes.Assets.at("lib/ckeditor/standard/ckeditor.js")"></script>
+  <script src="@routes.Assets.at("lib/angularjs/angular.js")"></script>
+  <script src="@routes.Assets.at("lib/angularjs/angular-route.min.js")"></script>
 
   <script src="@routes.Assets.at("lib/ng-ckeditor/ng-ckeditor.js")"></script>
-  <script src="@routes.Assets.at("lib/angular-ui-router/release/angular-ui-router.min.js")"></script>
-  <script src="@routes.Assets.at("lib/angular-bootstrap/ui-bootstrap-tpls.min.js")"></script>
-  <script src="@routes.Assets.at("lib/lodash/dist/lodash.min.js")"></script>
+  <script src="@routes.Assets.at("lib/angular-ui-router/angular-ui-router.min.js")"></script>
+  <script src="@routes.Assets.at("lib/angular-ui-bootstrap/ui-bootstrap-tpls.min.js")"></script>
 
   <script src="@routes.Assets.at("javascripts/modules/pages/pages.js")"></script>
   <script src="@routes.Assets.at("javascripts/modules/pages/controllers/PageListController.js")"></script>
