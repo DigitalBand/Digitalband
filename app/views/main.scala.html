@@ -16,7 +16,7 @@
 
     <link rel="shortcut icon" type="image/png" href="@routes.Assets.at("images/favicon.png")">
     <link rel="stylesheet" media="screen" href="@routes.Assets.at("lib/lightbox/css/lightbox.css")">
-
+    <link rel="stylesheet" href="@routes.Assets.at("lib/magnific-popup/dist/magnific-popup.css")" />
     <noscript>
       <style>
       .lazy,.lazy-brand {
@@ -129,21 +129,35 @@
     <script src="@routes.Assets.at("lib/bootstrap/js/collapse.js")" type="text/javascript"></script>
     <script src="@routes.Assets.at("lib/bootstrap/js/transition.js")" type="text/javascript"></script>
     <script src="@routes.Assets.at("lib/bootstrap/js/dropdown.js")" type="text/javascript"></script>
-    <script type="text/javascript" src="@routes.Assets.at("lib/lightbox/js/lightbox.min.js")"></script>
+    <script src="@routes.Assets.at("lib/magnific-popup/dist/jquery.magnific-popup.min.js")" type="text/javascript"></script>
+
 
     @scripts
     <script>
+      $(document).ready(function() {
+        var settings = {
+          threshold : 100
+        };
+        $("img.lazy").lazyload(settings);
+        $("img.lazy-brand").lazyload(settings);
+      });
+      $('.fresco').magnificPopup(
+        {
+          type:'image',
+          gallery: {
+            enabled: true,
+            preload: [0,2], // read about this option in next Lazy-loading section
 
-    $ ( document ).ready ( function ( ) {
-    var settings = {
-    threshold : 100
-    } ;
-    $ ( "img.lazy" ).lazyload ( settings ) ;
-    $ ( "img.lazy-brand" ).lazyload ( settings ) ;
+            navigateByImgClick: true,
 
+            arrowMarkup: '<button title="%title%" type="button" class="mfp-arrow mfp-arrow-%dir%"></button>', // markup of an arrow button
 
-
-    } ) ;
+            tPrev: 'Previous (Left arrow key)', // title for left button
+            tNext: 'Next (Right arrow key)', // title for right button
+            tCounter: '<span class="mfp-counter">%curr% of %total%</span>' // markup of counter
+          }
+        }
+      );
     </script>
     <script type="text/javascript" id="google-analytics">
     var _gaq = _gaq ||[ ] ;
