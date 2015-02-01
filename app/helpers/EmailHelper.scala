@@ -1,6 +1,6 @@
 package helpers
 
-import com.typesafe.plugin._
+import play.api.libs.mailer._
 import controllers.RentRequest
 import dao.common.UserRepository
 import models._
@@ -24,93 +24,109 @@ class EmailHelper(implicit userRepository: UserRepository) {
 
   def adminEmails = userRepository.getAdminEmails
 
-  def createMailer = use[MailerPlugin].email
-
   def notifyAboutNewRent(details: ProductDetails, request: RentRequest) = {
-    val mail = use[MailerPlugin].email
-    mail.addFrom(systemEmail)
-    mail.addRecipient(systemEmail)
-    mail.setSubject(s"Заказ аренды ${details.title}")
-    mail.sendHtml(views.html.emails.rent.newRentNotification(details, request).body)
+    val mail = Email(
+      subject = s"Заказ аренды ${details.title}",
+      from = systemEmail,
+      to = Seq(systemEmail),
+      bodyHtml = Some(views.html.emails.rent.newRentNotification(details, request).body)
+    )
+    MailerPlugin.send(mail)
   }
 
   def answerAvailability(subject: String, comment: String, email: String) = {
-    val mail = use[MailerPlugin].email
-    mail.addFrom(systemEmail)
-    mail.addRecipient(email)
-    mail.setSubject(subject)
-    mail.sendHtml(comment)
+    val mail = Email(
+      subject = subject,
+      from = systemEmail,
+      to = Seq(email),
+      bodyHtml = Some(comment)
+    )
+    MailerPlugin.send(mail)
   }
 
   def newQuestion(question: Question)(implicit request: Request[Any]) = {
     Akka.system.scheduler.scheduleOnce(1.second) {
       adminEmails.map {
         adminEmail =>
-          val mail = use[MailerPlugin].email
-          mail.setSubject("Запрос информации о наличии товара")
-          mail.addFrom(systemEmail)
-          mail.addRecipient(adminEmail)
-          mail.sendHtml(views.html.emails.questions.availability(question).body)
+          val mail = Email(
+            subject = "Запрос информации о наличии товара",
+            from = systemEmail,
+            to = Seq(adminEmail),
+            bodyHtml = Some(views.html.emails.questions.availability(question).body)
+          )
+          MailerPlugin.send(mail)
       }
     }
     Akka.system.scheduler.scheduleOnce(1.second) {
-      val mail = use[MailerPlugin].email
-      mail.addFrom(systemEmail)
-      mail.addRecipient(question.email)
-      mail.setSubject("Запрос информации о наличии товара")
-      mail.sendHtml(views.html.emails.questions.availabilityClient(question).body)
+      val mail = Email(
+        from = systemEmail,
+        to = Seq(question.email),
+        subject = "Запрос информации о наличии товара",
+        bodyHtml = Some(views.html.emails.questions.availabilityClient(question).body)
+      )
+      MailerPlugin.send(mail)
     }
   }
 
   def orderConfirmed(comment: String, order: OrderInfo)(implicit request: play.api.mvc.Request[Any]) = Akka.system.scheduler.scheduleOnce(1.second) {
-    val mail = use[MailerPlugin].email
     val city = cityRepository.getByHostname(request.host)
-    mail.setSubject(s"Подтверждение заказа ${idMark(city, order)}")
-    mail.addFrom(systemEmail)
-    mail.addRecipient(order.deliveryInfo.email)
-    mail.sendHtml(comment)
+    val mail = Email(
+      subject = s"Подтверждение заказа ${idMark(city, order)}",
+      from = systemEmail,
+      to = Seq(order.deliveryInfo.email),
+      bodyHtml = Some(comment)
+    )
+    MailerPlugin.send(mail)
   }
 
   def sendUnconfirmedOrdersExist(orders: Map[Option[String], Int]) = {
     adminEmails.map {
       email =>
-        val mail = use[MailerPlugin].email
-        mail.setSubject("Digitalband - eсть неподтвержденные заказы!")
-        mail.addFrom(systemEmail)
-        mail.addRecipient(email)
-        mail.sendHtml(views.html.emails.order.unconfirmedExist(orders).body)
+        val mail = Email(
+          subject = "Digitalband - eсть неподтвержденные заказы!",
+          from = systemEmail,
+          to = Seq(email),
+          bodyHtml = Some(views.html.emails.order.unconfirmedExist(orders).body)
+        )
+        MailerPlugin.send(mail)
     }
   }
 
   def orderCanceled(comment: String, order: OrderInfo)(implicit request: Request[Any]) = Akka.system.scheduler.scheduleOnce(1.second) {
-    val mail = use[MailerPlugin].email
     val city = cityRepository.getByHostname(request.host)
-    mail.setSubject(s"Информация по заказу ${idMark(city, order)}")
-    mail.addFrom(systemEmail)
-    mail.addRecipient(order.deliveryInfo.email)
-    mail.sendHtml(comment)
+    val mail = Email(
+      subject = s"Информация по заказу ${idMark(city, order)}",
+      from = systemEmail,
+      to = Seq(order.deliveryInfo.email),
+      bodyHtml = Some(comment)
+    )
+    MailerPlugin.send(mail)
   }
 
   def sendFeedback(message: ContactEntity)(implicit request: Request[Any]) = Akka.system.scheduler.scheduleOnce(1.second) {
     adminEmails.map(email => send(message, email))
     def send(mess: ContactEntity, adminEmail: String) = {
-      val mail: MailerAPI = use[MailerPlugin].email
-      mail.setSubject(Messages("emailhelper.sendfeedback.subject"))
-      mail.addRecipient(adminEmail)
-      mail.addFrom(systemEmail)
-      mail.setReplyTo(message.email)
-      mail.sendHtml(views.html.emails.plain.contact.feedback(message).body)
+      val mail = Email(
+        subject = Messages("emailhelper.sendfeedback.subject"),
+        to = Seq(adminEmail),
+        from = systemEmail,
+        replyTo = Some(message.email),
+        bodyHtml = Some(views.html.emails.plain.contact.feedback(message).body)
+      )
+      MailerPlugin.send(mail)
     }
   }
 
   def sendPassword(email: String) = Akka.system.scheduler.scheduleOnce(1.second) {
     userRepository.getPassword(email) match {
       case Some(password) => {
-        val mail = use[MailerPlugin].email
-        mail.setSubject("Пароль к сайту Digitalband.ru")
-        mail.addFrom(systemEmail)
-        mail.addRecipient(email)
-        mail.send(s"Ваш пароль: $password")
+        val mail = Email(
+          subject = "Пароль к сайту Digitalband.ru",
+          from = systemEmail,
+          to = Seq(email),
+          bodyText = Some(s"Ваш пароль: $password")
+        )
+        MailerPlugin.send(mail)
       }
       case None => {}
     }
@@ -122,23 +138,23 @@ class EmailHelper(implicit userRepository: UserRepository) {
     sendToClient(systemEmail, deliveryInfo.email)
     adminEmails.map(email => sendToAdmins(email, deliveryInfo.email, systemEmail))
     def sendToClient(from: String, to: String) = {
-      val mail: MailerAPI = use[MailerPlugin].email
-      val subject = getEmailSubject(order)
-      Logger.info(s"Order notification to client: ${subject}")
-      mail.setSubject(subject)
-      mail.addRecipient(to)
-      mail.addFrom(from)
-      mail.sendHtml(views.html.emails.plain.order.notification(order).body)
+      val mail = Email(
+        subject = getEmailSubject(order),
+        to = Seq(to),
+        from = from,
+        bodyHtml = Some(views.html.emails.plain.order.notification(order).body)
+      )
+      MailerPlugin.send(mail)
     }
     def sendToAdmins(adminEmail: String, userEmail: String, systemEmail: String) = {
-      val mail: MailerAPI = use[MailerPlugin].email
-      val subject = getEmailSubject(order)
-      Logger.info(s"Order notification to admins: ${subject}")
-      mail.setSubject(subject)
-      mail.addFrom(systemEmail)
-      mail.setReplyTo(userEmail)
-      mail.addRecipient(adminEmail)
-      mail.sendHtml(views.html.emails.plain.order.adminNotification(order, idMark(city, order)).body)
+      val mail = Email(
+        subject = getEmailSubject(order),
+        from = systemEmail,
+        replyTo = Some(userEmail),
+        to = Seq(adminEmail),
+        bodyHtml = Some(views.html.emails.plain.order.adminNotification(order, idMark(city, order)).body)
+      )
+      MailerPlugin.send(mail)
     }
     def getEmailSubject(order: OrderInfo): String  = {
       val orderDetails =
