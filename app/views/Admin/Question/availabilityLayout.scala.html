@@ -1,7 +1,7 @@
 @(info: String, title: String)(content: Html)(implicit user: Option[models.UserEntity], request: play.api.mvc.Request[Any])
 @import views.html.common.bootstrap.fc
     @scripts = {
-        <script src="@routes.Assets.at("javascripts/ckeditor/ckeditor.js")" type="text/javascript"></script>
+        <script src="@routes.Assets.at("javascripts/ckeditor/standard/ckeditor.js")" type="text/javascript"></script>
         <script>
             $(function(){
             CKEDITOR.replace("comment");

@@ -26,7 +26,18 @@ libraryDependencies ++= Seq(
   "commons-io" % "commons-io" % "2.4",
   "web.common" %% "web-common" % "0.1-SNAPSHOT",
   "ch.qos.logback" % "logback-classic" % "1.0.9",
-  "com.yuvimasory" % "jerkson_2.10" % "0.6.1"
+  "com.yuvimasory" % "jerkson_2.10" % "0.6.1",
+  "org.webjars" % "ckeditor" % "4.4.6",
+  "org.webjars" % "font-awesome" % "4.3.0-1",
+  "org.webjars" % "highcharts" % "4.0.4",
+  "org.webjars" % "jquery" % "2.1.3",
+  "org.webjars" % "jquery.lazyload" % "1.9.3",
+  "org.webjars" % "Magnific-Popup" % "0.9.9",
+  "org.webjars" % "bootstrap" % "3.3.2",
+  "org.webjars" % "angularjs" % "1.2.28",
+  "org.webjars" % "angular-ui-router" % "0.2.13",
+  "org.webjars" % "angular-ui-bootstrap" % "0.12.0",
+  "org.webjars" % "ng-ckeditor" % "0.2"
 )
 
 includeFilter in (Assets, LessKeys.less) := "main.less"

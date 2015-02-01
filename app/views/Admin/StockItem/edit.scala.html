@@ -1,6 +1,6 @@
 @(product: ProductDetails)(implicit user: Option[UserEntity], request: play.api.mvc.Request[Any])
   @scripts = {
-    <script src="@routes.Assets.at("lib/angular/angular.min.js")"></script>
+    <script src="@routes.Assets.at("lib/angularjs/angular.min.js")"></script>
     <script src="@routes.Assets.at("javascripts/modules/stock-item/stock-item.js")"></script>
     <script src="@controllers.admin.routes.StockItem.javascriptRoutes"></script>
     <script>
