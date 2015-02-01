@@ -4,7 +4,7 @@ import com.google.inject.Inject
 import controllers.common.ControllerBase
 import dao.common.{PageRepository, UserRepository}
 import helpers.withAdmin
-import models.{PageInfo, CityInfo}
+import models.PageInfo
 import play.api.Routes
 import play.api.libs.json._
 
@@ -34,7 +34,7 @@ class Page @Inject()
     implicit user =>
       implicit request =>
         val body = request.body
-        val page = Json.parse(body.toString).validate[PageInfo]
+        val page = Json.parse(body.toString()).validate[PageInfo]
         Ok(Json.toJson(pageRepository.add(page.get))).withHeaders(CONTENT_TYPE -> "application/json")
   }
 
@@ -42,7 +42,7 @@ class Page @Inject()
     implicit user =>
       implicit request =>
         val body = request.body
-        val page = Json.parse(body.toString).validate[PageInfo]
+        val page = Json.parse(body.toString()).validate[PageInfo]
         pageRepository.update(page.get)
         Ok("ok")
   }
@@ -50,7 +50,7 @@ class Page @Inject()
   def list = withAdmin {
     implicit user =>
       implicit request =>
-        Ok(Json.toJson(pageRepository.list)).withHeaders(CONTENT_TYPE -> "application/json")
+        Ok(Json.toJson(pageRepository.list())).withHeaders(CONTENT_TYPE -> "application/json")
   }
 
   def javascriptRoutes = withAdmin {
