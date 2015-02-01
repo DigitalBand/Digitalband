@@ -44,8 +44,8 @@
       this.shop.phone = "";
     },
     removePhone: function(phone) {
-      _.remove(this.shop.phoneNumbers, function(item){
-        return item === phone;
+      this.shop.phoneNumbers = this.shop.phoneNumbers.filter(function(item){
+        return item !== phone;
       });
     }
   };

@@ -7,7 +7,9 @@ shopsApp.controller('ShopListController', ['$scope', 'ShopService', '$state', fu
   $scope.remove = function (shopId) {
     if (confirm('Вы действительно хотите удалить этот элемент?')) {
       shopService.remove(shopId).then(function () {
-        _.remove($scope.shops, {id: shopId});
+        this.shops = this.shops.filter(function(item){
+          return item.id !== shopId;
+        });
       });
     }
   };

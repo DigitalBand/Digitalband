@@ -3,7 +3,7 @@ package controllers.admin
 import com.google.inject.Inject
 import controllers.common.ControllerBase
 import helpers.withAdmin
-import com.codahale.jerkson.Json
+import play.api.libs.json._
 import play.api.Routes
 import play.api.mvc.Action
 import models.StockItemInfo
@@ -23,16 +23,16 @@ class StockItem @Inject()(
   def list(productId: Int) = withAdmin {
     implicit user =>
       implicit request =>
-        Ok(Json.generate(stockItemRepository.list(productId))).withHeaders(CONTENT_TYPE -> "application/json")
+        Ok(Json.toJson(stockItemRepository.list(productId))).withHeaders(CONTENT_TYPE -> "application/json")
   }
 
   def create(productId: Int) = withAdmin(parse.json) {
     implicit user =>
       implicit request =>
         val body = request.body
-        val stockItem = Json.parse[StockItemInfo](body.toString())
-        val id = stockItemRepository.create(productId, stockItem)
-        Ok(Json.generate(id))
+        val stockItem = Json.parse(body.toString()).validate[StockItemInfo]
+        val id = stockItemRepository.create(productId, stockItem.get)
+        Ok(Json.toJson(id))
   }
 
   def remove(id: Int) = withAdmin {
@@ -46,8 +46,8 @@ class StockItem @Inject()(
     implicit user =>
       implicit request =>
         val body = request.body
-        val stockItem = Json.parse[StockItemInfo](body.toString())
-        stockItemRepository.update(stockItem)
+        val stockItem = Json.parse(body.toString()).validate[StockItemInfo]
+        stockItemRepository.update(stockItem.get)
         Ok("Ok")
   }
 

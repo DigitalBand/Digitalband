@@ -14,11 +14,11 @@
     deleteAll: function (items) {
       var that = this;
       this.isDeleting = true;
-      var item = _.head(items);
+      var item = items[0];
       this.$scope.itemsDeletedCount = this.$scope.items.length - items.length;
       this.$scope.progress = (this.$scope.itemsDeletedCount / this.$scope.items.length) * 100;
       that.$http(routes.Product.deleteById(item)).then(function (response) {
-        that.deleteAll(_.tail(items))
+        that.deleteAll(items[item.length - 1])
       });
 
     }
