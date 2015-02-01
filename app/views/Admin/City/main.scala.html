@@ -1,16 +1,14 @@
 @()(implicit user: Option[models.UserEntity], request: play.api.mvc.Request[Any])
 @scripts = {
-<script src="@routes.Assets.at("lib/tinymce/tinymce.min.js")"></script>
-<script src="@routes.Assets.at("lib/angular/angular.min.js")"></script>
-<script src="@routes.Assets.at("lib/angular-sanitize/angular-sanitize.min.js")"></script>
-<script src="@routes.Assets.at("lib/angular-route/angular-route.min.js")"></script>
+<script src="@routes.Assets.at("lib/ckeditor/ckeditor.js")"></script>
+<script src="@routes.Assets.at("lib/angular/angular.js")"></script>
+<script src="@routes.Assets.at("lib/angular-sanitize/angular-sanitize.js")"></script>
+<script src="@routes.Assets.at("lib/angular-route/angular-route.js")"></script>
 
-<script src="@routes.Assets.at("lib/angular-ui-tinymce/src/tinymce.js")"></script>
-<script src="@routes.Assets.at("lib/angular-ui-router/angular-ui-router.min.js")"></script>
-<script src="@routes.Assets.at("lib/lodash/lodash.min.js")"></script>
-<script src="@routes.Assets.at("lib/textAngular/dist/textAngular.min.js")"></script>
-<script src="@routes.Assets.at("lib/textAngular/dist/textAngular-sanitize.min.js")"></script>
-<script src="@routes.Assets.at("lib/textAngular/src/textAngularSetup.js")"></script>
+<script src="@routes.Assets.at("lib/angular-ui-router/release/angular-ui-router.min.js")"></script>
+<script src="@routes.Assets.at("lib/ng-ckeditor/ng-ckeditor.js")"></script>
+<script src="@routes.Assets.at("lib/lodash/dist/lodash.min.js")"></script>
+
 
 <script src="@routes.Assets.at("javascripts/modules/cities/cities.js")"></script>
 <script src="@routes.Assets.at("javascripts/modules/cities/controllers/CityListController.js")"></script>

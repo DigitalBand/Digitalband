@@ -45,12 +45,12 @@
             </div>
             <div class="form-group">
                 <label>Доставка</label>
-                <textarea ui-tinymce ng-model="vm.city.delivery" required></textarea>
+                <textarea ckeditor="editorOptions" ng-model="vm.city.delivery" required></textarea>
                 <div class="alert alert-danger" role="alert" ng-show="!vm.city.delivery">Поле обязательно для заполнения</div>
             </div>
             <div class="form-group">
                 <label>Оплата</label>
-                <textarea ui-tinymce ng-model="vm.city.payment" required></textarea>
+                <textarea ckeditor="editorOptions" ng-model="vm.city.payment" required></textarea>
                 <div class="alert alert-danger" role="alert" ng-show="!vm.city.payment">Поле обязательно для заполнения</div>
             </div>
 

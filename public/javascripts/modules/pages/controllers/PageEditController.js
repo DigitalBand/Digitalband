@@ -7,6 +7,9 @@
         this.$state = $state;
         this.$modal = $modal;
         this.pageId = $state.params.pageId;
+        $scope.editorOptions = {
+          language: 'ru'
+        };
         this.initPage();
     }
 

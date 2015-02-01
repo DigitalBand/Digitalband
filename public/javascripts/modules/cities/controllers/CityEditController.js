@@ -7,6 +7,9 @@
         this.shopService = shopService;
         this.$state = $state;
         this.cityId = $stateParams.cityId;
+        $scope.editorOptions = {
+          language: 'ru'
+        };
         this.initCity();
     }
 
