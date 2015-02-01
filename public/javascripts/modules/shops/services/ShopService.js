@@ -6,8 +6,8 @@
   }
 
   ShopService.prototype = {
-    get: function(shopId) {
-      return this.$http(jsRoutes.controllers.admin.Shop.get(shopId)).then(function(response){
+    get: function (shopId) {
+      return this.$http(jsRoutes.controllers.admin.Shop.get(shopId)).then(function (response) {
         return response.data;
       });
     },

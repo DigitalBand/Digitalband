@@ -23,11 +23,11 @@
         this.shop = {};
       }
     },
-    initCities: function() {
-        var that = this;
-        this.cityService.listShortInfo().then(function (cities) {
-            that.cities = cities;
-        });
+    initCities: function () {
+      var that = this;
+      this.cityService.listShortInfo().then(function (cities) {
+        that.cities = cities;
+      });
     },
     save: function () {
       var that = this;
@@ -35,14 +35,14 @@
         that.$state.go('home1');
       });
     },
-    addPhone: function(){
+    addPhone: function () {
       if (!this.shop.phoneNumbers) this.shop.phoneNumbers = [];
       this.shop.phoneNumbers.push(angular.copy(this.shop.phone));
       this.shop.phone = "";
     },
-    removePhone: function(phone) {
-      _.remove(this.shop.phoneNumbers, function(item){
-        return item === phone;
+    removePhone: function (phone) {
+      this.shop.phoneNumbers = this.shop.phoneNumbers.filter(function(item){
+        return item !== phone;
       });
     }
   };
