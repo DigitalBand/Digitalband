@@ -1,5 +1,5 @@
 "use strict";
-var pagesApp = angular.module('pagesModule', ['ngRoute', 'ui.router', 'ui.tinymce', 'ui.bootstrap']);
+var pagesApp = angular.module('pagesModule', ['ngRoute', 'ui.router', 'ui.bootstrap', 'ngCkeditor']);
 pagesApp.config(['$stateProvider', function ($stateProvider) {
     function vw(url) {
         return '/assets/javascripts/modules/pages' + url;

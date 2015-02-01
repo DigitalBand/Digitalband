@@ -1,21 +1,20 @@
 @()(implicit user: Option[models.UserEntity], request: play.api.mvc.Request[Any])
 @scripts = {
-<script src="@routes.Assets.at("lib/tinymce/tinymce.min.js")"></script>
-<script src="@routes.Assets.at("lib/angular/angular.min.js")"></script>
-<script src="@routes.Assets.at("lib/angular-sanitize/angular-sanitize.min.js")"></script>
-<script src="@routes.Assets.at("lib/angular-route/angular-route.min.js")"></script>
+  <script src="@routes.Assets.at("lib/ckeditor/ckeditor.js")"></script>
+  <script src="@routes.Assets.at("lib/angular/angular.js")"></script>
+  <script src="@routes.Assets.at("lib/angular-route/angular-route.min.js")"></script>
 
-<script src="@routes.Assets.at("lib/angular-ui-tinymce/src/tinymce.js")"></script>
-<script src="@routes.Assets.at("lib/angular-ui-router/angular-ui-router.min.js")"></script>
-<script src="@routes.Assets.at("lib/angular-bootstrap/ui-bootstrap-tpls.min.js")"></script>
-<script src="@routes.Assets.at("lib/lodash/lodash.min.js")"></script>
+  <script src="@routes.Assets.at("lib/ng-ckeditor/ng-ckeditor.js")"></script>
+  <script src="@routes.Assets.at("lib/angular-ui-router/release/angular-ui-router.min.js")"></script>
+  <script src="@routes.Assets.at("lib/angular-bootstrap/ui-bootstrap-tpls.min.js")"></script>
+  <script src="@routes.Assets.at("lib/lodash/dist/lodash.min.js")"></script>
 
-<script src="@routes.Assets.at("javascripts/modules/pages/pages.js")"></script>
-<script src="@routes.Assets.at("javascripts/modules/pages/controllers/PageListController.js")"></script>
-<script src="@routes.Assets.at("javascripts/modules/pages/controllers/PageEditController.js")"></script>
-<script src="@routes.Assets.at("javascripts/modules/pages/controllers/SectionEditController.js")"></script>
-<script src="@routes.Assets.at("javascripts/modules/pages/services/PageService.js")"></script>
-<script src="@controllers.admin.routes.Page.javascriptRoutes"></script>
+  <script src="@routes.Assets.at("javascripts/modules/pages/pages.js")"></script>
+  <script src="@routes.Assets.at("javascripts/modules/pages/controllers/PageListController.js")"></script>
+  <script src="@routes.Assets.at("javascripts/modules/pages/controllers/PageEditController.js")"></script>
+  <script src="@routes.Assets.at("javascripts/modules/pages/controllers/SectionEditController.js")"></script>
+  <script src="@routes.Assets.at("javascripts/modules/pages/services/PageService.js")"></script>
+  <script src="@controllers.admin.routes.Page.javascriptRoutes"></script>
 }
 
 @views.html.Admin.main("Страницы", "pages", scripts = scripts) {

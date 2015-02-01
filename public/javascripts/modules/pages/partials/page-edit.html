@@ -11,7 +11,7 @@
             <div class="form-group">
                 <label>Описание</label>
                 <div>
-                    <textarea ui-tinymce ng-model="vm.section.content"></textarea>
+                    <textarea ckeditor="editorOptions" ng-model="vm.section.content"></textarea>
                 </div>
             </div>
             <alert ng-repeat="alert in vm.alerts" type="{{alert.type}}" close="vm.closeAlert($index)">{{alert.message}}</alert>
