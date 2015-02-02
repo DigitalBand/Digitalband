@@ -8,6 +8,8 @@ lazy val root = (project in file(".")).enablePlugins(PlayScala)
 
 scalaVersion := "2.11.5"
 
+resolvers += "Scalaz Bintray Repo" at "http://dl.bintray.com/scalaz/releases"
+
 resolvers += Resolver.file("Local repo", file(Paths.get(System.getProperty("user.home"), ".ivy2", "local").toString))(Resolver.ivyStylePatterns)
 
 
