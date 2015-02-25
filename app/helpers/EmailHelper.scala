@@ -160,9 +160,14 @@ class EmailHelper(implicit userRepository: UserRepository) {
       val orderDetails =
         if(order.items.length > 1){
           val tailLength = order.items.tail.length
-          val itemSuffix = tailLength % 10 match {
-            case l if l > 1 && l < 5 => "а"
-            case l if l > 5 => "ов"
+
+          val itemSuffix = if (tailLength > 1) {
+            tailLength % 10 match {
+              case l if l > 1 && l < 5 => "а"
+              case l if l > 5 => "ов"
+            }
+          } else {
+            ""
           }
           order.items.head.title + Messages("emailhelper.orderconfirmation.subjectDetails", tailLength, itemSuffix)
         }

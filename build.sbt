@@ -26,7 +26,7 @@ libraryDependencies ++= Seq(
   "org.ocpsoft.prettytime" % "prettytime" % "2.1.3.Final",
   "commons-codec" % "commons-codec" % "1.7",
   "commons-io" % "commons-io" % "2.4",
-  "web.common" %% "web-common" % "0.1-SNAPSHOT",
+  "web.common" %% "web-common" % "0.1.3",
   "ch.qos.logback" % "logback-classic" % "1.0.9",
   "com.yuvimasory" % "jerkson_2.10" % "0.6.1",
   "org.webjars" % "ckeditor" % "4.4.6",
