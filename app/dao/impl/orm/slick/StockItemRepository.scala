@@ -1,7 +1,7 @@
 package dao.impl.orm.slick
 
 import dao.impl.orm.slick.common.{RepositoryBase}
-import scala.slick.driver.JdbcDriver.simple._
+import slick.driver.JdbcDriver.backend.Database
 import Database.dynamicSession
 import slick.jdbc.{StaticQuery => Q, GetResult}
 import Q.interpolation
@@ -46,7 +46,7 @@ class StockItemRepository extends RepositoryBase with dao.common.StockItemReposi
       inner join shops sh on sh.id = s.shop_id
       where
         s.product_id = ${productId};
-    """.as[StockItemInfo].list
+    """.as[StockItemInfo].iterator
   }
 
   def remove(stockItemId: Int) = database withDynSession {

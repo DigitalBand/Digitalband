@@ -9,7 +9,7 @@ trait CartRepository {
 
   def deleteItem(cartId: Int, productId: Int)
 
-  def list(cartId: Int): Seq[CartItem]
+  def list(cartId: Int): Iterator[CartItem]
 
   def add(item: CartItem): Int
 }

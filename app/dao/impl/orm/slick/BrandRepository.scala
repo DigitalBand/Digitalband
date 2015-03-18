@@ -2,7 +2,7 @@ package dao.impl.orm.slick
 
 import common.RepositoryBase
 
-import scala.slick.driver.JdbcDriver.simple._
+import slick.driver.JdbcDriver.backend.Database
 import Database.dynamicSession
 
 import slick.jdbc.{GetResult, StaticQuery => Q}

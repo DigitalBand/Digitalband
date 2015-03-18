@@ -1,11 +1,11 @@
 package dao.impl.orm.slick
 
-import scala.slick.driver.JdbcDriver.backend.Database
+import slick.driver.JdbcDriver.backend.Database
 import Database.dynamicSession
 import dao.impl.orm.slick.common.RepositoryBase
 import helpers.PhoneHelper.parsePhones
 import models.{ShopInfo, YandexShopInfo}
-import scala.slick.jdbc.{GetResult, StaticQuery => Q}
+import slick.jdbc.{GetResult, StaticQuery => Q}
 import Q.interpolation
 
 class ShopRepository extends RepositoryBase with dao.common.ShopRepository {

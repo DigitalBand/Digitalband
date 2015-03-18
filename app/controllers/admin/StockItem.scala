@@ -23,7 +23,7 @@ class StockItem @Inject()(
   def list(productId: Int) = withAdmin {
     implicit user =>
       implicit request =>
-        Ok(Json.toJson(stockItemRepository.list(productId))).withHeaders(CONTENT_TYPE -> "application/json")
+        Ok(Json.toJson(stockItemRepository.list(productId).toList)).withHeaders(CONTENT_TYPE -> "application/json")
   }
 
   def create(productId: Int) = withAdmin(parse.json) {

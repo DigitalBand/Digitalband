@@ -48,8 +48,8 @@ class Order @Inject()(implicit ur: UserRepository,
   def fill = withUser {
     implicit user =>
       implicit request =>
-        val itemsList = cartRepository.list(getUserId)
-        if (!itemsList.isEmpty)
+        val itemsList = cartRepository.list(getUserId).toList
+        if (itemsList.nonEmpty)
           Ok {
             views.html.Order.fill(itemsList)
           }.withHeaders(CACHE_CONTROL -> "no-cache, max-age=0, must-revalidate, no-store")
@@ -60,8 +60,8 @@ class Order @Inject()(implicit ur: UserRepository,
   def fillDelivery() = withUser {
     implicit user =>
       implicit request =>
-        val itemsList = cartRepository.list(getUserId)
-        if (!itemsList.isEmpty)
+        val itemsList = cartRepository.list(getUserId).toList
+        if (itemsList.nonEmpty)
           Ok {
             val userInfo = userRepository.getUserInfo(getUserId).getOrElse(new UserInfo())
             val deliveryInfo = new OrderDeliveryInfo(address = userInfo.address.get, personalInfo = userInfo.personalInfo, comment = "")
@@ -76,8 +76,8 @@ class Order @Inject()(implicit ur: UserRepository,
   def fillPickup = withUser {
     implicit user =>
       implicit request =>
-        val itemsList = cartRepository.list(getUserId)
-        if (!itemsList.isEmpty)
+        val itemsList = cartRepository.list(getUserId).toList
+        if (itemsList.nonEmpty)
           Ok {
             val userInfo = userRepository.getUserInfo(getUserId).getOrElse(new UserInfo())
             val shops = shopRepository.getByHostname(request.host).map(shop => (shop.id.toString, shop.title)).toSeq
@@ -94,7 +94,7 @@ class Order @Inject()(implicit ur: UserRepository,
       implicit request =>
         deliveryForm.bindFromRequest.fold(
           formWithErrors => {
-            BadRequest(views.html.Order.fillDelivery(cartRepository.list(getUserId), formWithErrors))
+            BadRequest(views.html.Order.fillDelivery(cartRepository.list(getUserId).toList, formWithErrors))
           },
           deliveryInfo => {
             val city = cityRepository.getByHostname(request.host)
@@ -115,7 +115,7 @@ class Order @Inject()(implicit ur: UserRepository,
         pickupForm.bindFromRequest.fold(
           formWithErrors => {
             val shops = shopRepository.getByHostname(request.host).map(shop => (shop.id.toString, shop.title)).toSeq
-            BadRequest(views.html.Order.fillPickup(cartRepository.list(getUserId), formWithErrors, shops))
+            BadRequest(views.html.Order.fillPickup(cartRepository.list(getUserId).toList, formWithErrors, shops))
           },
           pickupInfo => {
             val city = cityRepository.getByHostname(request.host)

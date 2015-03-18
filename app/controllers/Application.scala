@@ -44,8 +44,8 @@ class Application @Inject()(implicit ur: UserRepository,
     withUser {
       implicit user =>
         implicit request =>
-          val categories: Seq[CategoryEntity] = categoryRepository.listWithPictures
-          val products: Seq[ProductDetails] = productRepository.listMostVisited(12, request.host)
+          val categories = categoryRepository.listWithPictures.toList
+          val products = productRepository.listMostVisited(12, request.host).toList
           Ok(views.html.index(categories, products))
     }
   }

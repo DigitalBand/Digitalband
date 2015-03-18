@@ -19,7 +19,7 @@ class PriceList @Inject()(implicit userRepository: UserRepository, shopRepositor
       val getUrl: Int => String = { id => routes.Product.display(id).url }
       val getPictureUrl: Int => String = { id => routes.Image.get(id.toString + ".jpg", 90, "150x150", "full").url}
       val yandex = views.html.PriceList.forYandex(
-        products,
+        products.toList,
         categories,
         fmt.print(DateTime.now().withZone(DateTimeZone.forID("Europe/Moscow"))),
         yandexShopInfo,

@@ -33,7 +33,7 @@ class Cart @Inject()(implicit ur: UserRepository, val cartRepository: CartReposi
   def display(returnUrl: String) = withUser {
     implicit user =>
       implicit request =>
-        val cartItems: Seq[CartItem] = cartRepository.list(getUserId)
+        val cartItems = cartRepository.list(getUserId).toList
         Ok(views.html.Cart.display(cartItems, returnUrl))
   }
 

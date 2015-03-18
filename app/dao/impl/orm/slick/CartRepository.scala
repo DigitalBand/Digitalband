@@ -1,6 +1,6 @@
 package dao.impl.orm.slick
 
-import scala.slick.driver.JdbcDriver.backend.Database
+import slick.driver.JdbcDriver.backend.Database
 import Database.dynamicSession
 
 
@@ -11,7 +11,7 @@ import models.{CItem, CartItem}
 import dao.impl.orm.slick.common.RepositoryBase
 
 class CartRepository extends RepositoryBase with dao.common.CartRepository {
-  def list(userId: Int): Seq[CartItem] = {
+  def list(userId: Int) = {
     database withDynSession {
       implicit val getCartItem = GetResult(r => new CartItem(r.<<, r.<<, r.<<, r.<<, r.<<, r.<<))
       sql"""
@@ -26,7 +26,7 @@ class CartRepository extends RepositoryBase with dao.common.CartRepository {
             left join products p on p.id = shop.product_id
           where shop.user_id = ${userId}
             group by p.id
-      """.as[CartItem].list.filter(p => p.unitPrice > 0)
+      """.as[CartItem].iterator.filter(p => p.unitPrice > 0)
 
     }
   }

@@ -7,9 +7,9 @@ import models.BrandEntity
 import wt.common.image.ImageEntity
 
 trait ProductRepository {
-  def listAll(domain: String): Seq[ProductDetails]
+  def listAll(domain: String): Iterator[ProductDetails]
 
-  def getAllNotInStockIds: Seq[Int]
+  def getAllNotInStockIds: Iterator[Int]
 
   def delete(productId: Int)(cleanOtherResources: ImageEntity => Unit)
 
@@ -24,6 +24,6 @@ trait ProductRepository {
   def get(productId: Int): ProductDetails
   def getList(getCategory: => CategoryEntity, domain: String): ListPage[ProductDetails] = getList(getCategory, brandId = 0, pageNumber = 1, pageSize = 10, search = "", inStock = false, domain)
   def getList(getCategory: => CategoryEntity, brandId: Int, pageNumber: Int, pageSize: Int, search: String, inStock: Boolean, domain: String): ListPage[ProductDetails]
-  def listMostVisited(count: Int, domain: String): Seq[ProductDetails]
+  def listMostVisited(count: Int, domain: String): Iterator[ProductDetails]
   def getAvailability(productId: Int): Int
 }

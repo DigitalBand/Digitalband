@@ -1,13 +1,13 @@
 package dao.impl.orm.slick
 
-import scala.slick.driver.JdbcDriver.backend.Database
+import slick.driver.JdbcDriver.backend.Database
 import Database.dynamicSession
 import dao.impl.orm.slick.common.RepositoryBase
-import scala.slick.jdbc.{GetResult, StaticQuery => Q}
+import slick.jdbc.{GetResult, StaticQuery => Q}
 import Q.interpolation
 import models.{PageInfo, PageSection}
 
-import scala.slick.jdbc.GetResult
+import slick.jdbc.GetResult
 
 class PageRepository extends RepositoryBase with dao.common.PageRepository {
   def get(pageAlias: String): PageInfo = database withDynSession {

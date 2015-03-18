@@ -2,7 +2,7 @@ package dao.impl.orm.slick
 
 import common._
 import models._
-import scala.slick.driver.JdbcDriver.backend.Database
+import slick.driver.JdbcDriver.backend.Database
 import Database.dynamicSession
 import models.CategoryEntity
 import models.ProductDetails
@@ -36,7 +36,7 @@ class ProductRepository extends RepositoryBase with dao.common.ProductRepository
             product_id = p.id and c.domain = ${domain}
         ) > 0)
       limit ${count};
-    """.as[ProductDetails].list
+    """.as[ProductDetails].iterator
   }
 
   override def getAvailability(productId: Int): Int = database withDynSession {
@@ -245,10 +245,10 @@ class ProductRepository extends RepositoryBase with dao.common.ProductRepository
     sqlu"delete from products where id = ${productId}".execute
   }
 
-  override def getAllNotInStockIds: Seq[Int] = database withDynSession {
+  override def getAllNotInStockIds = database withDynSession {
     sql"""
       select p.id from products p where p.id not in (select si.product_id from stock_items si where si.product_id = p.id)
-    """.as[Int].list
+    """.as[Int].iterator
   }
 
   def listAll(domain: String) = database.withDynSession {
@@ -285,6 +285,6 @@ class ProductRepository extends RepositoryBase with dao.common.ProductRepository
       inner join brands b on p.brand_id = b.id
       inner join products_categories pc on pc.product_id = p.id
       where archived = false;
-    """.as[ProductDetails].list
+    """.as[ProductDetails].iterator
   }
 }

@@ -1,9 +1,7 @@
 package dao.impl.orm.slick
 
-import dao.impl.orm.slick.common.RepositoryBase
-import helpers.PhoneHelper._
-import models.{CityShortInfo, ShopInfo, CityInfo}
-import scala.slick.driver.JdbcDriver.backend.Database
+import models.{CityShortInfo, CityInfo}
+import slick.driver.JdbcDriver.backend.Database
 import Database.dynamicSession
 import slick.jdbc.{StaticQuery => Q, GetResult}
 import Q.interpolation
