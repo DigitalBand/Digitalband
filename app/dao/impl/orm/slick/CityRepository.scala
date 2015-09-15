@@ -1,6 +1,7 @@
 package dao.impl.orm.slick
 
 import models.{CityShortInfo, CityInfo}
+import play.api.Logger
 import slick.driver.JdbcDriver.backend.Database
 import Database.dynamicSession
 import slick.jdbc.{StaticQuery => Q, GetResult}
@@ -34,16 +35,17 @@ class CityRepository extends RepositoryBase with dao.common.CityRepository {
   }
 
   def getByHostname(host: String): CityInfo = database withDynSession {
-    implicit val result = GetResult(
-      r => CityInfo(
-        id = r.<<,
-        name = r.<<,
-        domain = r.<<,
-        delivery = r.<<,
-        payment = r.<<,
-        phone = r.<<,
-        prefix = r.<<))
-    sql"""
+    try {
+      implicit val result = GetResult(
+        r => CityInfo(
+          id = r.<<,
+          name = r.<<,
+          domain = r.<<,
+          delivery = r.<<,
+          payment = r.<<,
+          phone = r.<<,
+          prefix = r.<<))
+      sql"""
       select
         c.id,
         c.name,
@@ -55,6 +57,12 @@ class CityRepository extends RepositoryBase with dao.common.CityRepository {
       from cities  c
       where c.domain = ${host};
     """.as[CityInfo].first
+    } catch {
+      case e: NoSuchElementException =>
+        Logger.error(s"Host: $host", e)
+        throw e
+      case e => throw e
+    }
   }
 
   def add(city: CityInfo): Int = database withDynSession {
