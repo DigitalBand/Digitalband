@@ -10,6 +10,7 @@ import play.api.data.Form
 import play.api.data.Forms._
 import play.api.i18n.Messages
 import play.api.mvc._
+import scala.concurrent.ExecutionContext.Implicits.global
 
 class Application @Inject()(implicit ur: UserRepository,
                             val shopRepository: ShopRepository,
@@ -57,9 +58,12 @@ class Application @Inject()(implicit ur: UserRepository,
         Ok(views.html.Application.page(page))
   }
 
-  def delivery = withUser {
+  def delivery = withUser.async {
     implicit user => implicit request =>
-      Ok(views.html.Application.delivery(cityRepository.getByHostname(request.host)))
+      cityRepository.getByHostname(request.host).map {
+        cityInfo =>
+          Ok(views.html.Application.delivery(cityInfo))
+      }
   }
 
   def contacts = withUser {

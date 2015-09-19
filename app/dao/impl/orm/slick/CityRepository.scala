@@ -1,15 +1,42 @@
 package dao.impl.orm.slick
 
 import models.{CityShortInfo, CityInfo}
-import play.api.Logger
-import slick.driver.JdbcDriver.backend.Database
-import Database.dynamicSession
+import slick.driver.MySQLDriver.backend.Database
+import slick.driver.MySQLDriver.api._
 import slick.jdbc.{StaticQuery => Q, GetResult}
-import Q.interpolation
+
 import dao.impl.orm.slick.common.RepositoryBase
 
+import scala.concurrent.Future
+
+
 class CityRepository extends RepositoryBase with dao.common.CityRepository {
-  def get(cityId: Int): CityInfo = database withDynSession {
+  def get(cityId: Int): Future[CityInfo] = getDB.run {
+      implicit val result = GetResult(
+        r => CityInfo(
+          id = r.<<,
+          name = r.<<,
+          domain = r.<<,
+          delivery = r.<<,
+          payment = r.<<,
+          phone = r.<<,
+          prefix = r.<<))
+    sql"""
+      select
+        c.id,
+        c.name,
+        c.domain,
+        c.delivery,
+        c.payment,
+        c.phone,
+        c.prefix
+      from cities c
+      where
+        c.id = ${cityId};
+    """.as[CityInfo].head
+  }
+
+  def getByHostname(host: String) = getDB.run {
     implicit val result = GetResult(
       r => CityInfo(
         id = r.<<,
@@ -28,53 +55,22 @@ class CityRepository extends RepositoryBase with dao.common.CityRepository {
         c.payment,
         c.phone,
         c.prefix
-      from cities c
-      where
-        c.id = ${cityId};
-    """.as[CityInfo].first
-  }
-
-  def getByHostname(host: String): CityInfo = database withDynSession {
-    try {
-      implicit val result = GetResult(
-        r => CityInfo(
-          id = r.<<,
-          name = r.<<,
-          domain = r.<<,
-          delivery = r.<<,
-          payment = r.<<,
-          phone = r.<<,
-          prefix = r.<<))
-      sql"""
-      select
-        c.id,
-        c.name,
-        c.domain,
-        c.delivery,
-        c.payment,
-        c.phone,
-        c.prefix
       from cities  c
       where c.domain = ${host};
-    """.as[CityInfo].first
-    } catch {
-      case e: NoSuchElementException =>
-        Logger.error(s"Host: $host", e)
-        throw e
-      case e => throw e
-    }
+    """.as[CityInfo].head
   }
 
-  def add(city: CityInfo): Int = database withDynSession {
-    sqlu"""
+
+  def add(city: CityInfo): Future[Int] = getDB.run {
+    sql"""
       insert into
         cities(name, domain, delivery, payment, phone, prefix)
         values(${city.name}, ${city.domain}, ${city.delivery}, ${city.payment}, ${city.phone}, ${city.prefix});
-    """.execute
-    sql"""select last_insert_id();""".as[Int].first
+        select last_insert_id();
+    """.as[Int].head
   }
 
-  def update(city: CityInfo) = database withDynSession {
+  def update(city: CityInfo) = getDB.run {
     sqlu"""
       UPDATE cities
       SET
@@ -86,16 +82,16 @@ class CityRepository extends RepositoryBase with dao.common.CityRepository {
         prefix = ${city.prefix}
       WHERE
         id = ${city.id};
-    """.execute
+    """
   }
 
-  def remove(cityId: Int) = database withDynSession {
+  def remove(cityId: Int) = getDB.run {
     sqlu"""
       delete from cities where id = ${cityId};
-    """.execute
+    """
   }
 
-  def listShortInfo: Seq[CityShortInfo] = database withDynSession {
+  def listShortInfo: Future[Seq[CityShortInfo]] = getDB.run {
     implicit val res = GetResult(
       r => CityShortInfo(id = r.<<, name = r.<<))
     sql"""
@@ -103,10 +99,10 @@ class CityRepository extends RepositoryBase with dao.common.CityRepository {
         c.id,
         c.name
       from cities c
-    """.as[CityShortInfo].list
+    """.as[CityShortInfo]
   }
 
-  def list: Seq[CityInfo] = database withDynSession {
+  def list: Future[Seq[CityInfo]] = getDB.run {
     implicit val res = GetResult(
       r => CityInfo(
         id = r.<<,
@@ -126,6 +122,6 @@ class CityRepository extends RepositoryBase with dao.common.CityRepository {
         c.phone,
         c.prefix
       from cities c
-    """.as[CityInfo].list
+    """.as[CityInfo]
   }
 }

@@ -8,6 +8,9 @@ import helpers.{EmailHelper, withUser}
 import play.api.data.Form
 import play.api.data.Forms._
 import play.api.i18n.Messages
+import scala.concurrent.ExecutionContext.Implicits.global
+
+import scala.concurrent.Future
 
 class Order @Inject()(implicit ur: UserRepository,
                                orderRepository: OrderRepository,
@@ -89,45 +92,47 @@ class Order @Inject()(implicit ur: UserRepository,
           Redirect(routes.Cart.display())
   }
 
-  def create() = withUser {
+  def create() = withUser.async {
     implicit user =>
       implicit request =>
         deliveryForm.bindFromRequest.fold(
-          formWithErrors => {
+          formWithErrors => Future {
             BadRequest(views.html.Order.fillDelivery(cartRepository.list(getUserId).toList, formWithErrors))
           },
           deliveryInfo => {
-            val city = cityRepository.getByHostname(request.host)
-            val cityId = if(city != null) Option(city.id) else None
-            val userInfo = new UserInfo(getUserId, deliveryInfo.personalInfo, Option(deliveryInfo.address))
-            userRepository.updateUserInfo(userInfo)
-            val orderId = orderRepository.create(getUserId, cityId, deliveryInfo)
-            val orderDeliveryInfo = new DeliveryInfo(userInfo.personalInfo.toString(), userInfo.personalInfo.email.getOrElse(""), userInfo.personalInfo.phone, userInfo.address.get.toString())
-            emailHelper.orderConfirmation(new OrderInfo(orderId, orderDeliveryInfo, orderRepository.getItems(orderId)))
-            Redirect(routes.Order.confirmation(orderId))
+            cityRepository.getByHostname(request.host).map { city =>
+              val cityId = if (city != null) Option(city.id) else None
+              val userInfo = new UserInfo(getUserId, deliveryInfo.personalInfo, Option(deliveryInfo.address))
+              userRepository.updateUserInfo(userInfo)
+              val orderId = orderRepository.create(getUserId, cityId, deliveryInfo)
+              val orderDeliveryInfo = new DeliveryInfo(userInfo.personalInfo.toString(), userInfo.personalInfo.email.getOrElse(""), userInfo.personalInfo.phone, userInfo.address.get.toString())
+              emailHelper.orderConfirmation(new OrderInfo(orderId, orderDeliveryInfo, orderRepository.getItems(orderId)))
+              Redirect(routes.Order.confirmation(orderId))
+            }
           }
         )
   }
 
-  def createPickup() = withUser {
+  def createPickup() = withUser.async {
     implicit user =>
       implicit request =>
         pickupForm.bindFromRequest.fold(
-          formWithErrors => {
+          formWithErrors => Future {
             val shops = shopRepository.getByHostname(request.host).map(shop => (shop.id.toString, shop.title)).toSeq
             BadRequest(views.html.Order.fillPickup(cartRepository.list(getUserId).toList, formWithErrors, shops))
           },
           pickupInfo => {
-            val city = cityRepository.getByHostname(request.host)
-            val cityId = if(city != null) Option(city.id) else None
-            val userInfo = new UserInfo(getUserId, pickupInfo.personalInfo, None)
-            userRepository.updateUserInfo(userInfo)
-            val orderId = orderRepository.create(getUserId, cityId, pickupInfo)
-            val pickupShop = shopRepository.get(pickupInfo.shopId);
-            val address = Messages("pickup") + " - " + pickupShop.address;
-            val orderDeliveryInfo = new DeliveryInfo(userInfo.personalInfo.toString(), userInfo.personalInfo.email.getOrElse(""), userInfo.personalInfo.phone, address)
-            emailHelper.orderConfirmation(new OrderInfo(orderId, orderDeliveryInfo, orderRepository.getItems(orderId)))
-            Redirect(routes.Order.confirmation(orderId))
+            cityRepository.getByHostname(request.host).map { city =>
+              val cityId = if (city != null) Option(city.id) else None
+              val userInfo = new UserInfo(getUserId, pickupInfo.personalInfo, None)
+              userRepository.updateUserInfo(userInfo)
+              val orderId = orderRepository.create(getUserId, cityId, pickupInfo)
+              val pickupShop = shopRepository.get(pickupInfo.shopId);
+              val address = Messages("pickup") + " - " + pickupShop.address;
+              val orderDeliveryInfo = new DeliveryInfo(userInfo.personalInfo.toString(), userInfo.personalInfo.email.getOrElse(""), userInfo.personalInfo.phone, address)
+              emailHelper.orderConfirmation(new OrderInfo(orderId, orderDeliveryInfo, orderRepository.getItems(orderId)))
+              Redirect(routes.Order.confirmation(orderId))
+            }
           }
         )
   }

@@ -69,14 +69,15 @@ class EmailHelper(implicit userRepository: UserRepository) {
   }
 
   def orderConfirmed(comment: String, order: OrderInfo)(implicit request: play.api.mvc.Request[Any]) = Akka.system.scheduler.scheduleOnce(1.second) {
-    val city = cityRepository.getByHostname(request.host)
-    val mail = Email(
-      subject = s"Подтверждение заказа ${idMark(city, order)}",
-      from = systemEmail,
-      to = Seq(order.deliveryInfo.email),
-      bodyHtml = Some(comment)
-    )
-    MailerPlugin.send(mail)
+    cityRepository.getByHostname(request.host).map { city =>
+      val mail = Email(
+        subject = s"Подтверждение заказа ${idMark(city, order)}",
+        from = systemEmail,
+        to = Seq(order.deliveryInfo.email),
+        bodyHtml = Some(comment)
+      )
+      MailerPlugin.send(mail)
+    }
   }
 
   def sendUnconfirmedOrdersExist(orders: Map[Option[String], Int]) = {
@@ -93,14 +94,15 @@ class EmailHelper(implicit userRepository: UserRepository) {
   }
 
   def orderCanceled(comment: String, order: OrderInfo)(implicit request: Request[Any]) = Akka.system.scheduler.scheduleOnce(1.second) {
-    val city = cityRepository.getByHostname(request.host)
-    val mail = Email(
-      subject = s"Информация по заказу ${idMark(city, order)}",
-      from = systemEmail,
-      to = Seq(order.deliveryInfo.email),
-      bodyHtml = Some(comment)
-    )
-    MailerPlugin.send(mail)
+    cityRepository.getByHostname(request.host).map { city =>
+      val mail = Email(
+        subject = s"Информация по заказу ${idMark(city, order)}",
+        from = systemEmail,
+        to = Seq(order.deliveryInfo.email),
+        bodyHtml = Some(comment)
+      )
+      MailerPlugin.send(mail)
+    }
   }
 
   def sendFeedback(message: ContactEntity)(implicit request: Request[Any]) = Akka.system.scheduler.scheduleOnce(1.second) {
@@ -134,46 +136,49 @@ class EmailHelper(implicit userRepository: UserRepository) {
 
   def orderConfirmation(order: OrderInfo)(implicit request: Request[Any]) = Akka.system.scheduler.scheduleOnce(1.second) {
     val deliveryInfo = order.deliveryInfo
-    val city = cityRepository.getByHostname(request.host)
-    sendToClient(systemEmail, deliveryInfo.email)
-    adminEmails.map(email => sendToAdmins(email, deliveryInfo.email, systemEmail))
-    def sendToClient(from: String, to: String) = {
-      val mail = Email(
-        subject = getEmailSubject(order),
-        to = Seq(to),
-        from = from,
-        bodyHtml = Some(views.html.emails.plain.order.notification(order).body)
-      )
-      MailerPlugin.send(mail)
+    cityRepository.getByHostname(request.host).map { city =>
+      sendToClient(systemEmail, deliveryInfo.email, order, city)
+      adminEmails.map(email => sendToAdmins(email, deliveryInfo.email, systemEmail, order, city))
     }
-    def sendToAdmins(adminEmail: String, userEmail: String, systemEmail: String) = {
-      val mail = Email(
-        subject = getEmailSubject(order),
-        from = systemEmail,
-        replyTo = Some(userEmail),
-        to = Seq(adminEmail),
-        bodyHtml = Some(views.html.emails.plain.order.adminNotification(order, idMark(city, order)).body)
-      )
-      MailerPlugin.send(mail)
-    }
-    def getEmailSubject(order: OrderInfo): String  = {
-      val orderDetails =
-        if(order.items.length > 1){
-          val tailLength = order.items.tail.length
+  }
 
-          val itemSuffix = if (tailLength > 1) {
-            tailLength % 10 match {
-              case l if l > 1 && l < 5 => "а"
-              case l if l > 5 => "ов"
-            }
-          } else {
-            ""
+  private def sendToClient(from: String, to: String, order: OrderInfo, city: CityInfo)(implicit request: Request[Any]) = {
+    val mail = Email(
+      subject = getEmailSubject(order, city),
+      to = Seq(to),
+      from = from,
+      bodyHtml = Some(views.html.emails.plain.order.notification(order).body)
+    )
+    MailerPlugin.send(mail)
+  }
+  private def sendToAdmins(adminEmail: String, userEmail: String, systemEmail: String, order: OrderInfo, city: CityInfo)
+    (implicit request: Request[Any]) = {
+    val mail = Email(
+      subject = getEmailSubject(order, city),
+      from = systemEmail,
+      replyTo = Some(userEmail),
+      to = Seq(adminEmail),
+      bodyHtml = Some(views.html.emails.plain.order.adminNotification(order, idMark(city, order)).body)
+    )
+    MailerPlugin.send(mail)
+  }
+  private def getEmailSubject(order: OrderInfo, city: CityInfo): String  = {
+    val orderDetails =
+      if(order.items.length > 1){
+        val tailLength = order.items.tail.length
+
+        val itemSuffix = if (tailLength > 1) {
+          tailLength % 10 match {
+            case l if l > 1 && l < 5 => "а"
+            case l if l > 5 => "ов"
           }
-          order.items.head.title + Messages("emailhelper.orderconfirmation.subjectDetails", tailLength, itemSuffix)
+        } else {
+          ""
         }
-        else
-          order.items.head.title
-      Messages("emailhelper.orderconfirmation.subject", idMark(city, order), orderDetails)
-    }
+        order.items.head.title + Messages("emailhelper.orderconfirmation.subjectDetails", tailLength, itemSuffix)
+      }
+      else
+        order.items.head.title
+    Messages("emailhelper.orderconfirmation.subject", idMark(city, order), orderDetails)
   }
 }

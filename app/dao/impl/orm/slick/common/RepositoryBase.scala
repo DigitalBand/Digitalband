@@ -9,5 +9,5 @@ import play.api.Play.current
 
 class RepositoryBase {
   protected lazy val database = Database.forDataSource(DB.getDataSource())
-
+  def getDB = Database.forDataSource(DB.getDataSource())
 }
