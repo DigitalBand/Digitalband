@@ -4,10 +4,13 @@ import com.google.inject.Inject
 import controllers.common.ControllerBase
 import dao.common._
 import helpers.{EmailHelper, withUser}
-import models.UserEntity
+import models.{BrandEntity, UserEntity}
 import play.api.data.Form
 import play.api.data.Forms._
 import play.api.mvc._
+import scala.concurrent.ExecutionContext.Implicits.global
+
+import scala.concurrent.Future
 
 
 class Product @Inject()(implicit ur: UserRepository, productRepository: ProductRepository,
@@ -70,7 +73,7 @@ class Product @Inject()(implicit ur: UserRepository, productRepository: ProductR
                    search: String = "",
                    isAvailable: Int = 0) =
   //Cached(req => req.uri, 82000) {
-    withUser {
+    withUser.async {
       implicit user =>
         implicit request =>
           val inStock = isAvailable > 0
@@ -80,23 +83,33 @@ class Product @Inject()(implicit ur: UserRepository, productRepository: ProductR
 
             val products = productRepository.getList(categoryRepository.get(categoryId), brandId, pageNumber, pageSize, search, inStock, host)
             if (categoryId == 1 && !search.isEmpty && products.totalCount == 1)
-              Redirect(routes.Product.display(products.items.head.id))
+              Future(Redirect(routes.Product.display(products.items.head.id)))
             else {
               val category = categoryRepository.get(categoryId)
-              val brand = brandRepository.get(brandId)
               val helper = helpers.PagerHelper(pageSize, products.totalCount, products.number)
               def url(pn: Int) = routes.Product.filteredList(category.id, pn, brandId, s = search, is = isAvailable)
-              def isInStock(inS: Int) = routes.Product.filteredList(category.id, pageNumber, helpers.ViewHelper.brandId(brand), s = search, is = inS)
-              Ok(views.html.Product.list(
+              def isInStock(inS: Int, brand: Option[BrandEntity]) =
+                routes.Product.filteredList(category.id, pageNumber, helpers.ViewHelper.brandId(brand), s = search, is = inS)
+
+              for {
+                brand <- brandRepository.get(brandId)
+                brands <- brandRepository.list(categoryRepository.get(categoryId), brandPage, pageSize = 24, search, inStock, host)
+              } yield Ok(views.html.Product.list(
                 products,
                 category,
                 categoryRepository.list(categoryId, brandId, search, inStock, host),
-                brandRepository.list(categoryRepository.get(categoryId), brandPage, pageSize = 24, search, inStock, host),
+                brands,
                 brand,
                 pageNumber,
                 pageSize,
-                categoryRepository.getBreadcrumbs(categoryId, productId, search),
-                search, helper, url, isInStock, inStock = isAvailable))
+                categoryRepository.getBreadcrumbs(
+                  categoryId, productId, search
+                ),
+                search,
+                helper,
+                url,
+                isInStock,
+                inStock = isAvailable))
             }
           }
     }
@@ -109,7 +122,7 @@ class Product @Inject()(implicit ur: UserRepository, productRepository: ProductR
 
   def display(id: Int): EssentialAction =
   //Cached(req => req.toString, 82000) {
-    withUser {
+    withUser.async {
       implicit user =>
         implicit request =>
           display(id, 1, 0, 1, 1, "")
@@ -118,16 +131,21 @@ class Product @Inject()(implicit ur: UserRepository, productRepository: ProductR
   //}
 
 
-  def display(id: Int, categoryId: Int, brandId: Int, brandPage: Int, pageNumber: Int, search: String, inStock: Int = 0)(implicit request: Request[AnyContent], user: Option[UserEntity]) = {
-    val product = productRepository.get(id, brandRepository.get)
+  def display(id: Int, categoryId: Int, brandId: Int, brandPage: Int, pageNumber: Int, search: String, inStock: Int = 0)
+             (implicit request: Request[AnyContent], user: Option[UserEntity]) = {
 
-    Ok(views.html.Product.display(
+    val product = productRepository.get(id)
+
+    for {
+      brands <- brandRepository.list(categoryRepository.get(categoryId), brandPage, pageSize = 24, search, inStock == 1, host)
+    } yield Ok(views.html.Product.display(
       product,
       imageRepository.listByProductId(id),
       categoryRepository.list(categoryId, brandId, search, inStock == 1, host),
-      brandRepository.list(categoryRepository.get(categoryId), brandPage, pageSize = 24, search, inStock == 1, host),
+      brands,
       categoryId, brandId,
-      categoryRepository.getBreadcrumbs(categoryId, id, ""), pageNumber, search, isAdmin(user), inStock))
+      categoryRepository.getBreadcrumbs(categoryId, id, ""), pageNumber, search, isAdmin(user), inStock)
+    )
   }
 }
 

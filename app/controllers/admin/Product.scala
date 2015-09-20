@@ -15,7 +15,8 @@ import play.api.{Routes, Play}
 import java.nio.file.Paths
 import play.api.Play.current
 import com.codahale.jerkson.Json
-
+import scala.concurrent.ExecutionContext.Implicits.global
+import scala.concurrent.Future
 
 class Product @Inject()(implicit userRepository: UserRepository, brandRepository: BrandRepository, productRepository: ProductRepository, imageRepository: ImageRepository) extends ControllerBase {
   lazy val dataStore = new DataStore(Paths.get(System.getProperty("user.home"), Play.application.configuration.getString("data.root").get).toString)
@@ -65,14 +66,16 @@ class Product @Inject()(implicit userRepository: UserRepository, brandRepository
         Ok(Json.generate(ids))
   }
 
-  def create(categoryId: Int, brandId: Int) = withAdmin {
+  def create(categoryId: Int, brandId: Int) = withAdmin.async {
     implicit user =>
       implicit request =>
-        val brand = brandRepository.get(brandId) match {
-          case Some(b: BrandEntity) => b.title
-          case _ => ""
+        brandRepository.get(brandId).map { b =>
+          val brand = b match {
+            case Some(b: BrandEntity) => b.title
+            case _ => ""
+          }
+          Ok(views.html.Admin.Product.create(productForm.fill(new ProductDetails(categoryId, brand)), List(), 0))
         }
-        Ok(views.html.Admin.Product.create(productForm.fill(new ProductDetails(categoryId, brand)), List(), 0))
   }
 
   def deleteConfirmation(productId: Int) = withAdmin {
@@ -94,19 +97,19 @@ class Product @Inject()(implicit userRepository: UserRepository, brandRepository
   def edit(productId: Int) = withAdmin {
     implicit user =>
       implicit request =>
-        val product = productRepository.get(productId, brandRepository.get)
+        val product = productRepository.get0(productId)
         val images = imageRepository.listByProductId(productId)
         Ok(views.html.Admin.Product.create(productForm.fill(product), images, productId))
   }
 
-  def save = withAdmin(parse.multipartFormData) {
+  def save = withAdmin.async(parse.multipartFormData) {
     implicit user =>
       implicit request =>
         productForm.bindFromRequest.fold(
           formWithErrors => {
             val productId = formWithErrors("id").value.get.toInt
             val images = imageRepository.listByProductId(productId)
-            BadRequest(views.html.Admin.Product.create(formWithErrors, images, productId))
+            Future(BadRequest(views.html.Admin.Product.create(formWithErrors, images, productId)))
           },
           product => {
             def addImages(pId: Int) = {
@@ -148,20 +151,25 @@ class Product @Inject()(implicit userRepository: UserRepository, brandRepository
                 }
               }
             }
-            val productId = product.id match {
-              case 0 => {
-                productRepository.create(product, brandRepository.getBrandId, user.get.id) {
-                  pId =>
-                    addImages(pId)
+            for {
+              brandId <- brandRepository.getBrandId(product.brand.title)
+            } yield {
+              val productId = product.id match {
+                case 0 => {
+                  productRepository.create(product, brandId, user.get.id) {
+                    pId =>
+                      addImages(pId)
+                  }
+                }
+                case _ => {
+                  productRepository.update(product, brandId, user.get.id) {
+                    addImages(product.id)
+                  }
                 }
               }
-              case _ => {
-                productRepository.update(product, brandRepository.getBrandId, user.get.id) {
-                  addImages(product.id)
-                }
-              }
+              Redirect(controllers.routes.Product.display(productId))
             }
-            Redirect(controllers.routes.Product.display(productId))
+
           }
         )
   }

@@ -36,7 +36,7 @@ class Rent @Inject()(implicit ur: UserRepository, productRepository: ProductRepo
   def requestRent(productId: Int) = withUser {
     implicit user =>
       implicit request =>
-        val product = productRepository.get(productId, brandRepository.get)
+        val product = productRepository.get0(productId)
         rentForm.fill(RentRequest(quantity = 1))
 
         Ok(views.html.Rent.requestRent(product, rentForm.fill(RentRequest(quantity = 1))))
@@ -45,7 +45,8 @@ class Rent @Inject()(implicit ur: UserRepository, productRepository: ProductRepo
   def postRequest(productId: Int) = withUser {
     implicit user =>
       implicit request =>
-        val product = productRepository.get(productId, brandRepository.get)
+
+        val product = productRepository.get0(productId)
         rentForm.bindFromRequest.fold(
           formWithErrors => {
 

@@ -46,17 +46,11 @@ class ProductRepository extends dao.common.ProductRepository {
 
   def get(id: Int): ProductEntity = ???
 
-  def get(productId: Int, getBrand: (Int) => Option[BrandEntity]): ProductDetails = ???
 
-  def create(details: ProductDetails, imageId: Int, getBrandId: (String) => Int, userId: Int) = ???
-
-  def update(product: ProductDetails, imageId: Int, getBrandId: String => Int, userId: Int): Int = ???
 
   def insertImage(imageId: Int, productId: Int) {}
 
-  def update(product: ProductDetails, getBrandId: (String) => Int, userId: Int)(after: => Unit) = ???
 
-  def create(details: ProductDetails, getBrandId: (String) => Int, userId: Int)(after: (Int) => Unit) = ???
 
   def removeImage(imageId: Int, productId: Int)(after: (Int) => Unit) = ???
 
@@ -75,4 +69,10 @@ class ProductRepository extends dao.common.ProductRepository {
   def listMostVisited(count: Int, domain: String) = ???
 
   def listAll(domain: String) = ???
+
+  override def update(product: ProductEntity, brandId: Int, userId: Int)(after: => Unit): Int = ???
+
+  override def get0(productId: Int): ProductEntity = ???
+
+  override def create(details: ProductEntity, brandId: Int, userId: Int)(after: (Int) => Unit): Int = ???
 }

@@ -2,7 +2,7 @@
 categories: Seq[models.CategoryListItem], brands: ListPage[models.BrandEntity], brand: Option[models.BrandEntity],
 pageNumber: Int, pageSize: Int,
 breadcrumbItems: Seq[(Int, String)] = List(),
-searchQuery: String, pagerHelper: helpers.PagerHelper, pagerUrl: Int => Call, showInStock: Int => Call,
+searchQuery: String, pagerHelper: helpers.PagerHelper, pagerUrl: Int => Call, showInStock: (Int, Option[BrandEntity]) => Call,
 inStock: Int = 0)(implicit user:Option[models.UserEntity],request: play.api.mvc.Request[Any])
 
 @import helpers.ViewHelper._
@@ -46,8 +46,8 @@ inStock: Int = 0)(implicit user:Option[models.UserEntity],request: play.api.mvc.
             @pager(pagerHelper, pagerUrl)
         </div>
         <ul class="pagination pull-left">
-            <li class="@(if (inStock == 1) "active" else "")"><a href="@showInStock(1)">В наличии</a> </li>
-            <li class="@(if (inStock == 0) "active" else "")"><a href="@showInStock(0)">Все</a> </li>
+            <li class="@(if (inStock == 1) "active" else "")"><a href="@showInStock(1, brand)">В наличии</a> </li>
+            <li class="@(if (inStock == 0) "active" else "")"><a href="@showInStock(0, brand)">Все</a> </li>
         </ul>
     </div>
     <div class="product-list">

@@ -107,7 +107,7 @@ class ProductRepository extends RepositoryBase with dao.common.ProductRepository
     new ListPage(pageNumber, products, count)
   }
 
-  def get(id: Int, getBrand: Int => Option[BrandEntity]): ProductDetails = database withDynSession {
+  def get0(id: Int): ProductDetails = database withDynSession {
     implicit val getProductDetails = GetResult(r =>
       new ProductDetails(
         r.<<,
@@ -143,7 +143,13 @@ class ProductRepository extends RepositoryBase with dao.common.ProductRepository
   }
 
   def get(id: Int): ProductDetails = database withDynSession {
-    implicit val getResult = GetResult(r => new ProductDetails(r.<<, r.nextStringOption.getOrElse(""), r.<<, r.<<, r.nextIntOption.getOrElse(0)))
+    implicit val getResult = GetResult(r => new ProductDetails(
+      r.<<,
+      r.nextStringOption.getOrElse(""),
+      r.<<,
+      r.<<,
+      r.nextIntOption.getOrElse(0))
+    )
     sql"""
       select
         p.title,
@@ -159,8 +165,8 @@ class ProductRepository extends RepositoryBase with dao.common.ProductRepository
     """.as[ProductDetails].first
   }
 
-  def create(details: ProductDetails, getBrandId: String => Int, userId: Int)(after: Int => Unit): Int = database withDynSession {
-    val brandId = getBrandId(details.brand.title)
+  def create(details: ProductDetails, brandId: Int, userId: Int)(after: Int => Unit): Int = database withDynSession {
+
     sqlu"""
       insert into
         products(title, description, short_description, price, brand_id, created_by_user, is_available)
@@ -191,7 +197,7 @@ class ProductRepository extends RepositoryBase with dao.common.ProductRepository
     }
   }
 
-  def update(product: ProductDetails, getBrandId: String => Int, userId: Int)(after: => Unit): Int = database withDynSession {
+  def update(product: ProductDetails, brandId: Int, userId: Int)(after: => Unit): Int = database withDynSession {
     sqlu"""
       update products
       set
@@ -199,7 +205,7 @@ class ProductRepository extends RepositoryBase with dao.common.ProductRepository
         description = ${product.description},
         short_description = ${product.shortDescription},
         price = ${product.price},
-        brand_id = ${getBrandId(product.brand.title)}
+        brand_id = ${brandId}
       where id = ${product.id}
     """.execute
     after
