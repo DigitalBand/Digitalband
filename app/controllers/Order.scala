@@ -48,56 +48,59 @@ class Order @Inject()(implicit ur: UserRepository,
 
   val emailHelper = new EmailHelper()
 
-  def fill = withUser {
+  def fill = withUser.async {
     implicit user =>
       implicit request =>
-        val itemsList = cartRepository.list(getUserId).toList
-        if (itemsList.nonEmpty)
-          Ok {
-            views.html.Order.fill(itemsList)
-          }.withHeaders(CACHE_CONTROL -> "no-cache, max-age=0, must-revalidate, no-store")
-        else
-          Redirect(routes.Cart.display())
+        cartRepository.list(getUserId).map { itemsList =>
+          if (itemsList.nonEmpty)
+            Ok {
+              views.html.Order.fill(itemsList)
+            }.withHeaders(CACHE_CONTROL -> "no-cache, max-age=0, must-revalidate, no-store")
+          else
+            Redirect(routes.Cart.display())
+        }
   }
 
-  def fillDelivery() = withUser {
+  def fillDelivery() = withUser.async {
     implicit user =>
       implicit request =>
-        val itemsList = cartRepository.list(getUserId).toList
-        if (itemsList.nonEmpty)
-          Ok {
-            val userInfo = userRepository.getUserInfo(getUserId).getOrElse(new UserInfo())
-            val deliveryInfo = new OrderDeliveryInfo(address = userInfo.address.get, personalInfo = userInfo.personalInfo, comment = "")
-            val form = deliveryForm.fill(deliveryInfo)
-            views.html.Order.fillDelivery(itemsList, form)
+        cartRepository.list(getUserId).map { itemsList =>
+          if (itemsList.nonEmpty)
+            Ok {
+              val userInfo = userRepository.getUserInfo(getUserId).getOrElse(new UserInfo())
+              val deliveryInfo = new OrderDeliveryInfo(address = userInfo.address.get, personalInfo = userInfo.personalInfo, comment = "")
+              val form = deliveryForm.fill(deliveryInfo)
+              views.html.Order.fillDelivery(itemsList, form)
 
-          }.withHeaders(CACHE_CONTROL -> "no-cache, max-age=0, must-revalidate, no-store")
-        else
-          Redirect(routes.Cart.display())
+            }.withHeaders(CACHE_CONTROL -> "no-cache, max-age=0, must-revalidate, no-store")
+          else
+            Redirect(routes.Cart.display())
+        }
   }
 
-  def fillPickup = withUser {
+  def fillPickup = withUser.async {
     implicit user =>
       implicit request =>
-        val itemsList = cartRepository.list(getUserId).toList
-        if (itemsList.nonEmpty)
-          Ok {
-            val userInfo = userRepository.getUserInfo(getUserId).getOrElse(new UserInfo())
-            val shops = shopRepository.getByHostname(request.host).map(shop => (shop.id.toString, shop.title)).toSeq
-            val deliveryInfo = new PickupDeliveryInfo(shopId = 0, personalInfo = userInfo.personalInfo, comment = "")
-            val form = pickupForm.fill(deliveryInfo)
-            views.html.Order.fillPickup(itemsList, form, shops)
-          }.withHeaders(CACHE_CONTROL -> "no-cache, max-age=0, must-revalidate, no-store")
-        else
-          Redirect(routes.Cart.display())
+        cartRepository.list(getUserId).map { itemsList =>
+          if (itemsList.nonEmpty)
+            Ok {
+              val userInfo = userRepository.getUserInfo(getUserId).getOrElse(new UserInfo())
+              val shops = shopRepository.getByHostname(request.host).map(shop => (shop.id.toString, shop.title)).toSeq
+              val deliveryInfo = new PickupDeliveryInfo(shopId = 0, personalInfo = userInfo.personalInfo, comment = "")
+              val form = pickupForm.fill(deliveryInfo)
+              views.html.Order.fillPickup(itemsList, form, shops)
+            }.withHeaders(CACHE_CONTROL -> "no-cache, max-age=0, must-revalidate, no-store")
+          else
+            Redirect(routes.Cart.display())
+        }
   }
 
   def create() = withUser.async {
     implicit user =>
       implicit request =>
         deliveryForm.bindFromRequest.fold(
-          formWithErrors => Future {
-            BadRequest(views.html.Order.fillDelivery(cartRepository.list(getUserId).toList, formWithErrors))
+          formWithErrors => cartRepository.list(getUserId).map { cartItems =>
+            BadRequest(views.html.Order.fillDelivery(cartItems, formWithErrors))
           },
           deliveryInfo => {
             cityRepository.getByHostname(request.host).map { city =>
@@ -117,9 +120,9 @@ class Order @Inject()(implicit ur: UserRepository,
     implicit user =>
       implicit request =>
         pickupForm.bindFromRequest.fold(
-          formWithErrors => Future {
+          formWithErrors => cartRepository.list(getUserId).map { cartItems =>
             val shops = shopRepository.getByHostname(request.host).map(shop => (shop.id.toString, shop.title)).toSeq
-            BadRequest(views.html.Order.fillPickup(cartRepository.list(getUserId).toList, formWithErrors, shops))
+            BadRequest(views.html.Order.fillPickup(cartItems, formWithErrors, shops))
           },
           pickupInfo => {
             cityRepository.getByHostname(request.host).map { city =>

@@ -9,7 +9,7 @@ import models.{CItem, CartItem}
 import play.api.data.Form
 import play.api.data.Forms._
 import play.api.mvc._
-
+import scala.concurrent.ExecutionContext.Implicits.global
 
 class Cart @Inject()(implicit ur: UserRepository, val cartRepository: CartRepository, productRepository: ProductRepository) extends ControllerBase {
   val addToCartForm = Form(
@@ -30,11 +30,12 @@ class Cart @Inject()(implicit ur: UserRepository, val cartRepository: CartReposi
           request.session + ("userid" -> userId.toString)
   }
 
-  def display(returnUrl: String) = withUser {
+  def display(returnUrl: String) = withUser.async {
     implicit user =>
       implicit request =>
-        val cartItems = cartRepository.list(getUserId).toList
-        Ok(views.html.Cart.display(cartItems, returnUrl))
+        cartRepository.list(getUserId).map { cartItems =>
+          Ok(views.html.Cart.display(cartItems, returnUrl))
+        }
   }
 
   def delete(productId: Int, returnUrl: String = "") = withUser {
