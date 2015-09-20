@@ -1,26 +1,23 @@
 package dao.impl.orm.slick
 
 import models.{CityShortInfo, CityInfo}
-import slick.driver.MySQLDriver.backend.Database
-import slick.driver.MySQLDriver.api._
+import slick.driver.JdbcDriver.api._
 import slick.jdbc.{StaticQuery => Q, GetResult}
-
 import dao.impl.orm.slick.common.RepositoryBase
-
 import scala.concurrent.Future
 
-
 class CityRepository extends RepositoryBase with dao.common.CityRepository {
-  def get(cityId: Int): Future[CityInfo] = getDB.run {
-      implicit val result = GetResult(
-        r => CityInfo(
-          id = r.<<,
-          name = r.<<,
-          domain = r.<<,
-          delivery = r.<<,
-          payment = r.<<,
-          phone = r.<<,
-          prefix = r.<<))
+
+  def get(cityId: Int): Future[CityInfo] = usingDB {
+    implicit val result = GetResult(
+      r => CityInfo(
+        id = r.<<,
+        name = r.<<,
+        domain = r.<<,
+        delivery = r.<<,
+        payment = r.<<,
+        phone = r.<<,
+        prefix = r.<<))
     sql"""
       select
         c.id,
@@ -36,7 +33,7 @@ class CityRepository extends RepositoryBase with dao.common.CityRepository {
     """.as[CityInfo].head
   }
 
-  def getByHostname(host: String) = getDB.run {
+  def getByHostname(host: String) = usingDB {
     implicit val result = GetResult(
       r => CityInfo(
         id = r.<<,
@@ -61,7 +58,7 @@ class CityRepository extends RepositoryBase with dao.common.CityRepository {
   }
 
 
-  def add(city: CityInfo): Future[Int] = getDB.run {
+  def add(city: CityInfo): Future[Int] = usingDB {
     sql"""
       insert into
         cities(name, domain, delivery, payment, phone, prefix)
@@ -70,7 +67,7 @@ class CityRepository extends RepositoryBase with dao.common.CityRepository {
     """.as[Int].head
   }
 
-  def update(city: CityInfo) = getDB.run {
+  def update(city: CityInfo) = usingDB {
     sqlu"""
       UPDATE cities
       SET
@@ -85,13 +82,13 @@ class CityRepository extends RepositoryBase with dao.common.CityRepository {
     """
   }
 
-  def remove(cityId: Int) = getDB.run {
+  def remove(cityId: Int) = usingDB {
     sqlu"""
       delete from cities where id = ${cityId};
     """
   }
 
-  def listShortInfo: Future[Seq[CityShortInfo]] = getDB.run {
+  def listShortInfo: Future[Seq[CityShortInfo]] = usingDB {
     implicit val res = GetResult(
       r => CityShortInfo(id = r.<<, name = r.<<))
     sql"""
@@ -102,7 +99,7 @@ class CityRepository extends RepositoryBase with dao.common.CityRepository {
     """.as[CityShortInfo]
   }
 
-  def list: Future[Seq[CityInfo]] = getDB.run {
+  def list: Future[Seq[CityInfo]] = usingDB {
     implicit val res = GetResult(
       r => CityInfo(
         id = r.<<,
