@@ -41,15 +41,15 @@ class Application @Inject()(implicit ur: UserRepository,
       }))
   }
 
-  def index = /*Cached("homePage", oneDayDuration)*/ {
-    withUser {
-      implicit user =>
-        implicit request =>
-          val categories = categoryRepository.listWithPictures.toList
+  def index = withUser.async {
+    implicit user =>
+      implicit request =>
+        categoryRepository.listWithPictures.map { categories =>
           val products = productRepository.listMostVisited(12, request.host).toList
           Ok(views.html.index(categories, products))
-    }
+        }
   }
+
 
   def pages(alias: String) = withUser {
     implicit user =>

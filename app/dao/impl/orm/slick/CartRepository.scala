@@ -1,11 +1,10 @@
 package dao.impl.orm.slick
 
-import slick.jdbc.{StaticQuery => Q, GetResult}
+import slick.jdbc.GetResult
 import slick.driver.JdbcDriver.api._
 
 import models.{CItem, CartItem}
 import dao.impl.orm.slick.common.RepositoryBase
-import slick.profile.SqlStreamingAction
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
