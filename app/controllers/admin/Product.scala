@@ -94,12 +94,13 @@ class Product @Inject()(implicit userRepository: UserRepository, brandRepository
       Redirect(controllers.routes.Product.list())
   }
 
-  def edit(productId: Int) = withAdmin {
+  def edit(productId: Int) = withAdmin.async {
     implicit user =>
       implicit request =>
         val product = productRepository.get0(productId)
-        val images = imageRepository.listByProductId(productId)
-        Ok(views.html.Admin.Product.create(productForm.fill(product), images, productId))
+        imageRepository.listByProductId(productId).map { images =>
+          Ok(views.html.Admin.Product.create(productForm.fill(product), images, productId))
+        }
   }
 
   def save = withAdmin.async(parse.multipartFormData) {
@@ -108,20 +109,22 @@ class Product @Inject()(implicit userRepository: UserRepository, brandRepository
         productForm.bindFromRequest.fold(
           formWithErrors => {
             val productId = formWithErrors("id").value.get.toInt
-            val images = imageRepository.listByProductId(productId)
-            Future(BadRequest(views.html.Admin.Product.create(formWithErrors, images, productId)))
+            imageRepository.listByProductId(productId).map { images =>
+              BadRequest(views.html.Admin.Product.create(formWithErrors, images, productId))
+            }
           },
           product => {
             def addImages(pId: Int) = {
               request.body.asFormUrlEncoded.map {
                 case (name, images) if name == "deletedImage" => {
-                  images.map {
+                  images.foreach {
                     image => {
                       productRepository.removeImage(image.toInt, pId) {
                         imageId =>
-                          val i = imageRepository.get(imageId)
-                          imageRepository.remove(i.id)
-                          ImageHelper(dataStore).deleteImage(i.path)
+                          imageRepository.get(imageId).map { i =>
+                            imageRepository.remove(i.id)
+                            ImageHelper(dataStore).deleteImage(i.path)
+                          }
                       }
                     }
                   }
@@ -131,22 +134,25 @@ class Product @Inject()(implicit userRepository: UserRepository, brandRepository
                     imageUrl => {
                       ImageHelper(dataStore).save(imageUrl).map {
                         img =>
-                          val imageId = imageRepository.create(img)
-                          productRepository.insertImage(imageId, pId)
-                          "success"
+                          imageRepository.create(img).map { imageId =>
+                            productRepository.insertImage(imageId, pId)
+                            "success"
+                          }
                       }.getOrElse(s"error: $imageUrl")
                     }
                   }
                 }
-                case _ => {}
+                case _ =>
               }
               request.body.files.map {
                 file => {
                   ImageHelper(dataStore).save(file.ref.file) {
                     img =>
-                      val imageId = imageRepository.create(img)
-                      productRepository.insertImage(imageId, pId)
+                      imageRepository.create(img).map { imageId =>
+                        productRepository.insertImage(imageId, pId)
+                      }
                       img
+
                   }
                 }
               }

@@ -134,10 +134,11 @@ class Product @Inject()(implicit ur: UserRepository, productRepository: ProductR
       category <- categoryRepository.get(categoryId)
       categories <- categoryRepository.list(categoryId, brandId, search, inStock == 1, host)
       breadcrumbs <- categoryRepository.getBreadcrumbs(categoryId, id, "")
+      imageIds <- imageRepository.listByProductId(id)
       brands <- brandRepository.list(category, brandPage, pageSize = 24, search, inStock == 1, host)
     } yield Ok(views.html.Product.display(
       product,
-      imageRepository.listByProductId(id),
+      imageIds,
       categories,
       brands,
       categoryId, brandId,

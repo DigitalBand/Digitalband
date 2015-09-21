@@ -1,24 +1,23 @@
 package dao.impl.orm.slick
 
 import common.RepositoryBase
-import slick.driver.JdbcDriver.backend.Database
-import Database.dynamicSession
-import slick.jdbc.{StaticQuery => Q, GetResult}
-import Q.interpolation
+import slick.jdbc.GetResult
+import slick.driver.JdbcDriver.api._
 import wt.common.image.{ImageEntity, PictureEntity}
+import scala.concurrent.ExecutionContext.Implicits.global
+import scala.concurrent.Future
 
 class ImageRepository extends RepositoryBase with dao.common.ImageRepository {
 
   implicit val getImage = GetResult(r => PictureEntity(r.<<, r.<<, r.<<))
 
-  def defaultImage = new PictureEntity(0, "/default/noimage.png", "jpg")
+  def defaultImage = Future(new PictureEntity(0, "/default/noimage.png", "jpg"))
 
   def errorImage = new PictureEntity(0, "/default/error.jpg", "jpg")
 
-  def get(imageId: Int): PictureEntity = {
+  def get(imageId: Int): Future[PictureEntity] = {
     if (imageId > 0) {
-      database withDynSession {
-
+      usingDB {
         sql"""
           SELECT
             img.image_id,
@@ -28,10 +27,10 @@ class ImageRepository extends RepositoryBase with dao.common.ImageRepository {
             images img
           WHERE
             img.image_id = ${imageId};
-        """.as[PictureEntity].firstOption match {
-          case Some(x) => PictureEntity(x.id, x.path, "jpg") //TODO: jpg always?
-          case None => errorImage
-        }
+        """.as[PictureEntity].headOption
+      }.map {
+        case Some(x) => PictureEntity(x.id, x.path, "jpg") //TODO: jpg always?
+        case None => errorImage
       }
     }
     else {
@@ -41,7 +40,7 @@ class ImageRepository extends RepositoryBase with dao.common.ImageRepository {
 
   def getProductImage(productId: Int, imageNumber: Int) = ???
 
-  def listByProductId(productId: Int): Seq[Int] = database withDynSession {
+  def listByProductId(productId: Int): Future[Seq[Int]] = usingDB {
     sql"""
       SELECT
         pi.image_id
@@ -49,24 +48,30 @@ class ImageRepository extends RepositoryBase with dao.common.ImageRepository {
         product_images pi
       WHERE
         pi.product_id = ${productId};
-    """.as[Int].list
+    """.as[Int]
   }
 
-  def getByMd5(md5: String): Option[PictureEntity] = database withDynSession {
-    sql"select image_id, file_path, md5 from images where md5 = $md5".as[PictureEntity].firstOption
+  def getByMd5(md5: String): Future[Option[PictureEntity]] = usingDB {
+    sql"select image_id, file_path, md5 from images where md5 = $md5".as[PictureEntity].headOption
   }
 
-  def create(img: ImageEntity): Int = database withDynSession {
-    getByMd5(img.md5) match {
+  def create(img: ImageEntity): Future[Int] = {
+    val insertFuture = usingDB {
+      sql"""
+        INSERT INTO images(file_path, md5) VALUES(${img.path}, ${img.md5})
+        SELECT last_insert_id();
+      """.as[Int].head
+    }
+    for {
+      image <- getByMd5(img.md5)
+      imageId <- insertFuture if image.nonEmpty
+    } yield image match {
       case Some(i) => i.id
-      case _ => {
-        sqlu"INSERT INTO images(file_path, md5) VALUES(${img.path}, ${img.md5})".execute
-        sql"SELECT last_insert_id();".as[Int].first
-      }
+      case _ => imageId
     }
   }
 
-  def remove(imageId: Int) = database withDynSession {
-    sqlu"DELETE FROM images WHERE image_id = ${imageId}".execute
+  def remove(imageId: Int) = usingDB {
+    sql"DELETE FROM images WHERE image_id = ${imageId}".as[Int].head
   }
 }
