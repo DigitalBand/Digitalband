@@ -1,39 +1,41 @@
 package dao.impl.orm.slick
 
 import models._
-import slick.driver.JdbcDriver.backend.Database
-import Database.dynamicSession
-
-import slick.jdbc.{StaticQuery => Q, GetResult}
-import Q.interpolation
+import slick.jdbc.GetResult
+import slick.driver.JdbcDriver.api._
 import java.sql.Timestamp
 import dao.impl.orm.slick.common.RepositoryBase
+import scala.concurrent.ExecutionContext.Implicits.global
+import scala.concurrent.Future
 
 class OrderRepository extends RepositoryBase with dao.common.OrderRepository {
 
-  def create[TDeliveryInfo](userId: Int, cityId: Option[Int], deliveryInfo: TDeliveryInfo): Int = {
+  def create[TDeliveryInfo](userId: Int, cityId: Option[Int], deliveryInfo: TDeliveryInfo): Future[Int] = {
     deliveryInfo match {
       case di: OrderDeliveryInfo => create(di, userId, cityId)
       case pi: PickupDeliveryInfo => create(pi, userId, cityId)
     }
   }
 
-  def create(deliveryInfo: OrderDeliveryInfo, userId: Int, cityId: Option[Int]): Int = database withDynSession {
-    val orderId = create(deliveryInfo.personalInfo, userId, cityId, deliveryInfo.comment, "Delivery")
-    addOrderItems(orderId, userId)
-    addOrderDeliveryInfo(orderId, deliveryInfo.address)
-    orderId
+  def create(deliveryInfo: OrderDeliveryInfo, userId: Int, cityId: Option[Int]): Future[Int] = {
+    for {
+      orderId <- create(deliveryInfo.personalInfo, userId, cityId, deliveryInfo.comment, "Delivery")
+      orderItemsCount <- addOrderItems(orderId, userId)
+      recordsCount <- addOrderDeliveryInfo(orderId, deliveryInfo.address)
+    } yield orderId
   }
 
-  def create(deliveryInfo: PickupDeliveryInfo, userId: Int, cityId: Option[Int]): Int = database withDynSession {
-    val orderId = create(deliveryInfo.personalInfo, userId, cityId, deliveryInfo.comment, "Pickup")
-    addOrderItems(orderId, userId)
-    addOrderPickupInfo(orderId, deliveryInfo.shopId)
-    orderId
+  def create(deliveryInfo: PickupDeliveryInfo, userId: Int, cityId: Option[Int]): Future[Int] = {
+    for {
+      orderId <- create(deliveryInfo.personalInfo, userId, cityId, deliveryInfo.comment, "Pickup")
+      orderItemsCount <- addOrderItems(orderId, userId)
+      recordsCount <- addOrderPickupInfo(orderId, deliveryInfo.shopId)
+    } yield orderId
   }
 
-  def create(personalInfo: PersonalInfo, userId: Int, cityId: Option[Int], comment: String, deliveryType: String): Int = {
-    sqlu"""
+  def create(personalInfo: PersonalInfo, userId: Int, cityId: Option[Int], comment: String,
+             deliveryType: String): Future[Int] = usingDB {
+    sql"""
       insert into
         orders (user_id, city_id, place_date, name, last_name, middle_name, email, phone, comment, delivery_type)
       values(
@@ -47,12 +49,12 @@ class OrderRepository extends RepositoryBase with dao.common.OrderRepository {
         ${personalInfo.phone},
         ${comment},
         ${deliveryType});
-    """.execute
-    sql"select last_insert_id();".as[Int].first
+      select last_insert_id();
+    """.as[Int].head
   }
 
-  def addOrderItems(orderId: Int, userId: Int) = {
-    sqlu"""
+  def addOrderItems(orderId: Int, userId: Int): Future[Int] = usingDB {
+    sql"""
         insert into
           order_items(order_id, product_id, quantity, unit_price)
         select
@@ -66,11 +68,11 @@ class OrderRepository extends RepositoryBase with dao.common.OrderRepository {
           user_id = ${userId}
         group by product_id;
         delete from shopping_items where user_id = ${userId};
-       """.execute
+       """.as[Int].head
   }
 
-  def addOrderDeliveryInfo(orderId: Int, address: DeliveryAddress) = {
-      sqlu"""
+  def addOrderDeliveryInfo(orderId: Int, address: DeliveryAddress): Future[Int] = usingDB {
+      sql"""
           insert into
             order_delivery_addresses(order_id, city, street, building, apartment)
           values(
@@ -80,21 +82,21 @@ class OrderRepository extends RepositoryBase with dao.common.OrderRepository {
             ${address.building},
             ${address.apartment}
           );
-      """.execute
+      """.as[Int].head
   }
 
-  def addOrderPickupInfo(orderId: Int, shopId: Int) = {
-    sqlu"""
+  def addOrderPickupInfo(orderId: Int, shopId: Int): Future[Int] = usingDB {
+    sql"""
           insert into
             order_delivery_shops(order_id, shop_id)
           values(
             ${orderId},
             ${shopId}
           );
-     """.execute
+     """.as[Int].head
   }
 
-  def getItems(orderId: Int): Seq[CartItem] = database withDynSession {
+  def getItems(orderId: Int): Future[Seq[CartItem]] = usingDB {
     implicit val getCartItem = GetResult(r => new CartItem(r.<<, r.<<, r.<<, r.<<, r.<<, r.<<))
     sql"""
         select
@@ -109,10 +111,10 @@ class OrderRepository extends RepositoryBase with dao.common.OrderRepository {
          where
           o.product_id = p.id and
           o.order_id = $orderId
-    """.as[CartItem].list
+    """.as[CartItem]
   }
 
-  def getDeliveryInfo(orderId: Int) = database withDynSession {
+  def getDeliveryInfo(orderId: Int): Future[DeliveryInfo] = usingDB {
     implicit val getDeliveryInfo = GetResult(
       r => new DeliveryInfo(name = r.<<, r.<<, r.<<, r.<<))
     sql"""
@@ -125,10 +127,10 @@ class OrderRepository extends RepositoryBase with dao.common.OrderRepository {
         orders
        where
         id = $orderId
-    """.as[DeliveryInfo].first
+    """.as[DeliveryInfo].head
   }
 
-  def getOrderDeliveryInfo(orderId: Int): OrderDeliveryInfo = database withDynSession {
+  def getOrderDeliveryInfo(orderId: Int): Future[OrderDeliveryInfo] = usingDB {
     implicit val getDeliveryInfo = GetResult(
       r => new OrderDeliveryInfo(
         new DeliveryAddress(city = r.<<, street = r.<<, building = r.<<, apartment = r.<<),
@@ -152,10 +154,10 @@ class OrderRepository extends RepositoryBase with dao.common.OrderRepository {
         order_delivery_addresses oda
        where
         o.id = $orderId AND oda.order_id = $orderId
-    """.as[OrderDeliveryInfo].first
+    """.as[OrderDeliveryInfo].head
   }
 
-  def getPickupDeliveryInfo(orderId: Int): PickupDeliveryInfo = database withDynSession {
+  def getPickupDeliveryInfo(orderId: Int): Future[PickupDeliveryInfo] = usingDB {
     implicit val getDeliveryInfo = GetResult(r => new PickupDeliveryInfo(
       shopId = r.<<,
       new PersonalInfo(lastName = r.<<, firstName = r.<<, middleName = r.<<, phone = r.<<, email = r.<<),
@@ -175,24 +177,41 @@ class OrderRepository extends RepositoryBase with dao.common.OrderRepository {
         order_delivery_shops ods
        where
         o.id = $orderId AND ods.order_id = $orderId
-    """.as[PickupDeliveryInfo].first
+    """.as[PickupDeliveryInfo].head
   }
 
-  override def get(orderId: Int): OrderInfo = database withDynSession {
-    implicit val getOrderInfo = GetResult(
-      r => new OrderInfo(r.<<, r.<<, r.<<, r.<<, r.<<, new DeliveryInfo(name = r.<<, r.<<, r.<<, r.<<)))
-    val query = sql"select id, place_date, status, delivery_type, comment, name, email, phone, address from orders where id = $orderId"
-    val order = query.as[OrderInfo].first
-    new OrderInfo(order, getItems(orderId))
+  override def get(orderId: Int): Future[OrderInfo] = {
+    val orderFuture = usingDB {
+      implicit val getOrderInfo = GetResult(
+        r => new OrderInfo(r.<<, r.<<, r.<<, r.<<, r.<<, new DeliveryInfo(name = r.<<, r.<<, r.<<, r.<<)))
+      sql"""
+        select
+          id, place_date, status, delivery_type, comment, name, email, phone, address
+        from
+          orders
+        where id = $orderId
+      """.as[OrderInfo].head
+    }
+    for {
+      order <- orderFuture
+      items <- getItems(orderId)
+    } yield new OrderInfo(order, items)
   }
 
-  def exists(orderId: Int) = database withDynSession {
-    sql"""
-      select count(order_id) from order_items where order_id = $orderId;
-    """.as[Int].first > 0
+  def exists(orderId: Int): Future[Boolean] = {
+    usingDB {
+      sql"""
+        select
+          count(order_id)
+        from
+          order_items
+        where
+          order_id = $orderId;
+      """.as[Int].head
+    }.map(count => count > 0)
   }
 
-  def listAll(pageNumber: Int, pageSize: Int): ListPage[OrderInfo] = database withDynSession {
+  def listAll(pageNumber: Int, pageSize: Int): Future[ListPage[OrderInfo]] = {
     implicit val getOrderInfo = GetResult(
       r => new OrderInfo(
         orderId = r.<<,
@@ -200,31 +219,39 @@ class OrderRepository extends RepositoryBase with dao.common.OrderRepository {
         status = r.<<,
         deliveryType = r.<<,
         new DeliveryInfo(name = r.<<, email = r.<<, phone = r.<<, address = r.<<)))
-    val items = sql"""
-      select
-        id, place_date, status, delivery_type, Concat(name, ' ', last_name) as name, email, phone, address
-      from orders
-      order by id desc
-      limit ${pageSize * (pageNumber - 1)}, $pageSize
-    """.as[OrderInfo].list
-    val totalCount = sql"select count(*) from orders".as[Int].first
-    new ListPage[OrderInfo](pageNumber, items, totalCount)
+    val orderInfoListFuture = usingDB {
+      sql"""
+        select
+          id, place_date, status, delivery_type, Concat(name, ' ', last_name) as name, email, phone, address
+        from
+          orders
+        order by id desc
+        limit ${pageSize * (pageNumber - 1)}, $pageSize
+      """.as[OrderInfo]
+    }
+    val totalCountFuture = usingDB {
+      sql"select count(*) from orders".as[Int].head
+    }
+    for {
+      items <- orderInfoListFuture
+      totalCount <- totalCountFuture
+    } yield new ListPage[OrderInfo](pageNumber, items, totalCount)
   }
 
-  def changeStatus(orderId: Int, status: String) = database withDynSession {
-    sqlu"update orders set status = $status where id = $orderId".execute
+  def changeStatus(orderId: Int, status: String): Future[Int] = usingDB {
+    sql"update orders set status = $status where id = $orderId".as[Int].head
   }
 
-  def delete(orderId: Int) = database withDynSession {
-    sqlu"delete from orders where id = $orderId; delete from order_items where order_id = $orderId".execute
+  def delete(orderId: Int): Future[Int] = usingDB {
+    sql"delete from orders where id = $orderId; delete from order_items where order_id = $orderId".as[Int].head
   }
 
-  def getCounters: Seq[(String, Int)] = database withDynSession {
+  def getCounters: Future[Seq[(String, Int)]] = usingDB {
     val query = sql"select status, count(status) as orderCount from orders group by status;"
-    query.as[(String, Int)].list
+    query.as[(String, Int)]
   }
 
-  def groupUnconfirmedByHost = database withDynSession {
+  def groupUnconfirmedByHost: Future[Map[Option[String], Int]] = usingDB {
     sql"""
       select
         c.domain,
@@ -234,6 +261,7 @@ class OrderRepository extends RepositoryBase with dao.common.OrderRepository {
       left join
         cities c on c.id = o.city_id
       where o.status = 'unconfirmed'
-      group by city_id;""".as[(Option[String], Int)].toMap
-  }
+      group by city_id;
+    """.as[(Option[String], Int)]
+  }.map(list => list.toMap)
 }

@@ -2,28 +2,35 @@ package dao.common
 
 import models._
 
+import scala.concurrent.Future
+import scala.concurrent.ExecutionContext.Implicits.global
+
 trait OrderRepository {
-  def groupUnconfirmedByHost: Map[Option[String], Int]
+  def groupUnconfirmedByHost: Future[Map[Option[String], Int]]
 
-  def getCounters: Seq[(String, Int)]
+  def getCounters: Future[Seq[(String, Int)]]
 
-  def delete(orderId: Int)
+  def delete(orderId: Int): Future[Int]
 
-  def changeStatus(orderId: Int, status: String)
+  def changeStatus(orderId: Int, status: String): Future[Int]
 
-  def listAll(pageNumber: Int, pageSize: Int): ListPage[OrderInfo]
+  def listAll(pageNumber: Int, pageSize: Int): Future[ListPage[OrderInfo]]
 
-  def get(orderId: Int): OrderInfo = new OrderInfo(orderId, getDeliveryInfo(orderId), getItems(orderId))
+  def get(orderId: Int): Future[OrderInfo] =
+    for {
+      deliveryInfo <- getDeliveryInfo(orderId)
+      items <- getItems(orderId)
+    } yield new OrderInfo(orderId, deliveryInfo, items)
 
-  def exists(orderId: Int): Boolean
+  def exists(orderId: Int): Future[Boolean]
 
-  def getDeliveryInfo(orderId: Int): DeliveryInfo
+  def getDeliveryInfo(orderId: Int): Future[DeliveryInfo]
 
-  def getOrderDeliveryInfo(orderId: Int): OrderDeliveryInfo
+  def getOrderDeliveryInfo(orderId: Int): Future[OrderDeliveryInfo]
 
-  def getPickupDeliveryInfo(orderId: Int): PickupDeliveryInfo
+  def getPickupDeliveryInfo(orderId: Int): Future[PickupDeliveryInfo]
 
-  def getItems(orderId: Int): Seq[CartItem]
+  def getItems(orderId: Int): Future[Seq[CartItem]]
 
-  def create[TDeliveryInfo](userId: Int, cityId: Option[Int], deliveryInfo: TDeliveryInfo): Int
+  def create[TDeliveryInfo](userId: Int, cityId: Option[Int], deliveryInfo: TDeliveryInfo): Future[Int]
 }

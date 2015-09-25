@@ -103,18 +103,26 @@ class Order @Inject()(implicit ur: UserRepository,
             BadRequest(views.html.Order.fillDelivery(cartItems, formWithErrors))
           },
           deliveryInfo => {
-            cityRepository.getByHostname(request.host).map { city =>
-              val cityId = if (city != null) Option(city.id) else None
-              val userInfo = new UserInfo(getUserId, deliveryInfo.personalInfo, Option(deliveryInfo.address))
-              userRepository.updateUserInfo(userInfo)
-              val orderId = orderRepository.create(getUserId, cityId, deliveryInfo)
-              val orderDeliveryInfo = new DeliveryInfo(userInfo.personalInfo.toString(), userInfo.personalInfo.email.getOrElse(""), userInfo.personalInfo.phone, userInfo.address.get.toString())
-              emailHelper.orderConfirmation(new OrderInfo(orderId, orderDeliveryInfo, orderRepository.getItems(orderId)))
+
+            val userInfo = new UserInfo(getUserId, deliveryInfo.personalInfo, Option(deliveryInfo.address))
+            userRepository.updateUserInfo(userInfo)
+
+            val orderDeliveryInfo = new DeliveryInfo(userInfo.personalInfo.toString(),
+              userInfo.personalInfo.email.getOrElse(""),
+              userInfo.personalInfo.phone, userInfo.address.get.toString())
+            for {
+              city <- cityRepository.getByHostname(request.host)
+              orderId <- orderRepository.create(getUserId, cityId(city), deliveryInfo)
+              orderItems <- orderRepository.getItems(orderId)
+            } yield {
+              emailHelper.orderConfirmation(new OrderInfo(orderId, orderDeliveryInfo, orderItems))
               Redirect(routes.Order.confirmation(orderId))
             }
           }
         )
   }
+
+  private def cityId(city: CityInfo) = if (city != null) Option(city.id) else None
 
   def createPickup() = withUser.async {
     implicit user =>
@@ -125,25 +133,30 @@ class Order @Inject()(implicit ur: UserRepository,
             BadRequest(views.html.Order.fillPickup(cartItems, formWithErrors, shops))
           },
           pickupInfo => {
-            cityRepository.getByHostname(request.host).map { city =>
-              val cityId = if (city != null) Option(city.id) else None
-              val userInfo = new UserInfo(getUserId, pickupInfo.personalInfo, None)
-              userRepository.updateUserInfo(userInfo)
-              val orderId = orderRepository.create(getUserId, cityId, pickupInfo)
-              val pickupShop = shopRepository.get(pickupInfo.shopId);
-              val address = Messages("pickup") + " - " + pickupShop.address;
-              val orderDeliveryInfo = new DeliveryInfo(userInfo.personalInfo.toString(), userInfo.personalInfo.email.getOrElse(""), userInfo.personalInfo.phone, address)
-              emailHelper.orderConfirmation(new OrderInfo(orderId, orderDeliveryInfo, orderRepository.getItems(orderId)))
+
+            val userInfo = new UserInfo(getUserId, pickupInfo.personalInfo, None)
+            userRepository.updateUserInfo(userInfo)
+            val pickupShop = shopRepository.get(pickupInfo.shopId);
+            val address = Messages("pickup") + " - " + pickupShop.address;
+            val orderDeliveryInfo = new DeliveryInfo(userInfo.personalInfo.toString(), userInfo.personalInfo.email.getOrElse(""), userInfo.personalInfo.phone, address)
+            for {
+              city <- cityRepository.getByHostname(request.host)
+              orderId <- orderRepository.create(getUserId, cityId(city), pickupInfo)
+              orderItems <- orderRepository.getItems(orderId)
+            } yield {
+              emailHelper.orderConfirmation(new OrderInfo(orderId, orderDeliveryInfo, orderItems))
               Redirect(routes.Order.confirmation(orderId))
             }
           }
         )
   }
 
-  def confirmation(orderId: Int) = withUser {
-    implicit user =>
-      implicit request =>
-        Ok(views.html.Order.confirmation(orderRepository.getItems(orderId), orderId))
+  def confirmation(orderId: Int) = withUser.async {
+    implicit user => implicit request =>
+      orderRepository.getItems(orderId).map {
+        orderItems =>
+          Ok(views.html.Order.confirmation(orderItems, orderId))
+      }
   }
 
   def display(orderId: Int) = withUser {
