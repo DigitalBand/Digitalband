@@ -45,10 +45,12 @@ class Cart @Inject()(implicit ur: UserRepository, val cartRepository: CartReposi
         Redirect(routes.Cart.display(returnUrl))
   }
 
-  def deleteConfirmation(productId: Int, returnUrl: String = "") = withUser {
+  def deleteConfirmation(productId: Int, returnUrl: String = "") = withUser.async {
     implicit user =>
       implicit request =>
-        Ok(views.html.Cart.deleteConfirmation(productRepository.get(productId), returnUrl))
+        for {
+          product <- productRepository.get(productId)
+        } yield Ok(views.html.Cart.deleteConfirmation(product, returnUrl))
   }
 
   def update(returnUrl: String) = withUser {

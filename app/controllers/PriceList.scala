@@ -13,15 +13,16 @@ class PriceList @Inject()(implicit userRepository: UserRepository, shopRepositor
 
   def forYandex = Action.async {
     implicit request =>
-      val w = new java.io.StringWriter()
       val yandexShopInfo = shopRepository.getYandexShopInfo
-      val products = productRepository.listAll(host)
 
       val fmt = DateTimeFormat.forPattern("YYYY-MM-dd HH:mm")
       val getUrl: Int => String = { id => routes.Product.display(id).url }
       val getPictureUrl: Int => String = { id => routes.Image.get(id.toString + ".jpg", 90, "150x150", "full").url }
 
-      categoryRepository.listAll.map { categories =>
+      for {
+        categories <- categoryRepository.listAll
+        products <- productRepository.listAll(host)
+      } yield {
         val yandex = views.html.PriceList.forYandex(
           products.toList,
           categories,

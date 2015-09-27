@@ -23,18 +23,20 @@ class Product @Inject()(implicit ur: UserRepository, productRepository: ProductR
 
   def list = filteredList(1)
 
-  def availability(id: Int, returnUrl: String) = withUser {
+  def availability(id: Int, returnUrl: String) = withUser.async {
     implicit user =>
       implicit request =>
-        val product = productRepository.get(id)
-        Ok(views.html.Product.availability(product, availabilityForm, isAjax, returnUrl))
+        for {
+          product <- productRepository.get(id)
+        } yield Ok(views.html.Product.availability(product, availabilityForm, isAjax, returnUrl))
   }
 
-  def requestAvailability(id: Int, returnUrl: String) = withUser {
+  def requestAvailability(id: Int, returnUrl: String) = withUser.async {
     implicit user =>
       implicit request =>
-        val product = productRepository.get(id)
-        availabilityForm.bindFromRequest.fold(
+        for {
+          product <- productRepository.get(id)
+        } yield availabilityForm.bindFromRequest.fold(
           formWithErrors => {
             BadRequest(views.html.Product.availability(product, formWithErrors, isAjax, returnUrl))
           },
@@ -84,8 +86,8 @@ class Product @Inject()(implicit ur: UserRepository, productRepository: ProductR
             categories <- categoryRepository.list(categoryId, brandId, search, inStock, host)
             brands <- brandRepository.list(category, brandPage, pageSize = 24, search, inStock, host)
             breadcrumbs <- categoryRepository.getBreadcrumbs(categoryId, productId, search)
+            products <- productRepository.getList(category, brandId, pageNumber, pageSize, search, inStock, host)
           } yield {
-            val products = productRepository.getList(category, brandId, pageNumber, pageSize, search, inStock, host)
             if (categoryId == 1 && !search.isEmpty && products.totalCount == 1)
               Redirect(routes.Product.display(products.items.head.id))
             else {
@@ -126,17 +128,14 @@ class Product @Inject()(implicit ur: UserRepository, productRepository: ProductR
 
 
   def display(id: Int, categoryId: Int, brandId: Int, brandPage: Int, pageNumber: Int, search: String, inStock: Int = 0)
-             (implicit request: Request[AnyContent], user: Option[UserEntity]) = {
-
-    val product = productRepository.get(id)
-
-    for {
-      category <- categoryRepository.get(categoryId)
-      categories <- categoryRepository.list(categoryId, brandId, search, inStock == 1, host)
-      breadcrumbs <- categoryRepository.getBreadcrumbs(categoryId, id, "")
-      imageIds <- imageRepository.listByProductId(id)
-      brands <- brandRepository.list(category, brandPage, pageSize = 24, search, inStock == 1, host)
-    } yield Ok(views.html.Product.display(
+             (implicit request: Request[AnyContent], user: Option[UserEntity]) = for {
+    category <- categoryRepository.get(categoryId)
+    categories <- categoryRepository.list(categoryId, brandId, search, inStock == 1, host)
+    breadcrumbs <- categoryRepository.getBreadcrumbs(categoryId, id, "")
+    imageIds <- imageRepository.listByProductId(id)
+    brands <- brandRepository.list(category, brandPage, pageSize = 24, search, inStock == 1, host)
+    product <- productRepository.get(id)
+  } yield Ok(views.html.Product.display(
       product,
       imageIds,
       categories,
@@ -144,6 +143,5 @@ class Product @Inject()(implicit ur: UserRepository, productRepository: ProductR
       categoryId, brandId,
       breadcrumbs, pageNumber, search, isAdmin(user), inStock)
     )
-  }
 }
 

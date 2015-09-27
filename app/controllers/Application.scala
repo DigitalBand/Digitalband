@@ -44,8 +44,10 @@ class Application @Inject()(implicit ur: UserRepository,
   def index = withUser.async {
     implicit user =>
       implicit request =>
-        categoryRepository.listWithPictures.map { categories =>
-          val products = productRepository.listMostVisited(12, request.host).toList
+        for {
+          categories <- categoryRepository.listWithPictures
+          products <- productRepository.listMostVisited(12, request.host)
+        } yield {
           Ok(views.html.index(categories, products))
         }
   }
@@ -75,12 +77,15 @@ class Application @Inject()(implicit ur: UserRepository,
         Ok(views.html.Application.contacts(contactsForm, recaptcha, shops))
   }
 
-  def stock(productId: Int) = withUser {
+  def stock(productId: Int) = withUser.async {
     implicit user =>
       implicit request =>
-        val product = productRepository.get(productId)
-        val shopList = stockItemRepository.shopList(productId)
-        Ok(views.html.Application.stock(product, shopList))
+        for {
+          product <- productRepository.get(productId)
+        } yield {
+          val shopList = stockItemRepository.shopList(productId)
+          Ok(views.html.Application.stock(product, shopList))
+        }
   }
 
   def sendFeedback = withUser {

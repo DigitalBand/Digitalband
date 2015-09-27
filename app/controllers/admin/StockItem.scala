@@ -7,17 +7,18 @@ import play.api.libs.json._
 import play.api.Routes
 import play.api.mvc.Action
 import models.StockItemInfo
-
+import scala.concurrent.ExecutionContext.Implicits.global
 
 class StockItem @Inject()(
                            implicit userRepository: dao.common.UserRepository,
                            stockItemRepository: dao.common.StockItemRepository,
                            productRepository: dao.common.ProductRepository) extends ControllerBase {
-  def edit(productId: Int) = withAdmin {
+  def edit(productId: Int) = withAdmin.async {
     implicit user =>
       implicit request =>
-        val product = productRepository.get(productId)
-        Ok(views.html.Admin.StockItem.edit(product))
+        for {
+          product <- productRepository.get(productId)
+        } yield Ok(views.html.Admin.StockItem.edit(product))
   }
 
   def list(productId: Int) = withAdmin {

@@ -49,6 +49,7 @@ class Product @Inject()(implicit userRepository: UserRepository, brandRepository
       implicit request =>
         Ok(views.html.Admin.Product.deleteNotInStock())
   }
+
   def deleteById(id: Int) = withAdmin {
     implicit user =>
       implicit request =>
@@ -78,11 +79,12 @@ class Product @Inject()(implicit userRepository: UserRepository, brandRepository
         }
   }
 
-  def deleteConfirmation(productId: Int) = withAdmin {
+  def deleteConfirmation(productId: Int) = withAdmin.async {
     implicit user =>
       implicit request =>
-        val product = productRepository.get(productId)
-        Ok(views.html.Admin.Product.deleteConfirmation(product))
+        for {
+          product <- productRepository.get(productId)
+        } yield Ok(views.html.Admin.Product.deleteConfirmation(product))
   }
 
   def delete(productId: Int) = withAdmin {
@@ -97,8 +99,10 @@ class Product @Inject()(implicit userRepository: UserRepository, brandRepository
   def edit(productId: Int) = withAdmin.async {
     implicit user =>
       implicit request =>
-        val product = productRepository.get0(productId)
-        imageRepository.listByProductId(productId).map { images =>
+        for {
+          product <- productRepository.get0(productId)
+          images <- imageRepository.listByProductId(productId)
+        } yield {
           Ok(views.html.Admin.Product.create(productForm.fill(product), images, productId))
         }
   }
@@ -159,8 +163,7 @@ class Product @Inject()(implicit userRepository: UserRepository, brandRepository
             }
             for {
               brandId <- brandRepository.getBrandId(product.brand.title)
-            } yield {
-              val productId = product.id match {
+              productId <- product.id match {
                 case 0 => {
                   productRepository.create(product, brandId, user.get.id) {
                     pId =>
@@ -173,6 +176,7 @@ class Product @Inject()(implicit userRepository: UserRepository, brandRepository
                   }
                 }
               }
+            } yield {
               Redirect(controllers.routes.Product.display(productId))
             }
 
