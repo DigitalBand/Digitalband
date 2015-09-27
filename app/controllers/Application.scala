@@ -51,11 +51,12 @@ class Application @Inject()(implicit ur: UserRepository,
   }
 
 
-  def pages(alias: String) = withUser {
+  def pages(alias: String) = withUser.async {
     implicit user =>
       implicit request =>
-        val page = pageRepository.get(alias)
-        Ok(views.html.Application.page(page))
+        pageRepository.get(alias).map { page =>
+          Ok(views.html.Application.page(page))
+        }
   }
 
   def delivery = withUser.async {
