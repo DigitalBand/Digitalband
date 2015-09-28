@@ -11,6 +11,7 @@ import play.api.data.Forms._
 import play.api.i18n.Messages
 import play.api.mvc._
 import scala.concurrent.ExecutionContext.Implicits.global
+import scala.concurrent.Future
 
 class Application @Inject()(implicit ur: UserRepository,
                             val shopRepository: ShopRepository,
@@ -69,12 +70,13 @@ class Application @Inject()(implicit ur: UserRepository,
       }
   }
 
-  def contacts = withUser {
+  def contacts = withUser.async {
     implicit user =>
       implicit request =>
         val recaptcha = ReCaptchaHelper.get("6LfMQdYSAAAAAJCe85Y6CRp9Ww7n-l3HOBf5bifB")
-        val shops = shopRepository.getByHostname(request.host)
-        Ok(views.html.Application.contacts(contactsForm, recaptcha, shops))
+        for {
+          shops <- shopRepository.getByHostname(request.host)
+        } yield Ok(views.html.Application.contacts(contactsForm, recaptcha, shops))
   }
 
   def stock(productId: Int) = withUser.async {
@@ -88,19 +90,25 @@ class Application @Inject()(implicit ur: UserRepository,
         }
   }
 
-  def sendFeedback = withUser {
+  def sendFeedback = withUser.async {
     implicit user =>
       implicit request =>
         contactsForm.bindFromRequest.fold(
-          formWithErrors => BadRequest(
-            views.html.Application.contacts(formWithErrors,
-              ReCaptchaHelper.get("6LfMQdYSAAAAAJCe85Y6CRp9Ww7n-l3HOBf5bifB"),
-              shopRepository.getByHostname(request.host))),
+          formWithErrors => {
+            for {
+              shop <- shopRepository.getByHostname(request.host)
+            } yield BadRequest(
+              views.html.Application.contacts(formWithErrors,
+                ReCaptchaHelper.get("6LfMQdYSAAAAAJCe85Y6CRp9Ww7n-l3HOBf5bifB"),
+                shop))
+          },
           contactsForm => {
             emailHelper.sendFeedback(contactsForm)
-            Redirect(routes.Application.contacts()).flashing(
-              "alert-success" -> Messages("application.sendfeedback.alert.success")
-            )
+            Future {
+              Redirect(routes.Application.contacts()).flashing(
+                "alert-success" -> Messages("application.sendfeedback.alert.success")
+              )
+            }
           }
         )
   }

@@ -81,11 +81,14 @@ class Order @Inject()(implicit ur: UserRepository,
   def fillPickup = withUser.async {
     implicit user =>
       implicit request =>
-        cartRepository.list(getUserId).map { itemsList =>
+        for {
+          itemsList <- cartRepository.list(getUserId)
+          shopList <- shopRepository.getByHostname(request.host)
+        } yield  {
           if (itemsList.nonEmpty)
             Ok {
               val userInfo = userRepository.getUserInfo(getUserId).getOrElse(new UserInfo())
-              val shops = shopRepository.getByHostname(request.host).map(shop => (shop.id.toString, shop.title)).toSeq
+              val shops = shopList.map(shop => (shop.id.toString, shop.title))
               val deliveryInfo = new PickupDeliveryInfo(shopId = 0, personalInfo = userInfo.personalInfo, comment = "")
               val form = pickupForm.fill(deliveryInfo)
               views.html.Order.fillPickup(itemsList, form, shops)
@@ -128,22 +131,28 @@ class Order @Inject()(implicit ur: UserRepository,
     implicit user =>
       implicit request =>
         pickupForm.bindFromRequest.fold(
-          formWithErrors => cartRepository.list(getUserId).map { cartItems =>
-            val shops = shopRepository.getByHostname(request.host).map(shop => (shop.id.toString, shop.title)).toSeq
-            BadRequest(views.html.Order.fillPickup(cartItems, formWithErrors, shops))
+          formWithErrors => for {
+            cartItems <- cartRepository.list(getUserId)
+            shops <- shopRepository.getByHostname(request.host)
+          } yield {
+            BadRequest(views.html.Order.fillPickup(
+              cartItems,
+              formWithErrors,
+              shops.map(shop => (shop.id.toString, shop.title))))
           },
           pickupInfo => {
-
             val userInfo = new UserInfo(getUserId, pickupInfo.personalInfo, None)
             userRepository.updateUserInfo(userInfo)
-            val pickupShop = shopRepository.get(pickupInfo.shopId);
-            val address = Messages("pickup") + " - " + pickupShop.address;
-            val orderDeliveryInfo = new DeliveryInfo(userInfo.personalInfo.toString(), userInfo.personalInfo.email.getOrElse(""), userInfo.personalInfo.phone, address)
             for {
               city <- cityRepository.getByHostname(request.host)
               orderId <- orderRepository.create(getUserId, cityId(city), pickupInfo)
               orderItems <- orderRepository.getItems(orderId)
+              pickupShop <- shopRepository.get(pickupInfo.shopId)
             } yield {
+              val address = Messages("pickup") + " - " + pickupShop.address
+              val orderDeliveryInfo = new DeliveryInfo(userInfo.personalInfo.toString(),
+                userInfo.personalInfo.email.getOrElse(""),
+                userInfo.personalInfo.phone, address)
               emailHelper.orderConfirmation(new OrderInfo(orderId, orderDeliveryInfo, orderItems))
               Redirect(routes.Order.confirmation(orderId))
             }

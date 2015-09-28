@@ -62,8 +62,8 @@ class Order @Inject()(implicit userRepository: UserRepository, orderRepository: 
 
   def getPickupOrder(order: OrderInfo): Future[OrderInfo] = for {
     pickupDeliveryInfo <- orderRepository.getPickupDeliveryInfo(order.id)
+    shop <- shopRepository.get(pickupDeliveryInfo.shopId)
   } yield {
-      val shop = shopRepository.get(pickupDeliveryInfo.shopId);
       val deliveryInfo = new DeliveryInfo(
         pickupDeliveryInfo.personalInfo.toString(),
         pickupDeliveryInfo.personalInfo.email.getOrElse(""),
