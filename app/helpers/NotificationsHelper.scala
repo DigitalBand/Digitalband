@@ -1,9 +1,9 @@
 package helpers
 
-import dao.common.{UserRepository, QuestionRepository, OrderRepository}
+import dao.common.{UserRepository, OrderRepository}
 import scala.concurrent.ExecutionContext.Implicits.global
 
-class NotificationsHelper(orderRepository: OrderRepository, questionRepository: QuestionRepository, userRepository: UserRepository) {
+class NotificationsHelper(orderRepository: OrderRepository, userRepository: UserRepository) {
   def unconfirmedOrders() = orderRepository.groupUnconfirmedByHost.map { unconfirmedOrders =>
     if (unconfirmedOrders.nonEmpty) {
       implicit val ur = userRepository

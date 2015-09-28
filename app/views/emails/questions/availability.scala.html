@@ -1,14 +1,3 @@
 @(question: models.Question)(implicit request: Request[Any])
 
 <h4> Уважаемый Администратор! </h4>
-<p> Пользователь
-        @question.email
-        запросил информацию о наличии <a href="@routes.Product.display(question.productId).absoluteURL()"> @question.productTitle</a>.</p>
-<p> Чтобы ответить на этот запрос, вам нужно нажать на одну из следующих ссылок: </p>
-<ul>
-    <li> <a href="@controllers.admin.routes.Question.available(question.id).absoluteURL()"> Есть в наличии </a> </li>
-    <li> <a href="@controllers.admin.routes.Question.unavailable(question.id).absoluteURL()"> Нет в наличии </a> </li>
-</ul>
-<p>После нажатия на одну из ссылок, вы будете направлены на форму со стандартным содержимым для отправки пользователю.
-Вы сможете отправить ответ как со стандартным содержимым, так и с внесенными изменениями.
-</p>

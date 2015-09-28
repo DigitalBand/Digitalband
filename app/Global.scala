@@ -20,7 +20,7 @@ object Global extends GlobalSettings {
     import play.api.libs.concurrent.Akka
     import play.api.libs.concurrent.Execution.Implicits._
     import scala.concurrent.duration._
-    val notificationsHelper = new NotificationsHelper(new OrderRepository, new QuestionRepository, new UserRepository)
+    val notificationsHelper = new NotificationsHelper(new OrderRepository, new UserRepository)
     Akka.system.scheduler.schedule(0.seconds, 2.hours) {
       notificationsHelper.unconfirmedOrders()
     }
@@ -36,7 +36,6 @@ class InjectionModule extends ScalaModule {
     bind[dao.common.UserRepository].toInstance(new UserRepository)
     bind[dao.common.CartRepository].toInstance(new CartRepository)
     bind[dao.common.OrderRepository].toInstance(new OrderRepository)
-    bind[dao.common.QuestionRepository].toInstance(new QuestionRepository)
     bind[dao.common.StockItemRepository].toInstance(new StockItemRepository)
     bind[dao.common.DealerRepository].toInstance(new DealerRepository)
     bind[dao.common.ShopRepository].toInstance(new ShopRepository)

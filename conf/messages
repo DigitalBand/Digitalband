@@ -148,7 +148,7 @@ product.list.pagesubtitle=поиск:
 
 product.display.countlabel=Количество:
 product.display.navtab.descriptiontab=Описание
-product.display.requestAvailability=Запросить
+
 product.availability.sendButton=Отправить запрос
 product.display.pricelabel=Цена:
 product.display.breadcrumb.pagenumber=Страница {0}

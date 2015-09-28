@@ -13,8 +13,7 @@ import scala.concurrent.ExecutionContext.Implicits.global
 class Product @Inject()(implicit ur: UserRepository, productRepository: ProductRepository,
                         categoryRepository: CategoryRepository,
                         imageRepository: ImageRepository,
-                        brandRepository: BrandRepository,
-                        questionRepository: QuestionRepository) extends ControllerBase {
+                        brandRepository: BrandRepository) extends ControllerBase {
   val emailHelper = new EmailHelper()
 
   def availabilityForm = Form("email" -> nonEmptyText)
@@ -31,33 +30,7 @@ class Product @Inject()(implicit ur: UserRepository, productRepository: ProductR
         } yield Ok(views.html.Product.availability(product, availabilityForm, isAjax, returnUrl))
   }
 
-  def requestAvailability(id: Int, returnUrl: String) = withUser.async {
-    implicit user =>
-      implicit request =>
-        for {
-          product <- productRepository.get(id)
-        } yield availabilityForm.bindFromRequest.fold(
-          formWithErrors => {
-            BadRequest(views.html.Product.availability(product, formWithErrors, isAjax, returnUrl))
-          },
-          email => {
-            questionRepository.insertQuestion(product.id, email).map {
-              questionId =>
-                val question = questionRepository.get(questionId)
 
-                emailHelper.newQuestion(question)
-                if (!isAjax) {
-                  redirectToReturnUrlOrProduct(returnUrl, product.id).flashing("alert-success" -> "Запрос успешно отправлен")
-                } else {
-                  Ok("success")
-                }
-            }.getOrElse {
-              redirectToReturnUrlOrProduct(returnUrl, product.id)
-                .flashing("alert-warning" -> "Вы уже отправили запрос по этому товару. Ожидайте ответа")
-            }
-          }
-        )
-  }
 
   def redirectToReturnUrlOrProduct(returnUrl: String, productId: Int) = {
     if (returnUrl.isEmpty)
