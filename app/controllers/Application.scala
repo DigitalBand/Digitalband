@@ -84,8 +84,8 @@ class Application @Inject()(implicit ur: UserRepository,
       implicit request =>
         for {
           product <- productRepository.get(productId)
+          shopList <- stockItemRepository.shopList(productId)
         } yield {
-          val shopList = stockItemRepository.shopList(productId)
           Ok(views.html.Application.stock(product, shopList))
         }
   }

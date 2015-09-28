@@ -1,38 +1,39 @@
 package dao.impl.orm.slick
 
-import dao.impl.orm.slick.common.{RepositoryBase}
-import slick.driver.JdbcDriver.backend.Database
-import Database.dynamicSession
-import slick.jdbc.{StaticQuery => Q, GetResult}
-import Q.interpolation
+import dao.impl.orm.slick.common.RepositoryBase
+import slick.driver.JdbcDriver.api._
+import slick.jdbc.GetResult
 import helpers.PhoneHelper.parsePhones
-
 import models.{ShopListItem, StockItemInfo}
+import scala.concurrent.Future
+import scala.concurrent.ExecutionContext.Implicits.global
 
 class StockItemRepository extends RepositoryBase with dao.common.StockItemRepository {
-  def create(productId: Int, stockItem: StockItemInfo): Int = database withDynSession {
-    sqlu"""
+  def create(productId: Int, stockItem: StockItemInfo): Future[Int] = {
+    val result = usingDB {
+      sql"""
       insert into
         stock_items(product_id, dealer_id, dealer_price, shop_id, quantity)
-        values(${productId}, (select id from dealers where title = ${stockItem.dealerName}), ${stockItem.dealerPrice}, ${stockItem.shopId}, ${stockItem.quantity})
-    """.execute
-    val result = sql"""select last_insert_id();""".as[Int].first
+        values(${productId}, (select id from dealers where title = ${stockItem.dealerName}), ${stockItem.dealerPrice}, ${stockItem.shopId}, ${stockItem.quantity});
+        select last_insert_id();
+    """.as[Int].head
+    }
     cacheStock(productId)
     result
   }
 
-  def cacheStock(productId: Int) = database withDynSession {
-    sqlu"""
+  def cacheStock(productId: Int): Future[Int] = usingDB {
+    sql"""
       update
         products
       set
         is_available = ((select sum(quantity) from stock_items where product_id = ${productId}) > 0)
       where
         id = ${productId}
-    """.execute
+    """.as[Int].head
   }
 
-  def list(productId: Int) = database withDynSession {
+  def list(productId: Int) = usingDB {
     implicit val res = GetResult(r => StockItemInfo(r.<<, r.<<, r.<<, r.<<, r.<<, r.<<))
     sql"""
       select
@@ -46,48 +47,71 @@ class StockItemRepository extends RepositoryBase with dao.common.StockItemReposi
       inner join shops sh on sh.id = s.shop_id
       where
         s.product_id = ${productId};
-    """.as[StockItemInfo].iterator
+    """.as[StockItemInfo]
   }
 
-  def remove(stockItemId: Int) = database withDynSession {
-    val productId = getProductIdByStock(stockItemId)
-    sqlu"""
-      delete from stock_items where id = ${stockItemId};
-    """.execute
-    cacheStock(productId)
-
-  }
-
-  def getProductIdByStock(stockItemId: Int) = database withDynSession {
-    val count = sql"""
-      select count(product_id) from stock_items where id = ${stockItemId};
-    """.as[Int].first
-    if (count > 0) {
+  def remove(stockItemId: Int): Future[Int] = {
+    val updateCountFuture = usingDB {
       sql"""
-      select product_id from stock_items where id = ${stockItemId};
-    """.as[Int].first
-    } else {
-      0
+        delete from stock_items where id = ${stockItemId};
+      """.as[Int].head
+    }
+    for {
+      productId <- getProductIdByStock(stockItemId)
+      updateCount <- updateCountFuture
+      cachedCount <- cacheStock(productId)
+    } yield {
+      updateCount
     }
   }
 
-  def update(stockItem: StockItemInfo): Unit = database withDynSession {
-    sqlu"""
-      update
-        stock_items
-      set
-        quantity = ${stockItem.quantity},
-        dealer_price = ${stockItem.dealerPrice},
-        dealer_id = (select id from dealers where title = ${stockItem.dealerName}),
-        shop_id = ${stockItem.shopId}
-      where
-        id = ${stockItem.id}
-    """.execute
-    val productId = getProductIdByStock(stockItem.id)
-    cacheStock(productId)
+  def getProductIdByStock(stockItemId: Int): Future[Int] = {
+    val stockItemsCountFuture = usingDB {
+      sql"""
+        select count(product_id) from stock_items where id = ${stockItemId};
+      """.as[Int].head
+    }
+    val productIdFuture = usingDB {
+      sql"""
+        select product_id from stock_items where id = ${stockItemId};
+      """.as[Int].head
+    }
+    for {
+      stockItemsCount <- stockItemsCountFuture
+      productId <- productIdFuture if stockItemsCount > 0
+    } yield {
+      if (stockItemsCount > 0) {
+        productId
+      } else {
+        0
+      }
+    }
   }
 
-  def shopList(productId: Int) = database withDynSession {
+  def update(stockItem: StockItemInfo): Future[Int] = {
+    val updatedCountFuture = usingDB {
+      sql"""
+        update
+          stock_items
+        set
+          quantity = ${stockItem.quantity},
+          dealer_price = ${stockItem.dealerPrice},
+          dealer_id = (select id from dealers where title = ${stockItem.dealerName}),
+          shop_id = ${stockItem.shopId}
+        where
+          id = ${stockItem.id}
+      """.as[Int].head
+    }
+    for {
+      productId <- getProductIdByStock(stockItem.id)
+      cachedCount <- cacheStock(productId)
+      updatedCount <- updatedCountFuture
+    } yield {
+        updatedCount
+    }
+  }
+
+  def shopList(productId: Int) = usingDB {
     implicit val getResult = GetResult(r => ShopListItem(r.<<, r.<<, parsePhones(r.<<), r.<<))
     sql"""
       select
@@ -100,6 +124,6 @@ class StockItemRepository extends RepositoryBase with dao.common.StockItemReposi
         inner join shops s on s.id = si.shop_id
       where
         product_id = ${productId} group by si.shop_id;
-    """.as[ShopListItem].list
+    """.as[ShopListItem]
   }
 }
