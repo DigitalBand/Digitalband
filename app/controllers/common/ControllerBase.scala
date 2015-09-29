@@ -1,16 +1,14 @@
 package controllers.common
 
-import play.api.mvc._
 import dao.common.UserRepository
-import scala.Some
 import helpers.SessionHelper
-import play.api.Play
-import models.UserEntity
-import wt.common.DataStore
+import play.api.mvc._
 
 class ControllerBase(implicit val userRepository: UserRepository) extends Controller {
 
-  def getUserId(implicit session: Session): Int = SessionHelper.getUserId(userRepository.createUser, userRepository.getUserId)
+  def getUserId(implicit session: Session): Int = {
+    SessionHelper.getUserId(userRepository.createUser, userRepository.getUserId)
+  }
 
 
   def urlParamToInt(paramName: String)(implicit request: Request[AnyContent]): Int = {

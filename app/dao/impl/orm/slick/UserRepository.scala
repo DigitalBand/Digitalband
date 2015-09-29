@@ -1,27 +1,26 @@
 package dao.impl.orm.slick
 
 import models._
-
-import slick.driver.JdbcDriver.backend.Database
-import Database.dynamicSession
-import slick.jdbc.{StaticQuery => Q, GetResult}
-import Q.interpolation
+import slick.driver.JdbcDriver.api._
+import slick.jdbc.GetResult
 import play.api.Play
 import dao.impl.orm.slick.common.RepositoryBase
+import scala.concurrent.Future
+import scala.concurrent.ExecutionContext.Implicits.global
 
 class UserRepository extends RepositoryBase with dao.common.UserRepository {
   def defaultEmail = Play.current.configuration.getString("email.default").get
 
-  def createUser(name: String): Int = database withDynSession {
+  def createUser(name: String): Future[Int] = usingDB {
     sql"""
-         insert into users(session_id) values('');
-        set @userId := (select last_insert_id());
-        insert into user_profiles (email, password, user_id) values(${name}, '', @userId);
-        select @userId;
-      """.as[Int].first
+      insert into users(session_id) values('');
+      set @userId := (select last_insert_id());
+      insert into user_profiles (email, password, user_id) values(${name}, '', @userId);
+      select @userId;
+    """.as[Int].head
   }
 
-  def authenticate(login: String, password: String): Option[UserEntity] = database withDynSession {
+  def authenticate(login: String, password: String): Future[Option[UserEntity]] = usingDB {
     implicit val getUserResult = GetResult(r => new UserEntity(r.<<, r.<<))
     sql"""
       select
@@ -29,10 +28,10 @@ class UserRepository extends RepositoryBase with dao.common.UserRepository {
       where
         email = ${login} and
         password = ${password};
-    """.as[UserEntity].firstOption
+    """.as[UserEntity].headOption
   }
 
-  def get(email: String): Option[UserEntity] = database withDynSession {
+  def get(email: String): Future[Option[UserEntity]] = usingDB {
     implicit val getUserResult = GetResult(r => new UserEntity(r.<<, r.<<, r.<<))
     sql"""
       select p.email, p.user_id, ifnull(ur.role_id, 0) role_id
@@ -41,31 +40,37 @@ class UserRepository extends RepositoryBase with dao.common.UserRepository {
       left join users_roles ur on ur.user_id = p.user_id
       where
         p.email = ${email};
-    """.as[UserEntity].firstOption
+    """.as[UserEntity].headOption
   }
 
-  def createUser = database withDynSession {
-    sqlu" insert into users(session_id) values('');".execute
-    sql" select last_insert_id();".as[Int].first
+  def createUser: Future[Int] = usingDB {
+    sql"""
+      insert into users(session_id) values('');
+      select last_insert_id();
+    """.as[Int].head
   }
 
-  def remove(userId: Int) = database withDynSession {
-    sqlu"""
+  def remove(userId: Int): Future[Int] = usingDB {
+    sql"""
       delete from users where id = ${userId};
       delete from user_profiles where user_id = ${userId};
-    """.execute
+    """.as[Int].head
   }
 
-  def register(email: String, password: String): Int = database withDynSession {
-    val userId = createUser
-    sqlu"""
-        insert into user_profiles (email, password, user_id) values(${email}, ${password}, ${userId});
-      """.execute
-    userId
+  def register(email: String, password: String): Future[Int] = {
+    def updateUserProfileFuture(userId: Int) = usingDB {
+      sql"""
+      insert into user_profiles (email, password, user_id) values(${email}, ${password}, ${userId});
+    """.as[Int].head
+    }
+    for {
+      userId <- createUser
+      updatedCount <- updateUserProfileFuture(userId)
+    } yield userId
   }
 
-  def updateDeliveryInfo(info: DeliveryInfo, userId: Int) = database withDynSession {
-    sqlu"""
+  def updateDeliveryInfo(info: DeliveryInfo, userId: Int): Future[Int] = usingDB {
+    sql"""
       update
         user_profiles
       set
@@ -75,41 +80,46 @@ class UserRepository extends RepositoryBase with dao.common.UserRepository {
         address = ${info.address}
       where
         user_id = ${userId}
-    """.execute
+    """.as[Int].head
   }
 
-  def updateUserInfo(info: UserInfo) = database withDynSession {
-    sqlu"""
-      update
-        user_profiles
-      set
-        user_name = ${info.personalInfo.firstName},
-        user_last_name = ${info.personalInfo.lastName},
-        user_middle_name = ${info.personalInfo.middleName},
-        email = ${info.personalInfo.email},
-        phone_number = ${info.personalInfo.phone}
-      where
-        user_id = ${info.id}
-    """.execute
+  def updateUserInfo(info: UserInfo): Future[Int] = {
+    val updateUserProfiles = usingDB {
+      sql"""
+        update
+          user_profiles
+        set
+          user_name = ${info.personalInfo.firstName},
+          user_last_name = ${info.personalInfo.lastName},
+          user_middle_name = ${info.personalInfo.middleName},
+          email = ${info.personalInfo.email},
+          phone_number = ${info.personalInfo.phone}
+        where
+          user_id = ${info.id}
+      """.as[Int].head
+    }
 
     if (info.address.isDefined)
     {
       val address = info.address.get
-      sqlu"""
-      update
-        user_profiles
-      set
-        city = ${address.city},
-        street = ${address.street},
-        building = ${address.building},
-        apartment = ${address.apartment}
-      where
-        user_id = ${info.id}
-    """.execute
+      usingDB {
+        sql"""
+          update
+            user_profiles
+          set
+            city = ${address.city},
+            street = ${address.street},
+            building = ${address.building},
+            apartment = ${address.apartment}
+          where
+            user_id = ${info.id}
+        """.as[Int].head
+      }
     }
+    updateUserProfiles
   }
 
-  def getDeliveryInfo(userId: Int) = database withDynSession {
+  def getDeliveryInfo(userId: Int): Future[Option[DeliveryInfo]] = usingDB {
     implicit val deliveryResult = GetResult(r =>
       new DeliveryInfo(
         r.nextStringOption().getOrElse(""),
@@ -118,10 +128,10 @@ class UserRepository extends RepositoryBase with dao.common.UserRepository {
         r.nextStringOption().getOrElse("")))
     sql"""
       select user_name, email, phone_number, address from user_profiles where user_id = ${userId};
-    """.as[DeliveryInfo].firstOption
+    """.as[DeliveryInfo].headOption
   }
 
-  def getUserInfo(userId: Int) = database withDynSession {
+  def getUserInfo(userId: Int) = usingDB {
     implicit val result = GetResult(r =>
       new UserInfo(
         id = userId ,
@@ -140,7 +150,7 @@ class UserRepository extends RepositoryBase with dao.common.UserRepository {
         apartment
       from user_profiles
       where user_id = ${userId};
-    """.as[UserInfo].firstOption
+    """.as[UserInfo].headOption
   }
 
   def getAdminEmails: Seq[String] = Play.current.configuration.getString("email.admins") match {
@@ -150,13 +160,13 @@ class UserRepository extends RepositoryBase with dao.common.UserRepository {
 
   def getSystemEmail: String = Play.current.configuration.getString("email.system").getOrElse(defaultEmail)
 
-  def getPassword(email: String) = database withDynSession {
+  def getPassword(email: String): Future[Option[String]] = usingDB {
     sql"""
       select p.password
       from
         user_profiles p
       where
         p.email = ${email};
-    """.as[String].firstOption
+    """.as[String].headOption
   }
 }

@@ -120,17 +120,20 @@ class EmailHelper(implicit userRepository: UserRepository) {
   }
 
   def sendPassword(email: String) = Akka.system.scheduler.scheduleOnce(1.second) {
-    userRepository.getPassword(email) match {
-      case Some(password) => {
-        val mail = Email(
-          subject = "Пароль к сайту Digitalband.ru",
-          from = systemEmail,
-          to = Seq(email),
-          bodyText = Some(s"Ваш пароль: $password")
-        )
-        MailerPlugin.send(mail)
+    for {
+      passwordOption <- userRepository.getPassword(email)
+    } yield {
+      passwordOption match {
+        case Some(password) =>
+          val mail = Email(
+            subject = "Пароль к сайту Digitalband.ru",
+            from = systemEmail,
+            to = Seq(email),
+            bodyText = Some(s"Ваш пароль: $password")
+          )
+          MailerPlugin.send(mail)
+        case None =>
       }
-      case None => {}
     }
   }
 

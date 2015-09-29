@@ -64,10 +64,13 @@ class Order @Inject()(implicit ur: UserRepository,
   def fillDelivery() = withUser.async {
     implicit user =>
       implicit request =>
-        cartRepository.list(getUserId).map { itemsList =>
+        for {
+          itemsList <- cartRepository.list(getUserId)
+          userOption <- userRepository.getUserInfo(getUserId)
+        } yield {
           if (itemsList.nonEmpty)
             Ok {
-              val userInfo = userRepository.getUserInfo(getUserId).getOrElse(new UserInfo())
+              val userInfo = userOption.getOrElse(new UserInfo())
               val deliveryInfo = new OrderDeliveryInfo(address = userInfo.address.get, personalInfo = userInfo.personalInfo, comment = "")
               val form = deliveryForm.fill(deliveryInfo)
               views.html.Order.fillDelivery(itemsList, form)
@@ -84,10 +87,11 @@ class Order @Inject()(implicit ur: UserRepository,
         for {
           itemsList <- cartRepository.list(getUserId)
           shopList <- shopRepository.getByHostname(request.host)
+          userOption <- userRepository.getUserInfo(getUserId)
         } yield  {
           if (itemsList.nonEmpty)
             Ok {
-              val userInfo = userRepository.getUserInfo(getUserId).getOrElse(new UserInfo())
+              val userInfo = userOption.getOrElse(new UserInfo())
               val shops = shopList.map(shop => (shop.id.toString, shop.title))
               val deliveryInfo = new PickupDeliveryInfo(shopId = 0, personalInfo = userInfo.personalInfo, comment = "")
               val form = pickupForm.fill(deliveryInfo)
