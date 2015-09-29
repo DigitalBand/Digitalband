@@ -1,6 +1,6 @@
 package dao.impl.orm.slick
 
-import slick.driver.JdbcDriver.api._
+import slick.driver.MySQLDriver.api._
 import dao.impl.orm.slick.common.RepositoryBase
 import helpers.PhoneHelper.parsePhones
 import models.{ShopInfo, YandexShopInfo}

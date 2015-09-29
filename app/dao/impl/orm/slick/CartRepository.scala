@@ -1,8 +1,7 @@
 package dao.impl.orm.slick
 
 import slick.jdbc.GetResult
-import slick.driver.JdbcDriver.api._
-
+import slick.driver.MySQLDriver.api._
 import models.{CItem, CartItem}
 import dao.impl.orm.slick.common.RepositoryBase
 import scala.concurrent.ExecutionContext.Implicits.global

@@ -1,8 +1,8 @@
 package dao.impl.orm.slick
 
 import models.{CityShortInfo, CityInfo}
-import slick.driver.JdbcDriver.api._
-import slick.jdbc.{StaticQuery => Q, GetResult}
+import slick.driver.MySQLDriver.api._
+import slick.jdbc.GetResult
 import dao.impl.orm.slick.common.RepositoryBase
 import scala.concurrent.Future
 

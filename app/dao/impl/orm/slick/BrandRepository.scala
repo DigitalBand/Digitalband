@@ -2,8 +2,8 @@ package dao.impl.orm.slick
 
 import common.RepositoryBase
 
-import slick.jdbc.{GetResult, StaticQuery => Q}
-import slick.driver.JdbcDriver.api._
+import slick.jdbc.GetResult
+import slick.driver.MySQLDriver.api._
 import models.{ListPage, CategoryEntity, BrandEntity}
 import scala.concurrent.ExecutionContext.Implicits.global
 

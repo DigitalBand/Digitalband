@@ -2,7 +2,7 @@ package dao.impl.orm.slick
 
 import common._
 import models._
-import slick.driver.JdbcDriver.api._
+import slick.driver.MySQLDriver.api._
 import models.CategoryEntity
 import models.ProductDetails
 import slick.jdbc.GetResult

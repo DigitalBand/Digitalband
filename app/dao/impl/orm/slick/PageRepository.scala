@@ -1,7 +1,7 @@
 package dao.impl.orm.slick
 
 import dao.impl.orm.slick.common.RepositoryBase
-import slick.driver.JdbcDriver.api._
+import slick.driver.MySQLDriver.api._
 import models.{PageInfo, PageSection}
 import slick.jdbc.GetResult
 import scala.concurrent.ExecutionContext.Implicits.global

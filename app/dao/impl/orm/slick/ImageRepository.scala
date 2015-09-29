@@ -2,7 +2,7 @@ package dao.impl.orm.slick
 
 import common.RepositoryBase
 import slick.jdbc.GetResult
-import slick.driver.JdbcDriver.api._
+import slick.driver.MySQLDriver.api._
 import wt.common.image.{ImageEntity, PictureEntity}
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future

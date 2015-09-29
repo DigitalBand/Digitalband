@@ -1,7 +1,7 @@
 package dao.impl.orm.slick
 
-import slick.driver.JdbcDriver.api._
-import slick.jdbc.{StaticQuery => Q, GetResult}
+import slick.driver.MySQLDriver.api._
+import slick.jdbc.{GetResult}
 import models.DealerInfo
 import dao.impl.orm.slick.common.RepositoryBase
 

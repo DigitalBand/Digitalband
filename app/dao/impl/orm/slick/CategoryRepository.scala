@@ -1,7 +1,7 @@
 package dao.impl.orm.slick
 
 import common.RepositoryBase
-import slick.driver.JdbcDriver.api._
+import slick.driver.MySQLDriver.api._
 import models.{CategoryListItem, CategoryEntity}
 import slick.jdbc.GetResult
 import scala.concurrent.ExecutionContext.Implicits.global

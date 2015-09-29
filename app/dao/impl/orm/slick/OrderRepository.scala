@@ -2,7 +2,7 @@ package dao.impl.orm.slick
 
 import models._
 import slick.jdbc.GetResult
-import slick.driver.JdbcDriver.api._
+import slick.driver.MySQLDriver.api._
 import java.sql.Timestamp
 import dao.impl.orm.slick.common.RepositoryBase
 import scala.concurrent.ExecutionContext.Implicits.global

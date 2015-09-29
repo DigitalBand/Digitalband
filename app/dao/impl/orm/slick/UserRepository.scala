@@ -1,7 +1,7 @@
 package dao.impl.orm.slick
 
 import models._
-import slick.driver.JdbcDriver.api._
+import slick.driver.MySQLDriver.api._
 import slick.jdbc.GetResult
 import play.api.Play
 import dao.impl.orm.slick.common.RepositoryBase
