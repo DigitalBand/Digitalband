@@ -10,8 +10,8 @@ import play.api.data.Form
 import play.api.data.Forms._
 import play.api.i18n.Messages
 import play.api.mvc._
-import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
+import scala.concurrent.ExecutionContext.Implicits.global
 
 class Application @Inject()(implicit ur: UserRepository,
                             val shopRepository: ShopRepository,
@@ -20,6 +20,7 @@ class Application @Inject()(implicit ur: UserRepository,
                             val categoryRepository: CategoryRepository,
                             val productRepository: ProductRepository,
                             val pageRepository: PageRepository) extends ControllerBase {
+
   val oneDayDuration = 86400
   val emailHelper = new EmailHelper()
 
