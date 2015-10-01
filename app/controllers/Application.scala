@@ -1,15 +1,13 @@
 package controllers
 
-
 import com.google.inject.Inject
 import controllers.common.ControllerBase
 import dao.common._
+import forms.ContactsForm
 import helpers.{EmailHelper, ReCaptchaHelper, withUser}
 import models._
 import play.api.data.Form
-import play.api.data.Forms._
 import play.api.i18n.Messages
-import play.api.mvc._
 import scala.concurrent.Future
 import scala.concurrent.ExecutionContext.Implicits.global
 
@@ -23,25 +21,6 @@ class Application @Inject()(implicit ur: UserRepository,
 
   val oneDayDuration = 86400
   val emailHelper = new EmailHelper()
-
-  def contactsForm(implicit request: Request[Any]) = {
-    Form(
-      mapping(
-        "name" -> nonEmptyText,
-        "email" -> nonEmptyText,
-        "productName" -> nonEmptyText,
-        "message" -> nonEmptyText,
-        "recaptcha_challenge_field" -> nonEmptyText,
-        "recaptcha_response_field" -> nonEmptyText
-      )(ContactEntity.apply)(ContactEntity.unapply).verifying(contact => {
-        ReCaptchaHelper.validate(
-          ReCaptcha(
-            contact.recaptcha_challenge_field,
-            contact.recaptcha_response_field,
-            request.remoteAddress,
-            "6LfMQdYSAAAAAF1mfoJe--9UaVnA5BGjdQMlJ7sp"))
-      }))
-  }
 
   def index = withUser.async {
     implicit user =>
@@ -74,10 +53,11 @@ class Application @Inject()(implicit ur: UserRepository,
   def contacts = withUser.async {
     implicit user =>
       implicit request =>
-        val recaptcha = ReCaptchaHelper.get("6LfMQdYSAAAAAJCe85Y6CRp9Ww7n-l3HOBf5bifB")
         for {
+        //TODO: Save the string to the config
+          recaptcha <- ReCaptchaHelper.get("6LfMQdYSAAAAAJCe85Y6CRp9Ww7n-l3HOBf5bifB")
           shops <- shopRepository.getByHostname(request.host)
-        } yield Ok(views.html.Application.contacts(contactsForm, recaptcha, shops))
+        } yield Ok(views.html.Application.contacts(ContactsForm(), recaptcha, shops))
   }
 
   def stock(productId: Int) = withUser.async {
@@ -94,24 +74,23 @@ class Application @Inject()(implicit ur: UserRepository,
   def sendFeedback = withUser.async {
     implicit user =>
       implicit request =>
-        contactsForm.bindFromRequest.fold(
-          formWithErrors => {
-            for {
-              shop <- shopRepository.getByHostname(request.host)
-            } yield BadRequest(
-              views.html.Application.contacts(formWithErrors,
-                ReCaptchaHelper.get("6LfMQdYSAAAAAJCe85Y6CRp9Ww7n-l3HOBf5bifB"),
-                shop))
-          },
-          contactsForm => {
-            emailHelper.sendFeedback(contactsForm)
-            Future {
-              Redirect(routes.Application.contacts()).flashing(
-                "alert-success" -> Messages("application.sendfeedback.alert.success")
-              )
-            }
+        def onError(form: Form[ContactEntity]) = {
+          for {
+            //TODO: Save the string to the config
+            recaptcha <- ReCaptchaHelper.get("6LfMQdYSAAAAAJCe85Y6CRp9Ww7n-l3HOBf5bifB")
+            shops <- shopRepository.getByHostname(request.host)
+          } yield BadRequest(
+            views.html.Application.contacts(form, recaptcha, shops))
+        }
+        def onSuccess(contactEntity: ContactEntity) = {
+          emailHelper.sendFeedback(contactEntity)
+          Future {
+            Redirect(routes.Application.contacts()).flashing(
+              "alert-success" -> Messages("application.sendfeedback.alert.success")
+            )
           }
-        )
+        }
+        ContactsForm().bindFromRequest.fold(onError, onSuccess)
   }
 
 
