@@ -33,7 +33,7 @@ object registrationForm {
           val (email, password) = credentials
           //TODO: Fix the await
           val user = Await.result(userService.get(email), Duration(2, SECONDS))
-          !user.isDefined
+          user.isEmpty
       })
     )
   }
