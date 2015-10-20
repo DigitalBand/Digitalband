@@ -1,6 +1,6 @@
-@(product: models.ProductDetails, returnUrl: String)(implicit user:Option[models.UserEntity],request: play.api.mvc.Request[Any])
+@(product: models.ProductDetails, returnUrl: String)(implicit user:Option[models.UserEntity],request: play.api.mvc.Request[Any], messages: Messages)
 @import Shared._
-@main(menuItem = "cart") {
+@main(Messages("main.head.title"), menuItem = "cart") {
 
     <form action="@routes.Cart.delete(product.id, returnUrl)" method="POST" class="col-md-12 page-block">
         <div class="alert alert-warning">

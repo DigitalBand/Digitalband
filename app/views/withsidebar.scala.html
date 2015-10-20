@@ -1,7 +1,7 @@
-@(title: String = Messages("main.head.title"), menuItem: String = "index", scripts: Html = Html(""), subnav: Html = Html(""),
+@(title: String, menuItem: String = "index", scripts: Html = Html(""), subnav: Html = Html(""),
 search: String = "", categories: Seq[CategoryListItem], brands: ListPage[BrandEntity], categoryId: Int,
 brandId: Int,
-inStock: Int = 0)(content:Html)(implicit user:Option[models.UserEntity],request: play.api.mvc.Request[Any])
+inStock: Int = 0)(content:Html)(implicit user:Option[models.UserEntity],request: play.api.mvc.Request[Any], messages: Messages)
 @import Shared._
 
 @main(title, menuItem, scripts, subnav = subnav, search = search, inStock = inStock) {

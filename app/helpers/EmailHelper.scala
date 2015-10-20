@@ -4,7 +4,7 @@ import play.api.libs.mailer._
 import controllers.RentRequest
 import dao.common.UserRepository
 import models._
-import play.api.Logger
+import play.api.i18n.Messages.Implicits._
 import play.api.Play.current
 import play.api.i18n.Messages
 import play.api.libs.concurrent.Akka
@@ -13,7 +13,7 @@ import play.api.mvc.Request
 
 import scala.concurrent.duration._
 
-class EmailHelper(implicit userRepository: UserRepository) {
+class EmailHelper(implicit userRepository: UserRepository, mailerClient: MailerClient) {
 
   //TODO: Refactor this, it should be injected with the constructor
   def cityRepository = db.Global.getControllerInstance(classOf[dao.common.CityRepository])
@@ -31,7 +31,8 @@ class EmailHelper(implicit userRepository: UserRepository) {
       to = Seq(systemEmail),
       bodyHtml = Some(views.html.emails.rent.newRentNotification(details, request).body)
     )
-    MailerPlugin.send(mail)
+
+    mailerClient.send(mail)
   }
 
   def answerAvailability(subject: String, comment: String, email: String) = {
@@ -41,7 +42,7 @@ class EmailHelper(implicit userRepository: UserRepository) {
       to = Seq(email),
       bodyHtml = Some(comment)
     )
-    MailerPlugin.send(mail)
+    mailerClient.send(mail)
   }
 
   def newQuestion(question: Question)(implicit request: Request[Any]) = {
@@ -54,7 +55,7 @@ class EmailHelper(implicit userRepository: UserRepository) {
             to = Seq(adminEmail),
             bodyHtml = Some(views.html.emails.questions.availability(question).body)
           )
-          MailerPlugin.send(mail)
+          mailerClient.send(mail)
       }
     }
     Akka.system.scheduler.scheduleOnce(1.second) {
@@ -64,7 +65,7 @@ class EmailHelper(implicit userRepository: UserRepository) {
         subject = "Запрос информации о наличии товара",
         bodyHtml = Some(views.html.emails.questions.availabilityClient(question).body)
       )
-      MailerPlugin.send(mail)
+      mailerClient.send(mail)
     }
   }
 
@@ -76,7 +77,7 @@ class EmailHelper(implicit userRepository: UserRepository) {
         to = Seq(order.deliveryInfo.email),
         bodyHtml = Some(comment)
       )
-      MailerPlugin.send(mail)
+      mailerClient.send(mail)
     }
   }
 
@@ -89,7 +90,7 @@ class EmailHelper(implicit userRepository: UserRepository) {
           to = Seq(email),
           bodyHtml = Some(views.html.emails.order.unconfirmedExist(orders).body)
         )
-        MailerPlugin.send(mail)
+        mailerClient.send(mail)
     }
   }
 
@@ -101,7 +102,7 @@ class EmailHelper(implicit userRepository: UserRepository) {
         to = Seq(order.deliveryInfo.email),
         bodyHtml = Some(comment)
       )
-      MailerPlugin.send(mail)
+      mailerClient.send(mail)
     }
   }
 
@@ -115,7 +116,7 @@ class EmailHelper(implicit userRepository: UserRepository) {
         replyTo = Some(message.email),
         bodyHtml = Some(views.html.emails.plain.contact.feedback(message).body)
       )
-      MailerPlugin.send(mail)
+      mailerClient.send(mail)
     }
   }
 
@@ -131,7 +132,7 @@ class EmailHelper(implicit userRepository: UserRepository) {
             to = Seq(email),
             bodyText = Some(s"Ваш пароль: $password")
           )
-          MailerPlugin.send(mail)
+          mailerClient.send(mail)
         case None =>
       }
     }
@@ -152,7 +153,7 @@ class EmailHelper(implicit userRepository: UserRepository) {
       from = from,
       bodyHtml = Some(views.html.emails.plain.order.notification(order).body)
     )
-    MailerPlugin.send(mail)
+    mailerClient.send(mail)
   }
   private def sendToAdmins(adminEmail: String, userEmail: String, systemEmail: String, order: OrderInfo, city: CityInfo)
     (implicit request: Request[Any]) = {
@@ -163,7 +164,7 @@ class EmailHelper(implicit userRepository: UserRepository) {
       to = Seq(adminEmail),
       bodyHtml = Some(views.html.emails.plain.order.adminNotification(order, idMark(city, order)).body)
     )
-    MailerPlugin.send(mail)
+    mailerClient.send(mail)
   }
   private def getEmailSubject(order: OrderInfo, city: CityInfo): String  = {
     val orderDetails =

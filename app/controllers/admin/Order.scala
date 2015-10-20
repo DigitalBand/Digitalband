@@ -8,11 +8,14 @@ import models._
 import play.api.data.Forms._
 import play.api.data._
 import play.api.i18n.Messages
+import play.api.libs.mailer.MailerClient
 import views.html.Admin.Order
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-class Order @Inject()(implicit userRepository: UserRepository, orderRepository: OrderRepository, shopRepository: ShopRepository) extends ControllerBase {
+class Order @Inject()(implicit userRepository: UserRepository,
+                      orderRepository: OrderRepository,
+                      shopRepository: ShopRepository, mailerClient: MailerClient) extends ControllerBase {
   val orderStatusForm = Form("comment" -> text)
   val emailHelper = new EmailHelper()
 

@@ -1,11 +1,11 @@
-@(items: Seq[models.CartItem], orderInfo: Form[PickupDeliveryInfo], shops: Seq[(String, String)])(implicit user: Option[models.UserEntity], request: play.api.mvc.Request[Any])
+@(items: Seq[models.CartItem], orderInfo: Form[PickupDeliveryInfo], shops: Seq[(String, String)])(implicit user: Option[models.UserEntity], request: play.api.mvc.Request[Any], messages: Messages)
 @import Cart.shoppingList
 
 @import Shared.wizard
 @import views.html.common.bootstrap.hfc
 @import views.html.Security.loginpart
 
-@main(menuItem = "cart") {
+@main(Messages("main.head.title"), menuItem = "cart") {
 <div class="page-block" xmlns="http://www.w3.org/1999/html">
     <div class="row">
       <div class="col-md-12">

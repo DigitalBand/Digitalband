@@ -1,7 +1,7 @@
-@(items: Seq[models.CartItem], orderId: Int)(implicit user: Option[models.UserEntity], request: play.api.mvc.Request[Any])
+@(items: Seq[models.CartItem], orderId: Int)(implicit user: Option[models.UserEntity], request: play.api.mvc.Request[Any], messages: Messages)
 @import Cart.shoppingList
 @import Shared.wizard
-@main() {
+@main(Messages("main.head.title")) {
     <div class="col-md-12 page-block">
     @wizard(4)
     <div class="page-header">

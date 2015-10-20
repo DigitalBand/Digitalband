@@ -1,6 +1,6 @@
 @(product: models.ProductDetails, imageIds: Seq[Int], categories: Seq[models.CategoryListItem],
 brands:ListPage[BrandEntity], categoryId: Int, brandId: Int, breadcrumbItems: Seq[(Int, String)],
-pageNumber:Int, search: String, isAdmin: Boolean, inStock: Int = 0)(implicit user:Option[models.UserEntity],request: play.api.mvc.Request[Any])
+pageNumber:Int, search: String, isAdmin: Boolean, inStock: Int = 0)(implicit user:Option[models.UserEntity],request: play.api.mvc.Request[Any], messages: Messages)
 @import Shared._
 @import views.html.Product.adminToolbar
 @import views.html.Shared.alert

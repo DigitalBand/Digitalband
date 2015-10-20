@@ -7,9 +7,11 @@ import forms.ContactsForm
 import helpers.{EmailHelper, ReCaptchaHelper, withUser}
 import models._
 import play.api.data.Form
-import play.api.i18n.Messages
+import play.api.i18n.{MessagesApi, Messages}
+import play.api.libs.mailer.MailerClient
 import scala.concurrent.Future
 import scala.concurrent.ExecutionContext.Implicits.global
+import play.api.i18n.Messages.Implicits._
 
 class Application @Inject()(implicit ur: UserRepository,
                             val shopRepository: ShopRepository,
@@ -17,7 +19,8 @@ class Application @Inject()(implicit ur: UserRepository,
                             val stockItemRepository: StockItemRepository,
                             val categoryRepository: CategoryRepository,
                             val productRepository: ProductRepository,
-                            val pageRepository: PageRepository) extends ControllerBase {
+                            val pageRepository: PageRepository,
+                            val mailerClient: MailerClient) extends ControllerBase {
 
   val oneDayDuration = 86400
   val emailHelper = new EmailHelper()

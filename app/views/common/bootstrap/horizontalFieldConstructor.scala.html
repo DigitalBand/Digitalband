@@ -1,12 +1,12 @@
-@(elements: helper.FieldElements)
+@(elements: helper.FieldElements)(implicit lang: Lang)
 <div class="form-group @if(elements.hasErrors){ has-error}"
      id="@elements.args.get('_id).getOrElse(elements.id + "_controlgroup")">
 <label class="col-sm-2 control-label" for="@elements.id">
-    @elements.label(elements.lang)
+    @elements.label
 </label>
 <div class="col-sm-6">
     @elements.input
-    @elements.errors(elements.lang).map { error =>
+    @elements.errors.map { error =>
     <span class="help-inline">@error</span>
     }
 </div>

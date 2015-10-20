@@ -3,8 +3,11 @@ package controllers.common
 import dao.common.UserRepository
 import helpers.SessionHelper
 import play.api.mvc._
+import play.api.i18n.{MessagesApi, I18nSupport}
+import play.api.Play.current
+import play.api.i18n.Messages.Implicits._
 
-class ControllerBase(implicit val userRepository: UserRepository) extends Controller {
+class ControllerBase(implicit val userRepository: UserRepository) extends Controller with I18nSupport {
 
   def getUserId(implicit session: Session): Int = {
     SessionHelper.getUserId(userRepository.createUser, userRepository.getUserId)
@@ -19,4 +22,6 @@ class ControllerBase(implicit val userRepository: UserRepository) extends Contro
   }
   //TOD: Implement this
   def isAjax = false
+
+  override def messagesApi: MessagesApi = play.api.i18n.Messages.Implicits.applicationMessagesApi
 }

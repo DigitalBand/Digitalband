@@ -10,12 +10,14 @@ import play.api.cache.Cache
 import play.api.data.Form
 import play.api.data.Forms._
 import play.api.i18n.Messages
+import play.api.libs.mailer.MailerClient
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.{Future, Await}
 import scala.concurrent.duration._
 
 
-class Security @Inject()(implicit ur: UserRepository, val cartRepository: CartRepository) extends ControllerBase {
+class Security @Inject()(implicit ur: UserRepository,
+                         val cartRepository: CartRepository, mailerClient: MailerClient) extends ControllerBase {
 
   val forgotPasswordForm = Form(
     "email" -> nonEmptyText.verifying(

@@ -1,7 +1,7 @@
-@(loginForm: Form[(String, String)], returnUrl: String)(implicit lang: Lang, request: play.api.mvc.Request[Any], user:Option[models.UserEntity])
+@(loginForm: Form[(String, String)], returnUrl: String)(implicit lang: Lang, request: play.api.mvc.Request[Any], user:Option[models.UserEntity], messages: Messages)
 @import views.html.Security.loginpart
 
-@main(menuItem = "security") {
+@main(Messages("main.head.title"), menuItem = "security") {
     <div class="col-md-3"></div>
     <div class="col-md-6">
     @request.flash.data.map {

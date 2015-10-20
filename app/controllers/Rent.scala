@@ -7,6 +7,7 @@ import com.google.inject.Inject
 import helpers.{EmailHelper, withUser}
 import play.api.data.Form
 import play.api.data.Forms._
+import play.api.libs.mailer.MailerClient
 import scala.concurrent.ExecutionContext.Implicits.global
 
 case class RentRequest(
@@ -20,18 +21,21 @@ case class RentRequest(
                         notes: Option[String] = Some("")
                         )
 
-class Rent @Inject()(implicit ur: UserRepository, productRepository: ProductRepository, brandRepository: BrandRepository) extends ControllerBase {
+class Rent @Inject()(
+                      implicit ur: UserRepository,
+                      productRepository: ProductRepository,
+                      brandRepository: BrandRepository, mailerClient: MailerClient) extends ControllerBase {
 
   val rentForm = Form(mapping(
-    "quantity" -> number,
-    "firstName" -> nonEmptyText,
-    "lastName" -> nonEmptyText,
-    "email" -> email,
-    "phone" -> nonEmptyText,
-    "city" -> nonEmptyText,
-    "street" -> nonEmptyText,
-    "notes" -> optional(text)
-  )(RentRequest.apply)(RentRequest.unapply)
+      "quantity" -> number,
+      "firstName" -> nonEmptyText,
+      "lastName" -> nonEmptyText,
+      "email" -> email,
+      "phone" -> nonEmptyText,
+      "city" -> nonEmptyText,
+      "street" -> nonEmptyText,
+      "notes" -> optional(text)
+    )(RentRequest.apply)(RentRequest.unapply)
   )
 
   def requestRent(productId: Int) = withUser.async {

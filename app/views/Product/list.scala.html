@@ -3,7 +3,7 @@ categories: Seq[models.CategoryListItem], brands: ListPage[models.BrandEntity], 
 pageNumber: Int, pageSize: Int,
 breadcrumbItems: Seq[(Int, String)] = List(),
 searchQuery: String, pagerHelper: helpers.PagerHelper, pagerUrl: Int => Call, showInStock: (Int, Option[BrandEntity]) => Call,
-inStock: Int = 0)(implicit user:Option[models.UserEntity],request: play.api.mvc.Request[Any])
+inStock: Int = 0)(implicit user:Option[models.UserEntity],request: play.api.mvc.Request[Any], messages: Messages)
 
 @import helpers.ViewHelper._
 @import Shared._

@@ -1,4 +1,4 @@
-@(data: play.api.libs.json.JsValue)(implicit user: Option[models.UserEntity], request: play.api.mvc.Request[Any])
+@(data: play.api.libs.json.JsValue)(implicit user: Option[models.UserEntity], request: play.api.mvc.Request[Any], messages: Messages)
     @scripts = {
         <script src="@routes.Assets.at("lib/highcharts/highcharts.js")" type="text/javascript"></script>
         <script src="@routes.Assets.at("javascripts/charts.js")" type="text/javascript"></script>

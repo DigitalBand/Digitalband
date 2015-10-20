@@ -3,12 +3,13 @@ import play.api.mvc._
 import dao.common.UserRepository
 import play.api.data.Form
 import play.api.data.Forms._
-import play.api.i18n.Messages
+import play.api.i18n.{MessagesApi, Messages}
 import scala.concurrent.Await
 import scala.concurrent.duration._
+import play.api.i18n.Messages.Implicits._
 
 object loginForm {
-  def apply()(implicit request: Request[AnyContent], userService:UserRepository) = {
+  def apply()(implicit request: Request[AnyContent], userService:UserRepository, messages: Messages) = {
     Form(
       tuple(
         "email" -> nonEmptyText,
@@ -24,7 +25,7 @@ object loginForm {
 }
 
 object registrationForm {
-  def apply()(implicit request: Request[AnyContent], userService:UserRepository) = {
+  def apply()(implicit request: Request[AnyContent], userService:UserRepository, messages: Messages) = {
     Form(
       tuple(
         "email" -> nonEmptyText,

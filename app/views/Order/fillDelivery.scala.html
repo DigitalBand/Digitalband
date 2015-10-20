@@ -1,10 +1,10 @@
-@(items: Seq[models.CartItem], orderInfo: Form[OrderDeliveryInfo])(implicit user: Option[models.UserEntity], request: play.api.mvc.Request[Any])
+@(items: Seq[models.CartItem], orderInfo: Form[OrderDeliveryInfo])(implicit user: Option[models.UserEntity], request: play.api.mvc.Request[Any], messages: Messages)
 @import Cart.shoppingList
 @import Shared.wizard
 @import views.html.common.bootstrap.hfc
 @import views.html.Security.loginpart
 
-@main(menuItem = "cart") {
+@main(Messages("main.head.title"), menuItem = "cart") {
 <div class="page-block">
     <div class="col-md-12">
         @wizard(3)

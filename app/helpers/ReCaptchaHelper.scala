@@ -9,7 +9,6 @@ import scala.concurrent.Future
 
 case class RecaptchaChallenge(val challenge: String, val imageUrl: String)
 
-
 trait RecaptchaWrapper {
   def get(key: String): Future[RecaptchaChallenge]
   def validate(recaptcha: ReCaptcha): Boolean

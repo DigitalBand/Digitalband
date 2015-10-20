@@ -1,9 +1,9 @@
-@(title: String = Messages("main.head.title"),
-        menuItem: String = "index",
-        scripts: Html = Html(""),
-        subnav: Html = Html(""),
-        search: String = "",
-        inStock: Int = 0)(content: Html)(implicit user: Option[models.UserEntity], request: play.api.mvc.Request[Any])
+@(title: String,
+  menuItem: String = "index",
+  scripts: Html = Html(""),
+  subnav: Html = Html(""),
+  search: String = "",
+  inStock: Int = 0)(content: Html)(implicit user: Option[models.UserEntity], request: play.api.mvc.Request[Any], messages: Messages)
 
 <!DOCTYPE html>
 <html>

@@ -10,6 +10,8 @@ import play.api.i18n.Messages
 import wt.common.image.ImageEntity
 import scala.concurrent.Future
 import scala.concurrent.ExecutionContext.Implicits.global
+import play.api.Play.current
+import play.api.i18n.Messages.Implicits._
 
 class ProductRepository extends RepositoryBase with dao.common.ProductRepository {
   def listMostVisited(count: Int, domain: String): Future[Seq[ProductDetails]] = usingDB {

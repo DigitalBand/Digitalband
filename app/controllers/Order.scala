@@ -8,15 +8,17 @@ import helpers.{EmailHelper, withUser}
 import play.api.data.Form
 import play.api.data.Forms._
 import play.api.i18n.Messages
+import play.api.libs.mailer.MailerClient
 import scala.concurrent.ExecutionContext.Implicits.global
 
 import scala.concurrent.Future
 
 class Order @Inject()(implicit ur: UserRepository,
-                               orderRepository: OrderRepository,
-                               cartRepository: CartRepository,
-                               shopRepository: ShopRepository,
-                               cityRepository: CityRepository) extends ControllerBase {
+                     orderRepository: OrderRepository,
+                     cartRepository: CartRepository,
+                     shopRepository: ShopRepository,
+                     cityRepository: CityRepository,
+                     mailerClient: MailerClient) extends ControllerBase {
   val deliveryForm = Form(mapping(
     "address" -> mapping(
       "city" -> nonEmptyText(minLength = 2, maxLength = 50),

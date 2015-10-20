@@ -1,5 +1,8 @@
 package views.html.common
 
+import play.api.Play.current
+import play.api.i18n.Messages.Implicits._
+
 import views.html.helper.{FieldElements, FieldConstructor}
 
 package object bootstrap {

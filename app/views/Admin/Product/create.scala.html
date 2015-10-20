@@ -1,4 +1,4 @@
-@(product: Form[models.ProductDetails], images: Seq[Int], productId: Int)(implicit user: Option[models.UserEntity], request: play.api.mvc.Request[Any])
+@(product: Form[models.ProductDetails], images: Seq[Int], productId: Int)(implicit user: Option[models.UserEntity], request: play.api.mvc.Request[Any], messages: Messages)
 @import views.html.common.bootstrap.fc
 
     @scripts = {

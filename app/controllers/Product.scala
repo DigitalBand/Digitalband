@@ -7,13 +7,14 @@ import helpers.{EmailHelper, withUser}
 import models.{BrandEntity, UserEntity}
 import play.api.data.Form
 import play.api.data.Forms._
+import play.api.libs.mailer.MailerClient
 import play.api.mvc._
 import scala.concurrent.ExecutionContext.Implicits.global
 
 class Product @Inject()(implicit ur: UserRepository, productRepository: ProductRepository,
                         categoryRepository: CategoryRepository,
                         imageRepository: ImageRepository,
-                        brandRepository: BrandRepository) extends ControllerBase {
+                        brandRepository: BrandRepository, mailerClient: MailerClient) extends ControllerBase {
   val emailHelper = new EmailHelper()
 
   def availabilityForm = Form("email" -> nonEmptyText)

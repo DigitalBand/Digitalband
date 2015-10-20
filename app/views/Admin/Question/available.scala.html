@@ -1,4 +1,4 @@
-@(question: models.Question)(implicit user: Option[models.UserEntity], request: play.api.mvc.Request[Any])
+@(question: models.Question)(implicit user: Option[models.UserEntity], request: play.api.mvc.Request[Any], messages: Messages)
 @views.html.Admin.Question.availabilityLayout(
     "Эта форма используется для ответа покупателю в том случае, если товар доступен. Текст письма можно изменить",
     "Товар есть в наличии"

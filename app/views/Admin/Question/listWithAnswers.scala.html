@@ -1,4 +1,4 @@
-@(questionList: ListPage[Question])(implicit user: Option[models.UserEntity], request: play.api.mvc.Request[Any])
+@(questionList: ListPage[Question])(implicit user: Option[models.UserEntity], request: play.api.mvc.Request[Any], messages: Messages)
 @views.html.Admin.main("Администрирование", "questions"){
     <table class="table table-hover">
         <thead>

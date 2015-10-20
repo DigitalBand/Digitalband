@@ -1,4 +1,4 @@
-@(listPage: ListPage[models.OrderInfo], orderCounters: Seq[(String, Int)], pageSize: Int, pageNumber: Int)(implicit user: Option[models.UserEntity], request: play.api.mvc.Request[Any])
+@(listPage: ListPage[models.OrderInfo], orderCounters: Seq[(String, Int)], pageSize: Int, pageNumber: Int)(implicit user: Option[models.UserEntity], request: play.api.mvc.Request[Any], messages: play.api.i18n.Messages)
 @import Shared.pager
 @import views.html.Admin.Order.statusButton
 @views.html.Admin.main("Заказы", "orders") {

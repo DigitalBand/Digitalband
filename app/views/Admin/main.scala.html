@@ -1,9 +1,9 @@
-@(title: String = Messages("main.head.title"),
+@(title: String,
         menuItem: String = "index",
         scripts: Html = Html(""),
         styles: Html = Html(""),
         subnav: Html = Html(""),
-        search: String = "")(content: Html)(implicit user: Option[models.UserEntity], request: play.api.mvc.Request[Any])
+        search: String = "")(content: Html)(implicit user: Option[models.UserEntity], request: play.api.mvc.Request[Any], messages: Messages)
 @import controllers.admin.routes.Dashboard
 <!DOCTYPE html>
 <html>

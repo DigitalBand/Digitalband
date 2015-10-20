@@ -1,4 +1,4 @@
-@(items: Seq[models.CartItem], hidePrices: Boolean = false, returnUrl: String = "", editable: Boolean = true)(implicit request: play.api.mvc.Request[Any])
+@(items: Seq[models.CartItem], hidePrices: Boolean = false, returnUrl: String = "", editable: Boolean = true)(implicit request: play.api.mvc.Request[Any], messages: Messages)
 <ul>
     @items.map { cartItem =>
         <li><a href="@routes.Product.display(cartItem.productId).absoluteURL()">
