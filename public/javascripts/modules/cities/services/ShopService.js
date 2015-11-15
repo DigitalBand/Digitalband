@@ -58,6 +58,6 @@
         return shop;
       });
     }
-  }
+  };
   app.service('ShopService', ShopService);
 }(citiesApp));

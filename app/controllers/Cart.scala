@@ -64,7 +64,7 @@ class Cart @Inject()(implicit ur: UserRepository, val cartRepository: CartReposi
   def checkout = withUser {
     implicit user =>
       implicit request =>
-        if (!user.isDefined)
+        if (user.isEmpty)
           Ok(views.html.Cart.checkout(loginForm()))
         else
           Redirect(routes.Order.fill())

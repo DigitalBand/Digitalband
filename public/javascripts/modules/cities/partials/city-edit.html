@@ -2,7 +2,7 @@
 <fieldset ng-controller="ShopListController" ng-show="vm.cityId > 0">
     <legend>Магазины</legend>
     <div>
-        <a class="btn btn-primary" ui-sref="shopNew"><i class="fa fa-plus"></i> Добавить склад</a>
+        <a class="btn btn-primary" ui-sref="shopNew({cityId: vm.cityId})"><i class="fa fa-plus"></i> Добавить склад</a>
         <table class="table table-striped">
             <thead>
             <tr>

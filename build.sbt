@@ -20,7 +20,7 @@ libraryDependencies ++= Seq(
   ws,
   evolutions,
   specs2 % Test,
-  "com.typesafe.slick" %% "slick" % "3.1.0-RC3",
+  "com.typesafe.slick" %% "slick" % "3.1.0",
   "mysql" % "mysql-connector-java" % "5.1.25",
   "org.jsoup" % "jsoup" % "1.7.2",
   "com.typesafe.play" %% "play-mailer" % "3.0.1",
