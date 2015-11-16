@@ -26,18 +26,27 @@ class Order @Inject()(implicit userRepository: UserRepository,
     } yield Ok(Order.list(orders, orderCounters, pageSize, pageNumber))
   }
 
-  def display(id: Int) = withAdmin.async { implicit user =>
-    implicit request => for {
+  def getOrder(id: Int) = {
+    for {
       order <- orderRepository.get(id)
-      deliveryOrder <- getDeliveryOrder(order)
-      pickupOrder <- getPickupOrder(order)
+      /*deliveryOrder <- getDeliveryOrder(order) if order.deliveryType == "Delivery"
+      pickupOrder <- getPickupOrder(order) if order.deliveryType == "Pickup"*/
     } yield {
-        if (order.deliveryType == Messages("internationalDelivery"))
-          Ok(Order.display(deliveryOrder))
-        else if (order.deliveryType == Messages("internationalPickup"))
-          Ok(Order.display(pickupOrder))
-        else
-          Ok(Order.display(order))
+      //TODO: Implement this
+      /*if (order.deliveryType == "Delivery")
+        deliveryOrder
+      else if (order.deliveryType == "Pickup")
+        pickupOrder
+      else*/
+        order
+    }
+  }
+  def display(id: Int) = withAdmin.async { implicit user =>
+    implicit request =>
+      for {
+        order <- getOrder(id)
+      } yield {
+        Ok(Order.display(order))
       }
   }
 
@@ -50,7 +59,8 @@ class Order @Inject()(implicit userRepository: UserRepository,
         orderDeliveryInfo.personalInfo.toString(),
         orderDeliveryInfo.personalInfo.email.getOrElse(""),
         orderDeliveryInfo.personalInfo.phone,
-        orderDeliveryInfo.address.toString())
+        orderDeliveryInfo.address.toString()
+      )
       val orderInfo = new OrderInfo(
         order.id,
         order.orderDate,
@@ -90,7 +100,6 @@ class Order @Inject()(implicit userRepository: UserRepository,
         order <- orderRepository.get(orderId)
       } yield {
         val comment = orderStatusForm.bindFromRequest().get
-
         emailHelper.orderConfirmed(comment, order)
         Redirect(controllers.admin.routes.Order.display(orderId))
       }
