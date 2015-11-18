@@ -1,5 +1,5 @@
 @(elements: helper.FieldElements)(implicit messages: Messages, lang: Lang)
-<div class="form-group@if(elements.hasErrors){ has-error}"
+<div class="@if(elements.hasErrors){ has-error}"
      id="@elements.args.get('_id).getOrElse(elements.id + "_controlgroup")">
 <label class="control-label" for="@elements.id">
     @elements.label

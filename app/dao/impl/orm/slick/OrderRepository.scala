@@ -35,6 +35,7 @@ class OrderRepository extends RepositoryBase with dao.common.OrderRepository {
 
   def create(personalInfo: PersonalInfo, userId: Int, cityId: Option[Int], comment: String,
              deliveryType: String): Future[Int] = usingDB {
+    DBIO.sequence(Seq(
     sql"""
       insert into
         orders (user_id, city_id, place_date, name, last_name, middle_name, email, phone, comment, delivery_type)
@@ -49,8 +50,9 @@ class OrderRepository extends RepositoryBase with dao.common.OrderRepository {
         ${personalInfo.phone},
         ${comment},
         ${deliveryType});
-      select last_insert_id();
-    """.as[Int].head
+      """.as[Int].head,
+      sql"""select last_insert_id();""".as[Int].head
+    )).map(list => list.last)
   }
 
   def addOrderItems(orderId: Int, userId: Int): Future[Int] = usingDB {

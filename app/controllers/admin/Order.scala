@@ -11,7 +11,8 @@ import play.api.i18n.Messages
 import play.api.libs.mailer.MailerClient
 import views.html.Admin.Order
 import scala.concurrent.ExecutionContext.Implicits.global
-import scala.concurrent.Future
+import scala.concurrent.duration._
+import scala.concurrent.{Await, Future}
 
 class Order @Inject()(implicit userRepository: UserRepository,
                       orderRepository: OrderRepository,
@@ -33,11 +34,11 @@ class Order @Inject()(implicit userRepository: UserRepository,
       pickupOrder <- getPickupOrder(order) if order.deliveryType == "Pickup"*/
     } yield {
       //TODO: Implement this
-      /*if (order.deliveryType == "Delivery")
-        deliveryOrder
+      if (order.deliveryType == "Delivery")
+        Await.result(getDeliveryOrder(order), Duration(5, SECONDS))
       else if (order.deliveryType == "Pickup")
-        pickupOrder
-      else*/
+        Await.result(getPickupOrder(order), Duration(5, SECONDS))
+      else
         order
     }
   }
