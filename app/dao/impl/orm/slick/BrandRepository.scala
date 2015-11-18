@@ -101,14 +101,13 @@ class BrandRepository extends RepositoryBase with dao.common.BrandRepository {
       sql"select brand.id from brands brand where brand.title = ${name} limit 1;".as[Int].headOption
     }
     val newBrandIdFuture = usingDB {
-      sql"""
+      returningId(sql"""
         insert into brands(title) values($name);
-        select last_insert_id();
-      """.as[Int].headOption
+      """.as[Int].head)
     }
     for {
       brandId <- brandIdFuture
       newBrandId <- newBrandIdFuture if brandId.isEmpty
-    } yield brandId.orElse(newBrandId).get
+    } yield brandId.getOrElse(newBrandId)
   }
 }

@@ -118,12 +118,11 @@ class ShopRepository extends RepositoryBase with dao.common.ShopRepository {
   }
 
   def add(shop: ShopInfo): Future[Int] = usingDB {
-    sql"""
+    returningId(sql"""
       insert into
         shops(title, city_id, address, phones)
         values(${shop.title}, ${shop.cityId}, ${shop.address}, ${shop.phoneNumbers.mkString(";")});
-      select last_insert_id();
-    """.as[Int].head
+    """.as[Int].head)
   }
 
   def remove(shopId: Int): Future[Int] = usingDB {

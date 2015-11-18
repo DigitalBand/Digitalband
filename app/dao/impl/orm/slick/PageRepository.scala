@@ -93,12 +93,11 @@ class PageRepository extends RepositoryBase with dao.common.PageRepository {
 
   def add(page: PageInfo): Future[Int] = {
     val pageIdFuture = usingDB {
-      sql"""
+      returningId(sql"""
       insert into
         pages(name, alias)
         values(${page.name}, ${page.alias});
-      select last_insert_id();
-    """.as[Int].head
+      """.as[Int].head)
     }
     for {
       pageId <- pageIdFuture

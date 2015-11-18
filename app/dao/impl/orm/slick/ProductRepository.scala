@@ -178,9 +178,9 @@ class ProductRepository extends RepositoryBase with dao.common.ProductRepository
 
   def create(details: ProductDetails, brandId: Int, userId: Int)(after: Int => Unit): Future[Int] = {
     val productIdFuture = usingDB {
-      sql"""
-      insert into
-        products(title, description, short_description, price, brand_id, created_by_user, is_available)
+      returningId(sql"""
+        insert into
+          products(title, description, short_description, price, brand_id, created_by_user, is_available)
         values(${details.title},
           ${details.description},
           ${details.shortDescription},
@@ -188,8 +188,7 @@ class ProductRepository extends RepositoryBase with dao.common.ProductRepository
           ${brandId},
           ${userId},
           ${details.isAvailable});
-        select last_insert_id();
-    """.as[Int].head
+      """.as[Int].head)
     }
     def insertedCountFuture(productId: Int) = usingDB {
       sql"""

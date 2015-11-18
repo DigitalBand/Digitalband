@@ -59,12 +59,13 @@ class CityRepository extends RepositoryBase with dao.common.CityRepository {
 
 
   def add(city: CityInfo): Future[Int] = usingDB {
-    sql"""
-      insert into
-        cities(name, domain, delivery, payment, phone, prefix)
-        values(${city.name}, ${city.domain}, ${city.delivery}, ${city.payment}, ${city.phone}, ${city.prefix});
-        select last_insert_id();
-    """.as[Int].head
+    returningId(
+      sql"""
+        insert into
+          cities(name, domain, delivery, payment, phone, prefix)
+          values(${city.name}, ${city.domain}, ${city.delivery}, ${city.payment}, ${city.phone}, ${city.prefix});
+      """.as[Int].head
+    )
   }
 
   def update(city: CityInfo) = usingDB {

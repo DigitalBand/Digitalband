@@ -11,12 +11,11 @@ import scala.concurrent.ExecutionContext.Implicits.global
 class StockItemRepository extends RepositoryBase with dao.common.StockItemRepository {
   def create(productId: Int, stockItem: StockItemInfo): Future[Int] = {
     val result = usingDB {
-      sql"""
-      insert into
-        stock_items(product_id, dealer_id, dealer_price, shop_id, quantity)
+      returningId(sql"""
+        insert into
+          stock_items(product_id, dealer_id, dealer_price, shop_id, quantity)
         values(${productId}, (select id from dealers where title = ${stockItem.dealerName}), ${stockItem.dealerPrice}, ${stockItem.shopId}, ${stockItem.quantity});
-        select last_insert_id();
-    """.as[Int].head
+      """.as[Int].head)
     }
     cacheStock(productId)
     result

@@ -57,10 +57,9 @@ class ImageRepository extends RepositoryBase with dao.common.ImageRepository {
 
   def create(img: ImageEntity): Future[Int] = {
     val insertFuture = usingDB {
-      sql"""
+      returningId(sql"""
         INSERT INTO images(file_path, md5) VALUES(${img.path}, ${img.md5})
-        SELECT last_insert_id();
-      """.as[Int].head
+      """.as[Int].head)
     }
     for {
       image <- getByMd5(img.md5)

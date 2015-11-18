@@ -44,10 +44,9 @@ class UserRepository extends RepositoryBase with dao.common.UserRepository {
   }
 
   def createUser: Future[Int] = usingDB {
-    sql"""
+    returningId(sql"""
       insert into users(session_id) values('');
-      select last_insert_id();
-    """.as[Int].head
+    """.as[Int].head)
   }
 
   def remove(userId: Int): Future[Int] = usingDB {

@@ -13,14 +13,14 @@ class ControllerBase(implicit val userRepository: UserRepository) extends Contro
     SessionHelper.getUserId(userRepository.createUser, userRepository.getUserId)
   }
 
-
   def urlParamToInt(paramName: String)(implicit request: Request[AnyContent]): Int = {
     request.getQueryString(paramName) match {
       case Some(x) => x.toInt
       case None => 0
     }
   }
-  //TOD: Implement this
+
+  //TODO: Implement this
   def isAjax = false
 
   override def messagesApi: MessagesApi = play.api.i18n.Messages.Implicits.applicationMessagesApi
