@@ -103,14 +103,13 @@
             <li>
               <a href="@routes.Application.delivery"><i class="fa fa-truck"></i>&nbsp;Доставка и оплата</a>
             </li>
-            <li>TODO: Custom Pages</li>
-            @{ /*
+            @{
                 val pages = helpers.PageHelper.getPages
                 pages.map(page => {
                     val link = s"<li><a href='${routes.Application.pages({page.alias})}'>&nbsp;${page.name}</a></li>"
                     Html(link)}
                 )
-                */
+
               }
           </ul>
 
@@ -119,7 +118,7 @@
       <section class="copyrightbottom">
         <div class="container">
           <div class="copyright-inner">
-            <span class="pull-right"> DigitalBand &copy; TODO: Take the phone back</span>
+            <span class="pull-right"> DigitalBand &copy; 2015 | @(helpers.PhoneViewHelper.getPhoneNumber(request.host))</span>
           </div>
         </div>
       </section>
