@@ -1,9 +1,9 @@
-@(title: String = Messages("main.head.title"),
-        menuItem: String = "index",
-        scripts: Html = Html(""),
-        subnav: Html = Html(""),
-        search: String = "",
-        inStock: Int = 0)(content: Html)(implicit user: Option[models.UserEntity], request: play.api.mvc.Request[Any])
+@(title: String,
+  menuItem: String = "index",
+  scripts: Html = Html(""),
+  subnav: Html = Html(""),
+  search: String = "",
+  inStock: Int = 0)(content: Html)(implicit user: Option[models.UserEntity], request: play.api.mvc.Request[Any], messages: Messages)
 
 <!DOCTYPE html>
 <html>
@@ -109,6 +109,7 @@
                     val link = s"<li><a href='${routes.Application.pages({page.alias})}'>&nbsp;${page.name}</a></li>"
                     Html(link)}
                 )
+
               }
           </ul>
 
@@ -117,7 +118,7 @@
       <section class="copyrightbottom">
         <div class="container">
           <div class="copyright-inner">
-            <span class="pull-right"> DigitalBand &copy; @(helpers.PhoneViewHelper.getPhoneNumber(request.host))</span>
+            <span class="pull-right"> DigitalBand &copy; 2015 | @(helpers.PhoneViewHelper.getPhoneNumber(request.host))</span>
           </div>
         </div>
       </section>

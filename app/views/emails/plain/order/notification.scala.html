@@ -1,4 +1,4 @@
-@(order: OrderInfo)(implicit request: play.api.mvc.Request[Any])
+@(order: OrderInfo)(implicit request: play.api.mvc.Request[Any], messages: Messages)
 @emails.plain.order.main(order, hidePrices = true) {
 Уважаемый покупатель!
 

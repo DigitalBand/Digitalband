@@ -1,15 +1,17 @@
 package controllers
 
-
 import com.google.inject.Inject
 import controllers.common.ControllerBase
 import dao.common._
+import forms.ContactsForm
 import helpers.{EmailHelper, ReCaptchaHelper, withUser}
 import models._
 import play.api.data.Form
-import play.api.data.Forms._
-import play.api.i18n.Messages
-import play.api.mvc._
+import play.api.i18n.{MessagesApi, Messages}
+import play.api.libs.mailer.MailerClient
+import scala.concurrent.Future
+import scala.concurrent.ExecutionContext.Implicits.global
+import play.api.i18n.Messages.Implicits._
 
 class Application @Inject()(implicit ur: UserRepository,
                             val shopRepository: ShopRepository,
@@ -17,82 +19,81 @@ class Application @Inject()(implicit ur: UserRepository,
                             val stockItemRepository: StockItemRepository,
                             val categoryRepository: CategoryRepository,
                             val productRepository: ProductRepository,
-                            val pageRepository: PageRepository) extends ControllerBase {
+                            val pageRepository: PageRepository,
+                            val mailerClient: MailerClient) extends ControllerBase {
+
   val oneDayDuration = 86400
   val emailHelper = new EmailHelper()
 
-  def contactsForm(implicit request: Request[Any]) = {
-    Form(
-      mapping(
-        "name" -> nonEmptyText,
-        "email" -> nonEmptyText,
-        "productName" -> nonEmptyText,
-        "message" -> nonEmptyText,
-        "recaptcha_challenge_field" -> nonEmptyText,
-        "recaptcha_response_field" -> nonEmptyText
-      )(ContactEntity.apply)(ContactEntity.unapply).verifying(contact => {
-        ReCaptchaHelper.validate(
-          ReCaptcha(
-            contact.recaptcha_challenge_field,
-            contact.recaptcha_response_field,
-            request.remoteAddress,
-            "6LfMQdYSAAAAAF1mfoJe--9UaVnA5BGjdQMlJ7sp"))
-      }))
-  }
-
-  def index = /*Cached("homePage", oneDayDuration)*/ {
-    withUser {
-      implicit user =>
-        implicit request =>
-          val categories = categoryRepository.listWithPictures.toList
-          val products = productRepository.listMostVisited(12, request.host).toList
+  def index = withUser.async {
+    implicit user =>
+      implicit request =>
+        for {
+          categories <- categoryRepository.listWithPictures
+          products <- productRepository.listMostVisited(12, request.host)
+        } yield {
           Ok(views.html.index(categories, products))
-    }
+        }
   }
 
-  def pages(alias: String) = withUser {
+
+  def pages(alias: String) = withUser.async {
     implicit user =>
       implicit request =>
-        val page = pageRepository.get(alias)
-        Ok(views.html.Application.page(page))
+        pageRepository.get(alias).map { page =>
+          Ok(views.html.Application.page(page))
+        }
   }
 
-  def delivery = withUser {
+  def delivery = withUser.async {
     implicit user => implicit request =>
-      Ok(views.html.Application.delivery(cityRepository.getByHostname(request.host)))
+      cityRepository.getByHostname(request.host).map {
+        cityInfo =>
+          Ok(views.html.Application.delivery(cityInfo))
+      }
   }
 
-  def contacts = withUser {
+  def contacts = withUser.async {
     implicit user =>
       implicit request =>
-        val recaptcha = ReCaptchaHelper.get("6LfMQdYSAAAAAJCe85Y6CRp9Ww7n-l3HOBf5bifB")
-        val shops = shopRepository.getByHostname(request.host)
-        Ok(views.html.Application.contacts(contactsForm, recaptcha, shops))
+        for {
+        //TODO: Save the string to the config
+          recaptcha <- ReCaptchaHelper.get("6LfMQdYSAAAAAJCe85Y6CRp9Ww7n-l3HOBf5bifB")
+          shops <- shopRepository.getByHostname(request.host)
+        } yield Ok(views.html.Application.contacts(ContactsForm(), recaptcha, shops))
   }
 
-  def stock(productId: Int) = withUser {
+  def stock(productId: Int) = withUser.async {
     implicit user =>
       implicit request =>
-        val product = productRepository.get(productId)
-        val shopList = stockItemRepository.shopList(productId)
-        Ok(views.html.Application.stock(product, shopList))
+        for {
+          product <- productRepository.get(productId)
+          shopList <- stockItemRepository.shopList(productId)
+        } yield {
+          Ok(views.html.Application.stock(product, shopList))
+        }
   }
 
-  def sendFeedback = withUser {
+  def sendFeedback = withUser.async {
     implicit user =>
       implicit request =>
-        contactsForm.bindFromRequest.fold(
-          formWithErrors => BadRequest(
-            views.html.Application.contacts(formWithErrors,
-              ReCaptchaHelper.get("6LfMQdYSAAAAAJCe85Y6CRp9Ww7n-l3HOBf5bifB"),
-              shopRepository.getByHostname(request.host))),
-          contactsForm => {
-            emailHelper.sendFeedback(contactsForm)
+        def onError(form: Form[ContactEntity]) = {
+          for {
+            //TODO: Save the string to the config
+            recaptcha <- ReCaptchaHelper.get("6LfMQdYSAAAAAJCe85Y6CRp9Ww7n-l3HOBf5bifB")
+            shops <- shopRepository.getByHostname(request.host)
+          } yield BadRequest(
+            views.html.Application.contacts(form, recaptcha, shops))
+        }
+        def onSuccess(contactEntity: ContactEntity) = {
+          emailHelper.sendFeedback(contactEntity)
+          Future {
             Redirect(routes.Application.contacts()).flashing(
               "alert-success" -> Messages("application.sendfeedback.alert.success")
             )
           }
-        )
+        }
+        ContactsForm().bindFromRequest.fold(onError, onSuccess)
   }
 
 

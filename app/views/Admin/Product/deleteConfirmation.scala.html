@@ -1,4 +1,4 @@
-@(product: models.ProductDetails)(implicit user: Option[models.UserEntity], request: play.api.mvc.Request[Any])
+@(product: models.ProductDetails)(implicit user: Option[models.UserEntity], request: play.api.mvc.Request[Any], messages: Messages)
 @views.html.Admin.main("Администрирование", "index") {
     <div class="col-md-12 page-block">
         <div class="alert alert-danger">Вы действительно хотите удалить товар?</div>

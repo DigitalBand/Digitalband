@@ -5,8 +5,9 @@ import models.UserEntity
 import play.api.mvc.BodyParsers.parse
 import play.api.mvc.Results._
 import play.api.mvc._
-
-import scala.concurrent.Future
+import scala.concurrent.duration._
+import scala.concurrent.{Await, Future}
+import scala.concurrent.ExecutionContext.Implicits.global
 
 class AuthenticatedRequest[A](val username: String, request: Request[A]) extends WrappedRequest[A](request)
 
@@ -40,14 +41,20 @@ object Authenticated {
 object withUser {
   def apply[A](bp: BodyParser[A])(f: Option[UserEntity] => Request[A] => Result)(implicit userRepository: UserRepository): EssentialAction = Action(bp) {
     request =>
-      f(userRepository.get(request.session.get(SessionHelper.username).getOrElse("")))(request)
+      //TODO: fix the await
+      val user = Await.result(userRepository.get(request.session.get(SessionHelper.username).getOrElse("")), Duration(2, SECONDS))
+      f(user)(request)
   }
   def apply[A](f: Option[UserEntity] => Request[AnyContent] => Result)(implicit userRepository: UserRepository): EssentialAction =  {
       apply(parse.anyContent)(f)
   }
   def async[A](bp: BodyParser[A])(f: Option[UserEntity] => Request[A] => Future[Result])(implicit userRepository: UserRepository) = Action.async(bp) {
     request =>
-      f(userRepository.get(request.session.get(SessionHelper.username).getOrElse("")))(request)
+      userRepository.get(request.session.get(SessionHelper.username).getOrElse("")).flatMap {
+        user =>
+          f(user)(request)
+      }
+
   }
   def async[A](f: Option[UserEntity] => Request[AnyContent] => Future[Result])(implicit userRepository: UserRepository): EssentialAction =
     async(parse.anyContent)(f)
@@ -58,7 +65,8 @@ object withAdmin {
 
   def apply[A](bp: BodyParser[A])(f: Option[UserEntity] => AuthenticatedRequest[A] => Result)(implicit userRepository: UserRepository) = Authenticated(bp) {
     request =>
-      userRepository.get(request.username) match {
+      //TODO: fix the await
+      Await.result(userRepository.get(request.username), Duration(2, SECONDS)) match {
         case Some(user) =>
           if (user.isAdmin) {
             f(Option(user))(request)
@@ -74,7 +82,7 @@ object withAdmin {
 
   def async[A](bp: BodyParser[A])(f: Option[UserEntity] => AuthenticatedRequest[A] => Future[Result])(implicit userRepository: UserRepository) = Authenticated.async(bp) {
     request =>
-      userRepository.get(request.username) match {
+      userRepository.get(request.username).flatMap {
         case Some(user) =>
           if (user.isAdmin) {
             f(Option(user))(request)

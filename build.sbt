@@ -12,16 +12,18 @@ resolvers += "Scalaz Bintray Repo" at "http://dl.bintray.com/scalaz/releases"
 
 resolvers += Resolver.file("Local repo", file(Paths.get(System.getProperty("user.home"), ".ivy2", "local").toString))(Resolver.ivyStylePatterns)
 
+resolvers += "scalaz-bintray" at "https://dl.bintray.com/scalaz/releases"
 
 libraryDependencies ++= Seq(
   jdbc,
-  anorm,
   cache,
   ws,
-  "com.typesafe.slick" %% "slick" % "3.0.0-RC1",
+  evolutions,
+  specs2 % Test,
+  "com.typesafe.slick" %% "slick" % "3.1.0",
   "mysql" % "mysql-connector-java" % "5.1.25",
   "org.jsoup" % "jsoup" % "1.7.2",
-  "com.typesafe.play" %% "play-mailer" % "2.4.0",
+  "com.typesafe.play" %% "play-mailer" % "3.0.1",
   "com.tzavellas" % "sse-guice" % "0.7.1",
   "org.ocpsoft.prettytime" % "prettytime" % "2.1.3.Final",
   "commons-codec" % "commons-codec" % "1.7",

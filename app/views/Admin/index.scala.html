@@ -1,5 +1,4 @@
-@(data: play.api.libs.json.JsValue, questions: Seq[models.Question])(implicit user: Option[models.UserEntity], request: play.api.mvc.Request[Any])
-@import Shared._
+@(data: play.api.libs.json.JsValue)(implicit user: Option[models.UserEntity], request: play.api.mvc.Request[Any], messages: Messages)
     @scripts = {
         <script src="@routes.Assets.at("lib/highcharts/highcharts.js")" type="text/javascript"></script>
         <script src="@routes.Assets.at("javascripts/charts.js")" type="text/javascript"></script>
@@ -12,36 +11,6 @@
     }
 @views.html.Admin.main("Администрирование", "index", scripts = scripts) {
     <div class="col-md-12 page-block">
-        @if(questions.length > 0) {
-            <div class="row">
-                <div class="col-md-12">
-                    <div class="page-header">
-                        <h4>Неотвеченные вопросы пользователей</h4>
-                    </div>
-                    <ul>
-                    @questions.map { question =>
-                        <li>
-                            Вопрос по наличию товара <a href="@routes.Product.display(question.productId)" target="_blank">@question.productTitle</a>
-                            от <a href="emailto:@question.email">@question.email</a>
-                            <div class="btn-group">
-                                <a href="#" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
-                                    <i class="fa fa-envelope"></i>
-                                    Ответить
-                                    <span class="caret"></span>
-                                </a>
-                                <ul class="dropdown-menu">
-                                    <li><a href="@controllers.admin.routes.Question.available(question.id)">
-                                        Есть в наличии</a></li>
-                                    <li><a href="@controllers.admin.routes.Question.unavailable(question.id)">
-                                        Нет в наличии</a></li>
-                                </ul>
-                            </div>
-                        </li>
-                    }
-                    </ul>
-                </div>
-            </div>
-        }
         <div class="row">
             <div class="col-md-12">
                 <div class="page-header">

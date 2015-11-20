@@ -1,15 +1,16 @@
 package dao.impl.orm.slick
 
-import slick.driver.JdbcDriver.backend.Database
-import Database.dynamicSession
+import slick.driver.MySQLDriver.api._
 import dao.impl.orm.slick.common.RepositoryBase
 import helpers.PhoneHelper.parsePhones
 import models.{ShopInfo, YandexShopInfo}
-import slick.jdbc.{GetResult, StaticQuery => Q}
-import Q.interpolation
+import slick.jdbc.GetResult
+
+import scala.concurrent.Future
+
 
 class ShopRepository extends RepositoryBase with dao.common.ShopRepository {
-  def list: Seq[ShopInfo] = database withDynSession {
+  def list: Future[Seq[ShopInfo]] = usingDB {
     implicit val res = GetResult(r => ShopInfo(
       id = r.<<,
       title = r.<<,
@@ -28,10 +29,10 @@ class ShopRepository extends RepositoryBase with dao.common.ShopRepository {
         s.phones
       from shops s
       inner join cities c on c.id = s.city_id;
-    """.as[ShopInfo].list
+    """.as[ShopInfo]
   }
 
-  override def get(shopId: Int): ShopInfo = database withDynSession {
+  override def get(shopId: Int): Future[ShopInfo] = usingDB {
     implicit val res = GetResult(r => ShopInfo(
       id = r.<<,
       title = r.<<,
@@ -52,10 +53,10 @@ class ShopRepository extends RepositoryBase with dao.common.ShopRepository {
       inner join cities c on c.id = s.city_id
       where
         s.id = ${shopId};
-    """.as[ShopInfo].first
+    """.as[ShopInfo].head
   }
 
-  def getByCity(cityId: Int): Seq[ShopInfo] = database withDynSession{
+  def getByCity(cityId: Int): Future[Seq[ShopInfo]] = usingDB {
     implicit val res = GetResult(r => ShopInfo(
       id = r.<<,
       title = r.<<,
@@ -76,10 +77,10 @@ class ShopRepository extends RepositoryBase with dao.common.ShopRepository {
       inner join cities c on c.id = s.city_id
       where
         s.city_id = ${cityId};
-    """.as[ShopInfo].list
+    """.as[ShopInfo]
   }
 
-  def getByHostname(host: String): Seq[ShopInfo] = database withDynSession{
+  def getByHostname(host: String): Future[Seq[ShopInfo]] = usingDB {
     implicit val res = GetResult(r => ShopInfo(
       id = r.<<,
       title = r.<<,
@@ -100,11 +101,11 @@ class ShopRepository extends RepositoryBase with dao.common.ShopRepository {
       inner join cities c on c.id = s.city_id
       where
         c.domain = ${host};
-    """.as[ShopInfo].list
+    """.as[ShopInfo]
   }
 
-  def update(shop: ShopInfo) = database withDynSession {
-    sqlu"""
+  def update(shop: ShopInfo): Future[Int] = usingDB {
+    sql"""
       UPDATE shops
       SET
         title = ${shop.title},
@@ -113,26 +114,25 @@ class ShopRepository extends RepositoryBase with dao.common.ShopRepository {
         phones = ${shop.phoneNumbers.mkString(";")}
       WHERE
         id = ${shop.id};
-    """.execute
+    """.as[Int].head
   }
 
-  def add(shop: ShopInfo): Int = database withDynSession {
-    sqlu"""
+  def add(shop: ShopInfo): Future[Int] = usingDB {
+    returningId(sql"""
       insert into
         shops(title, city_id, address, phones)
         values(${shop.title}, ${shop.cityId}, ${shop.address}, ${shop.phoneNumbers.mkString(";")});
-    """.execute
-    sql"select last_insert_id();".as[Int].first
+    """.as[Int].head)
   }
 
-  def remove(shopId: Int) = database withDynSession {
-    sqlu"""
+  def remove(shopId: Int): Future[Int] = usingDB {
+    sql"""
       delete from shops where id = ${shopId};
-    """.execute
+    """.as[Int].head
   }
 
   //TODO: Check where this data goes
-  def getYandexShopInfo = database withDynSession {
+  def getYandexShopInfo = usingDB {
     implicit val getYandexShopInfoResults = GetResult(r => YandexShopInfo(r.<<, r.<<, r.<<))
     sql"""
         select
@@ -142,6 +142,6 @@ class ShopRepository extends RepositoryBase with dao.common.ShopRepository {
         from yandex_shop_info
         where
           shop_id = 1;
-    """.as[YandexShopInfo].first
+    """.as[YandexShopInfo].head
   }
 }

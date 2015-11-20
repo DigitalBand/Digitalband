@@ -2,9 +2,8 @@ package dao.common
 
 import models.DealerInfo
 
-/**
- * Created by tim on 17/02/14.
- */
+import scala.concurrent.Future
+
 trait DealerRepository {
-  def list: Seq[DealerInfo]
+  def list: Future[Seq[DealerInfo]]
 }

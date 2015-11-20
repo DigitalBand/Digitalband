@@ -1,75 +1,80 @@
 package dao.impl.orm.slick
 
-import slick.driver.JdbcDriver.backend.Database
-import Database.dynamicSession
 import dao.impl.orm.slick.common.RepositoryBase
-import slick.jdbc.{GetResult, StaticQuery => Q}
-import Q.interpolation
+import slick.driver.MySQLDriver.api._
 import models.{PageInfo, PageSection}
-
 import slick.jdbc.GetResult
+import scala.concurrent.ExecutionContext.Implicits.global
+import scala.concurrent.Future
 
 class PageRepository extends RepositoryBase with dao.common.PageRepository {
-  def get(pageAlias: String): PageInfo = database withDynSession {
-    implicit val res = GetResult(r => PageInfo(
-      id = r.<<,
-      sections = getSections(r.<<),
-      name = r.<<,
-      alias = r.<<
-    ))
-    sql"""
+  implicit val res = GetResult(r => PageInfo(
+    id = r.<<,
+    sections = Nil,
+    name = r.<<,
+    alias = r.<<
+  ))
+
+  def get(pageAlias: String): Future[PageInfo] = {
+    val pageInfoFuture = usingDB {
+      sql"""
       select
         p.id,
-        p.id,
         p.name,
-        p.alias,
-        p.title
+        p.alias
       from pages p
       where p.alias = ${pageAlias};
-    """.as[PageInfo].first
+    """.as[PageInfo].head
+    }
+    for {
+      pageInfo <- pageInfoFuture
+      sections <- getSections(pageInfo.id)
+    } yield PageInfo(pageInfo.id, pageInfo.name, pageInfo.alias, sections)
   }
 
-  def get(pageId: Int): PageInfo = database withDynSession {
-    implicit val res = GetResult(r => PageInfo(
-      id = r.<<,
-      name = r.<<,
-      alias = r.<<,
-      sections = getSections(pageId)
-    ))
-    sql"""
+  def get(pageId: Int): Future[PageInfo] = {
+    val pageInfoFuture = usingDB {
+      sql"""
       select
         p.id,
         p.name,
-        p.alias,
-        p.title
+        p.alias
       from pages p
       where p.id = ${pageId};
-    """.as[PageInfo].first
+    """.as[PageInfo].head
+    }
+    for {
+      pageInfo <- pageInfoFuture
+      sections <- getSections(pageInfo.id)
+    } yield PageInfo(pageInfo.id, pageInfo.name, pageInfo.alias, sections)
   }
 
-  def update(page: PageInfo) = database withDynSession {
-    sqlu"""
+  def update(page: PageInfo) = {
+    val updatedCountFuture = usingDB {
+      sql"""
       update pages
       set
         name = ${page.name},
         alias = ${page.alias}
       where id = ${page.id};
-    """.execute
-
+    """.as[Int].head
+    }
     saveSections(page.id, page.sections)
+    updatedCountFuture
   }
 
-  def remove(pageId: Int) = database withDynSession {
-    sqlu"""
-      delete from page_sections where page_id = ${pageId};
-    """.execute
-
-    sqlu"""
-      delete from pages where id = ${pageId};
-    """.execute
+  def remove(pageId: Int): Future[Int] = usingDB {
+    DBIO.sequence(Seq(
+      sql"""
+          delete from page_sections where page_id = ${pageId};
+        """.as[Int].head,
+      sql"""
+          delete from pages where id = ${pageId};
+        """.as[Int].head)
+    ).map(_.sum)
   }
 
-  def list(): Seq[PageInfo] = database withDynSession {
+  def list(): Future[Seq[PageInfo]] = usingDB {
     implicit val res = GetResult(r => PageInfo(
       id = r.<<,
       name = r.<<,
@@ -83,21 +88,26 @@ class PageRepository extends RepositoryBase with dao.common.PageRepository {
         p.alias,
         p.title
       from pages p;
-    """.as[PageInfo].list
+    """.as[PageInfo]
   }
 
-  def add(page: PageInfo): Int = database withDynSession {
-    sqlu"""
+  def add(page: PageInfo): Future[Int] = {
+    val pageIdFuture = usingDB {
+      returningId(sql"""
       insert into
         pages(name, alias)
         values(${page.name}, ${page.alias});
-    """.execute
-    val pageId = sql"select last_insert_id();".as[Int].first
-    addSections(pageId, page.sections)
-    pageId
+      """.as[Int].head)
+    }
+    for {
+      pageId <- pageIdFuture
+    } yield {
+      addSections(pageId, page.sections)
+      pageId
+    }
   }
 
-  def getSections(pageId: Int): Seq[PageSection] = {
+  def getSections(pageId: Int): Future[Seq[PageSection]] = usingDB {
     implicit val res = GetResult(r => PageSection(
       id = r.<<,
       name = r.<<,
@@ -110,50 +120,55 @@ class PageRepository extends RepositoryBase with dao.common.PageRepository {
         ps.content
       from page_sections ps
       where ps.page_id = ${pageId};
-    """.as[PageSection].list
+    """.as[PageSection]
   }
 
-  def addSections(pageId: Int, sections: Seq[PageSection]) {
-    sections.foreach {
+  def addSections(pageId: Int, sections: Seq[PageSection]): Future[Int] = usingDB {
+    val updates = sections.map {
       section =>
-        sqlu"""
+        sql"""
           insert into
             page_sections(page_id, name, content)
             values(${pageId}, ${section.name}, ${section.content});
-        """.execute
+        """.as[Int].head
+    }
+    DBIO.sequence(updates).map(_.sum)
+  }
+
+  private def saveSections(pageId: Int, sections: Seq[PageSection]) {
+    val sectionsToAdd = sections.filter(s => s.id == 0)
+    for {
+      currentSections <- getSections(pageId)
+    } yield {
+      val sectionsToRemove = currentSections.filterNot(section => sections.exists(s => s.id == section.id))
+      val sectionsToUpdate = sections.filter(section => currentSections.exists(s => s.id == section.id))
+      addSections(pageId, sectionsToAdd)
+      updateSections(sectionsToUpdate)
+      removeSections(sectionsToRemove)
     }
   }
 
-  def saveSections(pageId: Int, sections: Seq[PageSection]) {
-    val currentSections = getSections(pageId)
-    val sectionsToAdd = sections.filter(s => s.id == 0)
-    val sectionsToRemove = currentSections.filterNot(section => sections.exists(s => s.id == section.id))
-    val sectionsToUpdate = sections.filter(section => currentSections.exists(s => s.id == section.id))
-
-    addSections(pageId, sectionsToAdd)
-    updateSections(sectionsToUpdate)
-    removeSections(sectionsToRemove)
-  }
-
-  def updateSections(sections: Seq[PageSection]) {
-    sections.foreach {
+  def updateSections(sections: Seq[PageSection]): Future[Int] = usingDB {
+    val updates = sections.map {
       section =>
-        sqlu"""
+        sql"""
           update page_sections
           set
             name = ${section.name},
             content = ${section.content}
           where id = ${section.id};
-        """.execute
+        """.as[Int].head
     }
+    DBIO.sequence(updates).map(_.sum)
   }
 
-  def removeSections(sections: Seq[PageSection]) {
-    sections.foreach {
+  def removeSections(sections: Seq[PageSection]): Future[Int] = usingDB {
+    val updates = sections.map {
       section =>
-        sqlu"""
+        sql"""
           delete from page_sections where id = ${section.id};
-        """.execute
+        """.as[Int].head
     }
+    DBIO.sequence(updates).map(_.sum)
   }
 }

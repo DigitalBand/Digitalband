@@ -1,22 +1,24 @@
-@(status: String, orderId: Int)
+@(status: String, orderId: Int)(implicit messages: Messages)
 @import controllers.admin.routes.Order
 <div class="btn-group">
-<a data-toggle="dropdown" class="dropdown-toggle btn @{"btn-" + Messages("order.list.ui.button." + status)}">
-@Messages("order.list.ui.button." + status + ".text")
-<span class="caret"></span>
-</a>
-<ul class="dropdown-menu">
-<li>
-<a href="@Order.confirmPage(orderId)"> Подтвердить </a>
-</li>
-<li>
-<a href="@Order.cancelPage(orderId)"> Отменить </a>
-</li>
-<li>
-<a href="@Order.completePage(orderId)"> Завершить </a>
-</li>
-<li>
-<a href="@Order.deletePage(orderId)"> Удалить </a>
-</li>
-</ul>
+  <a data-toggle="dropdown" class="dropdown-toggle btn @{
+    "btn-" + Messages("order.list.ui.button." + status)
+  }">
+    @Messages("order.list.ui.button." + status + ".text")
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu">
+    <li>
+      <a href="@Order.confirmPage(orderId)"> Подтвердить </a>
+    </li>
+    <li>
+      <a href="@Order.cancelPage(orderId)"> Отменить </a>
+    </li>
+    <li>
+      <a href="@Order.completePage(orderId)"> Завершить </a>
+    </li>
+    <li>
+      <a href="@Order.deletePage(orderId)"> Удалить </a>
+    </li>
+  </ul>
 </div>

@@ -1,4 +1,4 @@
-@(order: models.OrderInfo)(implicit user: Option[models.UserEntity], request: play.api.mvc.Request[Any])
+@(order: models.OrderInfo)(implicit user: Option[models.UserEntity], request: play.api.mvc.Request[Any], messages: Messages)
 @import Cart.shoppingList
 @import views.html.Admin.Order.statusButton
 @views.html.Admin.main("Просмотр заказа", "orders") {

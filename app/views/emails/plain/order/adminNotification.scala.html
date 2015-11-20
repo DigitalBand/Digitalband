@@ -1,4 +1,4 @@
-@(order: OrderInfo, idMark: String)(implicit request: play.api.mvc.Request[Any])
+@(order: OrderInfo, idMark: String)(implicit request: play.api.mvc.Request[Any], messages: Messages)
 
 @emails.plain.order.main(order, additionalContent = additionalContent(order)) {
 Уважаемый администратор!

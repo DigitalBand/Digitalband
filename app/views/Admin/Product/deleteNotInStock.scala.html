@@ -1,4 +1,4 @@
-@()(implicit user: Option[UserEntity], request: play.api.mvc.Request[Any])
+@()(implicit user: Option[UserEntity], request: play.api.mvc.Request[Any], messages: Messages)
 @scripts = {
   <script src="@routes.Assets.at("lib/angularjs/angular.min.js")"></script>
   <script src="@controllers.admin.routes.Product.javascriptRoutes()"></script>

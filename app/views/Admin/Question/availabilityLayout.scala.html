@@ -1,4 +1,4 @@
-@(info: String, title: String)(content: Html)(implicit user: Option[models.UserEntity], request: play.api.mvc.Request[Any])
+@(info: String, title: String)(content: Html)(implicit user: Option[models.UserEntity], request: play.api.mvc.Request[Any], messages: Messages)
 @import views.html.common.bootstrap.fc
     @scripts = {
         <script src="@routes.Assets.at("javascripts/ckeditor/standard/ckeditor.js")" type="text/javascript"></script>

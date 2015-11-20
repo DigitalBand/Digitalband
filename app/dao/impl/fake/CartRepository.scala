@@ -2,16 +2,16 @@ package dao.impl.fake
 
 import models.{CItem, CartItem}
 
+import scala.concurrent.Future
+
 class CartRepository extends dao.common.CartRepository {
-  def add(item: CartItem): Int = 2
+  override def mergeShoppingCarts(authenticatedUserId: Int, anonymousUserId: Int): Unit = ???
 
-  def list(cartId: Int) = ???
+  override def updateItems(cartId: Int, items: Seq[CItem]): Unit = ???
 
-  def deleteItem(cartId: Int, productId: Int) = ???
+  override def deleteItem(cartId: Int, productId: Int): Future[Int] = ???
 
-  def createCart(userId: Int) = ???
+  override def list(cartId: Int): Future[Seq[CartItem]] = ???
 
-  def updateItems(cartId: Int, items: Seq[CItem]) = ???
-
-  def mergeShoppingCarts(authenticatedUserId: Int, anonymousUserId: Int) = ???
+  override def add(item: CartItem): Future[Int] = ???
 }

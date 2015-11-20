@@ -1,4 +1,4 @@
-@(product: models.ProductDetails, form: Form[String], isAjax: Boolean, returnUrl: String = "")(implicit user: Option[models.UserEntity], request: play.api.mvc.Request[Any])
+@(product: models.ProductDetails, form: Form[String], isAjax: Boolean, returnUrl: String = "")(implicit user: Option[models.UserEntity], request: play.api.mvc.Request[Any], messages: Messages)
 @import views.html.common.bootstrap.fc
     @content = {
         <div class="row">

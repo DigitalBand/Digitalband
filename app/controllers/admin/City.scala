@@ -7,6 +7,7 @@ import helpers.withAdmin
 import models.CityInfo
 import play.api.Routes
 import play.api.libs.json._
+import scala.concurrent.ExecutionContext.Implicits.global
 
 class City @Inject()
 (implicit userRepository: UserRepository,
@@ -18,10 +19,13 @@ class City @Inject()
         Ok(views.html.Admin.City.main())
   }
 
-  def get(cityId: Int) = withAdmin {
+  def get(cityId: Int) = withAdmin.async {
     implicit user =>
       implicit request =>
-        Ok(Json.toJson(cityRepository.get(cityId))).withHeaders(CONTENT_TYPE -> "application/json")
+        cityRepository.get(cityId).map {
+          cityInfo =>
+            Ok(Json.toJson(cityInfo)).withHeaders(CONTENT_TYPE -> "application/json")
+        }
   }
 
   def remove(cityId: Int) = withAdmin {
@@ -31,12 +35,15 @@ class City @Inject()
         Ok("ok")
   }
 
-  def add = withAdmin(parse.json) {
+  def add = withAdmin.async(parse.json) {
     implicit user =>
       implicit request =>
         val body = request.body
         val city = Json.parse(body.toString()).validate[CityInfo]
-        Ok(Json.toJson(cityRepository.add(city.get))).withHeaders(CONTENT_TYPE -> "application/json")
+        cityRepository.add(city.get).map {
+          cityId =>
+            Ok(Json.toJson(cityId)).withHeaders(CONTENT_TYPE -> "application/json")
+        }
   }
 
   def update = withAdmin(parse.json) {
@@ -46,18 +53,25 @@ class City @Inject()
         val city = Json.parse(body.toString()).validate[CityInfo]
         cityRepository.update(city.get)
         Ok("ok")
+
   }
 
-  def list = withAdmin {
+  def list = withAdmin.async {
     implicit user =>
       implicit request =>
-        Ok(Json.toJson(cityRepository.list)).withHeaders(CONTENT_TYPE -> "application/json")
+        cityRepository.list.map {
+          cityList =>
+            Ok(Json.toJson(cityList)).withHeaders(CONTENT_TYPE -> "application/json")
+        }
   }
 
-  def listShortInfo = withAdmin {
+  def listShortInfo = withAdmin.async {
     implicit user =>
       implicit request =>
-        Ok(Json.toJson(cityRepository.listShortInfo)).withHeaders(CONTENT_TYPE -> "application/json")
+        cityRepository.listShortInfo.map {
+          cityList =>
+            Ok(Json.toJson(cityList)).withHeaders(CONTENT_TYPE -> "application/json")
+        }
   }
 
   def javascriptRoutes = withAdmin {

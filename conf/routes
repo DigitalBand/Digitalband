@@ -59,12 +59,7 @@ DELETE        /admin/api/product/delete-by-id/:id                  @controllers.
 GET           /admin/product-deleteNotInStockForm                  @controllers.admin.Product.deleteNotInStockForm()
 #Admin dealers
 GET           /admin/dealer/list                                   @controllers.admin.Dealer.list()
-#Admin questions
-GET           /admin/question/:questionId/available                @controllers.admin.Question.available(questionId: Int)
-POST          /admin/question/:questionId/available                @controllers.admin.Question.setAvailable(questionId: Int)
-GET           /admin/question/:questionId/unavailable              @controllers.admin.Question.unavailable(questionId: Int)
-POST          /admin/question/:questionId/unavailable              @controllers.admin.Question.setUnavailable(questionId: Int)
-GET           /admin/question/list-with-answers/:pageNumber        @controllers.admin.Question.listWithAnswers(pageNumber: Int, pageSize: Int ?= 20)
+
 #Google images
 GET           /admin/google/images/list                            @controllers.admin.ImageSearch.imageList(search: String ?= "", pageNumber:Int ?= 1)
 # Home page
@@ -79,7 +74,7 @@ GET           /category/list                                       @controllers.
 GET           /category/:categoryId/products/:pageNumber           @controllers.Product.filteredList(categoryId:Int, pageNumber:Int, brandId:Int ?= 0, brandPage:Int ?= 1, productId:Int ?= 0, pageSize:Int ?= 10, s:String ?= "", is: Int ?= 0)
 GET           /product/:id                                         @controllers.Product.display(id:Int)
 GET           /product/:id/availability                            @controllers.Product.availability(id: Int, returnUrl ?= "")
-POST          /product/:id/availability                            @controllers.Product.requestAvailability(id: Int, returnUrl ?= "")
+
 # Cart
 POST          /cart/add                                            @controllers.Cart.add
 POST          /cart/delete/:productId                              @controllers.Cart.delete(productId: Int, returnUrl: String ?= "")

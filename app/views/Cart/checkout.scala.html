@@ -1,8 +1,8 @@
-@(loginForm: Form[(String, String)])(implicit user: Option[models.UserEntity], request: play.api.mvc.Request[Any])
+@(loginForm: Form[(String, String)])(implicit user: Option[models.UserEntity], request: play.api.mvc.Request[Any], messages: Messages)
 @import views.html.common.bootstrap.fc
 @import views.html.Security.loginpart
 @import Shared.wizard
-@main(menuItem = "cart") {
+@main(Messages("main.head.title"), menuItem = "cart") {
     <div class="page-block">
         <div class="col-md-12">
             @wizard(1)

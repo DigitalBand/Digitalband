@@ -9,7 +9,7 @@ import models.{CItem, CartItem}
 import play.api.data.Form
 import play.api.data.Forms._
 import play.api.mvc._
-
+import scala.concurrent.ExecutionContext.Implicits.global
 
 class Cart @Inject()(implicit ur: UserRepository, val cartRepository: CartRepository, productRepository: ProductRepository) extends ControllerBase {
   val addToCartForm = Form(
@@ -30,11 +30,12 @@ class Cart @Inject()(implicit ur: UserRepository, val cartRepository: CartReposi
           request.session + ("userid" -> userId.toString)
   }
 
-  def display(returnUrl: String) = withUser {
+  def display(returnUrl: String) = withUser.async {
     implicit user =>
       implicit request =>
-        val cartItems = cartRepository.list(getUserId).toList
-        Ok(views.html.Cart.display(cartItems, returnUrl))
+        cartRepository.list(getUserId).map { cartItems =>
+          Ok(views.html.Cart.display(cartItems, returnUrl))
+        }
   }
 
   def delete(productId: Int, returnUrl: String = "") = withUser {
@@ -44,10 +45,12 @@ class Cart @Inject()(implicit ur: UserRepository, val cartRepository: CartReposi
         Redirect(routes.Cart.display(returnUrl))
   }
 
-  def deleteConfirmation(productId: Int, returnUrl: String = "") = withUser {
+  def deleteConfirmation(productId: Int, returnUrl: String = "") = withUser.async {
     implicit user =>
       implicit request =>
-        Ok(views.html.Cart.deleteConfirmation(productRepository.get(productId), returnUrl))
+        for {
+          product <- productRepository.get(productId)
+        } yield Ok(views.html.Cart.deleteConfirmation(product, returnUrl))
   }
 
   def update(returnUrl: String) = withUser {
@@ -61,7 +64,7 @@ class Cart @Inject()(implicit ur: UserRepository, val cartRepository: CartReposi
   def checkout = withUser {
     implicit user =>
       implicit request =>
-        if (!user.isDefined)
+        if (user.isEmpty)
           Ok(views.html.Cart.checkout(loginForm()))
         else
           Redirect(routes.Order.fill())

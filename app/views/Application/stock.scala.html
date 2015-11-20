@@ -1,4 +1,4 @@
-@(product: ProductDetails, shopList: Seq[ShopListItem])(implicit user: Option[models.UserEntity], request: play.api.mvc.Request[Any])
+@(product: ProductDetails, shopList: Seq[ShopListItem])(implicit user: Option[models.UserEntity], request: play.api.mvc.Request[Any], messages: Messages)
 @main("Наличие товара") {
   <div class="page-header">
     <h4>Наличие @product.title в магазинах и на складах</h4>

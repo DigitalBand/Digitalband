@@ -37,8 +37,8 @@
     },
     addPhone: function () {
       if (!this.shop.phoneNumbers) this.shop.phoneNumbers = [];
-      this.shop.phoneNumbers.push(angular.copy(this.shop.phone));
-      this.shop.phone = "";
+      this.shop.phoneNumbers.push(angular.copy(this.phone));
+      this.phone = "";
     },
     removePhone: function (phone) {
       this.shop.phoneNumbers = this.shop.phoneNumbers.filter(function(item){

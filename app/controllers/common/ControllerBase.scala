@@ -1,17 +1,17 @@
 package controllers.common
 
-import play.api.mvc._
 import dao.common.UserRepository
-import scala.Some
 import helpers.SessionHelper
-import play.api.Play
-import models.UserEntity
-import wt.common.DataStore
+import play.api.mvc._
+import play.api.i18n.{MessagesApi, I18nSupport}
+import play.api.Play.current
+import play.api.i18n.Messages.Implicits._
 
-class ControllerBase(implicit val userRepository: UserRepository) extends Controller {
+class ControllerBase(implicit val userRepository: UserRepository) extends Controller with I18nSupport {
 
-  def getUserId(implicit session: Session): Int = SessionHelper.getUserId(userRepository.createUser, userRepository.getUserId)
-
+  def getUserId(implicit session: Session): Int = {
+    SessionHelper.getUserId(userRepository.createUser, userRepository.getUserId)
+  }
 
   def urlParamToInt(paramName: String)(implicit request: Request[AnyContent]): Int = {
     request.getQueryString(paramName) match {
@@ -19,6 +19,9 @@ class ControllerBase(implicit val userRepository: UserRepository) extends Contro
       case None => 0
     }
   }
-  //TOD: Implement this
+
+  //TODO: Implement this
   def isAjax = false
+
+  override def messagesApi: MessagesApi = play.api.i18n.Messages.Implicits.applicationMessagesApi
 }

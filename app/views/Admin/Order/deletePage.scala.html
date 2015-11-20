@@ -1,4 +1,4 @@
-@(orderId: Int)(implicit user: Option[models.UserEntity], request: play.api.mvc.Request[Any])
+@(orderId: Int)(implicit user: Option[models.UserEntity], request: play.api.mvc.Request[Any], messages: Messages)
 @views.html.Admin.main("Администрирование", "orders") {
     <div class="col-md-12 page-block">
         <div class="alert alert-info">Вы действительно хотите удалить заказ?</div>

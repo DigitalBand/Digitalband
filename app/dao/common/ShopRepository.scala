@@ -2,14 +2,15 @@ package dao.common
 
 import models.{YandexShopInfo, ShopInfo}
 
-trait ShopRepository {
-  def getYandexShopInfo: YandexShopInfo
+import scala.concurrent.Future
 
-  def remove(shopId: Int)
-  def add(shop: ShopInfo): Int
-  def update(shop: ShopInfo)
-  def list: Seq[ShopInfo]
-  def get(shopId: Int): ShopInfo
-  def getByCity(cityId: Int): Seq[ShopInfo]
-  def getByHostname(host: String): Seq[ShopInfo]
+trait ShopRepository {
+  def getYandexShopInfo: Future[YandexShopInfo]
+  def remove(shopId: Int): Future[Int]
+  def add(shop: ShopInfo): Future[Int]
+  def update(shop: ShopInfo): Future[Int]
+  def list: Future[Seq[ShopInfo]]
+  def get(shopId: Int): Future[ShopInfo]
+  def getByCity(cityId: Int): Future[Seq[ShopInfo]]
+  def getByHostname(host: String): Future[Seq[ShopInfo]]
 }

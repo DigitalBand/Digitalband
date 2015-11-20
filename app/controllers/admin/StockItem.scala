@@ -7,32 +7,38 @@ import play.api.libs.json._
 import play.api.Routes
 import play.api.mvc.Action
 import models.StockItemInfo
-
+import scala.concurrent.ExecutionContext.Implicits.global
 
 class StockItem @Inject()(
                            implicit userRepository: dao.common.UserRepository,
                            stockItemRepository: dao.common.StockItemRepository,
                            productRepository: dao.common.ProductRepository) extends ControllerBase {
-  def edit(productId: Int) = withAdmin {
+  def edit(productId: Int) = withAdmin.async {
     implicit user =>
       implicit request =>
-        val product = productRepository.get(productId)
-        Ok(views.html.Admin.StockItem.edit(product))
+        for {
+          product <- productRepository.get(productId)
+        } yield Ok(views.html.Admin.StockItem.edit(product))
   }
 
-  def list(productId: Int) = withAdmin {
+  def list(productId: Int) = withAdmin.async {
     implicit user =>
       implicit request =>
-        Ok(Json.toJson(stockItemRepository.list(productId).toList)).withHeaders(CONTENT_TYPE -> "application/json")
+        for {
+          stockItems <- stockItemRepository.list(productId)
+        } yield {
+          Ok(Json.toJson(stockItems)).withHeaders(CONTENT_TYPE -> "application/json")
+        }
   }
 
-  def create(productId: Int) = withAdmin(parse.json) {
+  def create(productId: Int) = withAdmin.async(parse.json) {
     implicit user =>
       implicit request =>
         val body = request.body
         val stockItem = Json.parse(body.toString()).validate[StockItemInfo]
-        val id = stockItemRepository.create(productId, stockItem.get)
-        Ok(Json.toJson(id))
+        for {
+          id <- stockItemRepository.create(productId, stockItem.get)
+        } yield Ok(Json.toJson(id))
   }
 
   def remove(id: Int) = withAdmin {

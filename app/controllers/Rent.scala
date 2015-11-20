@@ -7,19 +7,24 @@ import com.google.inject.Inject
 import helpers.{EmailHelper, withUser}
 import play.api.data.Form
 import play.api.data.Forms._
+import play.api.libs.mailer.MailerClient
+import scala.concurrent.ExecutionContext.Implicits.global
 
 case class RentRequest(
-  quantity: Int = 1,
-  firstName: String = "",
-  lastName: String = "",
-  email: String = "",
-  phone: String = "",
-  city: String = "",
-  street: String = "",
-  notes: Option[String] = Some("")
-)
+                        quantity: Int = 1,
+                        firstName: String = "",
+                        lastName: String = "",
+                        email: String = "",
+                        phone: String = "",
+                        city: String = "",
+                        street: String = "",
+                        notes: Option[String] = Some("")
+                        )
 
-class Rent @Inject()(implicit ur: UserRepository, productRepository: ProductRepository, brandRepository: BrandRepository) extends ControllerBase{
+class Rent @Inject()(
+                      implicit ur: UserRepository,
+                      productRepository: ProductRepository,
+                      brandRepository: BrandRepository, mailerClient: MailerClient) extends ControllerBase {
 
   val rentForm = Form(mapping(
       "quantity" -> number,
@@ -33,32 +38,32 @@ class Rent @Inject()(implicit ur: UserRepository, productRepository: ProductRepo
     )(RentRequest.apply)(RentRequest.unapply)
   )
 
-  def requestRent(productId: Int) = withUser {
+  def requestRent(productId: Int) = withUser.async {
     implicit user =>
       implicit request =>
-        val product = productRepository.get(productId, brandRepository.get)
-        rentForm.fill(RentRequest(quantity = 1))
-
-        Ok(views.html.Rent.requestRent(product, rentForm.fill(RentRequest(quantity = 1))))
+        for {
+          product <- productRepository.get0(productId)
+        } yield {
+          rentForm.fill(RentRequest(quantity = 1))
+          Ok(views.html.Rent.requestRent(product, rentForm.fill(RentRequest(quantity = 1))))
+        }
   }
 
-  def postRequest(productId: Int) = withUser {
+  def postRequest(productId: Int) = withUser.async {
     implicit user =>
       implicit request =>
-        val product = productRepository.get(productId, brandRepository.get)
-        rentForm.bindFromRequest.fold(
+        for {
+          product <- productRepository.get0(productId)
+        } yield rentForm.bindFromRequest.fold(
           formWithErrors => {
-
             BadRequest(views.html.Rent.requestRent(product, formWithErrors))
           },
           rentRequest => {
-
             val emailHelper = new EmailHelper()
             emailHelper.notifyAboutNewRent(product, rentRequest)
-
             Ok(views.html.Rent.success(product, rentRequest))
           }
-      )
+        )
 
   }
 }

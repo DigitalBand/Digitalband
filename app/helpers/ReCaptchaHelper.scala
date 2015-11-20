@@ -4,12 +4,13 @@ import models.ReCaptcha
 import java.util
 import org.jsoup.Jsoup
 import play.api.Play
+import scala.concurrent.ExecutionContext.Implicits.global
+import scala.concurrent.Future
 
 case class RecaptchaChallenge(val challenge: String, val imageUrl: String)
 
-
 trait RecaptchaWrapper {
-  def get(key: String): RecaptchaChallenge
+  def get(key: String): Future[RecaptchaChallenge]
   def validate(recaptcha: ReCaptcha): Boolean
 }
 class RecaptchaWrapperRealImpl extends RecaptchaWrapper {
@@ -19,7 +20,7 @@ class RecaptchaWrapperRealImpl extends RecaptchaWrapper {
     val d = Jsoup.connect(url).timeout(10000).get()
     val challenge = d.select("#recaptcha_challenge_field").`val`
     val imageUrl = baseUrl + d.select("img").attr("src")
-    RecaptchaChallenge(challenge, imageUrl)
+    Future(RecaptchaChallenge(challenge, imageUrl))
   }
 
   def validate(recaptcha: ReCaptcha) = {
@@ -34,7 +35,7 @@ class RecaptchaWrapperRealImpl extends RecaptchaWrapper {
   }
 }
 class RecaptchaFalseImpl extends RecaptchaWrapper {
-  def get(key: String) = RecaptchaChallenge("sdfsdf", "")
+  def get(key: String) = Future(RecaptchaChallenge("sdfsdf", ""))
 
   def validate(recaptcha: ReCaptcha) = true
 }

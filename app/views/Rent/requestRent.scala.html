@@ -1,4 +1,4 @@
-@(product: models.ProductDetails, rentRequest: Form[RentRequest])(implicit user: Option[models.UserEntity],request: play.api.mvc.Request[Any])
+@(product: models.ProductDetails, rentRequest: Form[RentRequest])(implicit user: Option[models.UserEntity],request: play.api.mvc.Request[Any], messages: Messages)
 @import views.html.common.bootstrap.fc
 @main("Взять в аренду", "Index", scripts = Html("")) {
   <div class="row">

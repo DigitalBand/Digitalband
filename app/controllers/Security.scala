@@ -10,39 +10,48 @@ import play.api.cache.Cache
 import play.api.data.Form
 import play.api.data.Forms._
 import play.api.i18n.Messages
+import play.api.libs.mailer.MailerClient
+import scala.concurrent.ExecutionContext.Implicits.global
+import scala.concurrent.{Future, Await}
+import scala.concurrent.duration._
 
 
-class Security @Inject()(implicit ur: UserRepository, val cartRepository: CartRepository) extends ControllerBase {
+class Security @Inject()(implicit ur: UserRepository,
+                         val cartRepository: CartRepository, mailerClient: MailerClient) extends ControllerBase {
 
   val forgotPasswordForm = Form(
     "email" -> nonEmptyText.verifying(
       Messages("security.forgotpassword.notregistered"),
       result => result match {
         case email =>
-          userRepository.get(email).isDefined
+          Await.result(userRepository.get(email), Duration(2, SECONDS)).isDefined
       }
     )
   )
   val emailHelper = new EmailHelper()
 
   //POST
-  def signIn(redirectUrl: String) = withUser {
+  def signIn(redirectUrl: String) = withUser.async {
     implicit user =>
       implicit request =>
         loginForm().bindFromRequest.fold(
-          formWithErrors => BadRequest(views.html.Security.login(formWithErrors, redirectUrl)),
+          formWithErrors => Future(BadRequest(views.html.Security.login(formWithErrors, redirectUrl))),
           user => {
-            val (email, password) = user
-            cartRepository.mergeShoppingCarts(userRepository.getUserId(email), getUserId)
-            if (redirectUrl.isEmpty) {
-              Redirect(routes.Application.index()).withSession {
-                "email" -> email
+            val (email, _) = user
+            for {
+              userId <- userRepository.getUserId(email)
+            } yield {
+              cartRepository.mergeShoppingCarts(userId, getUserId)
+              if (redirectUrl.isEmpty) {
+                Redirect(routes.Application.index()).withSession {
+                  "email" -> email
+                }
               }
-            }
-            else {
-              Cache.remove(redirectUrl)
-              Redirect(redirectUrl).withSession {
-                "email" -> email
+              else {
+                Cache.remove(redirectUrl)
+                Redirect(redirectUrl).withSession {
+                  "email" -> email
+                }
               }
             }
           }
@@ -50,26 +59,29 @@ class Security @Inject()(implicit ur: UserRepository, val cartRepository: CartRe
   }
 
   //POST
-  def signUp(redirectUrl: String) = withUser {
+  def signUp(redirectUrl: String) = withUser.async {
     implicit user =>
       implicit request =>
         registrationForm().bindFromRequest.fold(
-          formWithErrors => BadRequest(views.html.Security.registration(formWithErrors, redirectUrl)),
+          formWithErrors => Future(BadRequest(views.html.Security.registration(formWithErrors, redirectUrl))),
           user => {
             val (email, password) = user
-            val userId = userRepository.register(email, password)
-            val anonymousUserId = getUserId
-            cartRepository.mergeShoppingCarts(userId, anonymousUserId)
-            userRepository.remove(anonymousUserId)
-            if (redirectUrl.isEmpty) {
-              Redirect(routes.Application.index()).withSession {
-                "email" -> email
+            for {
+              userId <- userRepository.register(email, password)
+            } yield {
+              val anonymousUserId = getUserId
+              cartRepository.mergeShoppingCarts(userId, anonymousUserId)
+              userRepository.remove(anonymousUserId)
+              if (redirectUrl.isEmpty) {
+                Redirect(routes.Application.index()).withSession {
+                  "email" -> email
+                }
               }
-            }
-            else {
-              Cache.remove(redirectUrl)
-              Redirect(redirectUrl).withSession {
-                "email" -> email
+              else {
+                Cache.remove(redirectUrl)
+                Redirect(redirectUrl).withSession {
+                  "email" -> email
+                }
               }
             }
           }

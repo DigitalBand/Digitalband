@@ -1,18 +1,14 @@
 package dao.impl.orm.slick
 
-import slick.driver.JdbcDriver.backend.Database
-import Database.dynamicSession
-
-
-import slick.jdbc.{StaticQuery => Q, GetResult}
-import Q.interpolation
-
+import slick.jdbc.GetResult
+import slick.driver.MySQLDriver.api._
 import models.{CItem, CartItem}
 import dao.impl.orm.slick.common.RepositoryBase
+import scala.concurrent.ExecutionContext.Implicits.global
+import scala.concurrent.Future
 
 class CartRepository extends RepositoryBase with dao.common.CartRepository {
-  def list(userId: Int) = {
-    database withDynSession {
+  def list(userId: Int): Future[Seq[CartItem]] = usingDB {
       implicit val getCartItem = GetResult(r => new CartItem(r.<<, r.<<, r.<<, r.<<, r.<<, r.<<))
       sql"""
          select
@@ -24,59 +20,58 @@ class CartRepository extends RepositoryBase with dao.common.CartRepository {
             p.price
           from shopping_items shop
             left join products p on p.id = shop.product_id
-          where shop.user_id = ${userId}
-            group by p.id
-      """.as[CartItem].iterator.filter(p => p.unitPrice > 0)
-
+          where
+            shop.user_id = ${userId} and p.price > 0
+          group by
+            p.id
+      """.as[CartItem]
     }
-  }
 
-  def add(item: CartItem): Int = {
-    database withDynSession {
+  def add(item: CartItem): Future[Int] = usingDB {
       sqlu"""
-      INSERT INTO shopping_items(product_id, user_id, quantity, unit_price)
-        SELECT ${item.productId}, ${item.userId}, 0,
-        (SELECT price FROM products WHERE id = ${item.productId} LIMIT 1)
-        FROM
-          dual
-        WHERE NOT exists
-          (SELECT * FROM shopping_items WHERE product_id = ${item.productId} AND user_id = ${item.userId});
-        UPDATE shopping_items
-        SET
-          quantity = quantity + ${item.count}
-        WHERE
-          product_id = ${item.productId} AND user_id = ${item.userId};
-        """.execute
-      item.userId
-    }
-  }
+        INSERT INTO shopping_items(product_id, user_id, quantity, unit_price)
+          SELECT ${item.productId}, ${item.userId}, 0,
+          (SELECT price FROM products WHERE id = ${item.productId} LIMIT 1)
+          FROM
+            dual
+          WHERE NOT exists
+            (SELECT * FROM shopping_items WHERE product_id = ${item.productId} AND user_id = ${item.userId});
+          UPDATE shopping_items
+          SET
+            quantity = quantity + ${item.count}
+          WHERE
+            product_id = ${item.productId} AND user_id = ${item.userId};
+      """
+  } map { insertedCount => item.userId }
 
-  def deleteItem(userId: Int, productId: Int) = database withDynSession {
-    sqlu"DELETE FROM shopping_items WHERE user_id = ${userId} AND product_id = ${productId}".execute
+
+
+  def deleteItem(userId: Int, productId: Int): Future[Int] = usingDB {
+    sql"DELETE FROM shopping_items WHERE user_id = ${userId} AND product_id = ${productId}".as[Int].head
   }
 
   def updateItems(userId: Int, items: Seq[CItem]) = {
-    database withDynSession {
-      def update(citem: Seq[CItem], query: String = ""): String = {
-        val item = citem.head
-        val mainQuery = s"""
-            DELETE FROM shopping_items WHERE product_id = ${item.productId} AND user_id = ${userId};
-            INSERT INTO shopping_items(product_id, user_id, quantity) VALUES (${item.productId}, ${userId}, ${item.count});
-         """
-        val combinedQuery = query + mainQuery
-        if (citem.tail.length > 0)
+    def updateQuery(item: CItem): DBIO[Int] = sql"""
+      DELETE FROM shopping_items WHERE product_id = ${item.productId} AND user_id = ${userId};
+      INSERT INTO shopping_items(product_id, user_id, quantity) VALUES (${item.productId}, ${userId}, ${item.count});
+    """.as[Int].head
+    usingDB {
+      def update(citem: Seq[CItem], updates: Seq[DBIO[Int]])
+      : Seq[DBIO[Int]] = {
+        val combinedQuery = updates :+ updateQuery(citem.head)
+        if (citem.tail.nonEmpty)
           update(citem.tail, combinedQuery)
         else
           combinedQuery
       }
-      val query = update(items)
-      Q.updateNA(query).execute
+      val query = update(items, Nil)
+      DBIO.sequence(query).map(_.sum)
     }
   }
 
-  def mergeShoppingCarts(authenticatedUserId: Int, anonymousUserId: Int) = database withDynSession {
-    sqlu"""
+  def mergeShoppingCarts(authenticatedUserId: Int, anonymousUserId: Int) = usingDB {
+    sql"""
       UPDATE shopping_items SET user_id = ${authenticatedUserId} WHERE user_id = ${anonymousUserId};
-    """.execute
+    """.as[Int].head
   }
 }

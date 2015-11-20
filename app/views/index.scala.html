@@ -1,9 +1,9 @@
-@(categories: Seq[CategoryEntity], products: Seq[models.ProductDetails])(implicit user: Option[models.UserEntity], request: play.api.mvc.Request[Any])
+@(categories: Seq[CategoryEntity], products: Seq[models.ProductDetails])(implicit user: Option[models.UserEntity], request: play.api.mvc.Request[Any], messages: Messages)
 @import Shared._
 @scripts = {
     <script src="@routes.Assets.at("javascripts/main.js")" type="text/javascript"></script>
 }
-@main(scripts = scripts) {
+@main(title = Messages("main.head.title"), scripts = scripts) {
     <div class="col-xs-12">
         <div id="myCarousel" class="carousel slide">
             <ol class="carousel-indicators">

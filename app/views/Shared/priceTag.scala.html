@@ -1,4 +1,4 @@
-@(price: Double)
+@(price: Double)(implicit messages: Messages)
 @price match {
     case 0.0 => {
         @Messages("global.productItem.noprice")
